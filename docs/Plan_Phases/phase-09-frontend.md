@@ -52,6 +52,7 @@
 ### 3.1. API-only integration
 
 - Frontend chỉ có typed API client cho `/api/v1` và public response DTO theo `ARCH-003`.
+- Ngoại lệ theo `ARCH-012`: MapLibre được tải Geoapify tile/style trực tiếp bằng dedicated browser key; mọi geocoding/routing vẫn qua `/api/v1`.
 - Không import backend service, Directus server SDK, collection schema, database model hoặc worker code vào frontend bundle.
 - Không gọi Directus generic REST/GraphQL, weather/routing/payment/LLM provider trực tiếp.
 - Không tự tính risk, entitlement, quota, price, route score hoặc subscription state ở client.
@@ -90,7 +91,7 @@
 - Mobile flow hoàn thành được map → detail → route.
 - Anonymous chỉ truy cập landing/login/register/legal; deep link vào product feature yêu cầu login.
 - Map effect chỉ xuất hiện khi có dữ liệu provider hợp lệ và có thể tắt bằng layer control.
-- Future timeline không vượt quá forecast horizon và không tạo spatial interpolation không có nguồn.
+- Future timeline đọc horizon/capability từ `/api/v1`; route/risk chỉ actionable tới tối đa 72 giờ trong provider-valid coverage. Ngày 4–7 chỉ xuất hiện khi capability thật tồn tại, phải gắn outlook và không tạo spatial interpolation không có nguồn (`DATA-004`, `ARCH-013`).
 - Reduced-motion và thiết bị hiệu năng thấp có static fallback.
 - GPS marker/progress cập nhật khi di chuyển trong giới hạn browser; không hứa background tracking khi app bị đóng/suspend.
 - Keyboard navigation và focus management đạt target đã chốt.
@@ -101,14 +102,13 @@
 
 ## Decision Gate — phải hỏi và chốt với bạn
 
-**Đã chốt:** Free có current weather effects; Pro có future timeline, forecast animation và advanced overlays (`PRODUCT-007`).
+**Đã chốt:** Free có current weather effects; Pro có future timeline, forecast animation và advanced overlays khi backend công bố capability thật (`PRODUCT-007`, `ARCH-013`).
 
 1. Frontend framework và rendering mode được chọn ở Phase 1 có giữ nguyên không?
 2. Visual direction, brand, ngôn ngữ và accessibility target là gì?
-3. Map/tile/weather visual layer provider nào được phép dùng production và attribution yêu cầu ra sao?
-4. Public landing page ưu tiên value proposition, pricing hay demo preview không tương tác?
-5. Timeline mặc định hiển thị theo giờ hay theo ngày và tối đa bao xa?
-6. Có PWA/offline shell, push notification hoặc geolocation không?
-7. Pro paywall và checkout mở trong app hay chuyển sang Stripe/VNPay hosted flow?
-8. Analytics nào được phép thu và consent UX như thế nào?
-9. Browser/mobile device support tối thiểu là gì?
+3. Public landing page ưu tiên value proposition, pricing hay demo preview không tương tác? Map stack đã chốt MapLibre + Geoapify với attribution (`ARCH-012`).
+4. Timeline mặc định hiển thị theo giờ hay theo ngày và tối đa bao xa?
+5. Có PWA/offline shell, push notification hoặc geolocation không?
+6. Pro paywall và checkout mở trong app hay chuyển sang Stripe/VNPay hosted flow?
+7. Analytics nào được phép thu và consent UX như thế nào?
+8. Browser/mobile device support tối thiểu là gì?

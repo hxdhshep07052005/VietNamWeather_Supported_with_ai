@@ -92,7 +92,8 @@ Evidence/ADR:
 - **Phase:** 0 / 10
 - **Vấn đề:** Quota và capability baseline cho hai gói.
 - **Quyết định:** Chấp thuận entitlement matrix trong Phase 10 với thay đổi `Free location search = 10 lượt/ngày`.
-- **Baseline:** Free map/current weather không quota nghiệp vụ; search 10/ngày; forecast 7 ngày; route evaluation 3/ngày; 1 route alternative; 3 saved locations; 1 saved route; history 7 ngày; chatbot 3 tin/ngày nếu bật. Pro search 200/ngày; full provider horizon; 30 route evaluations/ngày; 3 alternatives; 50 saved locations; 20 saved routes; history 90 ngày; chatbot 30 tin/ngày nếu bật.
+- **Baseline:** Free map/current weather không quota nghiệp vụ; search 10/ngày; forecast theo Free horizon do backend/provider capability công bố; route evaluation 3/ngày; 1 route alternative; 3 saved locations; 1 saved route; history 7 ngày; chatbot 3 tin/ngày nếu bật. Pro search 200/ngày; full provider-approved horizon; 30 route evaluations/ngày; 3 alternatives; 50 saved locations; 20 saved routes; history 90 ngày; chatbot 30 tin/ngày nếu bật.
+- **Superseding forecast note:** `ARCH-013` và `PRODUCT-012` cấm coi 7 ngày là guaranteed entitlement. Trần cấu hình có thể là 7 ngày nhưng current account chỉ trả 3 ngày; frontend phải dùng capability DTO thực tế.
 - **Ràng buộc:** Đây là cấu hình trong Directus, có thể thay đổi bằng decision mới; frontend không được tự enforcement thay backend.
 - **Review lại:** Sau khi có dữ liệu usage, provider cost, conversion và abuse rate.
 
@@ -166,6 +167,7 @@ Evidence/ADR:
 - **Frontend-only logic:** Presentation state, form UX, rendering, accessibility, client-side navigation và locale formatting được contract cho phép.
 - **Ràng buộc:** Không expose Directus collection names, internal field names, provider payload hoặc stack trace trong public DTO. API có OpenAPI/schema, versioning, structured errors và contract tests.
 - **Trade-off:** Cần duy trì facade/DTO mapping nhưng giảm coupling và cho phép thay đổi schema/backend mà không phá frontend.
+- **Superseding note:** `ARCH-012` tạo ngoại lệ hẹp cho browser tải Geoapify map tile/style bằng key riêng. Ngoại lệ này không áp dụng cho geocoding, routing, weather, payment, AI hoặc business API.
 
 ### PRODUCT-008 — GPS, route objectives and live follow
 
@@ -265,3 +267,204 @@ Evidence/ADR:
 - **Quyết định:** Một người thực hiện dự án full-time và đảm nhiệm toàn bộ implementation, review, QA, DevOps và product decisions.
 - **Planning rule:** Roadmap ưu tiên vertical slice và automation để giảm context switching. Không giả định có thêm frontend/backend/QA chuyên biệt nếu chưa có decision mới.
 - **Trade-off:** Bus factor bằng một và không có independent review mặc định. Compensating controls gồm checklist, static analysis, dependency/security scanning, automated test, reproducible evidence và stop-the-line conditions.
+
+### PRODUCT-011 — Phase 0 product contract approval
+
+- **Ngày quyết định:** 2026-07-29
+- **Người quyết định:** Product Owner
+- **Phase:** 0
+- **Vấn đề:** Phê duyệt toàn bộ artifact và evidence của Discovery & Product Contract.
+- **Quyết định:** Product Owner phê duyệt `PRD.md`, provider shortlist/bake-off approach, privacy retention/control baseline, acceptance metrics, provisional NFR targets và các payment feasibility constraints trong `PHASE_0_EVIDENCE.md`.
+- **Ràng buộc tại thời điểm Phase 0:** Final providers phải được chọn tại Phase 1; Stripe/VNPay không được coi là production-ready khi thiếu merchant evidence. Ràng buộc này đã được giải quyết bởi `ARCH-012`, `ARCH-013` và `OPS-006`: provider baselines đã chốt, còn payment providers fail closed/disabled cho tới phase merchant enablement.
+- **Kết quả:** Phase 0 chuyển sang `VERIFIED`; Phase 1 được mở ở trạng thái `AWAITING_DECISION`.
+
+### ARCH-004 — Directus and integration worker boundary
+
+- **Ngày quyết định:** 2026-07-29
+- **Người quyết định:** Product Owner / Technical Owner
+- **Phase:** 1
+- **Quyết định:** Directus là primary backend, system of record, Admin Studio và host của versioned application endpoints ngắn. Một integration worker riêng xử lý weather ingestion, route evaluation, reconciliation, scheduled jobs và tác vụ dài/retry-heavy.
+- **Ràng buộc:** Frontend chỉ gọi `/api/v1`; worker không public cho browser; Directus Flows không được dùng thay queue cho job dài hoặc critical payment processing.
+
+### ARCH-005 — PostgreSQL with PostGIS
+
+- **Ngày quyết định:** 2026-07-29
+- **Người quyết định:** Product Owner / Technical Owner
+- **Phase:** 1
+- **Quyết định:** Dùng PostgreSQL và bật PostGIS cho route geometry, location, spatial index/query và future geospatial needs.
+- **Ràng buộc:** Public API không expose database/PostGIS schema; migration phải version hóa và rollback/restore được.
+
+### ARCH-006 — Next.js TypeScript PWA frontend
+
+- **Ngày quyết định:** 2026-07-29
+- **Người quyết định:** Product Owner / Technical Owner
+- **Phase:** 1 / 9
+- **Quyết định:** Frontend dùng Next.js + TypeScript. Landing/legal pages hỗ trợ SSR/SEO; authenticated product là client-rich application. Bổ sung PWA shell cho installability và active geolocation follow.
+- **Ràng buộc:** Không quảng bá offline weather/navigation; service worker không cache private API response ngoài policy đã duyệt; provider keys/business rules không nằm ở frontend.
+
+### ARCH-007 — Redis cache, queue and coordination
+
+- **Ngày quyết định:** 2026-07-29
+- **Người quyết định:** Product Owner / Technical Owner
+- **Phase:** 1 / 2 / 5 / 8 / 10
+- **Quyết định:** Dùng Redis cho cache ngắn hạn, distributed rate limiting, idempotency coordination, locks và job queue giữa Directus/worker.
+- **Ràng buộc:** Redis không là system of record cho subscription/payment; mất cache không được làm mất business state; database projection vẫn authoritative.
+
+### SEC-002 — Private Directus Admin Studio
+
+- **Ngày quyết định:** 2026-07-29
+- **Người quyết định:** Product Owner / Technical Owner
+- **Phase:** 1 / 3 / 13
+- **Quyết định:** Production Directus Admin Studio không mở tự do ra public internet; truy cập qua VPN hoặc IP allowlist và role/policy least privilege.
+- **Ràng buộc:** Application API public được tách route/network policy khỏi Admin Studio; emergency access phải auditable và có revoke procedure.
+
+### ARCH-008 — Payment webhook ingress and worker processing
+
+- **Ngày quyết định:** 2026-07-29
+- **Người quyết định:** Product Owner / Technical Owner
+- **Phase:** 1 / 10
+- **Quyết định:** Public webhook/IPN ingress nằm tại versioned backend endpoint/gateway: đọc raw body, xác thực signature/checksum, lưu immutable event/idempotency record rồi enqueue. Worker xử lý state transition, entitlement projection và reconciliation.
+- **Ràng buộc:** Browser return URL không cấp Pro; event replay/out-of-order phải an toàn; worker retry không tạo duplicate state.
+
+### ARCH-009 — Hybrid i18n ownership
+
+- **Ngày quyết định:** 2026-07-29
+- **Người quyết định:** Product Owner / Technical Owner
+- **Phase:** 1 / 4 / 9
+- **Quyết định:** Frontend locale catalog quản lý UI/system keys; Directus quản lý translated business, advisory, pricing summary và legal content. API trả stable message/error code thay vì hardcode câu chữ nghiệp vụ.
+- **Ràng buộc:** `vi` và `en` phải qua missing-key/content publish checks; fallback không được làm mất disclaimer hoặc hiển thị sai locale billing/legal.
+
+### OPS-005 — Initial NFR and load baseline
+
+- **Ngày quyết định:** 2026-07-29
+- **Người quyết định:** Product Owner / Technical Owner
+- **Phase:** 1 / 12 / 13
+- **Quyết định:** Baseline gồm availability 99.5%/tháng; cached API p95 <= 500 ms; provider-backed API p95 <= 3 giây trước degraded response; payment entitlement sync p95 <= 60 giây và reconciliation <= 15 phút; RPO <= 24 giờ; RTO <= 4 giờ.
+- **Load target:** Test tối thiểu 100 authenticated users đồng thời, 300 application API requests/phút và 500 route evaluations/ngày trong cost envelope.
+- **Ràng buộc:** Kết quả load/provider bake-off có thể làm target chặt hơn hoặc điều chỉnh bằng decision mới; không âm thầm nới target để pass test.
+
+### ARCH-010 — Conditional payment-provider availability
+
+- **Ngày quyết định:** 2026-07-29
+- **Người quyết định:** Product Owner / Technical Owner
+- **Phase:** 1 / 10
+- **Quyết định:** Payment adapter hỗ trợ Stripe và VNPay nhưng backend chỉ công bố capability đã có evidence. Stripe mặc định feature-disabled cho tới khi có merchant entity đủ điều kiện. VNPay mặc định prepaid/manual renewal cho tới khi có xác nhận unattended recurring bằng hợp đồng/API production.
+- **Ràng buộc:** Không giả lập recurring, không dùng merchant identity không hợp lệ và không cấp entitlement từ browser redirect.
+
+### DATA-004 — Operational forecast horizon for route and risk
+
+- **Ngày quyết định:** 2026-07-30
+- **Người quyết định:** Product Owner / Technical Owner
+- **Phase:** 1 / 5 / 6 / 7 / 8 / 9
+- **Vấn đề:** Khoảng thời gian forecast nào đủ điều kiện chạy weather-risk và weather-safer route, và dữ liệu xa hơn phải được trình bày thế nào.
+- **Quyết định:** Route/risk operational horizon ban đầu là tối đa `72 giờ` tính từ thời điểm đánh giá đến ETA cuối tuyến. Từ sau 72 giờ đến hết ngày thứ 7 chỉ được hiển thị dưới dạng `outlook`/độ tin cậy thấp và không được tạo weather-safer route score hoặc tuyên bố tuyến an toàn hơn. Dữ liệu xa hơn 7 ngày, nếu provider và entitlement cho phép hiển thị, chỉ mang tính tham khảo dài hạn và không tham gia route/risk recommendation.
+- **Không hardcode:** `operational_horizon_hours = 72` và `outlook_horizon_days = 7` là cấu hình version hóa/publish trong Directus. Backend đọc cấu hình đã duyệt; frontend chỉ render capability/horizon do `/api/v1` trả về.
+- **Thiếu dữ liệu:** Route có ETA vượt horizon hoặc forecast không phủ đủ segment phải trả `unsupported_horizon`, `incomplete` hoặc `unknown`; không cắt bớt tuyến, kéo dài forecast hay nội suy giả để tạo score.
+- **Review lại:** Sau provider bake-off và khi có evidence accuracy/freshness theo lead time tại Việt Nam. Mọi thay đổi cần Decision ID mới, nguồn dữ liệu và regression evidence.
+
+### ARCH-011 — Directus 12.1.1 version and license baseline
+
+- **Ngày quyết định:** 2026-07-30
+- **Người quyết định:** Product Owner / Technical Owner
+- **Phase:** 1 / 2 / 13
+- **Vấn đề:** Exact Directus release/image/license nào được dùng để tránh floating version và unverifiable commercial-use assumptions.
+- **Quyết định:** Pin Directus `12.1.1` bằng container manifest digest `sha256:27fd291463f4e746a7911139377a1dbc7a5c09ae82ee15b028b97bcc4950c69d`. License file trong tag `v12.1.1` là `MSCL-1.0-GPL`; evidence được lưu trong `DIRECTUS_BASELINE.md` và `ADR-009`.
+- **License fit:** Sản phẩm dùng Directus nội bộ làm backend/Admin Studio cho travel application, không cung cấp Directus như sản phẩm cạnh tranh. Không bypass protected license functionality. Nếu business model hoặc cách phân phối thay đổi phải có legal review/decision mới.
+- **Upgrade rule:** Không dùng `latest`. Trước staging/production phải recheck patch/security/license và chạy migration/rollback evidence; version mới chỉ được dùng sau approval.
+
+### ARCH-012 — MapLibre and Geoapify Free map stack
+
+- **Ngày quyết định:** 2026-07-30
+- **Người quyết định:** Product Owner / Technical Owner
+- **Phase:** 1 / 8 / 9 / 13
+- **Vấn đề:** Chọn map/geocoding/routing stack đơn giản, không yêu cầu card billing ở giai đoạn MVP và không tự host tiles/routing phức tạp.
+- **Quyết định:** Dùng MapLibre GL JS làm map renderer và Geoapify Free làm baseline cho map tiles/style, geocoding và routing. Không tích hợp Mapbox, Google Maps hoặc HERE trong MVP.
+- **Browser boundary:** Browser chỉ được gọi trực tiếp Geoapify tile/style endpoints bằng dedicated browser key. Geocoding, reverse geocoding, routing, ETA, route alternatives và mọi business/risk operation vẫn đi qua `/api/v1` và dùng server-side key riêng.
+- **Verified public terms:** Tại thời điểm kiểm tra 2026-07-30, Geoapify Free công bố 3.000 credits/ngày, không yêu cầu credit card, nhiều API key, tối đa 5 request/giây và cho phép limited commercial use với attribution.
+- **Cost control:** Không gắn card hoặc tự động nâng paid plan trong MVP. Credit usage/limits là config và metric, không hardcode rải rác. Khi hết quota, hệ thống trả unavailable/degraded state; không proxy sang public OSM/Nominatim và không tạo dữ liệu giả.
+- **Security:** Browser key được coi là publishable credential, tách khỏi server key, chỉ dùng cho tile/style, theo dõi quota và rotate khi cần. Server key không được xuất hiện trong frontend, log hoặc URL public do ứng dụng tạo.
+- **Trade-off:** Đơn giản và không có charge tự động, nhưng Free plan không có production SLA bảo đảm và quota có thể không đủ khi traffic tăng. Provider-neutral DTO/adapter được giữ để thay provider sau này.
+- **Live evidence:** Initial probe, full Vietnam fixtures and route-objective probes passed on 2026-07-31 and are recorded in `MAP_BAKEOFF_REPORT.md` and `VIETNAM_PROVIDER_FIXTURE_REPORT.md`. Browser attribution/key enforcement and dashboard reconciliation remain Phase 9/13 evidence; pricing/terms must be rechecked before production.
+
+### ARCH-013 — WeatherAPI capability-bounded baseline
+
+- **Ngày quyết định:** 2026-07-31
+- **Người quyết định:** Product Owner / Technical Owner
+- **Phase:** 1 / 5 / 6 / 7 / 8 / 9 / 13
+- **Vấn đề:** Chọn weather provider mà không mua hoặc giả lập capability chưa có, trong khi account hiện tại chỉ trả 3 forecast days và OpenWeather One Call 4.0 chưa được subscribe.
+- **Quyết định:** Dùng WeatherAPI làm primary point-weather adapter ban đầu. Backend chỉ công bố capability/horizon thật từ response và account; ngày 4–7 bị capability-disable cho tới khi có evidence account tương ứng. OpenWeather Current 2.5 không được dùng làm silent fallback cho forecast.
+- **Horizon:** `DATA-004` là trần tối đa, không phải cam kết coverage. Route/risk chỉ chạy trên phần giao giữa horizon cấu hình và thời gian provider trả dữ liệu hợp lệ; ngoài coverage trả `unsupported_horizon`, `incomplete` hoặc `unknown`.
+- **No fabrication:** Không extrapolate ngày thiếu, không kéo dài forecast, không ghép current của provider khác để giả thành cùng forecast provenance.
+- **Cost:** Không phê duyệt paid weather upgrade trong Phase 1. Upgrade/secondary provider cần Decision ID, account pricing, terms và regression evidence mới.
+- **Evidence:** 30/30 Vietnam locations trả HTTP 200 với current + 3 days; p50 86 ms, p95 310 ms. Chi tiết tại `WEATHER_BAKEOFF_REPORT.md`, `VIETNAM_PROVIDER_FIXTURE_REPORT.md` và `ADR-011`.
+
+### OPS-006 — Provider budget and external capability closure
+
+- **Ngày quyết định:** 2026-07-31
+- **Người quyết định:** Product Owner / Technical Owner
+- **Phase:** 1 / 8 / 10 / 13
+- **Vấn đề:** Phase 1 cần cost/payment gate rõ ràng dù provider không trả credit header và chưa có Stripe/VNPay merchant credentials.
+- **Quyết định:** Current approved automatic provider spend là 0 VND. Geoapify không auto-upgrade paid; WeatherAPI paid upgrade chưa được duyệt; Stripe và VNPay không xuất hiện trong backend capability output khi chưa có merchant evidence.
+- **Metering:** Backend ghi request/operation ledger theo provider/endpoint/feature/user entitlement nhưng không giả định request bằng credit. Dashboard/invoice reconciliation là evidence bắt buộc trước production tại Phase 13.
+- **Payment:** Stripe giữ feature-disabled. VNPay cũng disabled tới khi onboarding merchant; sau đó chỉ prepaid/manual renewal cho tới khi recurring được chứng minh bằng contract/API production.
+- **Failure policy:** Thiếu usage telemetry, quota hoặc merchant evidence làm optional capability fail closed/degraded; không tự chi, không cấp Pro và không fallback bằng dữ liệu/payment giả.
+- **Evidence:** `COST_ENVELOPE.md`, `PAYMENT_CAPABILITY_REPORT.md`, `MAP_BAKEOFF_REPORT.md` và `VIETNAM_PROVIDER_FIXTURE_REPORT.md`.
+
+### PRODUCT-012 — Phase 1 architecture approval
+
+- **Ngày quyết định:** 2026-07-31
+- **Người quyết định:** Product Owner
+- **Phase:** 1
+- **Vấn đề:** Phê duyệt architecture/NFR/provider/security/cost baseline để mở Directus Foundation.
+- **Quyết định:** Phê duyệt `ARCHITECTURE.md`, `DATA_FLOW.md`, ADR-001..011, `NFR_SLO.md`, `THREAT_MODEL.md`, `COST_ENVELOPE.md`, provider reports và conditional payment capability. WeatherAPI (`ARCH-013`) và MapLibre + Geoapify (`ARCH-012`) là baseline; payment tuân theo `ARCH-010`/`OPS-006`.
+- **Ràng buộc:** Phase 1 verification chỉ phê duyệt architecture contract. Load, browser attribution/key restrictions, provider degraded tests, merchant webhook/IPN, account reconciliation, backup/restore và production release evidence vẫn phải đạt ở phase implementation tương ứng.
+- **Kết quả:** Phase 1 chuyển `VERIFIED`; Phase 2 chuyển `AWAITING_DECISION`. Không có tuyên bố payment production-ready, 7-day weather hay unlimited provider quota.
+
+### ARCH-014 — Stage 2 monorepo and runtime foundation
+
+- **Ngày quyết định:** 2026-07-31
+- **Người quyết định:** Product Owner / Technical Owner
+- **Phase:** 2
+- **Quyết định:** Dùng monorepo với `pnpm workspace`; chưa thêm Turborepo cho tới khi workspace scripts không còn đáp ứng. Cấu trúc baseline gồm `apps/web`, `apps/directus`, `apps/worker`, `packages/contracts`, `packages/config`, `infra` và `docs`.
+- **Runtime:** Node runtime phải tương thích Directus `12.1.1` và được pin cùng package manager. Local stack dùng Docker Compose với Directus, PostgreSQL/PostGIS, Redis và Mailpit; service/image không dùng floating tag.
+- **CI/registry:** GitHub Actions là CI baseline và GitHub Container Registry là image registry baseline. Build tạo immutable artifact/image; production không auto-deploy từ branch không được bảo vệ.
+- **Ràng buộc:** Không thêm build orchestrator, microservice hoặc registry khác nếu chưa có bottleneck/evidence và Decision ID mới.
+
+### SEC-003 — Stage 2 secret, bootstrap and break-glass policy
+
+- **Ngày quyết định:** 2026-07-31
+- **Người quyết định:** Product Owner / Technical Owner
+- **Phase:** 2 / 3 / 13
+- **Quyết định:** Local secret nằm trong `.env.*` Git-ignore; CI dùng GitHub encrypted secrets; owner-managed VPS dùng SOPS/age để quản lý encrypted secret material kết hợp Docker secrets/runtime injection. Age private key và plaintext secret không nằm trong Git.
+- **Bootstrap admin:** Credential bootstrap chỉ truyền qua protected environment/runtime secret, phải rotate ngay sau first login và không được dùng làm standing daily admin credential.
+- **Break-glass:** Product Owner giữ break-glass credential trong password manager và một encrypted offline recovery copy. Mỗi lần sử dụng phải ghi actor/reason/time, revoke active sessions khi cần và rotate sau sự cố hoặc truy cập khẩn cấp.
+- **Ràng buộc:** Frontend, image layer, CI log, seed output và repository không chứa Directus admin password, service token hoặc provider server secret.
+
+### DATA-005 — Deterministic production seeding and reference-source policy
+
+- **Ngày quyết định:** 2026-07-31
+- **Người quyết định:** Product Owner / Technical Owner
+- **Phase:** 2 / 4 / 13
+- **Quyết định:** Seed dùng versioned, idempotent manifests với stable external keys, checksum, environment scope và audit result. Production chỉ nhận approved configuration/reference data; không seed demo user, fake weather, fake payment, fake subscription hoặc sample entitlement.
+- **Location source:** Chỉ nhập location/administrative reference từ nguồn chính thức có URL/source owner, publication version/date và license/provenance được ghi trong manifest. Geoapify/weather provider label không là canonical identity. Nếu chưa có source đạt gate, Phase 2 không seed location catalog thay vì tự tạo dữ liệu.
+- **Demo/test data:** Chỉ cho phép ephemeral CI/staging accounts/fixtures với namespace rõ, access hạn chế và reset/expiry. Không có standing public demo account và không promote fixture sang production.
+- **Ràng buộc:** Seed chạy lặp lại không duplicate và không ghi đè business data ngoài ownership contract.
+
+### OPS-007 — Stage 2 environment, storage and Directus update policy
+
+- **Ngày quyết định:** 2026-07-31
+- **Người quyết định:** Product Owner / Technical Owner
+- **Phase:** 2 / 13
+- **Environment:** Local/development/staging/production dùng database, Redis namespace, credential và storage scope riêng. Production data không copy xuống lower environment nếu chưa anonymize và approve.
+- **Object storage:** Không thêm MinIO hoặc managed S3 trong Stage 2 khi chưa có use case. Local/development có thể dùng persistent local volume; production storage provider được chốt tại Phase 4/13 và phải dùng externalized adapter configuration.
+- **Directus update:** Pin exact version/digest. Update chỉ qua manual approval sau release-note, security, migration, extension compatibility và rollback review; kiểm tra định kỳ hàng tháng, với expedited path cho Critical/High security advisory.
+- **Ràng buộc:** Không sửa source/secret trực tiếp trên server để tạo khác biệt môi trường; mọi thay đổi phải qua versioned config/artifact và evidence.
+
+### PRODUCT-013 — Phase 2 kickoff approval
+
+- **Ngày quyết định:** 2026-07-31
+- **Người quyết định:** Product Owner
+- **Phase:** 2
+- **Quyết định:** Phê duyệt Decision Gate Phase 2 theo `ARCH-014`, `SEC-003`, `DATA-005` và `OPS-007`.
+- **Kết quả:** Phase 2 chuyển từ `AWAITING_DECISION` sang `IN_PROGRESS`.
+- **Ràng buộc:** Kickoff không đồng nghĩa Directus runtime, schema, seed, CI, backup hoặc production environment đã hoàn thành. Phase 2 chỉ được `VERIFIED` sau clean rebuild, credential rotation, idempotent seed, schema promotion/rollback và CI evidence có thể tái hiện.

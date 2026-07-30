@@ -1,6 +1,6 @@
 # Phase 2 — Directus Foundation & Environments
 
-**Status:** BLOCKED  
+**Status:** IN_PROGRESS — LOCAL_VERIFIED / REMOTE_CI_PENDING
 **Phụ thuộc:** Phase 1 VERIFIED  
 **Mục tiêu:** Dựng nền Directus có thể tái lập cho local, development, staging và production.
 
@@ -52,6 +52,7 @@
 - Schema baseline được version hóa.
 - CI pipeline pass và không có secret trong repository.
 - Environment/config matrix được duyệt.
+- [PHASE_2_EVIDENCE.md](PHASE_2_EVIDENCE.md) được cập nhật theo từng bước và chỉ đóng khi toàn bộ evidence có thể tái hiện.
 
 ## Acceptance criteria
 
@@ -63,13 +64,23 @@
 - Chạy seed lặp lại không tạo duplicate hoặc ghi đè business data ngoài contract.
 - Production không có demo account, fake subscription, fake weather hoặc plaintext credential từ seed.
 
-## Decision Gate — phải hỏi và chốt với bạn
+## Decision Gate — completed
 
-1. Repository mono-repo hay multi-repo? Khuyến nghị: mono-repo cho một sản phẩm và team nhỏ.
-2. Container registry và CI platform nào sẽ dùng?
-3. Secret manager nào phù hợp môi trường triển khai?
-4. Object storage dùng managed S3-compatible hay local trong giai đoạn đầu?
-5. Chính sách pin/update phiên bản Directus là manual approval hay lịch định kỳ?
-6. Ai giữ break-glass admin credential và quy trình rotation thế nào?
-7. Approved location/reference source nào được phép seed vào production?
-8. Có cần demo accounts ở staging không và ai được quyền sử dụng?
+1. **Đã chốt:** Monorepo + `pnpm workspace`; chưa dùng Turborepo (`ARCH-014`).
+2. **Đã chốt:** GitHub Actions + GitHub Container Registry (`ARCH-014`).
+3. **Đã chốt:** `.env.*` local, GitHub encrypted secrets cho CI, SOPS/age + Docker secrets/runtime injection cho VPS (`SEC-003`).
+4. **Đã chốt:** Không thêm MinIO/S3 trong Stage 2; local volume chỉ cho local/development, production storage defer Phase 4/13 (`OPS-007`).
+5. **Đã chốt:** Exact version/digest, manual approval, monthly review và expedited security update (`OPS-007`).
+6. **Đã chốt:** Product Owner giữ break-glass trong password manager + encrypted offline recovery copy; audit và rotate sau sử dụng (`SEC-003`).
+7. **Đã chốt:** Chỉ seed source chính thức có version/license/provenance; chưa đủ evidence thì không seed location catalog (`DATA-005`).
+8. **Đã chốt:** Chỉ ephemeral CI/staging accounts có namespace/expiry; không public demo và không production demo (`DATA-005`).
+
+Phase 2 kickoff được phê duyệt tại `PRODUCT-013`.
+
+## Implementation checkpoint — 2026-07-31
+
+- Local stack Directus/PostGIS/Redis/Mailpit/worker đã dựng lại từ volume sạch và toàn bộ service healthy.
+- Bootstrap admin đã rotate; credential cũ bị từ chối; stack restart không cần `.env.bootstrap.local`.
+- Schema snapshot/dry-run/drift, security foundation, seed audit/idempotency, backup/isolated restore, secret scan và worker SBOM đã pass.
+- Foundation seed không chứa business operation để tránh chốt lén schema Phase 3/4 hoặc tạo dữ liệu giả.
+- GitHub Actions workflow đã được Actionlint xác minh nhưng chưa chạy trên GitHub và GHCR chưa publish image; đây là blocker duy nhất trước khi đề nghị Product Owner đóng Phase 2.

@@ -5,11 +5,11 @@
 | Field | Value |
 |---|---|
 | Checked on | 2026-07-29 |
-| Status | SHORTLIST_READY / FINAL_SELECTION_PENDING_PHASE_1 |
+| Status | FINAL BASELINES APPROVED (`PRODUCT-012`) |
 | Scope | Weather, weather overlays, maps, geocoding, routing, payment and Directus license |
 | Rule | Pricing/terms are a dated snapshot, not a merchant contract |
 
-No provider is hardcoded by this document. Final selection requires account-level pricing/terms, API-key tests and written merchant capability where applicable.
+The selected architecture baselines remain provider-neutral in product code: adapter identity, capability, horizon, quota and availability are configuration/backend outputs rather than frontend hardcodes. Merchant methods still require provider-specific evidence before enablement.
 
 ## 2. Evaluation criteria
 
@@ -25,18 +25,13 @@ No provider is hardcoded by this document. Final selection requires account-leve
 
 | Provider | Verified capabilities | Pricing snapshot | Strengths | Risks/constraints | Status |
 |---|---|---|---|---|---|
-| WeatherAPI.com | Realtime, hourly/daily, alerts, search, weather maps; commercial use listed on all plans | Free: 100K calls/month, 3-day forecast. Starter: USD 7/month, 3M calls, 7 days. Pro+: USD 25/month, 5M calls, future/forecast up to 300 days. Business: USD 65/month, 10M calls, 99.9% stated uptime; SLA only Enterprise | Low entry cost, simple API, map capability, generous calls | Free plan cannot satisfy app Free entitlement of 7 days; long-range output must not be presented as high-confidence safety forecast; Vietnam accuracy/map layers need bake-off | SHORTLIST A |
+| WeatherAPI.com | Realtime, hourly/daily, alerts, search, weather maps; live 30-location suite returned current + exactly 3 days at all locations | Free: 100K calls/month, 3-day forecast. Starter: USD 7/month, 3M calls, 7 days. Pro+: USD 25/month, 5M calls, future/forecast up to 300 days. Business: USD 65/month, 10M calls, 99.9% stated uptime; SLA only Enterprise | Low entry cost, simple API, live account works without a new paid dependency | Current account cannot expose day 4–7; provider labels/timezones are not authoritative; meteorological accuracy needs ongoing comparison | SELECTED — `ARCH-013` |
 | OpenWeather One Call 4.0 + Weather Maps 2.0 | Current; 1-minute next hour; 15-minute next 48h; hourly next 48h; daily timeline up to 1.5 years; national alerts; model update every 10 minutes. Maps 2.0: 15 layers, current, 10-day forecast at 3-hour steps and historical maps | One Call 4.0 includes 1,000 calls/day free, pay per call above limit. Weather Maps subscription/call pricing must be confirmed on account/pricing page | Strong timeline, alerts, dedicated current/future overlay API, explicit timestamps | One Call and map products may be separate cost surfaces; daily long-range horizon is not equivalent to reliable travel-safety forecast; SLA/redistribution terms require plan review | SHORTLIST B |
 | Tomorrow.io | Realtime, 60+ layers, timelines, maps, monitoring and Weather on Routes | Free product page lists 5-day forecast. Enterprise lists 14-day forecast, custom SLA, Weather on Routes and advanced map/data layers; price by contact | Rich risk-relevant data and route-specific product | Core Free entitlement needs 7 days; route/maps required for this product appear Enterprise; cost and contract less transparent | RESERVE/ENTERPRISE |
 
-### Weather recommendation for Phase 1 bake-off
+### Weather decision
 
-Test two candidates, without committing in code:
-
-1. `WeatherAPI.com Pro+` for low-cost normalized point forecasts and included weather maps.
-2. `OpenWeather One Call 4.0 + Weather Maps 2.0` for current/forecast timelines and advanced overlays.
-
-Tomorrow.io remains an enterprise fallback if its Weather on Routes capability materially reduces implementation/risk and fits the budget.
+Use WeatherAPI as the initial capability-bounded point-weather adapter under `ARCH-013`. Do not expose day 4–7 under the current account, do not silently mix OpenWeather Current 2.5 into WeatherAPI forecast provenance, and require a new decision before any paid upgrade or secondary provider. OpenWeather One Call and Tomorrow.io remain deferred candidates.
 
 ### Weather bake-off dataset
 
@@ -53,14 +48,15 @@ Provider accuracy cannot be approved only from marketing claims. Phase 1 needs a
 
 | Provider | Verified capabilities/pricing | Route-alternative behavior | Strengths | Risks/constraints | Status |
 |---|---|---|---|---|---|
-| Mapbox | Pricing page shows free tiers around 50K web map loads/month, 100K Directions requests/month, 100K temporary geocoding requests/month and 100K Map Matching requests/month | `alternatives=true` may return up to two alternatives in addition to the main route; alternatives are significantly different but close in time to fastest and may not always exist | One integrated web map/search/directions stack; fits requested maximum of three displayed routes; transparent usage meters | “Shortest” is only the lowest-distance route among returned alternatives, not a guaranteed globally shortest path; storage differs between temporary/permanent geocoding; Vietnam result quality needs testing | RECOMMENDED BAKE-OFF DEFAULT |
-| Google Maps Platform | 2026 pricing page lists Starter USD 100/month for 50K calls focused on Dynamic Maps + Geocoding; Essentials USD 275/month for 100K calls across popular Maps/Routes/Places/Environment products | Supports alternative routes depending on API/mode, but product must still rank only returned candidates | Strong Places ecosystem, coverage and documentation; integrated Maps/Routes/Weather options | Higher predictable cost, SKU/billing complexity and provider lock-in; storage/attribution restrictions require careful design | ALTERNATIVE |
-| HERE | Maps, geocoding/search, routing, traffic, map rendering and documented coverage/SLA surfaces | Routing product supports advanced transport/traffic use cases; exact alternatives/objectives must be confirmed in current account/API reference | Strong automotive/routing focus and possible advanced route constraints | Public pricing page is not sufficiently detailed in captured content; contract/usage costs and Vietnam result quality require account test | ALTERNATIVE |
+| Geoapify Free + MapLibre | Official pricing checked 2026-07-30: 3,000 credits/day, no card required, multiple API keys, up to 5 requests/second, limited commercial use with attribution; initial live style/geocoding/routing passed 2026-07-31 | Exact alternatives/modes still require full fixture validation | One provider, open-source renderer, no automatic card charge and lower MVP complexity | Best-effort/free quota may be insufficient; credit cost varies by endpoint; Vietnam-wide route quality remains unproven | SELECTED — `ARCH-012` |
+| Mapbox | Product Owner's account flow requires card billing | Supports route alternatives depending on profile/request | Integrated stack | Card/billing setup conflicts with current no-card requirement | REJECTED FOR MVP |
+| Google Maps Platform | Strong maps/routes/geocoding product family | Supports alternative routes depending on API/mode | Broad ecosystem and documentation | Adds billing/account/SDK complexity | DEFERRED |
+| HERE | Maps, geocoding/search and routing products | Requires account/API validation | Strong routing focus | Adds another account/provider/test matrix | DEFERRED |
 | Public OpenStreetMap services | OSM data is reusable under ODbL with attribution, but public Nominatim and `tile.openstreetmap.org` have strict usage policies | Public services do not provide the production routing contract required by this product | Open data; self-hosting/commercial derived providers remain possible | Public Nominatim max 1 request/second, forbids client autocomplete and warns commercial apps about withdrawal; public tiles are best-effort with no SLA and prohibit bulk/offline prefetch | NOT APPROVED AS SOLE PRODUCTION INFRASTRUCTURE |
 
 ### Map/routing recommendation for Phase 1 bake-off
 
-Start the provider adapter spike with Mapbox because its free tiers, three-route maximum and web map stack match the MVP. Keep DTOs provider-neutral and compare at least one of Google/HERE before final approval.
+Use MapLibre + Geoapify Free for MVP under `ARCH-012`. Keep DTOs provider-neutral, use separate browser/server keys and require live Vietnam route/credit validation. Do not add another provider unless Geoapify fails the acceptance gate or a new Decision ID approves the complexity.
 
 ### Route/geocoding bake-off dataset
 
@@ -83,12 +79,12 @@ Payment adapters must support provider-specific capability without changing enti
 
 ## 6. Directus self-hosting feasibility
 
-The official Directus license page checked on 2026-07-29 identifies the current license as **Monospace Sustainable Core License 1.0 (`MSCL-1.0-GPL`)**. It permits use for purposes other than a competing use and grants GPL-3.0 after the stated four-year conversion period for a release.
+The official Directus sources were rechecked on 2026-07-30 for exact release `12.1.1`. npm and GitHub identify `12.1.1` as the current stable release; Docker Hub manifest digest is `sha256:27fd291463f4e746a7911139377a1dbc7a5c09ae82ee15b028b97bcc4950c69d`. The included license file is **Monospace Sustainable Core License 1.0 (`MSCL-1.0-GPL`)**. It permits use for purposes other than a competing use and grants GPL-3.0 after the stated four-year conversion period for a release.
 
-This product uses Directus as an internal backend/admin component and does not sell Directus itself as a competing standalone service. Self-hosting is therefore a viable technical candidate, but Phase 1 must:
+This product uses Directus as an internal backend/admin component and does not sell Directus itself as a competing standalone service. Self-hosting is therefore a viable technical baseline. `ARCH-011` and [DIRECTUS_BASELINE.md](DIRECTUS_BASELINE.md) record the exact pin. The project must:
 
-- Pin the exact Directus image/version and retain its included license text.
-- Recheck license terms for that exact version/release before production.
+- Keep the exact Directus image/version and included license evidence.
+- Recheck license terms, security advisories and supported patch before production.
 - Avoid removing/circumventing licensed functionality.
 - Obtain legal clarification if the business model changes toward providing Directus as a service.
 
@@ -105,6 +101,10 @@ This product uses Directus as an internal backend/admin component and does not s
 
 ### Map, geocoding and routing
 
+- Geoapify pricing: https://www.geoapify.com/pricing/
+- Geoapify map tiles: https://apidocs.geoapify.com/docs/maps/map-tiles/
+- Geoapify geocoding: https://apidocs.geoapify.com/docs/geocoding/forward-geocoding/
+- Geoapify routing: https://apidocs.geoapify.com/docs/routing/
 - Mapbox pricing: https://www.mapbox.com/pricing
 - Mapbox Directions alternatives: https://docs.mapbox.com/api/navigation/directions/
 - Google Maps Platform pricing: https://mapsplatform.google.com/pricing/
@@ -122,14 +122,18 @@ This product uses Directus as an internal backend/admin component and does not s
 - VNPay query/refund: https://sandbox.vnpayment.vn/apis/docs/truy-van-hoan-tien/querydr&refund.html
 - Directus license: https://directus.io/bsl
 - Directus self-hosting: https://directus.com/docs/self-hosting/overview
+- Directus `v12.1.1` release: https://github.com/directus/directus/releases/tag/v12.1.1
+- Directus `v12.1.1` license file: https://github.com/directus/directus/blob/v12.1.1/license
 
 ## 8. Phase 1 decision gate generated by this comparison
 
-Phase 1 must ask Product Owner to approve:
+Phase 1 approvals are recorded in `ARCH-010`, `ARCH-012`, `ARCH-013`, `OPS-006` and `PRODUCT-012`:
 
-1. Weather bake-off winner and paid plan.
-2. Map/geocoding/routing bake-off winner.
-3. Approved operational forecast horizon for risk/route versus long-range outlook.
-4. Stripe merchant eligibility status.
-5. VNPay recurring capability: auto-renew or manual renewal.
-6. Monthly provider call budgets and hard cost alerts.
+1. WeatherAPI is selected with no paid upgrade and capability-bounded horizon.
+2. Stripe remains disabled without an eligible merchant entity.
+3. VNPay remains disabled until onboarding, then manual/prepaid renewal unless recurring is proven.
+4. Current automatic provider spend is 0 VND; request ledger and fail-closed limits are mandatory.
+
+Operational forecast horizon đã được phê duyệt tại `DATA-004`: tối đa 72 giờ cho route/risk; ngày 4–7 chỉ là outlook.
+
+Map/geocoding/routing stack đã được phê duyệt tại `ARCH-012`: MapLibre + Geoapify Free. Full live fixture and route-objective evidence is recorded; production browser/quota/account controls remain assigned to implementation and operations phases.

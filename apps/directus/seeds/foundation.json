@@ -1,0 +1,22 @@
+{
+  "manifestVersion": 1,
+  "key": "foundation-baseline",
+  "version": "2026.07.31.1",
+  "environmentScopes": [
+    "local",
+    "development",
+    "staging",
+    "production"
+  ],
+  "provenance": [
+    {
+      "type": "decision",
+      "reference": "DATA-005"
+    },
+    {
+      "type": "decision",
+      "reference": "PRODUCT-013"
+    }
+  ],
+  "operations": []
+}

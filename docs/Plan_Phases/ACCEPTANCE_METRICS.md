@@ -6,7 +6,7 @@
 |---|---|
 | Version | 1.0 |
 | Date | 2026-07-29 |
-| Status | READY_FOR_PRODUCT_OWNER_APPROVAL |
+| Status | APPROVED — `PRODUCT-011` |
 | Measurement owner | Product Owner / solo developer |
 
 Targets below are release acceptance baselines. Phase 1 may tighten NFR values through a recorded decision, but cannot replace measurable targets with subjective words.
@@ -16,12 +16,12 @@ Targets below are release acceptance baselines. Phase 1 may tighten NFR values t
 | ID | Metric | MVP target | Measurement/evidence |
 |---|---|---:|---|
 | `ACC-001` | Anonymous product API denial | 100% of protected endpoint tests return `401/403`; public role reads only published landing/pricing/legal/locale content | Automated authorization matrix and negative integration tests |
-| `ACC-002` | Frontend API-only boundary | 0 frontend network calls to generic Directus REST/GraphQL, database, workers or weather/routing/payment/AI providers | Contract test, build scan and browser network allowlist |
+| `ACC-002` | Frontend API-only boundary | 0 frontend network calls to generic Directus REST/GraphQL, database, workers or geocoding/routing/weather/payment/AI APIs; only approved Geoapify tile/style origins are allowlisted | Contract test, build scan and browser network allowlist |
 | `ACC-003` | Weather provenance | 100% successful current/forecast DTOs contain provider/source, `valid_at`, `fetched_at`, freshness state and `issued_at` when provider supplies it | Schema/contract tests and golden responses |
 | `ACC-004` | Stale/unknown correctness | 100% stale, missing, unsupported and provider-error fixtures render explicit state; 0 fixtures render fabricated weather | Integration/UI state tests |
 | `ACC-005` | Current data freshness | At least 95% of successful current-weather responses during provider bake-off are within configured 15-minute target; all older results are labeled stale or unavailable | Timed provider test report; target finalized Phase 1/5 |
 | `ACC-006` | Search quota | Free requests 1–10/day succeed when provider available; request 11 is denied without provider call. Pro request 201 is denied. Reset time is correct at 00:00 `Asia/Ho_Chi_Minh` | Boundary, concurrency and multi-session tests |
-| `ACC-007` | Forecast entitlement | Free cannot retrieve beyond 7 days; Pro is limited by backend provider/confidence configuration; frontend manipulation cannot extend horizon | API authorization/entitlement tests |
+| `ACC-007` | Forecast entitlement | Free and Pro cannot retrieve beyond the smaller of backend entitlement and provider-valid coverage; current account exposes 3 days and frontend manipulation cannot extend it | API authorization/entitlement/capability tests |
 | `ACC-008` | Risk determinism | 100% versioned rule fixtures return expected level/evidence/explanation; missing required input never returns `safe` | Unit/property/approval fixture tests |
 | `ACC-009` | Route quota | Free route 1–3/day and Pro route 1–30/day work; next request is denied atomically; retries with same idempotency key do not double-count | Concurrency/idempotency integration tests |
 | `ACC-010` | Route alternatives contract | Free receives at most 1 route; Pro receives at most 3 provider-returned routes; system never invents geometry | Provider contract and DTO tests |
@@ -37,6 +37,8 @@ Targets below are release acceptance baselines. Phase 1 may tighten NFR values t
 | `ACC-020` | Security release gate | 0 open Critical/High findings in auth, RBAC/IDOR, secrets, dependency, payment and AI boundary checks | Security report and remediation evidence |
 | `ACC-021` | Accessibility | Core flows meet WCAG 2.2 AA automated checks with manual keyboard/focus review; reduced-motion/static map fallback works | Accessibility report and device/browser evidence |
 | `ACC-022` | Backup and rollback | Latest production-like backup restores successfully; release rollback drill completes within approved RTO | Restore/rollback runbook evidence |
+| `ACC-023` | Operational forecast horizon | 100% route/risk requests có ETA cuối tuyến <= 72 giờ mới được scoring; ngày 4–7 chỉ trả outlook; dữ liệu xa hơn không tạo weather-safer recommendation | Boundary tests tại 72 giờ/7 ngày, config-version audit và provider coverage report |
+| `ACC-024` | Geoapify browser/server boundary | Browser key chỉ tải tile/style; 100% geocoding/routing requests đi qua `/api/v1`; quota exhaustion hiển thị unavailable và không fallback sang public OSM/Nominatim | Browser network allowlist, server log correlation, quota/degraded tests |
 
 ## 3. Provisional Phase 1 NFR targets
 

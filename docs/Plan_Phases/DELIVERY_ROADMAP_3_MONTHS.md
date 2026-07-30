@@ -1,6 +1,6 @@
 # Delivery Roadmap — 3-Month Production MVP
 
-**Status:** APPROVED / DISCOVERY_ARTIFACTS_PENDING  
+**Status:** PHASE_0_VERIFIED / PHASE_1_IN_PROGRESS
 **Baseline kickoff:** 2026-07-30  
 **Target go-live:** 2026-10-29  
 **Decision:** `OPS-001`, `OPS-002`, `OPS-003`, `OPS-004`
@@ -19,7 +19,7 @@ Timeline này dành cho một solo developer full-time. Budget ceiling ban đầ
 - Weather, map/tile, geocoding và routing provider được chọn trong tuần 1; terms cho production được xác minh.
 - Stripe/VNPay merchant onboarding bắt đầu ngay tuần 1. Không giả lập recurring hoặc production webhook capability.
 - Chatbot không nằm trên critical path. Advanced animation chỉ đi sau current-weather map, forecast, risk và route flow ổn định.
-- Frontend và backend phát triển contract-first; frontend chỉ dùng `/api/v1` DTO và mock chỉ được phép trong test/dev theo contract, không dùng làm production fallback.
+- Frontend và backend phát triển contract-first; frontend dùng `/api/v1` DTO, ngoại trừ Geoapify tile/style allowlist theo `ARCH-012`. Mock chỉ được phép trong test/dev theo contract, không dùng làm production fallback.
 
 ## 3. Lịch thực thi 13 tuần
 
@@ -67,4 +67,4 @@ Mỗi thay đổi deadline/scope phải ghi Decision ID, nguyên nhân, ảnh h�
 
 ## 7. Discovery evidence còn phải hoàn tất
 
-Trước khi Phase 0 chuyển sang `VERIFIED`, phải hoàn tất PRD, provider comparison, privacy inventory và measurable acceptance metrics. Provider/merchant feasibility và NFR tiếp tục được xác minh trong Phase 0–1. VPS hardware/region không chặn công việc local và chỉ cần chốt trước production deployment.
+PRD, provider comparison, privacy inventory và measurable acceptance metrics đã được Product Owner duyệt (`PRODUCT-011`). Provider/merchant feasibility và NFR tiếp tục được xác minh trong Phase 1. VPS hardware/region không chặn công việc local và chỉ cần chốt trước production deployment.

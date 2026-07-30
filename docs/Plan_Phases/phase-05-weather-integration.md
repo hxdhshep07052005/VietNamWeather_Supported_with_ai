@@ -56,11 +56,10 @@
 
 ## Decision Gate — phải hỏi và chốt với bạn
 
-1. Primary weather provider là dịch vụ nào sau khi so sánh coverage, quota, license và cost?
+1. **Đã chốt từ Phase 1:** WeatherAPI capability-bounded baseline (`ARCH-013`). Phase 5 chỉ hỏi có thay đổi account/plan/capability nào kể từ evidence 2026-07-31 không.
 2. Có fallback provider không, và có cho phép trộn provider trong cùng một assessment không?
 3. Forecast horizon và độ phân giải tối thiểu cho MVP là gì?
 4. Data freshness tối đa chấp nhận được cho current weather và forecast là bao nhiêu?
 5. Có lưu raw provider response không, và retention bao lâu?
 6. Đơn vị hiển thị mặc định và timezone UX là gì?
 7. Khi provider lỗi, UI được phép hiển thị dữ liệu stale tối đa bao lâu trước khi chuyển thành unavailable?
-

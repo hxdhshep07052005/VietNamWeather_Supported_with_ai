@@ -1,0 +1,23 @@
+# Local secrets and environment overrides
+.env
+.env.*
+!.env.example
+!.env.bakeoff.example
+!.env.bootstrap.example
+!.env.admin.example
+
+# Local benchmark output may contain provider metadata or usage details
+artifacts/provider-bakeoff/local/
+artifacts/phase2/local/
+
+# Node and workspace output
+node_modules/
+.pnpm-store/
+dist/
+coverage/
+*.tsbuildinfo
+
+# Runtime state and decrypted deployment material
+infra/volumes/
+apps/directus/uploads/
+secrets/decrypted/

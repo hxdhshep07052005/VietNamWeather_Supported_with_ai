@@ -3,16 +3,16 @@
 ## Status
 
 **Artifact preparation:** COMPLETE  
-**Product Owner approval:** PENDING  
-**Phase 0:** APPROVED, NOT YET VERIFIED
+**Product Owner approval:** APPROVED — 2026-07-29 (`PRODUCT-011`)
+**Phase 0:** VERIFIED
 
 ## Required artifacts
 
 | Artifact | File | Evidence state |
 |---|---|---|
-| Product Requirements Document | [PRD.md](PRD.md) | Complete, awaiting Product Owner approval |
+| Product Requirements Document | [PRD.md](PRD.md) | Approved (`PRODUCT-011`) |
 | MVP scope and non-goals | [PRD.md](PRD.md) + [DECISIONS.md](DECISIONS.md) | Complete |
-| Provider comparison matrix | [PROVIDER_COMPARISON.md](PROVIDER_COMPARISON.md) | Complete; final providers intentionally pending Phase 1 bake-off |
+| Provider comparison matrix | [PROVIDER_COMPARISON.md](PROVIDER_COMPARISON.md) | Complete; final providers were intentionally deferred and later resolved by Phase 1 |
 | Privacy inventory | [PRIVACY_INVENTORY.md](PRIVACY_INVENTORY.md) | Complete; legal review remains pre-production dependency |
 | Product acceptance metrics | [ACCEPTANCE_METRICS.md](ACCEPTANCE_METRICS.md) | Complete; provisional NFRs require Phase 1 ADR |
 | Delivery baseline | [DELIVERY_ROADMAP_3_MONTHS.md](DELIVERY_ROADMAP_3_MONTHS.md) | Approved planning baseline |
@@ -30,9 +30,9 @@
 | Payment feasibility is not assumed | PASS | Stripe country and VNPay token/merchant constraints documented |
 | No fake production data or hardcoded business config permitted | PASS | `DATA-001`, `PRD.md` section 8 |
 
-## Product Owner approval gate
+## Product Owner approval gate — completed
 
-Phase 0 may move to `VERIFIED` only after Product Owner explicitly confirms:
+Product Owner đã xác nhận:
 
 1. PRD scope/user journeys are accepted.
 2. Provider shortlist and Phase 1 bake-off approach are accepted.
@@ -40,4 +40,4 @@ Phase 0 may move to `VERIFIED` only after Product Owner explicitly confirms:
 4. Acceptance metrics and provisional NFR targets are accepted for Phase 1 refinement.
 5. Stripe eligibility and VNPay recurring capability remain blockers, not assumed features.
 
-After approval, record the approval date in `DECISIONS.md`, change Phase 0 and `STATUS.md` to `VERIFIED`, and open Phase 1 as `AWAITING_DECISION`.
+Approval được ghi bằng `PRODUCT-011`. Phase 0 đã chuyển sang `VERIFIED`; Phase 1 được mở ở trạng thái `AWAITING_DECISION`.

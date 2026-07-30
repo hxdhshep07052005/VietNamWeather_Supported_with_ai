@@ -34,7 +34,7 @@ Nguyên tắc: không giới hạn việc mở bản đồ và xem thời tiết
 | Bản đồ + thời tiết hiện tại | Không quota nghiệp vụ; áp abuse rate limit | Không quota nghiệp vụ; ưu tiên SLA theo policy |
 | Weather map effects | Hiệu ứng thời tiết hiện tại | Future timeline, forecast animation, advanced overlays |
 | Tìm kiếm địa điểm | 10 lượt/ngày | 200 lượt/ngày |
-| Forecast | Tối đa 7 ngày | Toàn bộ horizon provider hỗ trợ |
+| Forecast | Free horizon do backend công bố, không vượt provider-valid coverage | Toàn bộ provider-approved horizon theo confidence/capability policy |
 | Biểu đồ | Cơ bản | Nâng cao, so sánh và trend dài hơn |
 | Route evaluation | 3 lượt/ngày | 30 lượt/ngày |
 | Route alternatives | 1 tuyến/request | Tối đa 3 tuyến/request |

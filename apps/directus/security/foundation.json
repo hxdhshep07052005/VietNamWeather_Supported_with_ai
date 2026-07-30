@@ -1,0 +1,16 @@
+{
+  "manifestVersion": 1,
+  "directusVersion": "12.1.1",
+  "baseline": {
+    "roles": 1,
+    "adminPolicies": 1,
+    "nonAdminPolicies": 1,
+    "permissions": 0,
+    "applicationRoles": 0
+  },
+  "notes": [
+    "The only role is the securely bootstrapped administrator role.",
+    "No application or business role is introduced before the Phase 3 authorization decisions.",
+    "The public policy has no collection permission in the foundation baseline."
+  ]
+}

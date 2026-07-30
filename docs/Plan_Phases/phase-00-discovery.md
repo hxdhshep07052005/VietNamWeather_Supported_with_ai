@@ -1,6 +1,6 @@
 # Phase 0 — Discovery & Product Contract
 
-**Status:** APPROVED  
+**Status:** VERIFIED
 **Phụ thuộc:** Không  
 **Mục tiêu:** Chuyển ý tưởng ban đầu thành phạm vi sản phẩm có thể đo, nghiệm thu và vận hành.
 
@@ -44,11 +44,12 @@
 
 | Deliverable | Evidence bắt buộc |
 |---|---|
-| Product Requirements Document | File PRD được Product Owner duyệt |
-| MVP scope và non-goals | Decision IDs `PRODUCT-*` |
-| Provider comparison matrix | Link tài liệu và ngày kiểm tra terms/quota |
-| Initial privacy inventory | Danh sách data category, purpose, retention owner |
-| Product acceptance metrics | Chỉ số có công thức và nguồn đo |
+| Product Requirements Document | [PRD.md](PRD.md) được Product Owner duyệt |
+| MVP scope và non-goals | [PRD.md](PRD.md) và Decision IDs `PRODUCT-*` |
+| Provider comparison matrix | [PROVIDER_COMPARISON.md](PROVIDER_COMPARISON.md), nguồn chính thức và ngày kiểm tra terms/quota |
+| Initial privacy inventory | [PRIVACY_INVENTORY.md](PRIVACY_INVENTORY.md) với data category, purpose, retention và control |
+| Product acceptance metrics | [ACCEPTANCE_METRICS.md](ACCEPTANCE_METRICS.md) với công thức, target và evidence |
+| Phase evidence manifest | [PHASE_0_EVIDENCE.md](PHASE_0_EVIDENCE.md) |
 
 ## Acceptance criteria
 
@@ -64,4 +65,4 @@
 
 Không còn product decision bắt buộc đang chờ. Product Owner là solo developer full-time và tự giữ toàn bộ vai trò trong MVP (`PRODUCT-010`, `OPS-004`). VPS inventory được defer tới Phase 13 và không chặn local development (`OPS-003`).
 
-Phase 0 chỉ chuyển sang `VERIFIED` sau khi PRD, provider comparison, privacy inventory và acceptance metrics được tạo, kiểm tra và liên kết làm evidence.
+Các artifact và evidence đã được Product Owner duyệt bằng `PRODUCT-011`. Phase 0 đã `VERIFIED`.

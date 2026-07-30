@@ -1,16 +1,17 @@
 # Project Status
 
 **Ngày khởi tạo plan mới:** 2026-07-25  
-**Trạng thái tổng:** PHASE_0_APPROVED_ARTIFACTS_PENDING  
-**Phase hiện tại:** Phase 0 — Discovery & Product Contract
+**Trạng thái tổng:** PHASE_2_LOCAL_VERIFIED_REMOTE_CI_PENDING
+**Phase hiện tại:** Phase 2 — Directus Foundation & Environments
+**Cập nhật gần nhất:** 2026-07-31 — Product Owner / Technical Owner
 
 ## Phase board
 
 | Phase | Status | Dependency | Evidence |
 |---|---|---|---|
-| 0. Discovery | APPROVED | Còn PRD, provider comparison, privacy inventory và acceptance metrics trước VERIFIED | `PRODUCT-001..010`, `ARCH-001..003`, `DATA-001..003`, `SEC-001`, `OPS-001..004` |
-| 1. Architecture | BLOCKED | Phase 0 VERIFIED | Chưa có |
-| 2. Directus Foundation | BLOCKED | Phase 1 VERIFIED | Chưa có |
+| 0. Discovery | VERIFIED | Product Owner approved Phase 0 contract | `PRODUCT-011`, `PRD.md`, `PROVIDER_COMPARISON.md`, `PRIVACY_INVENTORY.md`, `ACCEPTANCE_METRICS.md`, `PHASE_0_EVIDENCE.md` |
+| 1. Architecture | VERIFIED | Product Owner approved architecture/NFR/provider/security/cost baseline | [`PHASE_1_EVIDENCE.md`](PHASE_1_EVIDENCE.md), [`VIETNAM_PROVIDER_FIXTURE_REPORT.md`](VIETNAM_PROVIDER_FIXTURE_REPORT.md), `ARCH-004..013`, `SEC-002`, `OPS-005..006`, `DATA-004`, `PRODUCT-012` |
+| 2. Directus Foundation | IN_PROGRESS (LOCAL_VERIFIED) | GitHub Actions/GHCR remote run chưa thực hiện | [`PHASE_2_EVIDENCE.md`](PHASE_2_EVIDENCE.md), `ARCH-014`, `SEC-003`, `DATA-005`, `OPS-007` |
 | 3. Security & Identity | BLOCKED | Phase 2 VERIFIED | Chưa có |
 | 4. Data Model & Admin | BLOCKED | Phase 3 VERIFIED | Chưa có |
 | 5. Weather Integration | BLOCKED | Phase 4 VERIFIED | Chưa có |
@@ -33,6 +34,12 @@ Mỗi lần đổi trạng thái phải ghi:
 - Link commit hoặc pull request.
 - Link test report, security report hoặc deployment evidence.
 - Blocker còn lại và người chịu trách nhiệm.
+
+## Blocker hiện tại
+
+- Repository/runtime/schema/seed/backup/clean rebuild/secret scan/SBOM đã pass validator local.
+- Workflow `.github/workflows/ci.yml` đã qua Actionlint, nhưng chưa có remote run vì thay đổi chưa được commit/push.
+- Không được chuyển Phase 2 sang `VERIFIED` hoặc mở Phase 3 trước khi GitHub Actions pass, GHCR tạo image immutable theo commit SHA và Product Owner duyệt evidence đóng phase.
 
 ## Lưu ý
 

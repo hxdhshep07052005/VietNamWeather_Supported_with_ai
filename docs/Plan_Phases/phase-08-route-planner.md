@@ -28,6 +28,7 @@
 - Tính segment risk và route score bằng công thức version hóa.
 - So sánh alternatives theo risk, thời gian và khoảng cách; không tối ưu risk mà bỏ qua trade-off.
 - Nếu forecast không phủ hết ETA hoặc dữ liệu thiếu quá mức, route result phải là incomplete/unknown.
+- Theo `DATA-004`, route/risk scoring chỉ áp dụng khi ETA cuối tuyến không vượt 72 giờ; ngày 4–7 chỉ là outlook và không tạo weather-safer recommendation.
 - `Fastest` chọn duration thấp nhất; `Shortest` chọn distance thấp nhất; `Weather-safer` chọn weather-risk thấp nhất; `Balanced` dùng trọng số config giữa risk/time/distance.
 
 ### 3.1. GPS progress and rerouting
@@ -72,12 +73,13 @@
 
 ## Decision Gate — phải hỏi và chốt với bạn
 
-1. Routing/geocoding provider nào được chọn theo coverage, terms, quota và cost?
-2. MVP hỗ trợ ô tô, xe máy, đi bộ hay loại phương tiện nào?
-3. Người dùng có nhập ngày/giờ khởi hành không? Khuyến nghị: bắt buộc hoặc mặc định rõ ràng và cho chỉnh.
-4. Cần tối đa bao nhiêu route alternatives?
-5. Cách cân bằng weather risk, thời gian và khoảng cách trong recommendation?
-6. Giới hạn route length và thời gian ETA nằm trong forecast horizon là bao nhiêu?
-7. Có cần lưu route history/favorites hay xử lý stateless?
-8. Auto-reroute mở cho Free hay Pro, hay chỉ hỏi user trước mọi reroute?
-9. Deviation threshold và minimum reroute interval được cấu hình thế nào?
+**Đã chốt:** MapLibre + Geoapify Free cho tile/geocoding/routing (`ARCH-012`); initial live capability đã đạt, nhưng 30 route/no-route fixtures, alternatives, modes, credit và quota tests vẫn bắt buộc.
+
+1. MVP hỗ trợ ô tô, xe máy, đi bộ hay loại phương tiện nào?
+2. Người dùng có nhập ngày/giờ khởi hành không? Khuyến nghị: bắt buộc hoặc mặc định rõ ràng và cho chỉnh.
+3. Cần tối đa bao nhiêu route alternatives?
+4. Cách cân bằng weather risk, thời gian và khoảng cách trong recommendation?
+5. Giới hạn route length tối đa theo provider/credit là bao nhiêu? Forecast-time limit đã chốt tại `DATA-004`.
+6. Có cần lưu route history/favorites hay xử lý stateless?
+7. Auto-reroute mở cho Free hay Pro, hay chỉ hỏi user trước mọi reroute?
+8. Deviation threshold và minimum reroute interval được cấu hình thế nào?

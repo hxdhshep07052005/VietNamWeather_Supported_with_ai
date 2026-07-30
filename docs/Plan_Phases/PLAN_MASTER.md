@@ -101,7 +101,7 @@ flowchart LR
 
 ### 5.1.1. Frontend/API boundary
 
-- Frontend chỉ gọi versioned Application API và nhận public DTO; không gọi generic Directus collection endpoints/GraphQL trực tiếp.
+- Frontend gọi versioned Application API và nhận public DTO; ngoại lệ duy nhất là tải Geoapify tile/style cho MapLibre theo `ARCH-012`. Không gọi generic Directus collection endpoints/GraphQL trực tiếp.
 - Application API được triển khai bằng Directus custom endpoints hoặc thin BFF/gateway theo ADR; không tạo system of record thứ hai.
 - DTO không expose collection name, internal field, provider payload, secret, raw stack trace hoặc schema chi tiết không cần thiết.
 - Backend xử lý auth, policy, entitlement, quota, validation, localization content selection, weather/risk/route/payment/AI logic và audit.

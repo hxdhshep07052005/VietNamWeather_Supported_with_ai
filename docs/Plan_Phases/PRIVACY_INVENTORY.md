@@ -6,7 +6,7 @@
 |---|---|
 | Version | 1.0 |
 | Date | 2026-07-29 |
-| Status | READY_FOR_PRODUCT_OWNER_APPROVAL |
+| Status | APPROVED — `PRODUCT-011` |
 | Controller/business owner | Product Owner |
 | Scope | MVP web application, Directus backend, provider integrations and optional AI boundary |
 

@@ -1,0 +1,149 @@
+name: ${COMPOSE_PROJECT_NAME:?COMPOSE_PROJECT_NAME is required}
+
+services:
+  database:
+    image: postgis/postgis@sha256:350d6e4617de2f9bd04e2c4d661c8df2bab8627eefba6119819f43091fb2de47
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${DB_DATABASE:?DB_DATABASE is required}
+      POSTGRES_USER: ${DB_USER:?DB_USER is required}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:?DB_PASSWORD is required}
+    volumes:
+      - database_data:/var/lib/postgresql/data
+      - ./infra/postgres/init:/docker-entrypoint-initdb.d:ro
+    networks:
+      - data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U \"$$POSTGRES_USER\" -d \"$$POSTGRES_DB\""]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 10s
+
+  redis:
+    image: redis@sha256:a7859ed111db3c1f5404a973a4747505d559fb5ca32d37e447afc0ef845a2103
+    restart: unless-stopped
+    environment:
+      REDIS_PASSWORD: ${REDIS_PASSWORD:?REDIS_PASSWORD is required}
+    command:
+      - sh
+      - -ec
+      - exec redis-server --appendonly yes --requirepass "$$REDIS_PASSWORD"
+    volumes:
+      - redis_data:/data
+    networks:
+      - data
+    healthcheck:
+      test: ["CMD-SHELL", "REDISCLI_AUTH=\"$$REDIS_PASSWORD\" redis-cli ping | grep -q PONG"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 5s
+
+  mailpit:
+    image: axllent/mailpit@sha256:7f33095f80e901f6ad08028f06ca284aa58fe84942be5496008d041d3b9f4d4d
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:${MAILPIT_SMTP_HOST_PORT:?MAILPIT_SMTP_HOST_PORT is required}:1025"
+      - "127.0.0.1:${MAILPIT_UI_HOST_PORT:?MAILPIT_UI_HOST_PORT is required}:8025"
+    networks:
+      - application
+    healthcheck:
+      test: ["CMD", "/mailpit", "readyz"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 5s
+
+  directus:
+    image: directus/directus@sha256:27fd291463f4e746a7911139377a1dbc7a5c09ae82ee15b028b97bcc4950c69d
+    restart: unless-stopped
+    depends_on:
+      database:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      mailpit:
+        condition: service_healthy
+    ports:
+      - "127.0.0.1:${DIRECTUS_HOST_PORT:?DIRECTUS_HOST_PORT is required}:8055"
+    environment:
+      NODE_ENV: production
+      KEY: ${DIRECTUS_KEY:?DIRECTUS_KEY is required}
+      SECRET: ${DIRECTUS_SECRET:?DIRECTUS_SECRET is required}
+      PUBLIC_URL: ${DIRECTUS_PUBLIC_URL:?DIRECTUS_PUBLIC_URL is required}
+      ADMIN_EMAIL: ${DIRECTUS_ADMIN_EMAIL:-}
+      ADMIN_PASSWORD: ${DIRECTUS_ADMIN_PASSWORD:-}
+      DB_CLIENT: pg
+      DB_HOST: database
+      DB_PORT: 5432
+      DB_DATABASE: ${DB_DATABASE:?DB_DATABASE is required}
+      DB_USER: ${DB_USER:?DB_USER is required}
+      DB_PASSWORD: ${DB_PASSWORD:?DB_PASSWORD is required}
+      CACHE_ENABLED: "true"
+      CACHE_STORE: redis
+      CACHE_AUTO_PURGE: "true"
+      REDIS: redis://:${REDIS_PASSWORD:?REDIS_PASSWORD is required}@redis:6379/0
+      EMAIL_TRANSPORT: smtp
+      EMAIL_FROM: ${DIRECTUS_EMAIL_FROM:?DIRECTUS_EMAIL_FROM is required}
+      EMAIL_SMTP_HOST: mailpit
+      EMAIL_SMTP_PORT: 1025
+      EMAIL_SMTP_SECURE: "false"
+      TELEMETRY: "false"
+    volumes:
+      - directus_uploads:/directus/uploads
+      - ./apps/directus/extensions:/directus/extensions:ro
+    networks:
+      - application
+      - data
+    healthcheck:
+      test:
+        - CMD
+        - node
+        - -e
+        - fetch('http://127.0.0.1:8055/server/info').then((response)=>{if(!response.ok)process.exit(1)}).catch(()=>process.exit(1))
+      interval: 10s
+      timeout: 5s
+      retries: 30
+      start_period: 30s
+
+  worker:
+    build:
+      context: .
+      dockerfile: apps/worker/Dockerfile
+    restart: unless-stopped
+    depends_on:
+      directus:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    ports:
+      - "127.0.0.1:${WORKER_HOST_PORT:?WORKER_HOST_PORT is required}:${WORKER_PORT:?WORKER_PORT is required}"
+    environment:
+      NODE_ENV: production
+      APP_ENV: ${APP_ENV:?APP_ENV is required}
+      WORKER_SERVICE_NAME: ${WORKER_SERVICE_NAME:?WORKER_SERVICE_NAME is required}
+      WORKER_PORT: ${WORKER_PORT:?WORKER_PORT is required}
+    networks:
+      - application
+      - data
+    healthcheck:
+      test:
+        - CMD
+        - node
+        - -e
+        - fetch('http://127.0.0.1:${WORKER_PORT:?WORKER_PORT is required}/health/ready').then((response)=>{if(!response.ok)process.exit(1)}).catch(()=>process.exit(1))
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 10s
+
+networks:
+  application:
+  data:
+    internal: true
+
+volumes:
+  database_data:
+  redis_data:
+  directus_uploads:

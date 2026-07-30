@@ -6,10 +6,12 @@
 
 1. Đọc [PLAN_MASTER.md](PLAN_MASTER.md) để hiểu phạm vi, kiến trúc và nguyên tắc chung.
 2. Đọc [DELIVERY_ROADMAP_3_MONTHS.md](DELIVERY_ROADMAP_3_MONTHS.md) để biết milestone, critical path và điều kiện giữ deadline.
-3. Kiểm tra [STATUS.md](STATUS.md) để biết phase nào đang được phép triển khai.
-4. Trước mỗi phase, trả lời toàn bộ câu hỏi trong mục **Decision Gate** của phase đó.
-5. Ghi phương án đã chốt vào [DECISIONS.md](DECISIONS.md) trước khi code.
-6. Chỉ chuyển phase sang `VERIFIED` khi có đủ artifact và evidence theo Definition of Done.
+3. Đọc [PRD.md](PRD.md), [PROVIDER_COMPARISON.md](PROVIDER_COMPARISON.md), [PRIVACY_INVENTORY.md](PRIVACY_INVENTORY.md) và [ACCEPTANCE_METRICS.md](ACCEPTANCE_METRICS.md) để hiểu product contract Phase 0.
+4. Với Stage 1, đọc [ARCHITECTURE.md](ARCHITECTURE.md), [DIRECTUS_BASELINE.md](DIRECTUS_BASELINE.md), [DATA_FLOW.md](DATA_FLOW.md), [NFR_SLO.md](NFR_SLO.md), [THREAT_MODEL.md](THREAT_MODEL.md), [COST_ENVELOPE.md](COST_ENVELOPE.md), [PROVIDER_BAKEOFF.md](PROVIDER_BAKEOFF.md), [WEATHER_BAKEOFF_REPORT.md](WEATHER_BAKEOFF_REPORT.md), [MAP_BAKEOFF_REPORT.md](MAP_BAKEOFF_REPORT.md), [VIETNAM_PROVIDER_FIXTURE_REPORT.md](VIETNAM_PROVIDER_FIXTURE_REPORT.md), [PAYMENT_CAPABILITY_REPORT.md](PAYMENT_CAPABILITY_REPORT.md) và [PHASE_1_EVIDENCE.md](PHASE_1_EVIDENCE.md).
+5. Kiểm tra [STATUS.md](STATUS.md) để biết phase nào đang được phép triển khai.
+6. Trước mỗi phase, trả lời toàn bộ câu hỏi trong mục **Decision Gate** của phase đó.
+7. Ghi phương án đã chốt vào [DECISIONS.md](DECISIONS.md) trước khi code.
+8. Chỉ chuyển phase sang `VERIFIED` khi có đủ artifact và evidence theo Definition of Done.
 
 ## Quy tắc bắt buộc
 
@@ -23,9 +25,9 @@
 
 | Phase | Nội dung | Trạng thái hiện tại |
 |---|---|---|
-| 0 | [Discovery & Product Contract](phase-00-discovery.md) | APPROVED |
-| 1 | [Architecture & Non-Functional Requirements](phase-01-architecture.md) | BLOCKED |
-| 2 | [Directus Foundation & Environments](phase-02-directus-foundation.md) | BLOCKED |
+| 0 | [Discovery & Product Contract](phase-00-discovery.md) | VERIFIED |
+| 1 | [Architecture & Non-Functional Requirements](phase-01-architecture.md) | VERIFIED |
+| 2 | [Directus Foundation & Environments](phase-02-directus-foundation.md) | IN_PROGRESS — LOCAL_VERIFIED / REMOTE_CI_PENDING |
 | 3 | [Identity, JWT, RBAC & Security](phase-03-security-identity.md) | BLOCKED |
 | 4 | [Data Model, Governance & Admin Panel](phase-04-data-model-admin.md) | BLOCKED |
 | 5 | [Weather Provider Integration](phase-05-weather-integration.md) | BLOCKED |

@@ -7,9 +7,9 @@
 | Product | Intelligent Weather-Aware Travel Assistant for Vietnam |
 | Version | 1.0 |
 | Date | 2026-07-29 |
-| Status | READY_FOR_PRODUCT_OWNER_APPROVAL |
+| Status | APPROVED — `PRODUCT-011` |
 | Product Owner | Project owner — solo full-time developer |
-| Related decisions | `PRODUCT-001..010`, `ARCH-001..003`, `DATA-001..003`, `SEC-001`, `OPS-001..004` |
+| Related decisions | `PRODUCT-001..011`, `ARCH-001..003`, `DATA-001..003`, `SEC-001`, `OPS-001..004` |
 | Target MVP | 2026-10-29 |
 
 ## 2. Product statement
@@ -91,7 +91,7 @@ Sản phẩm không phải dịch vụ khí tượng có thẩm quyền, không 
 | Landing, pricing, legal, login/register | Yes | Yes | Yes | Yes |
 | Product map/current weather | No | Yes | Yes | By role |
 | Location search | No | 10/day | 200/day | Configurable |
-| Forecast | No | 7 days | Provider horizon subject to confidence policy | Manage content/config |
+| Forecast | No | Backend-published Free horizon, capped by provider coverage; currently 3 days | Full provider-approved horizon subject to confidence policy | Manage content/config |
 | Route evaluations | No | 3/day | 30/day | Operational access only |
 | Route alternatives shown | No | 1 | Up to 3 | N/A |
 | Saved locations | No | 3 | 50 | Moderation/admin only |
@@ -115,8 +115,8 @@ Quota reset: 00:00 `Asia/Ho_Chi_Minh`; timestamps stored UTC. Limits are Directu
 
 ### 7.2. Application API boundary
 
-- `FR-API-001`: Frontend only calls versioned Application API such as `/api/v1`.
-- `FR-API-002`: Frontend never calls generic Directus collections/GraphQL, database, worker, weather/routing/payment/AI provider directly.
+- `FR-API-001`: Frontend calls versioned Application API such as `/api/v1`; `ARCH-012` permits only Geoapify tile/style loading directly for MapLibre rendering.
+- `FR-API-002`: Frontend never calls generic Directus collections/GraphQL, database, worker, geocoding/routing/weather/payment/AI provider directly. The tile/style exception cannot execute business operations.
 - `FR-API-003`: API responses use public DTOs, structured error codes, request correlation IDs and documented schemas.
 - `FR-API-004`: Provider payload, internal collection/field names, secrets and stack traces never appear in public responses.
 
@@ -134,7 +134,7 @@ Quota reset: 00:00 `Asia/Ho_Chi_Minh`; timestamps stored UTC. Limits are Directu
 - `FR-FCST-001`: Forecast shows hourly/daily values within the entitlement and provider contract.
 - `FR-FCST-002`: Charts display units, timezone, source and currently viewed `valid_at`.
 - `FR-FCST-003`: Pro may use future timeline and advanced overlays when provider data supports the selected time.
-- `FR-FCST-004`: Long-range provider output beyond the approved operational horizon is labeled outlook/low-confidence and cannot silently drive travel-safety recommendations.
+- `FR-FCST-004`: Theo `DATA-004`, route/risk dùng operational horizon tối đa 72 giờ; ngày 4–7 là outlook/low-confidence và không được silently drive travel-safety recommendations.
 - `FR-FCST-005`: Animation has play/pause, layer toggle, reduced-motion behavior and static fallback.
 
 ### 7.5. Risk engine
@@ -219,11 +219,11 @@ Detailed dates and exit criteria are in [DELIVERY_ROADMAP_3_MONTHS.md](DELIVERY_
 
 ## 11. Dependencies and unresolved decisions
 
-- Final weather/map/routing/geocoding provider is selected in Phase 1 after a Vietnam bake-off described in [PROVIDER_COMPARISON.md](PROVIDER_COMPARISON.md).
+- Geoapify Free is selected for map/geocoding/routing under `ARCH-012` with full live fixture evidence. WeatherAPI is selected as a capability-bounded point-weather baseline under `ARCH-013`; current account output is current + 3 days, and day 4–7 stays disabled until real capability exists.
 - Exact Pro monthly price and currency display are selected in Phase 10.
 - Stripe requires an eligible merchant entity; otherwise it remains disabled without changing the adapter contract.
 - VNPay tokenized unattended renewal requires written merchant confirmation.
-- Risk thresholds and operational forecast horizon are selected in Phase 6 with cited sources.
+- Risk thresholds được chọn ở Phase 6 với nguồn dẫn; operational forecast horizon đã được chốt ở Phase 1 theo `DATA-004` và phải review lại bằng provider evidence.
 - VPS inventory is deferred to Phase 13.
 
 ## 12. Product acceptance

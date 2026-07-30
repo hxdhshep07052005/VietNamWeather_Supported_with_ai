@@ -1,0 +1,13 @@
+title = "Vietnam Weather repository secret scan"
+
+[extend]
+useDefault = true
+
+[[allowlists]]
+description = "Git-ignored local secret files are outside repository evidence"
+paths = [
+  '''(^|/)\.env(\..*)?\.local$''',
+  '''(^|/)secrets/decrypted/''',
+  '''(^|/)node_modules/''',
+  '''(^|/)artifacts/phase2/local/'''
+]
