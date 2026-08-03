@@ -337,16 +337,19 @@ try {
     foreach ($entry in $roles) { Upsert-Policy $entry }
     foreach ($entry in $roles) { Upsert-Role $entry }
     foreach ($entry in $roles) { Upsert-Access $entry }
-    $managedPolicyIds = @($roles | ForEach-Object { [string]$_.policy.id })
     $expectedPermissionIdentities = @{}
+    $managedPermissionScopes = @{}
     foreach ($entry in $permissions) {
         $role = @($roles | Where-Object { [string]$_.key -eq [string]$entry.roleKey })
         $identity = "$([string]$role[0].policy.id)|$([string]$entry.collection)|$([string]$entry.action)"
         $expectedPermissionIdentities[$identity] = $true
+        $scope = "$([string]$entry.collection)|$([string]$entry.action)"
+        $managedPermissionScopes[$scope] = $true
     }
     foreach ($current in $script:existingPermissions) {
         $currentPolicyId = Get-PermissionPolicyId $current
-        if ($managedPolicyIds -notcontains $currentPolicyId) { continue }
+        $scope = "$([string]$current.collection)|$([string]$current.action)"
+        if (-not $policyIds.ContainsKey($currentPolicyId) -or -not $managedPermissionScopes.ContainsKey($scope)) { continue }
         $identity = "$currentPolicyId|$([string]$current.collection)|$([string]$current.action)"
         if (-not $expectedPermissionIdentities.ContainsKey($identity)) {
             if ($Apply) { Invoke-Api -Method Delete -Uri "$baseUrl/permissions/$($current.id)" -Headers $headers | Out-Null }

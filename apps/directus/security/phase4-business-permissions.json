@@ -1,0 +1,1074 @@
+{
+  "manifestVersion": 1,
+  "directusVersion": "12.1.1",
+  "key": "phase4-business-permissions",
+  "version": "2026.08.04.2",
+  "description": "Phase 4 business collection permissions mapped from the approved logical authorization contract. Directus browser access remains forbidden; Application API remains the public facade.",
+  "provenance": [
+    "SEC-008",
+    "PRODUCT-004",
+    "DATA-003",
+    "DATA-005",
+    "DATA-006",
+    "ARCH-009"
+  ],
+  "managedCollections": [
+    "supported_locales",
+    "reference_sources",
+    "administrative_versions",
+    "administrative_units",
+    "locations",
+    "location_aliases",
+    "location_provider_mappings",
+    "weather_providers",
+    "provider_runs",
+    "weather_observations",
+    "weather_forecasts",
+    "risk_rule_sets",
+    "risk_rules",
+    "risk_assessments",
+    "risk_assessment_evidence",
+    "risk_advisories",
+    "route_requests",
+    "route_options",
+    "route_samples",
+    "route_assessments",
+    "content_pages",
+    "translations",
+    "app_settings",
+    "feature_flags",
+    "retention_policies",
+    "product_plans",
+    "plan_prices",
+    "product_features",
+    "plan_entitlements",
+    "usage_policies",
+    "usage_events",
+    "usage_counters",
+    "billing_customers",
+    "subscriptions",
+    "payment_events",
+    "refund_references",
+    "entitlement_overrides",
+    "user_favorites",
+    "saved_routes",
+    "search_history"
+  ],
+  "permissions": [
+    {
+      "key": "platform_admin_read_catalog",
+      "roleKey": "platform_admin",
+      "collection": "reference_sources",
+      "action": "read",
+      "fields": ["id", "external_key", "name", "publisher", "source_url", "publication_version", "publication_date", "license_name", "license_url", "checksum_sha256", "status", "approved_by", "approved_at", "notes", "date_created", "date_updated"]
+    },
+    {
+      "key": "platform_admin_manage_catalog",
+      "roleKey": "platform_admin",
+      "collection": "reference_sources",
+      "action": "create",
+      "fields": ["external_key", "name", "publisher", "source_url", "publication_version", "publication_date", "license_name", "license_url", "checksum_sha256", "notes", "status"]
+    },
+    {
+      "key": "platform_admin_update_catalog",
+      "roleKey": "platform_admin",
+      "collection": "reference_sources",
+      "action": "update",
+      "fields": ["name", "publisher", "source_url", "publication_version", "publication_date", "license_name", "license_url", "checksum_sha256", "notes", "status", "approved_by", "approved_at"]
+    },
+    {
+      "key": "platform_admin_read_admin_versions",
+      "roleKey": "platform_admin",
+      "collection": "administrative_versions",
+      "action": "read"
+    },
+    {
+      "key": "platform_admin_manage_admin_versions",
+      "roleKey": "platform_admin",
+      "collection": "administrative_versions",
+      "action": "create",
+      "fields": ["external_key", "reference_source_id", "version_label", "effective_from", "effective_to", "checksum_sha256", "status", "approved_by", "approved_at"]
+    },
+    {
+      "key": "platform_admin_update_admin_versions",
+      "roleKey": "platform_admin",
+      "collection": "administrative_versions",
+      "action": "update",
+      "fields": ["version_label", "effective_from", "effective_to", "checksum_sha256", "status", "approved_by", "approved_at"]
+    },
+    {
+      "key": "platform_admin_read_admin_units",
+      "roleKey": "platform_admin",
+      "collection": "administrative_units",
+      "action": "read"
+    },
+    {
+      "key": "platform_admin_manage_admin_units",
+      "roleKey": "platform_admin",
+      "collection": "administrative_units",
+      "action": "create",
+      "fields": ["administrative_version_id", "parent_id", "external_key", "official_code", "country_code", "unit_type", "canonical_name", "ascii_name", "centroid", "boundary", "valid_from", "valid_to", "status", "sort"]
+    },
+    {
+      "key": "platform_admin_update_admin_units",
+      "roleKey": "platform_admin",
+      "collection": "administrative_units",
+      "action": "update",
+      "fields": ["parent_id", "official_code", "country_code", "unit_type", "canonical_name", "ascii_name", "centroid", "boundary", "valid_from", "valid_to", "status", "sort"]
+    },
+    {
+      "key": "platform_admin_read_locations",
+      "roleKey": "platform_admin",
+      "collection": "locations",
+      "action": "read"
+    },
+    {
+      "key": "platform_admin_read_aliases",
+      "roleKey": "platform_admin",
+      "collection": "location_aliases",
+      "action": "read"
+    },
+    {
+      "key": "platform_admin_read_mappings",
+      "roleKey": "platform_admin",
+      "collection": "location_provider_mappings",
+      "action": "read"
+    },
+    {
+      "key": "platform_admin_manage_locations",
+      "roleKey": "platform_admin",
+      "collection": "locations",
+      "action": "create",
+      "fields": ["external_key", "administrative_unit_id", "reference_source_id", "location_type", "canonical_name", "coordinates", "timezone", "elevation_meters", "status"]
+    },
+    {
+      "key": "platform_admin_update_locations",
+      "roleKey": "platform_admin",
+      "collection": "locations",
+      "action": "update",
+      "fields": ["administrative_unit_id", "reference_source_id", "location_type", "canonical_name", "coordinates", "timezone", "elevation_meters", "status", "submitted_by", "submitted_at", "approved_by", "approved_at", "published_by", "published_at"]
+    },
+    {
+      "key": "platform_admin_read_weather_providers",
+      "roleKey": "platform_admin",
+      "collection": "weather_providers",
+      "action": "read",
+      "fields": ["id", "external_key", "display_name", "base_url", "credential_reference", "terms_url", "attribution_text", "capabilities", "rate_limit_policy", "last_verified_at", "status", "date_created", "date_updated"]
+    },
+    {
+      "key": "platform_admin_create_weather_providers",
+      "roleKey": "platform_admin",
+      "collection": "weather_providers",
+      "action": "create",
+      "fields": ["external_key", "display_name", "base_url", "credential_reference", "terms_url", "attribution_text", "capabilities", "rate_limit_policy", "last_verified_at", "status"]
+    },
+    {
+      "key": "platform_admin_update_weather_providers",
+      "roleKey": "platform_admin",
+      "collection": "weather_providers",
+      "action": "update",
+      "fields": ["display_name", "base_url", "credential_reference", "terms_url", "attribution_text", "capabilities", "rate_limit_policy", "last_verified_at", "status"]
+    },
+    {
+      "key": "platform_admin_read_failed_runs_metric",
+      "roleKey": "platform_admin",
+      "collection": "provider_runs",
+      "action": "read",
+      "fields": ["id", "status"]
+    },
+    {
+      "key": "platform_admin_read_stale_forecasts_metric",
+      "roleKey": "platform_admin",
+      "collection": "weather_forecasts",
+      "action": "read",
+      "fields": ["id", "status"]
+    },
+    {
+      "key": "platform_admin_read_rule_review_metric",
+      "roleKey": "platform_admin",
+      "collection": "risk_rule_sets",
+      "action": "read",
+      "fields": ["id", "status"]
+    },
+    {
+      "key": "platform_admin_read_advisory_publish_metric",
+      "roleKey": "platform_admin",
+      "collection": "risk_advisories",
+      "action": "read",
+      "fields": ["id", "status"]
+    },
+    {
+      "key": "platform_admin_manage_aliases",
+      "roleKey": "platform_admin",
+      "collection": "location_aliases",
+      "action": "create",
+      "fields": ["location_id", "locale_id", "reference_source_id", "alias", "normalized_alias", "alias_type"]
+    },
+    {
+      "key": "platform_admin_update_aliases",
+      "roleKey": "platform_admin",
+      "collection": "location_aliases",
+      "action": "update",
+      "fields": ["locale_id", "reference_source_id", "alias", "normalized_alias", "alias_type"]
+    },
+    {
+      "key": "platform_admin_delete_aliases",
+      "roleKey": "platform_admin",
+      "collection": "location_aliases",
+      "action": "delete"
+    },
+    {
+      "key": "platform_admin_manage_mappings",
+      "roleKey": "platform_admin",
+      "collection": "location_provider_mappings",
+      "action": "create",
+      "fields": ["location_id", "reference_source_id", "provider_domain", "provider_key", "provider_location_id", "valid_from", "valid_to", "metadata"]
+    },
+    {
+      "key": "platform_admin_update_mappings",
+      "roleKey": "platform_admin",
+      "collection": "location_provider_mappings",
+      "action": "update",
+      "fields": ["reference_source_id", "provider_domain", "provider_key", "provider_location_id", "valid_from", "valid_to", "metadata"]
+    },
+    {
+      "key": "platform_admin_delete_mappings",
+      "roleKey": "platform_admin",
+      "collection": "location_provider_mappings",
+      "action": "delete"
+    },
+    {
+      "key": "platform_admin_read_app_config",
+      "roleKey": "platform_admin",
+      "collection": "app_settings",
+      "action": "read"
+    },
+    {
+      "key": "platform_admin_manage_app_config",
+      "roleKey": "platform_admin",
+      "collection": "app_settings",
+      "action": "create",
+      "fields": ["external_key", "version", "value_type", "value", "description", "reference_source_id", "status", "effective_from", "effective_to"]
+    },
+    {
+      "key": "platform_admin_update_app_config",
+      "roleKey": "platform_admin",
+      "collection": "app_settings",
+      "action": "update",
+      "fields": ["value_type", "value", "description", "reference_source_id", "status", "effective_from", "effective_to", "submitted_by", "submitted_at", "approved_by", "approved_at", "published_by", "published_at"]
+    },
+    {
+      "key": "platform_admin_read_feature_flags",
+      "roleKey": "platform_admin",
+      "collection": "feature_flags",
+      "action": "read"
+    },
+    {
+      "key": "platform_admin_manage_feature_flags",
+      "roleKey": "platform_admin",
+      "collection": "feature_flags",
+      "action": "create",
+      "fields": ["external_key", "version", "enabled", "rollout_percentage", "targeting_rules", "description", "status", "effective_from", "effective_to"]
+    },
+    {
+      "key": "platform_admin_update_feature_flags",
+      "roleKey": "platform_admin",
+      "collection": "feature_flags",
+      "action": "update",
+      "fields": ["enabled", "rollout_percentage", "targeting_rules", "description", "status", "effective_from", "effective_to", "submitted_by", "submitted_at", "approved_by", "approved_at", "published_by", "published_at"]
+    },
+    {
+      "key": "platform_admin_read_retention_policies",
+      "roleKey": "platform_admin",
+      "collection": "retention_policies",
+      "action": "read"
+    },
+    {
+      "key": "platform_admin_create_retention_policies",
+      "roleKey": "platform_admin",
+      "collection": "retention_policies",
+      "action": "create",
+      "fields": ["external_key", "version", "data_category", "retention_value", "retention_unit", "purge_strategy", "legal_hold_supported", "description", "status", "effective_from", "effective_to", "submitted_by", "submitted_at"]
+    },
+    {
+      "key": "platform_admin_update_retention_policies",
+      "roleKey": "platform_admin",
+      "collection": "retention_policies",
+      "action": "update",
+      "fields": ["retention_value", "retention_unit", "purge_strategy", "legal_hold_supported", "description", "status", "effective_from", "effective_to", "submitted_by", "submitted_at", "approved_by", "approved_at", "published_by", "published_at"]
+    },
+    {
+      "key": "weather_operations_read_locations",
+      "roleKey": "weather_operations",
+      "collection": "locations",
+      "action": "read"
+    },
+    {
+      "key": "weather_operations_read_provider_config",
+      "roleKey": "weather_operations",
+      "collection": "weather_providers",
+      "action": "read",
+      "fields": ["id", "external_key", "display_name", "base_url", "credential_reference", "terms_url", "attribution_text", "capabilities", "rate_limit_policy", "last_verified_at", "status", "date_created", "date_updated"]
+    },
+    {
+      "key": "weather_operations_read_runs",
+      "roleKey": "weather_operations",
+      "collection": "provider_runs",
+      "action": "read"
+    },
+    {
+      "key": "weather_operations_create_runs",
+      "roleKey": "weather_operations",
+      "collection": "provider_runs",
+      "action": "create",
+      "fields": ["provider_id", "run_type", "idempotency_key", "status", "parser_version", "requested_at", "started_at", "completed_at", "records_received", "records_written", "error_code", "error_message", "sanitized_metadata"]
+    },
+    {
+      "key": "weather_operations_update_runs",
+      "roleKey": "weather_operations",
+      "collection": "provider_runs",
+      "action": "update",
+      "fields": ["status", "started_at", "completed_at", "records_received", "records_written", "error_code", "error_message", "sanitized_metadata"]
+    },
+    {
+      "key": "weather_operations_create_observations",
+      "roleKey": "weather_operations",
+      "collection": "weather_observations",
+      "action": "create"
+    },
+    {
+      "key": "weather_operations_read_observations",
+      "roleKey": "weather_operations",
+      "collection": "weather_observations",
+      "action": "read"
+    },
+    {
+      "key": "weather_operations_create_forecasts",
+      "roleKey": "weather_operations",
+      "collection": "weather_forecasts",
+      "action": "create"
+    },
+    {
+      "key": "weather_operations_read_forecasts",
+      "roleKey": "weather_operations",
+      "collection": "weather_forecasts",
+      "action": "read"
+    },
+    {
+      "key": "weather_operations_update_observations",
+      "roleKey": "weather_operations",
+      "collection": "weather_observations",
+      "action": "update",
+      "fields": ["status"]
+    },
+    {
+      "key": "weather_operations_update_forecasts",
+      "roleKey": "weather_operations",
+      "collection": "weather_forecasts",
+      "action": "update",
+      "fields": ["status"]
+    },
+    {
+      "key": "risk_analyst_read_rules",
+      "roleKey": "risk_analyst",
+      "collection": "risk_rule_sets",
+      "action": "read"
+    },
+    {
+      "key": "risk_analyst_read_references",
+      "roleKey": "risk_analyst",
+      "collection": "reference_sources",
+      "action": "read"
+    },
+    {
+      "key": "risk_analyst_read_admin_units",
+      "roleKey": "risk_analyst",
+      "collection": "administrative_units",
+      "action": "read",
+      "permissions": { "status": { "_eq": "active" } }
+    },
+    {
+      "key": "risk_analyst_read_locations",
+      "roleKey": "risk_analyst",
+      "collection": "locations",
+      "action": "read",
+      "permissions": { "status": { "_in": ["approved", "published"] } }
+    },
+    {
+      "key": "risk_analyst_read_weather_observations",
+      "roleKey": "risk_analyst",
+      "collection": "weather_observations",
+      "action": "read"
+    },
+    {
+      "key": "risk_analyst_read_weather_forecasts",
+      "roleKey": "risk_analyst",
+      "collection": "weather_forecasts",
+      "action": "read"
+    },
+    {
+      "key": "risk_analyst_create_rule_sets",
+      "roleKey": "risk_analyst",
+      "collection": "risk_rule_sets",
+      "action": "create",
+      "fields": ["external_key", "version", "name", "description", "reference_source_id", "status", "effective_from", "effective_to", "submitted_by", "submitted_at"]
+    },
+    {
+      "key": "risk_analyst_update_own_draft_rule_sets",
+      "roleKey": "risk_analyst",
+      "collection": "risk_rule_sets",
+      "action": "update",
+      "permissions": { "user_created": { "_eq": "$CURRENT_USER" }, "status": { "_eq": "draft" } },
+      "validation": { "status": { "_in": ["draft", "review"] } },
+      "fields": ["name", "description", "reference_source_id", "status", "effective_from", "effective_to", "submitted_by", "submitted_at"]
+    },
+    {
+      "key": "risk_analyst_read_rules_detail",
+      "roleKey": "risk_analyst",
+      "collection": "risk_rules",
+      "action": "read"
+    },
+    {
+      "key": "risk_analyst_create_rules",
+      "roleKey": "risk_analyst",
+      "collection": "risk_rules",
+      "action": "create",
+      "fields": ["rule_set_id", "external_key", "sort", "enabled", "input_key", "operator", "threshold_value", "threshold_upper_value", "threshold_unit", "severity", "weight", "condition", "explanation_key", "source_reference", "notes"]
+    },
+    {
+      "key": "risk_analyst_update_rules",
+      "roleKey": "risk_analyst",
+      "collection": "risk_rules",
+      "action": "update",
+      "permissions": { "rule_set_id": { "status": { "_eq": "draft" }, "user_created": { "_eq": "$CURRENT_USER" } } },
+      "fields": ["external_key", "sort", "enabled", "input_key", "operator", "threshold_value", "threshold_upper_value", "threshold_unit", "severity", "weight", "condition", "explanation_key", "source_reference", "notes"]
+    },
+    {
+      "key": "risk_analyst_delete_rules",
+      "roleKey": "risk_analyst",
+      "collection": "risk_rules",
+      "action": "delete",
+      "permissions": { "rule_set_id": { "status": { "_eq": "draft" }, "user_created": { "_eq": "$CURRENT_USER" } } }
+    },
+    {
+      "key": "risk_analyst_create_advisories",
+      "roleKey": "risk_analyst",
+      "collection": "risk_advisories",
+      "action": "create",
+      "fields": ["external_key", "version", "administrative_unit_id", "location_id", "rule_set_id", "reference_source_id", "title_translation_key", "body_translation_key", "official_url", "status", "effective_from", "effective_to", "submitted_by", "submitted_at"]
+    },
+    {
+      "key": "risk_analyst_read_advisories",
+      "roleKey": "risk_analyst",
+      "collection": "risk_advisories",
+      "action": "read"
+    },
+    {
+      "key": "risk_analyst_update_own_draft_advisories",
+      "roleKey": "risk_analyst",
+      "collection": "risk_advisories",
+      "action": "update",
+      "permissions": { "user_created": { "_eq": "$CURRENT_USER" }, "status": { "_eq": "draft" } },
+      "validation": { "status": { "_in": ["draft", "review"] } },
+      "fields": ["administrative_unit_id", "location_id", "rule_set_id", "reference_source_id", "title_translation_key", "body_translation_key", "official_url", "status", "effective_from", "effective_to", "submitted_by", "submitted_at"]
+    },
+    {
+      "key": "risk_analyst_read_assessments",
+      "roleKey": "risk_analyst",
+      "collection": "risk_assessments",
+      "action": "read"
+    },
+    {
+      "key": "risk_analyst_read_evidence",
+      "roleKey": "risk_analyst",
+      "collection": "risk_assessment_evidence",
+      "action": "read"
+    },
+    {
+      "key": "risk_approver_read_rules",
+      "roleKey": "risk_approver",
+      "collection": "risk_rule_sets",
+      "action": "read"
+    },
+    {
+      "key": "risk_approver_read_references",
+      "roleKey": "risk_approver",
+      "collection": "reference_sources",
+      "action": "read"
+    },
+    {
+      "key": "risk_approver_read_admin_units",
+      "roleKey": "risk_approver",
+      "collection": "administrative_units",
+      "action": "read",
+      "permissions": { "status": { "_eq": "active" } }
+    },
+    {
+      "key": "risk_approver_read_locations",
+      "roleKey": "risk_approver",
+      "collection": "locations",
+      "action": "read",
+      "permissions": { "status": { "_in": ["approved", "published"] } }
+    },
+    {
+      "key": "risk_approver_update_rule_sets",
+      "roleKey": "risk_approver",
+      "collection": "risk_rule_sets",
+      "action": "update",
+      "permissions": { "status": { "_in": ["review", "approved"] }, "user_created": { "_neq": "$CURRENT_USER" } },
+      "validation": { "status": { "_in": ["approved", "published", "retired"] } },
+      "fields": ["status", "approved_by", "approved_at", "published_by", "published_at"]
+    },
+    {
+      "key": "risk_approver_read_rule_detail",
+      "roleKey": "risk_approver",
+      "collection": "risk_rules",
+      "action": "read"
+    },
+    {
+      "key": "risk_approver_read_advisories",
+      "roleKey": "risk_approver",
+      "collection": "risk_advisories",
+      "action": "read"
+    },
+    {
+      "key": "risk_approver_update_advisories",
+      "roleKey": "risk_approver",
+      "collection": "risk_advisories",
+      "action": "update",
+      "permissions": { "status": { "_in": ["review", "approved"] }, "user_created": { "_neq": "$CURRENT_USER" } },
+      "validation": { "status": { "_in": ["approved", "published", "retired"] } },
+      "fields": ["status", "approved_by", "approved_at", "published_by", "published_at"]
+    },
+    {
+      "key": "risk_approver_read_assessments",
+      "roleKey": "risk_approver",
+      "collection": "risk_assessments",
+      "action": "read"
+    },
+    {
+      "key": "risk_approver_read_evidence",
+      "roleKey": "risk_approver",
+      "collection": "risk_assessment_evidence",
+      "action": "read"
+    },
+    {
+      "key": "content_editor_read_locales",
+      "roleKey": "content_editor",
+      "collection": "supported_locales",
+      "action": "read"
+    },
+    {
+      "key": "content_editor_read_pages",
+      "roleKey": "content_editor",
+      "collection": "content_pages",
+      "action": "read"
+    },
+    {
+      "key": "content_editor_create_pages",
+      "roleKey": "content_editor",
+      "collection": "content_pages",
+      "action": "create",
+      "fields": ["external_key", "version", "content_type", "slug", "status", "effective_from", "effective_to", "submitted_by", "submitted_at"]
+    },
+    {
+      "key": "content_editor_update_pages",
+      "roleKey": "content_editor",
+      "collection": "content_pages",
+      "action": "update",
+      "fields": ["content_type", "slug", "status", "effective_from", "effective_to", "submitted_by", "submitted_at", "approved_by", "approved_at", "published_by", "published_at"]
+    },
+    {
+      "key": "content_editor_read_translations",
+      "roleKey": "content_editor",
+      "collection": "translations",
+      "action": "read"
+    },
+    {
+      "key": "content_editor_create_translations",
+      "roleKey": "content_editor",
+      "collection": "translations",
+      "action": "create",
+      "fields": ["namespace", "translation_key", "locale_id", "release_version", "content_page_id", "value", "status", "effective_from", "effective_to", "submitted_by", "submitted_at"]
+    },
+    {
+      "key": "content_editor_update_translations",
+      "roleKey": "content_editor",
+      "collection": "translations",
+      "action": "update",
+      "fields": ["value", "status", "effective_from", "effective_to", "submitted_by", "submitted_at", "approved_by", "approved_at", "published_by", "published_at"]
+    },
+    {
+      "key": "product_admin_read_plans",
+      "roleKey": "product_billing_admin",
+      "collection": "product_plans",
+      "action": "read"
+    },
+    {
+      "key": "product_admin_manage_plans",
+      "roleKey": "product_billing_admin",
+      "collection": "product_plans",
+      "action": "create",
+      "fields": ["external_key", "version", "name_translation_key", "description_translation_key", "billing_interval", "sort", "status", "effective_from", "effective_to", "submitted_by", "submitted_at"]
+    },
+    {
+      "key": "product_admin_update_plans",
+      "roleKey": "product_billing_admin",
+      "collection": "product_plans",
+      "action": "update",
+      "fields": ["name_translation_key", "description_translation_key", "billing_interval", "sort", "status", "effective_from", "effective_to", "submitted_by", "submitted_at", "approved_by", "approved_at", "published_by", "published_at"]
+    },
+    {
+      "key": "product_admin_manage_prices",
+      "roleKey": "product_billing_admin",
+      "collection": "plan_prices",
+      "action": "create",
+      "fields": ["external_key", "version", "plan_id", "billing_interval", "currency", "amount_minor", "provider_key", "provider_price_reference", "status", "effective_from", "effective_to", "submitted_by", "submitted_at"]
+    },
+    {
+      "key": "product_admin_read_prices",
+      "roleKey": "product_billing_admin",
+      "collection": "plan_prices",
+      "action": "read"
+    },
+    {
+      "key": "product_admin_update_prices",
+      "roleKey": "product_billing_admin",
+      "collection": "plan_prices",
+      "action": "update",
+      "fields": ["billing_interval", "currency", "amount_minor", "provider_key", "provider_price_reference", "status", "effective_from", "effective_to", "submitted_by", "submitted_at", "approved_by", "approved_at", "published_by", "published_at"]
+    },
+    {
+      "key": "product_admin_read_features",
+      "roleKey": "product_billing_admin",
+      "collection": "product_features",
+      "action": "read"
+    },
+    {
+      "key": "product_admin_manage_features",
+      "roleKey": "product_billing_admin",
+      "collection": "product_features",
+      "action": "create",
+      "fields": ["external_key", "value_type", "unit", "description_translation_key", "status"]
+    },
+    {
+      "key": "product_admin_update_features",
+      "roleKey": "product_billing_admin",
+      "collection": "product_features",
+      "action": "update",
+      "fields": ["value_type", "unit", "description_translation_key", "status"]
+    },
+    {
+      "key": "product_admin_manage_entitlements",
+      "roleKey": "product_billing_admin",
+      "collection": "plan_entitlements",
+      "action": "create",
+      "fields": ["external_key", "version", "plan_id", "feature_id", "value", "status", "effective_from", "effective_to", "submitted_by", "submitted_at"]
+    },
+    {
+      "key": "product_admin_read_entitlements",
+      "roleKey": "product_billing_admin",
+      "collection": "plan_entitlements",
+      "action": "read"
+    },
+    {
+      "key": "product_admin_update_entitlements",
+      "roleKey": "product_billing_admin",
+      "collection": "plan_entitlements",
+      "action": "update",
+      "fields": ["value", "status", "effective_from", "effective_to", "submitted_by", "submitted_at", "approved_by", "approved_at", "published_by", "published_at"]
+    },
+    {
+      "key": "product_admin_manage_usage_policies",
+      "roleKey": "product_billing_admin",
+      "collection": "usage_policies",
+      "action": "create",
+      "fields": ["external_key", "version", "plan_id", "feature_id", "limit_value", "period_unit", "period_timezone", "reset_time", "status", "effective_from", "effective_to", "submitted_by", "submitted_at"]
+    },
+    {
+      "key": "product_admin_read_usage_policies",
+      "roleKey": "product_billing_admin",
+      "collection": "usage_policies",
+      "action": "read"
+    },
+    {
+      "key": "product_admin_update_usage_policies",
+      "roleKey": "product_billing_admin",
+      "collection": "usage_policies",
+      "action": "update",
+      "fields": ["limit_value", "period_unit", "period_timezone", "reset_time", "status", "effective_from", "effective_to", "submitted_by", "submitted_at", "approved_by", "approved_at", "published_by", "published_at"]
+    },
+    {
+      "key": "product_admin_read_billing_projection",
+      "roleKey": "product_billing_admin",
+      "collection": "subscriptions",
+      "action": "read"
+    },
+    {
+      "key": "product_admin_read_billing_customers",
+      "roleKey": "product_billing_admin",
+      "collection": "billing_customers",
+      "action": "read"
+    },
+    {
+      "key": "product_admin_read_refunds",
+      "roleKey": "product_billing_admin",
+      "collection": "refund_references",
+      "action": "read"
+    },
+    {
+      "key": "product_admin_read_payment_reference",
+      "roleKey": "product_billing_admin",
+      "collection": "payment_events",
+      "action": "read",
+      "fields": ["id", "provider_key", "provider_event_id", "event_type", "status", "occurred_at", "received_at", "processed_at", "billing_customer_id", "subscription_id", "amount_minor", "currency", "payload_checksum_sha256", "sanitized_reference", "error_code", "date_created", "date_updated"]
+    },
+    {
+      "key": "product_admin_manage_overrides",
+      "roleKey": "product_billing_admin",
+      "collection": "entitlement_overrides",
+      "action": "create",
+      "fields": ["user_id", "feature_id", "value", "reason", "status", "effective_from", "expires_at", "approved_by"]
+    },
+    {
+      "key": "product_admin_update_overrides",
+      "roleKey": "product_billing_admin",
+      "collection": "entitlement_overrides",
+      "action": "update",
+      "fields": ["value", "reason", "status", "effective_from", "expires_at", "revoked_by", "revoked_at"]
+    },
+    {
+      "key": "support_read_locations",
+      "roleKey": "support_auditor",
+      "collection": "locations",
+      "action": "read",
+      "permissions": { "status": { "_eq": "published" } },
+      "fields": ["id", "external_key", "administrative_unit_id", "location_type", "canonical_name", "timezone", "status", "date_created", "date_updated"]
+    },
+    {
+      "key": "support_read_runs",
+      "roleKey": "support_auditor",
+      "collection": "provider_runs",
+      "action": "read",
+      "fields": ["id", "provider_id", "run_type", "status", "parser_version", "requested_at", "started_at", "completed_at", "records_received", "records_written", "error_code", "date_created", "date_updated"]
+    },
+    {
+      "key": "support_read_risk",
+      "roleKey": "support_auditor",
+      "collection": "risk_assessments",
+      "action": "read",
+      "fields": ["id", "rule_set_id", "location_id", "assessed_at", "horizon_end", "level", "score", "confidence_percent", "explanation_code", "status", "date_created"]
+    },
+    {
+      "key": "support_read_routes",
+      "roleKey": "support_auditor",
+      "collection": "route_requests",
+      "action": "read",
+      "fields": ["id", "owner_id", "idempotency_key", "provider_key", "provider_request_reference", "departure_at", "travel_mode", "status", "history_expires_at", "error_code", "date_created", "date_updated"]
+    },
+    {
+      "key": "support_read_billing",
+      "roleKey": "support_auditor",
+      "collection": "payment_events",
+      "action": "read",
+      "fields": ["id", "provider_key", "provider_event_id", "event_type", "status", "occurred_at", "received_at", "processed_at", "billing_customer_id", "subscription_id", "amount_minor", "currency", "sanitized_reference", "error_code", "date_created"]
+    },
+    {
+      "key": "traveler_read_published_locations",
+      "roleKey": "registered_traveler",
+      "collection": "locations",
+      "action": "read",
+      "permissions": { "status": { "_eq": "published" } },
+      "fields": ["id", "external_key", "administrative_unit_id", "location_type", "canonical_name", "coordinates", "timezone", "elevation_meters", "status"]
+    },
+    {
+      "key": "traveler_read_published_content",
+      "roleKey": "registered_traveler",
+      "collection": "content_pages",
+      "action": "read",
+      "permissions": { "status": { "_eq": "published" } }
+    },
+    {
+      "key": "traveler_read_published_translations",
+      "roleKey": "registered_traveler",
+      "collection": "translations",
+      "action": "read",
+      "permissions": { "status": { "_eq": "published" } }
+    },
+    {
+      "key": "traveler_read_published_plans",
+      "roleKey": "registered_traveler",
+      "collection": "product_plans",
+      "action": "read",
+      "permissions": { "status": { "_eq": "published" } }
+    },
+    {
+      "key": "traveler_read_active_features",
+      "roleKey": "registered_traveler",
+      "collection": "product_features",
+      "action": "read",
+      "permissions": { "status": { "_eq": "active" } }
+    },
+    {
+      "key": "traveler_read_published_entitlements",
+      "roleKey": "registered_traveler",
+      "collection": "plan_entitlements",
+      "action": "read",
+      "permissions": { "status": { "_eq": "published" } }
+    },
+    {
+      "key": "traveler_create_favorites",
+      "roleKey": "registered_traveler",
+      "collection": "user_favorites",
+      "action": "create",
+      "permissions": { "owner_id": { "_eq": "$CURRENT_USER" } },
+      "validation": { "owner_id": { "_eq": "$CURRENT_USER" } },
+      "presets": { "owner_id": "$CURRENT_USER" },
+      "fields": ["owner_id", "location_id", "label"]
+    },
+    {
+      "key": "traveler_read_own_favorites",
+      "roleKey": "registered_traveler",
+      "collection": "user_favorites",
+      "action": "read",
+      "permissions": { "owner_id": { "_eq": "$CURRENT_USER" } }
+    },
+    {
+      "key": "traveler_update_own_favorites",
+      "roleKey": "registered_traveler",
+      "collection": "user_favorites",
+      "action": "update",
+      "permissions": { "owner_id": { "_eq": "$CURRENT_USER" } },
+      "validation": { "owner_id": { "_eq": "$CURRENT_USER" } },
+      "fields": ["label", "location_id"]
+    },
+    {
+      "key": "traveler_delete_own_favorites",
+      "roleKey": "registered_traveler",
+      "collection": "user_favorites",
+      "action": "delete",
+      "permissions": { "owner_id": { "_eq": "$CURRENT_USER" } }
+    },
+    {
+      "key": "traveler_create_saved_routes",
+      "roleKey": "registered_traveler",
+      "collection": "saved_routes",
+      "action": "create",
+      "permissions": { "owner_id": { "_eq": "$CURRENT_USER" } },
+      "validation": { "owner_id": { "_eq": "$CURRENT_USER" } },
+      "presets": { "owner_id": "$CURRENT_USER" },
+      "fields": ["owner_id", "label", "origin_location_id", "destination_location_id", "origin_coordinates", "destination_coordinates", "last_route_option_id"]
+    },
+    {
+      "key": "traveler_read_own_saved_routes",
+      "roleKey": "registered_traveler",
+      "collection": "saved_routes",
+      "action": "read",
+      "permissions": { "owner_id": { "_eq": "$CURRENT_USER" } }
+    },
+    {
+      "key": "traveler_update_own_saved_routes",
+      "roleKey": "registered_traveler",
+      "collection": "saved_routes",
+      "action": "update",
+      "permissions": { "owner_id": { "_eq": "$CURRENT_USER" } },
+      "validation": { "owner_id": { "_eq": "$CURRENT_USER" } },
+      "fields": ["label", "origin_location_id", "destination_location_id", "origin_coordinates", "destination_coordinates", "last_route_option_id"]
+    },
+    {
+      "key": "traveler_delete_own_saved_routes",
+      "roleKey": "registered_traveler",
+      "collection": "saved_routes",
+      "action": "delete",
+      "permissions": { "owner_id": { "_eq": "$CURRENT_USER" } }
+    },
+    {
+      "key": "traveler_create_search_history",
+      "roleKey": "registered_traveler",
+      "collection": "search_history",
+      "action": "create",
+      "permissions": { "owner_id": { "_eq": "$CURRENT_USER" } },
+      "validation": { "owner_id": { "_eq": "$CURRENT_USER" } },
+      "presets": { "owner_id": "$CURRENT_USER" },
+      "fields": ["owner_id", "query_text", "selected_location_id", "provider_key", "provider_reference", "occurred_at", "expires_at"]
+    },
+    {
+      "key": "traveler_read_own_search_history",
+      "roleKey": "registered_traveler",
+      "collection": "search_history",
+      "action": "read",
+      "permissions": { "owner_id": { "_eq": "$CURRENT_USER" } }
+    },
+    {
+      "key": "traveler_delete_own_search_history",
+      "roleKey": "registered_traveler",
+      "collection": "search_history",
+      "action": "delete",
+      "permissions": { "owner_id": { "_eq": "$CURRENT_USER" } }
+    },
+    {
+      "key": "weather_service_read_locations",
+      "roleKey": "weather_ingestion_service",
+      "collection": "locations",
+      "action": "read",
+      "permissions": { "status": { "_in": ["approved", "published"] } }
+    },
+    {
+      "key": "weather_service_read_provider_config",
+      "roleKey": "weather_ingestion_service",
+      "collection": "weather_providers",
+      "action": "read",
+      "fields": ["id", "external_key", "display_name", "base_url", "credential_reference", "terms_url", "attribution_text", "capabilities", "rate_limit_policy", "last_verified_at", "status"]
+    },
+    {
+      "key": "weather_service_read_mappings",
+      "roleKey": "weather_ingestion_service",
+      "collection": "location_provider_mappings",
+      "action": "read",
+      "permissions": { "provider_domain": { "_eq": "weather" } }
+    },
+    {
+      "key": "weather_service_create_runs",
+      "roleKey": "weather_ingestion_service",
+      "collection": "provider_runs",
+      "action": "create"
+    },
+    {
+      "key": "weather_service_update_runs",
+      "roleKey": "weather_ingestion_service",
+      "collection": "provider_runs",
+      "action": "update",
+      "fields": ["status", "started_at", "completed_at", "records_received", "records_written", "error_code", "error_message", "sanitized_metadata"]
+    },
+    {
+      "key": "weather_service_create_observations",
+      "roleKey": "weather_ingestion_service",
+      "collection": "weather_observations",
+      "action": "create"
+    },
+    {
+      "key": "weather_service_create_forecasts",
+      "roleKey": "weather_ingestion_service",
+      "collection": "weather_forecasts",
+      "action": "create"
+    },
+    {
+      "key": "route_service_read_locations",
+      "roleKey": "route_evaluation_service",
+      "collection": "locations",
+      "action": "read",
+      "permissions": { "status": { "_in": ["approved", "published"] } }
+    },
+    {
+      "key": "route_service_read_weather",
+      "roleKey": "route_evaluation_service",
+      "collection": "weather_forecasts",
+      "action": "read",
+      "permissions": { "status": { "_in": ["valid", "stale"] } }
+    },
+    {
+      "key": "route_service_read_effective_rules",
+      "roleKey": "route_evaluation_service",
+      "collection": "risk_rule_sets",
+      "action": "read",
+      "permissions": { "status": { "_eq": "published" } }
+    },
+    {
+      "key": "route_service_read_requests",
+      "roleKey": "route_evaluation_service",
+      "collection": "route_requests",
+      "action": "read"
+    },
+    {
+      "key": "route_service_update_requests",
+      "roleKey": "route_evaluation_service",
+      "collection": "route_requests",
+      "action": "update",
+      "fields": ["provider_request_reference", "status", "error_code"]
+    },
+    {
+      "key": "route_service_create_options",
+      "roleKey": "route_evaluation_service",
+      "collection": "route_options",
+      "action": "create"
+    },
+    {
+      "key": "route_service_create_samples",
+      "roleKey": "route_evaluation_service",
+      "collection": "route_samples",
+      "action": "create"
+    },
+    {
+      "key": "route_service_create_assessments",
+      "roleKey": "route_evaluation_service",
+      "collection": "route_assessments",
+      "action": "create"
+    },
+    {
+      "key": "payment_ingress_create_events",
+      "roleKey": "payment_webhook_ingress",
+      "collection": "payment_events",
+      "action": "create",
+      "fields": ["provider_key", "provider_event_id", "idempotency_key", "event_type", "status", "occurred_at", "billing_customer_id", "subscription_id", "amount_minor", "currency", "payload_checksum_sha256", "sanitized_reference"]
+    },
+    {
+      "key": "payment_reconciliation_read_events",
+      "roleKey": "payment_reconciliation_service",
+      "collection": "payment_events",
+      "action": "read"
+    },
+    {
+      "key": "payment_reconciliation_update_events",
+      "roleKey": "payment_reconciliation_service",
+      "collection": "payment_events",
+      "action": "update",
+      "fields": ["status", "processed_at", "error_code", "billing_customer_id", "subscription_id"]
+    },
+    {
+      "key": "payment_reconciliation_manage_customers",
+      "roleKey": "payment_reconciliation_service",
+      "collection": "billing_customers",
+      "action": "create"
+    },
+    {
+      "key": "payment_reconciliation_update_customers",
+      "roleKey": "payment_reconciliation_service",
+      "collection": "billing_customers",
+      "action": "update",
+      "fields": ["user_id", "provider_key", "provider_customer_reference", "status"]
+    },
+    {
+      "key": "payment_reconciliation_manage_subscriptions",
+      "roleKey": "payment_reconciliation_service",
+      "collection": "subscriptions",
+      "action": "create"
+    },
+    {
+      "key": "payment_reconciliation_update_subscriptions",
+      "roleKey": "payment_reconciliation_service",
+      "collection": "subscriptions",
+      "action": "update",
+      "fields": ["plan_id", "status", "billing_interval", "started_at", "current_period_start", "current_period_end", "grace_until", "cancelled_at", "ended_at", "projection_version"]
+    },
+    {
+      "key": "payment_reconciliation_create_refunds",
+      "roleKey": "payment_reconciliation_service",
+      "collection": "refund_references",
+      "action": "create"
+    },
+    {
+      "key": "payment_reconciliation_update_refunds",
+      "roleKey": "payment_reconciliation_service",
+      "collection": "refund_references",
+      "action": "update",
+      "fields": ["status", "reason_code", "completed_at"]
+    },
+    {
+      "key": "payment_reconciliation_manage_overrides",
+      "roleKey": "payment_reconciliation_service",
+      "collection": "entitlement_overrides",
+      "action": "read",
+      "fields": ["id", "user_id", "feature_id", "value", "reason", "status", "effective_from", "expires_at", "approved_by", "revoked_by", "revoked_at"]
+    }
+  ]
+}

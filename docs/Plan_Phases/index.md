@@ -9,10 +9,11 @@
 3. Đọc [PRD.md](PRD.md), [PROVIDER_COMPARISON.md](PROVIDER_COMPARISON.md), [PRIVACY_INVENTORY.md](PRIVACY_INVENTORY.md) và [ACCEPTANCE_METRICS.md](ACCEPTANCE_METRICS.md) để hiểu product contract Phase 0.
 4. Với Stage 1, đọc [ARCHITECTURE.md](ARCHITECTURE.md), [DIRECTUS_BASELINE.md](DIRECTUS_BASELINE.md), [DATA_FLOW.md](DATA_FLOW.md), [NFR_SLO.md](NFR_SLO.md), [THREAT_MODEL.md](THREAT_MODEL.md), [COST_ENVELOPE.md](COST_ENVELOPE.md), [PROVIDER_BAKEOFF.md](PROVIDER_BAKEOFF.md), [WEATHER_BAKEOFF_REPORT.md](WEATHER_BAKEOFF_REPORT.md), [MAP_BAKEOFF_REPORT.md](MAP_BAKEOFF_REPORT.md), [VIETNAM_PROVIDER_FIXTURE_REPORT.md](VIETNAM_PROVIDER_FIXTURE_REPORT.md), [PAYMENT_CAPABILITY_REPORT.md](PAYMENT_CAPABILITY_REPORT.md) và [PHASE_1_EVIDENCE.md](PHASE_1_EVIDENCE.md).
 5. Với Phase 3, đọc [PHASE_3_AUTH_SESSION_CONTRACT.md](PHASE_3_AUTH_SESSION_CONTRACT.md), [PHASE_3_ROLE_POLICY_MATRIX.md](PHASE_3_ROLE_POLICY_MATRIX.md), [PHASE_3_RUNTIME_SECURITY.md](PHASE_3_RUNTIME_SECURITY.md), [PHASE_3_SECURITY_OPERATIONS.md](PHASE_3_SECURITY_OPERATIONS.md), [DIRECTUS_ENTITLEMENT_REPORT.md](DIRECTUS_ENTITLEMENT_REPORT.md) và [PHASE_3_EVIDENCE.md](PHASE_3_EVIDENCE.md).
-6. Kiểm tra [STATUS.md](STATUS.md) để biết phase nào đang được phép triển khai.
-7. Trước mỗi phase, trả lời toàn bộ câu hỏi trong mục **Decision Gate** của phase đó.
-8. Ghi phương án đã chốt vào [DECISIONS.md](DECISIONS.md) trước khi code.
-9. Chỉ chuyển phase sang `VERIFIED` khi có đủ artifact và evidence theo Definition of Done.
+6. Với Phase 4, đọc [PHASE_4_ERD.md](PHASE_4_ERD.md), [PHASE_4_DATA_DICTIONARY.md](PHASE_4_DATA_DICTIONARY.md), [PHASE_4_PERMISSION_MATRIX.md](PHASE_4_PERMISSION_MATRIX.md), [PHASE_4_RETENTION_MATRIX.md](PHASE_4_RETENTION_MATRIX.md), [PHASE_4_ADMIN_WALKTHROUGH.md](PHASE_4_ADMIN_WALKTHROUGH.md) và [PHASE_4_EVIDENCE.md](PHASE_4_EVIDENCE.md).
+7. Kiểm tra [STATUS.md](STATUS.md) để biết phase nào đang được phép triển khai.
+8. Trước mỗi phase, trả lời toàn bộ câu hỏi trong mục **Decision Gate** của phase đó.
+9. Ghi phương án đã chốt vào [DECISIONS.md](DECISIONS.md) trước khi code.
+10. Chỉ chuyển phase sang `VERIFIED` khi có đủ artifact và evidence theo Definition of Done.
 
 ## Quy tắc bắt buộc
 
@@ -29,8 +30,8 @@
 | 0 | [Discovery & Product Contract](phase-00-discovery.md) | VERIFIED |
 | 1 | [Architecture & Non-Functional Requirements](phase-01-architecture.md) | VERIFIED |
 | 2 | [Directus Foundation & Environments](phase-02-directus-foundation.md) | VERIFIED |
-| 3 | [Identity, JWT, RBAC & Security](phase-03-security-identity.md) | IN_PROGRESS |
-| 4 | [Data Model, Governance & Admin Panel](phase-04-data-model-admin.md) | BLOCKED |
+| 3 | [Identity, JWT, RBAC & Security](phase-03-security-identity.md) | VERIFIED |
+| 4 | [Data Model, Governance & Admin Panel](phase-04-data-model-admin.md) | IN_PROGRESS (`LOCAL_IMPLEMENTATION_VERIFIED / REMOTE_CI_PENDING`) |
 | 5 | [Weather Provider Integration](phase-05-weather-integration.md) | BLOCKED |
 | 6 | [Config-Driven Weather Risk Engine](phase-06-risk-engine.md) | BLOCKED |
 | 7 | [Forecast & Trend Experience](phase-07-forecast-trends.md) | BLOCKED |

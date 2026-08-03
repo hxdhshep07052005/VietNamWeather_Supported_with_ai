@@ -1,7 +1,9 @@
 # Phase 3 Evidence — Identity, JWT, RBAC & Security
 
-**Status:** LOCAL_IMPLEMENTATION_VERIFIED / CLOSURE_APPROVAL_PENDING  
+**Status:** VERIFIED
 **Kickoff approval:** `PRODUCT-015`  
+**Closure approval:** `PRODUCT-016`
+**Remote CI:** run `30852140331`, commit `f91f549`
 **Decision baseline:** `SEC-004`, `SEC-005`, `DATA-006`, `SEC-006`, `SEC-007`, `SEC-008`, `SEC-009`, `SEC-010`, `ARCH-015`
 
 Tài liệu này chỉ ghi evidence có thể tái hiện. Checklist chưa có bằng chứng giữ nguyên `PENDING`; không dùng tuyên bố hoặc dữ liệu giả để thay test output.
@@ -25,9 +27,9 @@ Tài liệu này chỉ ghi evidence có thể tái hiện. Checklist chưa có b
 | Manifest idempotency | PASS | `apply-phase3-security.ps1 -Apply` chạy lại sau licensed apply | created=0, updated=0; role/policy/access unchanged=13/13/13; permission unchanged=7 |
 | Directus security baseline | PASS | [`validate-security-baseline.ps1`](../../tools/directus/validate-security-baseline.ps1) | `state=phase3_least_privilege roles=14 admin_policies=1 non_admin_policies=14 permissions=7 application_roles=13` |
 | Public/default-deny và self-TFA boundary tests | PASS | [`test-phase3-negative-permissions.ps1`](../../tools/directus/test-phase3-negative-permissions.ps1) | Anonymous denials=6; restricted-role denials=90; 21 staff TFA boundary checks; direct/cross-user mutation bị chặn |
-| Cross-user ownership denial tests | DEFERRED_PHASE4 | [`PHASE_3_ROLE_POLICY_MATRIX.md`](PHASE_3_ROLE_POLICY_MATRIX.md), `SEC-008` | Chưa có business collection/schema để tạo fixture hợp lệ; bắt buộc ở Phase 4 sau licensed entitlement, không dùng dữ liệu giả để đóng Phase 3 |
-| Service-account least-privilege tests | PASS_BASELINE | [`validate-phase3-security.ps1`](../../tools/directus/validate-phase3-security.ps1) | 5 service policies không Studio access, 0 permission; workload-specific allow paths chờ Phase 4 |
-| Admin/billing/risk separation tests | PASS_BASELINE | [`validate-phase3-security.ps1`](../../tools/directus/validate-phase3-security.ps1), `SEC-008` | 7 staff policy MFA=true; risk/payment roles tách; business allow paths chờ Phase 4 |
+| Cross-user ownership denial tests | PASS_PHASE4 | [`test-phase4-business-permissions.ps1`](../../tools/directus/test-phase4-business-permissions.ps1), [`PHASE_4_EVIDENCE.md`](PHASE_4_EVIDENCE.md) | Favorite/saved route positive path pass; cross-user enumerate/read/update/delete bị deny; fixture còn 0 |
+| Service-account least-privilege tests | PASS_PHASE4 | [`validate-phase4-model.ps1`](../../tools/directus/validate-phase4-model.ps1) | Workload-specific permission map đã apply; service không Studio; AI vẫn 0 permission |
+| Admin/billing/risk separation tests | PASS_PHASE4 | [`phase4-business-permissions.json`](../../apps/directus/security/phase4-business-permissions.json), [`test-phase4-data-model.ps1`](../../tools/database/test-phase4-data-model.ps1) | Risk maker-checker và payment ingress/reconciliation boundary có test thật |
 | Directus entitlement architecture | PASS | [`DIRECTUS_ENTITLEMENT_REPORT.md`](DIRECTUS_ENTITLEMENT_REPORT.md), `ARCH-015` | Licensed path approved và active; credential chỉ nằm trong protected local runtime environment |
 | Licensed Directus runtime entitlement | PASS_LOCAL | [`validate-license.ps1`](../../tools/directus/validate-license.ps1) | Open Innovation Grant `active`; production/custom permissions=true; `-RequireLicensed` pass; không in credential |
 
@@ -86,16 +88,16 @@ STAGE3_SECURITY_RUNTIME_BASELINE_OK default_deny=true least_privilege_self_tfa=t
 
 `pnpm run validate:stage3` đã pass trên trạng thái hiện tại ngày 2026-08-04. Full validator build lại API image trước live drills, yêu cầu licensed entitlement thật và chạy secret scan trên worktree/history; kết quả local này không được dùng để giả lập CI commit hoặc production deployment evidence.
 
-Các kết quả trên chứng minh licensed least-privilege authorization, auth/session runtime, registration/email verification, password recovery hardening, identity-change revoke, encryption-key rotation, Redis fail-closed, retention boundary và staff/admin MFA/recovery baseline ở local. Không còn local implementation/test gate nào trong phạm vi Phase 3 bị bỏ trống. Chưa có business collection, ownership item filter, production VPN/edge evidence hoặc positive business permission nào được coi là hoàn thành ngoài phase tương ứng.
+Các kết quả trên chứng minh licensed least-privilege authorization, auth/session runtime, registration/email verification, password recovery hardening, identity-change revoke, encryption-key rotation, Redis fail-closed, retention boundary và staff/admin MFA/recovery baseline. Remote CI run `30852140331` pass trên commit `f91f549`; Product Owner chấp thuận closure tại `PRODUCT-016`. Business permission/ownership evidence được bổ sung đúng phạm vi ở Phase 4, không hồi tố fake evidence vào Phase 3.
 
-### 5.2 Closure còn lại
+### 5.2 Closure
 
-- Product Owner phê duyệt Phase 3 closure và mở Phase 4 Decision Gate.
-- CI closure run trên commit cuối sau khi Product Owner yêu cầu commit/push. Không dùng local output để giả lập remote run.
-- Cross-user ownership test thuộc Phase 4 sau schema thật, không tạo fixture business giả trong Phase 3.
-- WireGuard/private Admin Studio và production retention scheduler execution/alert evidence thuộc Phase 13 theo `OPS-003`, `SEC-005` và `DATA-006`; các mục này không bị đánh dấu pass ở local.
+- Product Owner đã phê duyệt Phase 3 closure và mở Phase 4 tại `PRODUCT-016`.
+- CI closure run `30852140331` pass trên commit `f91f549`.
+- Cross-user ownership test đã được thực hiện đúng phạm vi ở Phase 4 sau khi có schema thật.
+- WireGuard/private Admin Studio và production retention scheduler execution/alert evidence vẫn thuộc Phase 13 theo `OPS-003`, `SEC-005` và `DATA-006`; chúng không phải blocker Phase 3.
 
-Phase 3 chỉ được chuyển `VERIFIED` khi:
+Phase 3 chuyển `VERIFIED` vì:
 
 - Tất cả deliverable trong `phase-03-security-identity.md` có artifact versioned.
 - Negative permission tests pass cho public, restricted staff/admin và service account. Cross-user ownership là acceptance gate của Phase 4 sau khi schema/entitlement thật tồn tại, không phải lý do tạo business fixture giả trong Phase 3.
@@ -104,4 +106,4 @@ Phase 3 chỉ được chuyển `VERIFIED` khi:
 - `THREAT_MODEL.md`, security checklist và incident playbook được cập nhật theo implementation thực tế.
 - Local/CI validator pass trên commit dùng làm closure evidence.
 
-Phase 4 không được chuyển `VERIFIED` nếu chưa bổ sung positive/cross-user ownership tests trên collection/schema thật theo matrix `SEC-008`.
+Phase 4 đã bổ sung positive/cross-user ownership tests trên collection/schema thật theo matrix `SEC-008`; remote CI Phase 4 vẫn là gate riêng.

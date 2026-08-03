@@ -1,7 +1,8 @@
 param(
     [string]$RuntimeEnvPath = '.env.local',
     [string]$AdminEnvPath = '.env.admin.local',
-    [string]$ManifestPath = 'apps/directus/security/phase3-default-deny.json'
+    [string]$ManifestPath = 'apps/directus/security/phase3-default-deny.json',
+    [string]$BusinessManifestPath = 'apps/directus/security/phase4-business-permissions.json'
 )
 
 $ErrorActionPreference = 'Stop'
@@ -67,6 +68,15 @@ $permissions = @($manifest.permissions)
 if ($manifest.manifestVersion -ne 2 -or $roles.Count -ne 13 -or $permissions.Count -ne 7) {
     throw 'Phase 3 security manifest contract is invalid.'
 }
+$businessManifestFile = [IO.Path]::GetFullPath((Join-Path $workspaceRoot $BusinessManifestPath))
+$businessManifest = $null
+$businessPermissions = @()
+$businessCollections = @()
+if (Test-Path -LiteralPath $businessManifestFile -PathType Leaf) {
+    $businessManifest = Get-Content -LiteralPath $businessManifestFile -Raw | ConvertFrom-Json
+    $businessPermissions = @($businessManifest.permissions)
+    $businessCollections = @($businessManifest.managedCollections | ForEach-Object { [string]$_ })
+}
 
 $baseUrl = ([string]$runtime['DIRECTUS_PUBLIC_URL']).TrimEnd('/')
 $login = Invoke-Api -Method Post -Uri "$baseUrl/auth/login" -Headers @{} -Body @{
@@ -82,6 +92,18 @@ $staffTfaPermissions = 0
 try {
     $health = Invoke-Api -Method Get -Uri "$baseUrl/server/health" -Headers $headers
     if ([string]$health.releaseId -ne [string]$manifest.directusVersion) { throw 'Directus runtime version does not match the security manifest.' }
+
+    $allPermissions = @((Invoke-Api -Method Get -Uri "$baseUrl/permissions?limit=-1" -Headers $headers).data)
+    $managedPolicyIds = @($roles | ForEach-Object { [string]$_.policy.id })
+    $actualManagedPermissions = @($allPermissions | Where-Object {
+        $policyId = if ($_.policy -is [pscustomobject]) { [string]$_.policy.id } else { [string]$_.policy }
+        $policyId -in $managedPolicyIds
+    })
+    $actualBusinessPermissions = @($actualManagedPermissions | Where-Object { [string]$_.collection -in $businessCollections })
+    $phase4Active = $actualBusinessPermissions.Count -gt 0
+    if ($phase4Active -and $actualBusinessPermissions.Count -ne $businessPermissions.Count) {
+        throw 'Phase 4 business permissions are only partially applied.'
+    }
 
     foreach ($entry in $roles) {
         $roleResponse = Invoke-Api -Method Get -Uri "$baseUrl/roles/$($entry.id)" -Headers $headers -AllowStatus @(404)
@@ -121,15 +143,19 @@ try {
             throw "Managed access link drift detected: $($entry.key)"
         }
 
-        $filter = [uri]::EscapeDataString((@{ policy = @{ _eq = [string]$entry.policy.id } } | ConvertTo-Json -Compress))
-        $permissionResponse = Invoke-Api -Method Get -Uri "$baseUrl/permissions?filter=$filter&limit=-1" -Headers $headers
-        $actualPermissions = @($permissionResponse.data)
+        $actualPermissions = @($actualManagedPermissions | Where-Object {
+            $policyId = if ($_.policy -is [pscustomobject]) { [string]$_.policy.id } else { [string]$_.policy }
+            $policyId -eq [string]$entry.policy.id
+        })
         $expectedPermissions = @($permissions | Where-Object { [string]$_.roleKey -eq [string]$entry.key })
+        $actualTfaPermissions = @($actualPermissions | Where-Object {
+            [string]$_.collection -eq 'directus_users' -and [string]$_.action -eq 'update'
+        })
         if ([string]$entry.classification -eq 'human_staff') {
-            if ($expectedPermissions.Count -ne 1 -or $actualPermissions.Count -ne 1) {
+            if ($expectedPermissions.Count -ne 1 -or $actualTfaPermissions.Count -ne 1) {
                 throw "Human staff self-TFA permission count mismatch: $($entry.key)"
             }
-            $actualPermission = $actualPermissions[0]
+            $actualPermission = $actualTfaPermissions[0]
             $fields = @(Get-PermissionFields $actualPermission.fields)
             if ([string]$actualPermission.collection -ne 'directus_users' -or [string]$actualPermission.action -ne 'update' -or
                 $fields.Count -ne 1 -or [string]$fields[0] -ne 'tfa_secret' -or $null -ne $actualPermission.presets -or
@@ -138,8 +164,27 @@ try {
             }
             $staffTfaPermissions++
         }
-        elseif ($expectedPermissions.Count -ne 0 -or $actualPermissions.Count -ne 0) {
+        elseif ($expectedPermissions.Count -ne 0 -or $actualTfaPermissions.Count -ne 0) {
             throw "Non-staff managed policy is not default-deny: $($entry.key)"
+        }
+
+        $unexpectedPermissions = @($actualPermissions | Where-Object {
+            -not ([string]$_.collection -eq 'directus_users' -and [string]$_.action -eq 'update') -and
+            [string]$_.collection -notin $businessCollections
+        })
+        if ($unexpectedPermissions.Count -ne 0) { throw "Managed role has an unowned permission: $($entry.key)" }
+        if ($phase4Active) {
+            $expectedBusinessIdentities = @($businessPermissions | Where-Object { [string]$_.roleKey -eq [string]$entry.key } | ForEach-Object {
+                "$([string]$_.collection)|$([string]$_.action)"
+            })
+            $actualBusinessIdentities = @($actualPermissions | Where-Object { [string]$_.collection -in $businessCollections } | ForEach-Object {
+                "$([string]$_.collection)|$([string]$_.action)"
+            })
+            $expectedBusinessIdentityString = (($expectedBusinessIdentities | Sort-Object) -join '|')
+            $actualBusinessIdentityString = (($actualBusinessIdentities | Sort-Object) -join '|')
+            if ($expectedBusinessIdentityString -cne $actualBusinessIdentityString) {
+                throw "Managed role business permission identity drift: $($entry.key)"
+            }
         }
     }
 
@@ -172,12 +217,14 @@ SELECT json_build_object(
     foreach ($property in @('managed_roles', 'managed_policies', 'managed_access')) {
         if ([int]$dbState.$property -ne $roles.Count) { throw "Managed security count mismatch: $property" }
     }
-    if ([int]$dbState.managed_permissions -ne $permissions.Count -or [int]$dbState.public_permissions -ne 0) { throw 'Managed permission count or public default-deny boundary is invalid.' }
+    $expectedManagedPermissionCount = $permissions.Count + $(if ($phase4Active) { $businessPermissions.Count } else { 0 })
+    if ([int]$dbState.managed_permissions -ne $expectedManagedPermissionCount -or [int]$dbState.public_permissions -ne 0) { throw 'Managed permission count or public default-deny boundary is invalid.' }
     if ([int]$dbState.admin_policies -ne 1) { throw 'Exactly one break-glass admin policy is required.' }
     if ([int]$dbState.generic_integration_roles -ne 0) { throw 'A broad Integration Service role is forbidden.' }
     if ([int]$dbState.disabled_ai_users -ne 0) { throw 'The optional AI service must remain unprovisioned in Phase 3.' }
 
-    Write-Output "DIRECTUS_ROLE_POLICY_VALIDATION_OK roles=$($roles.Count) policies=$($roles.Count) access=$($roles.Count) permissions=$($permissions.Count) staff_mfa=$staffMfa staff_self_tfa_permissions=$staffTfaPermissions public_permissions=0 admin_policies=1 ai_users=0 secrets_printed=false"
+    $securityState = if ($phase4Active) { 'phase4_business_permissions' } else { 'phase3_least_privilege' }
+    Write-Output "DIRECTUS_ROLE_POLICY_VALIDATION_OK state=$securityState roles=$($roles.Count) policies=$($roles.Count) access=$($roles.Count) managed_permissions=$expectedManagedPermissionCount staff_mfa=$staffMfa staff_self_tfa_permissions=$staffTfaPermissions public_permissions=0 admin_policies=1 ai_users=0 secrets_printed=false"
 }
 finally {
     if ($login.data.refresh_token) {

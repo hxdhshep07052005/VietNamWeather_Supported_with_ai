@@ -1,8 +1,8 @@
 # Project Status
 
 **Ngày khởi tạo plan mới:** 2026-07-25  
-**Trạng thái tổng:** PHASE_3_IN_PROGRESS
-**Phase hiện tại:** Phase 3 — Identity, JWT, RBAC & Security
+**Trạng thái tổng:** PHASE_4_IN_PROGRESS
+**Phase hiện tại:** Phase 4 — Data Model, Governance & Admin Panel
 **Cập nhật gần nhất:** 2026-08-04 — Technical Owner
 
 ## Phase board
@@ -12,8 +12,8 @@
 | 0. Discovery | VERIFIED | Product Owner approved Phase 0 contract | `PRODUCT-011`, `PRD.md`, `PROVIDER_COMPARISON.md`, `PRIVACY_INVENTORY.md`, `ACCEPTANCE_METRICS.md`, `PHASE_0_EVIDENCE.md` |
 | 1. Architecture | VERIFIED | Product Owner approved architecture/NFR/provider/security/cost baseline | [`PHASE_1_EVIDENCE.md`](PHASE_1_EVIDENCE.md), [`VIETNAM_PROVIDER_FIXTURE_REPORT.md`](VIETNAM_PROVIDER_FIXTURE_REPORT.md), `ARCH-004..013`, `SEC-002`, `OPS-005..006`, `DATA-004`, `PRODUCT-012` |
 | 2. Directus Foundation | VERIFIED | Product Owner approved closure | [`PHASE_2_EVIDENCE.md`](PHASE_2_EVIDENCE.md), run `30577216479`, `PRODUCT-014` |
-| 3. Security & Identity | IN_PROGRESS (LOCAL_IMPLEMENTATION_VERIFIED / CLOSURE_APPROVAL_PENDING) | Phase 2 VERIFIED; Decision Gate Phase 3 approved | `SEC-004..010`, `ARCH-015`, `DATA-006`, `PRODUCT-015`, [`PHASE_3_EVIDENCE.md`](PHASE_3_EVIDENCE.md) |
-| 4. Data Model & Admin | BLOCKED | Phase 3 VERIFIED | Chưa có |
+| 3. Security & Identity | VERIFIED | CI run `30852140331`, commit `f91f549`, closure `PRODUCT-016` | `SEC-004..010`, `ARCH-015`, `DATA-006`, [`PHASE_3_EVIDENCE.md`](PHASE_3_EVIDENCE.md) |
+| 4. Data Model & Admin | IN_PROGRESS (LOCAL_IMPLEMENTATION_VERIFIED / REMOTE_CI_PENDING) | Phase 3 VERIFIED; kickoff `PRODUCT-016` | `DATA-007`, [`PHASE_4_EVIDENCE.md`](PHASE_4_EVIDENCE.md), `pnpm run validate:stage4` |
 | 5. Weather Integration | BLOCKED | Phase 4 VERIFIED | Chưa có |
 | 6. Risk Engine | BLOCKED | Phase 5 VERIFIED | Chưa có |
 | 7. Forecast & Trends | BLOCKED | Phase 5 VERIFIED | Chưa có |
@@ -38,10 +38,11 @@ Mỗi lần đổi trạng thái phải ghi:
 ## Blocker hiện tại
 
 - Phase 2 không còn blocker; local và remote evidence đã pass.
-- Phase 3 không còn local implementation/test blocker: licensed Open Innovation Grant, 7 self-TFA permission tối thiểu, managed-staff/admin MFA, negative permission tests, session revoke/rotation, Redis fail-closed, retention và secret scan đều pass trong `pnpm run validate:stage3` ngày 2026-08-04.
+- Phase 3 đã `VERIFIED`: local security/runtime baseline pass, CI run `30852140331` xanh trên commit `f91f549`, Product Owner chấp thuận closure tại `PRODUCT-016`.
+- Phase 4 local implementation đã pass: 40 collections, schema drift bằng 0, seed idempotent, governance/maker-checker/immutable-event tests, 149 business permissions và traveler cross-user denial thật.
+- Không có administrative unit, location, observation, forecast hoặc payment event giả. Official Vietnam location import chờ source/version/checksum/license theo `DATA-005` và `DATA-007`.
+- Phase 4 còn remote CI run trên commit cuối trước khi chuyển `VERIFIED`. Provider retention value thuộc Phase 5; route cleanup job thuộc Phase 8/13; Admin Studio VPN và production scheduler/alert thuộc Phase 13.
 - Credential license chỉ nằm trong `.env.local` Git-ignore; Directus xác nhận `active`, production/custom permissions=true. Không có secret trong source, image, seed, log hoặc evidence.
-- Phase 3 vẫn `IN_PROGRESS` cho tới khi Product Owner phê duyệt closure và remote CI chạy trên commit cuối; local output không thay thế CI evidence.
-- Ownership/field/item và cross-user permission trên schema nghiệp vụ thật là acceptance gate Phase 4. Admin Studio WireGuard cùng production retention scheduler/alert evidence thuộc Phase 13 theo `OPS-003`; không tạo fake evidence để đóng các mục production này.
 
 ## Lưu ý
 

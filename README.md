@@ -7,13 +7,16 @@ Web platform hỗ trợ người dùng đưa ra quyết định du lịch tại 
 - Phase 0 — Discovery & Product Contract: `VERIFIED`.
 - Phase 1 — Architecture & Non-Functional Requirements: `VERIFIED`.
 - Phase 2 — Directus Foundation & Environments: `VERIFIED` (`PRODUCT-014`).
-- Phase 3 — Identity, JWT, RBAC & Security: `IN_PROGRESS` (`PRODUCT-015`).
+- Phase 3 — Identity, JWT, RBAC & Security: `VERIFIED` (`PRODUCT-016`, CI `30852140331`).
+- Phase 4 — Data Model, Governance & Admin Panel: `IN_PROGRESS` (`LOCAL_IMPLEMENTATION_VERIFIED / REMOTE_CI_PENDING`).
 - Source of truth: [docs/Plan_Phases/index.md](docs/Plan_Phases/index.md).
 - Trạng thái và blockers hiện tại: [docs/Plan_Phases/STATUS.md](docs/Plan_Phases/STATUS.md).
 - Phase 1 evidence gate: [docs/Plan_Phases/PHASE_1_EVIDENCE.md](docs/Plan_Phases/PHASE_1_EVIDENCE.md).
 - Phase 2 evidence gate: [docs/Plan_Phases/PHASE_2_EVIDENCE.md](docs/Plan_Phases/PHASE_2_EVIDENCE.md).
 - Phase 3 evidence gate: [docs/Plan_Phases/PHASE_3_EVIDENCE.md](docs/Plan_Phases/PHASE_3_EVIDENCE.md).
 - Phase 3 authorization validator: `pnpm run validate:stage3`.
+- Phase 4 evidence gate: [docs/Plan_Phases/PHASE_4_EVIDENCE.md](docs/Plan_Phases/PHASE_4_EVIDENCE.md).
+- Phase 4 data-model/admin validator: `pnpm run validate:stage4`.
 - Directus runtime entitlement gate: [docs/Plan_Phases/DIRECTUS_ENTITLEMENT_REPORT.md](docs/Plan_Phases/DIRECTUS_ENTITLEMENT_REPORT.md).
 - License inspection/gate: `pnpm run inspect:directus-license` / `pnpm run validate:directus-license`.
 
@@ -70,7 +73,17 @@ Phase 1 đã được phê duyệt bằng `PRODUCT-012`. WeatherAPI là capabili
 - Open Innovation Grant đã được Directus xác nhận `active`, bật production/custom permissions và được inject chỉ qua `.env.local` Git-ignore.
 - Admin và managed staff TOTP enrollment, missing-OTP denial, OTP login, admin recovery và session revoke đã pass; direct generic TFA mutation, role mutation và cross-user TFA mutation đều bị chặn.
 - Live tests dùng Directus/PostgreSQL/Redis thật đã pass và xóa/rollback temporary account/session/audit sau test.
-- Phase 3 đã `LOCAL_IMPLEMENTATION_VERIFIED` nhưng vẫn `IN_PROGRESS` cho tới khi Product Owner phê duyệt closure và CI chạy trên commit cuối. Ownership/cross-user permission trên business schema thuộc Phase 4; WireGuard và production retention scheduler được giữ cho Phase 13 theo local-first contract.
+- Phase 3 đã `VERIFIED`: CI run `30852140331` pass trên commit `f91f549`, closure được duyệt tại `PRODUCT-016`. WireGuard và production retention scheduler vẫn thuộc Phase 13 theo local-first contract.
+
+## Tiến độ Phase 4
+
+- PostgreSQL/PostGIS và Directus đã có 40 business collections versioned cho location/admin hierarchy, weather provenance, risk, route, content/config, product/quota, billing và user-owned data.
+- Administrative hierarchy hỗ trợ province/municipality/city và optional district/lower levels theo source version; không hardcode số tỉnh/thành và chưa import địa danh khi chưa có source/license/checksum được duyệt.
+- Governance trigger chặn invalid workflow, risk self-approval, sửa rule sau submit và thay đổi/xóa identity của usage/payment event.
+- Directus có dashboard 4 panel, 7 role presets và 149 business permissions; Stage 3 bootstrap chạy lại không xóa permission Stage 4.
+- Approved config seed chỉ chứa `vi`/`en`, Free/Pro plan, feature, entitlement và usage policy đã có decision; không seed location, weather, payment, provider hay demo user.
+- Positive/cross-user test dùng hai traveler ephemeral thật đã pass cho favorite và saved route; cleanup xác nhận còn 0 fixture.
+- `pnpm run validate:stage4` đã pass local. Phase 4 chờ remote CI trên commit cuối trước khi chuyển `VERIFIED`.
 
 ## Validation
 
@@ -101,6 +114,14 @@ pnpm run validate:stage3
 ```
 
 Validator này build lại Application API image, chạy Directus role-policy/default-deny tests, unit/security tests, live auth/session/password-recovery/email-verification/identity-revoke, encryption-key rollback, retention và MFA drills; temporary fixtures được cleanup/rollback và secret/token không được in.
+
+Chạy Phase 4 data-model/governance/Admin Studio baseline bằng:
+
+```powershell
+pnpm run validate:stage4
+```
+
+Validator này apply migration/permission/seed idempotently, restart Directus để làm mới schema metadata, kiểm tra schema drift, constraint/index/trigger/dashboard/preset, API DB denial, governance và traveler ownership/cross-user denial. Mọi fixture được rollback/xóa và kiểm tra còn 0 row.
 
 Clean rebuild local là thao tác xóa volume và chỉ chạy sau khi backup đã verify:
 

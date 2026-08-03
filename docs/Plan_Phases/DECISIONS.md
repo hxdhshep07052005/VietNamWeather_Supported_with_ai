@@ -583,3 +583,22 @@ Evidence/ADR:
 - **Privacy/security behavior:** Registration luôn trả DTO generic `202 { accepted: true }`; duplicate registration không tiết lộ account tồn tại. Handle có TTL cấu hình, lưu hash, consume atomic và replay/expired/invalid đều trả stable generic error.
 - **Log boundary:** Directus `/users/register/verify-email` bị loại khỏi HTTP access log; Application API redact request URL/query, response location, cookie và credential. Browser không nhận token Directus trong body, header, cookie, storage hoặc clean redirect.
 - **Ràng buộc:** Directus registration policy phải dùng approved traveler role và bắt buộc verify email. Production consume/redirect URL phải HTTPS, query-free trong cấu hình và thuộc exact application-origin allowlist. Mọi thay đổi flow phải giữ frontend chỉ gọi Application API.
+
+### DATA-007 — Versioned administrative hierarchy and location catalog
+
+- **Ngày quyết định:** 2026-08-04
+- **Người quyết định:** Product Owner
+- **Phase:** 4 / 5 / 8
+- **Quyết định:** Catalog hỗ trợ province, municipality/city, canonical location và optional district/lower administrative levels. Mô hình phải là hierarchy versioned; không hardcode số lượng tỉnh/thành hoặc giả định cấu trúc hành chính không đổi.
+- **Source gate:** Chỉ import administrative unit/location khi có nguồn chính thức hoặc nguồn đã được duyệt, publication version, checksum và license/provenance theo `DATA-005`. District là optional theo coverage thật của nguồn, không được bịa để lấp dữ liệu.
+- **Provider mapping:** Weather/geocoding/routing/map ID nằm trong mapping versioned, không trở thành canonical key và không chứa provider credential.
+- **Ràng buộc:** Migration/seed không chứa danh sách địa danh, tọa độ hoặc provider result giả. Test fixture phải ephemeral và cleanup/rollback về 0.
+
+### PRODUCT-016 — Phase 3 closure and Phase 4 kickoff approval
+
+- **Ngày quyết định:** 2026-08-04
+- **Người quyết định:** Product Owner
+- **Phase:** 3 / 4
+- **Quyết định:** Sau khi Phase 3 CI run `30852140331` pass trên commit `f91f549`, chấp thuận Phase 3 closure ở trạng thái `VERIFIED` và phê duyệt khởi động Phase 4 theo `DATA-007`, `SEC-008`, `DATA-005`, `DATA-006`, `PRODUCT-004` và `PRODUCT-005`.
+- **Implementation order:** (1) schema/migration và provenance; (2) governance workflow/constraints; (3) Directus metadata/dashboard/presets; (4) permission manifest và ownership tests; (5) approved config seed; (6) documentation/evidence.
+- **Ràng buộc:** Không hardcode business data, không fake location/weather/payment/provider/user data, không lưu secret trong Directus. Phase 4 chỉ `VERIFIED` khi schema drift, constraint, permission positive/negative, cross-user ownership, seed idempotency và remote CI evidence đều pass.

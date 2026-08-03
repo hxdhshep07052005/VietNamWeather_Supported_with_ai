@@ -1,21 +1,22 @@
 # Phase 4 — Data Model, Governance & Admin Panel
 
-**Status:** BLOCKED  
-**Phụ thuộc:** Phase 3 VERIFIED  
+**Status:** IN_PROGRESS (`LOCAL_IMPLEMENTATION_VERIFIED / REMOTE_CI_PENDING`)
+**Phụ thuộc:** Phase 3 VERIFIED — CI run `30852140331`
 **Mục tiêu:** Xây data model chuẩn hóa, version hóa và Admin Studio đủ dùng cho business/operations mà không cần sửa code.
 
 ## Phạm vi công việc
 
 ### 1. Core collections
 
-- `locations`, `location_aliases`, `administrative_versions` và `location_provider_mappings`.
+- `supported_locales`, `reference_sources`, `administrative_versions`, `administrative_units`, `locations`, `location_aliases` và `location_provider_mappings`.
 - `weather_providers`, `provider_runs`, `weather_observations`, `weather_forecasts`.
 - `risk_rule_sets`, `risk_rules`, `risk_assessments`, `risk_advisories`.
 - `route_requests`, `route_options`, `route_samples`, `route_assessments`.
 - `content_pages`, `translations`, `app_settings`, `feature_flags`.
-- `product_plans`, `product_features`, `plan_entitlements`, `usage_policies`, `usage_events`, `usage_counters`.
+- `retention_policies`, `product_plans`, `plan_prices`, `product_features`, `plan_entitlements`, `usage_policies`, `usage_events`, `usage_counters`.
 - `billing_customers`, `subscriptions`, `payment_events`, `refund_references`, `entitlement_overrides`.
-- Optional: `user_favorites`, `saved_routes`, `chat_sessions`, `chat_messages`.
+- User-owned: `user_favorites`, `saved_routes`, `search_history`.
+- `chat_sessions` và `chat_messages` được defer sang optional Phase 11, không tạo bảng rỗng trước nhu cầu.
 
 Tên bảng/field cuối cùng phải theo naming convention được duyệt; danh sách trên là domain, không phải schema đã chốt.
 
@@ -47,11 +48,12 @@ Tên bảng/field cuối cùng phải theo naming convention được duyệt; d
 
 ## Deliverables và evidence
 
-- ERD và data dictionary.
-- Directus schema snapshot/migration.
-- Admin Studio walkthrough theo từng role.
-- Constraint/index test và permission test.
-- Data retention/deletion matrix.
+- ERD và data dictionary: [`PHASE_4_ERD.md`](PHASE_4_ERD.md), [`PHASE_4_DATA_DICTIONARY.md`](PHASE_4_DATA_DICTIONARY.md).
+- Directus schema snapshot/migration: `foundation.yaml`, `004-create-phase4-data-model.sql`.
+- Admin Studio walkthrough: [`PHASE_4_ADMIN_WALKTHROUGH.md`](PHASE_4_ADMIN_WALKTHROUGH.md).
+- Constraint/index/governance/permission/ownership tests: `pnpm run validate:stage4`.
+- Permission và retention mapping: [`PHASE_4_PERMISSION_MATRIX.md`](PHASE_4_PERMISSION_MATRIX.md), [`PHASE_4_RETENTION_MATRIX.md`](PHASE_4_RETENTION_MATRIX.md).
+- Evidence manifest: [`PHASE_4_EVIDENCE.md`](PHASE_4_EVIDENCE.md).
 
 ## Acceptance criteria
 
@@ -65,14 +67,14 @@ Tên bảng/field cuối cùng phải theo naming convention được duyệt; d
 - Payment event và subscription projection có idempotency reference.
 - Reference/config seed có manifest/checksum và không tạo duplicate khi chạy lại.
 
-## Decision Gate — phải hỏi và chốt với bạn
+## Decision Gate — đã chốt
 
-1. Catalog location ban đầu gồm điểm hành chính, điểm du lịch hay cả hai?
-2. Có cần theo dõi thay đổi đơn vị hành chính theo thời gian không? Khuyến nghị: có `administrative_version`, không hardcode “63 tỉnh”.
-3. Có lưu favorites, saved routes và lịch sử tra cứu của user không?
-4. Cần hỗ trợ những ngôn ngữ nào trong content/advisory?
-5. Retention cho raw provider response, normalized forecast, route request, usage event, billing event và audit log là bao lâu?
-6. Ai là maker, reviewer và publisher cho risk rule/advisory, pricing và translation?
-7. Có cần import dữ liệu location ban đầu từ nguồn chính thức nào?
-8. Subscription state và entitlement projection cần lưu lịch sử tới mức nào để hỗ trợ refund/dispute?
-9. Có cần version translation theo content release hay chỉ theo locale key?
+1. Catalog hỗ trợ cả administrative locations và curated product locations; province/municipality/city là core, district/lower levels optional theo nguồn thật (`DATA-007`).
+2. Administrative hierarchy được version hóa; không hardcode số tỉnh/thành (`DATA-007`).
+3. Favorites, saved routes và search history được lưu theo owner/quota/retention đã duyệt (`PRODUCT-003`, `PRODUCT-004`).
+4. Business content hỗ trợ `vi` và `en` (`ARCH-009`).
+5. Raw provider payload không được lưu; security/audit/billing retention theo `DATA-006`; provider/route TTL cụ thể chờ phase sở hữu và được quản lý bằng `retention_policies`.
+6. Risk Analyst/Risk Approver tách maker-checker; content/product/billing role theo `SEC-008`.
+7. Không import location trước khi có official/approved source, version, checksum và license (`DATA-005`, `DATA-007`).
+8. Subscription/payment/usage dùng projection và immutable idempotent event references; billing reference giữ tối thiểu 24 tháng theo legal gate (`DATA-006`).
+9. Translation được version theo locale key và release version; optional link tới content release.

@@ -1,6 +1,6 @@
 # Phase 3 — Identity, JWT, RBAC & Security
 
-**Status:** IN_PROGRESS — LOCAL_IMPLEMENTATION_VERIFIED / CLOSURE_APPROVAL_PENDING
+**Status:** VERIFIED (`PRODUCT-016`, CI run `30852140331`, commit `f91f549`)
 **Phụ thuộc:** Phase 2 VERIFIED  
 **Mục tiêu:** Xây authentication và authorization theo least privilege, phù hợp browser production và Admin Studio.
 
@@ -71,7 +71,7 @@
 - Frontend không thể bypass facade để gọi Directus generic collection API trong production network/policy.
 - Mọi admin action quan trọng để lại audit evidence.
 
-Runtime baseline đã được triển khai và kiểm chứng ở local stack. Open Innovation Grant entitlement, least-privilege self-TFA permission cho 7 human staff policy, staff/admin TOTP, password/status/role/MFA session revoke, retention rollback drill, hardened password recovery, registration/email verification, Redis fail-closed và encryption-key rotation đều đã pass. Phase 3 đang chờ Product Owner closure approval và CI evidence trên commit cuối; Admin Studio VPN cùng production retention scheduler thuộc Phase 13 theo `OPS-003`, còn business ownership/cross-user permission thuộc Phase 4 sau khi schema thật tồn tại.
+Runtime baseline đã được triển khai và kiểm chứng ở local stack. Open Innovation Grant entitlement, least-privilege self-TFA permission cho 7 human staff policy, staff/admin TOTP, password/status/role/MFA session revoke, retention rollback drill, hardened password recovery, registration/email verification, Redis fail-closed và encryption-key rotation đều đã pass. CI run `30852140331` pass trên commit `f91f549` và Product Owner chấp thuận closure tại `PRODUCT-016`. Admin Studio VPN cùng production retention scheduler thuộc Phase 13 theo `OPS-003`; business ownership/cross-user permission được triển khai và kiểm chứng ở Phase 4.
 
 ## Decision Gate — completed
 

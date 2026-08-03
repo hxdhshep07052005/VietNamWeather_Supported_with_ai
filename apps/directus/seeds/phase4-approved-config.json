@@ -1,0 +1,458 @@
+{
+  "manifestVersion": 2,
+  "key": "phase4-approved-config",
+  "version": "2026.08.04.1",
+  "environmentScopes": [
+    "local",
+    "development",
+    "staging",
+    "production"
+  ],
+  "provenance": [
+    {
+      "type": "decision",
+      "reference": "PRODUCT-004"
+    },
+    {
+      "type": "decision",
+      "reference": "PRODUCT-005"
+    },
+    {
+      "type": "decision",
+      "reference": "ARCH-009"
+    },
+    {
+      "type": "decision",
+      "reference": "DATA-005"
+    }
+  ],
+  "allowedCollections": [
+    "supported_locales",
+    "product_plans",
+    "product_features",
+    "plan_entitlements",
+    "usage_policies"
+  ],
+  "operations": [
+    {
+      "collection": "supported_locales",
+      "match": { "external_key": "vi" },
+      "values": {
+        "id": "bf9e20f5-7bce-443c-9de0-a020d2b6995e",
+        "external_key": "vi",
+        "display_name": "Vietnamese",
+        "enabled": true,
+        "is_default": true,
+        "sort": 10
+      }
+    },
+    {
+      "collection": "supported_locales",
+      "match": { "external_key": "en" },
+      "values": {
+        "id": "d7652136-e553-49e1-9503-a1e118b5c845",
+        "external_key": "en",
+        "display_name": "English",
+        "enabled": true,
+        "is_default": false,
+        "sort": 20
+      }
+    },
+    {
+      "collection": "product_plans",
+      "match": { "external_key": "free", "version": 1 },
+      "values": {
+        "id": "60e620d6-7a14-4652-ad5b-d6c35c4e25fe",
+        "external_key": "free",
+        "version": 1,
+        "name_translation_key": "product.plan.free.name",
+        "description_translation_key": "product.plan.free.description",
+        "billing_interval": "none",
+        "sort": 10,
+        "status": "draft"
+      }
+    },
+    {
+      "collection": "product_plans",
+      "match": { "external_key": "pro", "version": 1 },
+      "values": {
+        "id": "a8e7dcf3-e3e8-4c58-b684-671691b2c613",
+        "external_key": "pro",
+        "version": 1,
+        "name_translation_key": "product.plan.pro.name",
+        "description_translation_key": "product.plan.pro.description",
+        "billing_interval": "none",
+        "sort": 20,
+        "status": "draft"
+      }
+    },
+    {
+      "collection": "product_features",
+      "match": { "external_key": "weather_current" },
+      "values": {
+        "id": "591aec55-ec2a-4a50-8b0e-1e12f41ecfa7",
+        "external_key": "weather_current",
+        "value_type": "boolean",
+        "unit": null,
+        "description_translation_key": "product.feature.weather_current",
+        "status": "draft"
+      }
+    },
+    {
+      "collection": "product_features",
+      "match": { "external_key": "weather_forecast" },
+      "values": {
+        "id": "efdc18dc-bfcf-4750-b40b-2e70a5400c8e",
+        "external_key": "weather_forecast",
+        "value_type": "boolean",
+        "unit": null,
+        "description_translation_key": "product.feature.weather_forecast",
+        "status": "draft"
+      }
+    },
+    {
+      "collection": "product_features",
+      "match": { "external_key": "location_search" },
+      "values": {
+        "id": "a5503174-ffcc-48ad-a9bb-2bc20dcb21fb",
+        "external_key": "location_search",
+        "value_type": "count",
+        "unit": "requests",
+        "description_translation_key": "product.feature.location_search",
+        "status": "draft"
+      }
+    },
+    {
+      "collection": "product_features",
+      "match": { "external_key": "route_evaluation" },
+      "values": {
+        "id": "8ae64626-e58c-4dbc-a664-54f855bfc63e",
+        "external_key": "route_evaluation",
+        "value_type": "count",
+        "unit": "requests",
+        "description_translation_key": "product.feature.route_evaluation",
+        "status": "draft"
+      }
+    },
+    {
+      "collection": "product_features",
+      "match": { "external_key": "route_alternatives" },
+      "values": {
+        "id": "e251d358-4ab3-41f4-9cf7-9d28614633d6",
+        "external_key": "route_alternatives",
+        "value_type": "count",
+        "unit": "options",
+        "description_translation_key": "product.feature.route_alternatives",
+        "status": "draft"
+      }
+    },
+    {
+      "collection": "product_features",
+      "match": { "external_key": "saved_locations" },
+      "values": {
+        "id": "8ad60c85-4c86-44a4-8cdf-797776969f7d",
+        "external_key": "saved_locations",
+        "value_type": "count",
+        "unit": "items",
+        "description_translation_key": "product.feature.saved_locations",
+        "status": "draft"
+      }
+    },
+    {
+      "collection": "product_features",
+      "match": { "external_key": "saved_routes" },
+      "values": {
+        "id": "47a5d961-f21e-488f-95f8-ec292cb78321",
+        "external_key": "saved_routes",
+        "value_type": "count",
+        "unit": "items",
+        "description_translation_key": "product.feature.saved_routes",
+        "status": "draft"
+      }
+    },
+    {
+      "collection": "product_features",
+      "match": { "external_key": "history_retention_days" },
+      "values": {
+        "id": "37d57d96-16a8-489d-866e-104032b92569",
+        "external_key": "history_retention_days",
+        "value_type": "duration",
+        "unit": "days",
+        "description_translation_key": "product.feature.history_retention_days",
+        "status": "draft"
+      }
+    },
+    {
+      "collection": "plan_entitlements",
+      "match": { "external_key": "free.weather_current", "version": 1 },
+      "values": {
+        "id": "ba1acd2d-b507-481e-ac09-4dcf57d876dc",
+        "external_key": "free.weather_current",
+        "version": 1,
+        "plan_id": "60e620d6-7a14-4652-ad5b-d6c35c4e25fe",
+        "feature_id": "591aec55-ec2a-4a50-8b0e-1e12f41ecfa7",
+        "value": { "enabled": true },
+        "status": "draft"
+      }
+    },
+    {
+      "collection": "plan_entitlements",
+      "match": { "external_key": "free.weather_forecast", "version": 1 },
+      "values": {
+        "id": "a65ae164-9412-414e-bc6d-0b41f424cd61",
+        "external_key": "free.weather_forecast",
+        "version": 1,
+        "plan_id": "60e620d6-7a14-4652-ad5b-d6c35c4e25fe",
+        "feature_id": "efdc18dc-bfcf-4750-b40b-2e70a5400c8e",
+        "value": { "enabled": true },
+        "status": "draft"
+      }
+    },
+    {
+      "collection": "plan_entitlements",
+      "match": { "external_key": "free.location_search", "version": 1 },
+      "values": {
+        "id": "41814631-f278-494d-b1ab-9fbe84826fd3",
+        "external_key": "free.location_search",
+        "version": 1,
+        "plan_id": "60e620d6-7a14-4652-ad5b-d6c35c4e25fe",
+        "feature_id": "a5503174-ffcc-48ad-a9bb-2bc20dcb21fb",
+        "value": { "enabled": true },
+        "status": "draft"
+      }
+    },
+    {
+      "collection": "plan_entitlements",
+      "match": { "external_key": "free.route_evaluation", "version": 1 },
+      "values": {
+        "id": "46ff6df5-a923-40c9-89f3-ddd3b0add26b",
+        "external_key": "free.route_evaluation",
+        "version": 1,
+        "plan_id": "60e620d6-7a14-4652-ad5b-d6c35c4e25fe",
+        "feature_id": "8ae64626-e58c-4dbc-a664-54f855bfc63e",
+        "value": { "enabled": true },
+        "status": "draft"
+      }
+    },
+    {
+      "collection": "plan_entitlements",
+      "match": { "external_key": "free.route_alternatives", "version": 1 },
+      "values": {
+        "id": "d6e6e779-20a6-48cf-9700-a6ea8cc39d68",
+        "external_key": "free.route_alternatives",
+        "version": 1,
+        "plan_id": "60e620d6-7a14-4652-ad5b-d6c35c4e25fe",
+        "feature_id": "e251d358-4ab3-41f4-9cf7-9d28614633d6",
+        "value": { "limit": 1, "unit": "options" },
+        "status": "draft"
+      }
+    },
+    {
+      "collection": "plan_entitlements",
+      "match": { "external_key": "free.saved_locations", "version": 1 },
+      "values": {
+        "id": "6e3de275-afbc-4b0e-a5a2-418472b742c9",
+        "external_key": "free.saved_locations",
+        "version": 1,
+        "plan_id": "60e620d6-7a14-4652-ad5b-d6c35c4e25fe",
+        "feature_id": "8ad60c85-4c86-44a4-8cdf-797776969f7d",
+        "value": { "limit": 3, "unit": "items" },
+        "status": "draft"
+      }
+    },
+    {
+      "collection": "plan_entitlements",
+      "match": { "external_key": "free.saved_routes", "version": 1 },
+      "values": {
+        "id": "3670da6e-d616-42fe-a514-1eb440769bea",
+        "external_key": "free.saved_routes",
+        "version": 1,
+        "plan_id": "60e620d6-7a14-4652-ad5b-d6c35c4e25fe",
+        "feature_id": "47a5d961-f21e-488f-95f8-ec292cb78321",
+        "value": { "limit": 1, "unit": "items" },
+        "status": "draft"
+      }
+    },
+    {
+      "collection": "plan_entitlements",
+      "match": { "external_key": "free.history_retention_days", "version": 1 },
+      "values": {
+        "id": "0c5713aa-e4a7-4dd2-ae5a-9cbfdd60fc78",
+        "external_key": "free.history_retention_days",
+        "version": 1,
+        "plan_id": "60e620d6-7a14-4652-ad5b-d6c35c4e25fe",
+        "feature_id": "37d57d96-16a8-489d-866e-104032b92569",
+        "value": { "duration": 7, "unit": "days" },
+        "status": "draft"
+      }
+    },
+    {
+      "collection": "plan_entitlements",
+      "match": { "external_key": "pro.weather_current", "version": 1 },
+      "values": {
+        "id": "4eb02423-9a3a-4c84-be77-41fdbef9f879",
+        "external_key": "pro.weather_current",
+        "version": 1,
+        "plan_id": "a8e7dcf3-e3e8-4c58-b684-671691b2c613",
+        "feature_id": "591aec55-ec2a-4a50-8b0e-1e12f41ecfa7",
+        "value": { "enabled": true },
+        "status": "draft"
+      }
+    },
+    {
+      "collection": "plan_entitlements",
+      "match": { "external_key": "pro.weather_forecast", "version": 1 },
+      "values": {
+        "id": "82a1109a-519c-4cea-b05f-cd0e8806400f",
+        "external_key": "pro.weather_forecast",
+        "version": 1,
+        "plan_id": "a8e7dcf3-e3e8-4c58-b684-671691b2c613",
+        "feature_id": "efdc18dc-bfcf-4750-b40b-2e70a5400c8e",
+        "value": { "enabled": true },
+        "status": "draft"
+      }
+    },
+    {
+      "collection": "plan_entitlements",
+      "match": { "external_key": "pro.location_search", "version": 1 },
+      "values": {
+        "id": "052fe5c1-e0fc-434b-a2ec-5147732d9e62",
+        "external_key": "pro.location_search",
+        "version": 1,
+        "plan_id": "a8e7dcf3-e3e8-4c58-b684-671691b2c613",
+        "feature_id": "a5503174-ffcc-48ad-a9bb-2bc20dcb21fb",
+        "value": { "enabled": true },
+        "status": "draft"
+      }
+    },
+    {
+      "collection": "plan_entitlements",
+      "match": { "external_key": "pro.route_evaluation", "version": 1 },
+      "values": {
+        "id": "3742405e-16c2-4fb2-8b10-feb406bed132",
+        "external_key": "pro.route_evaluation",
+        "version": 1,
+        "plan_id": "a8e7dcf3-e3e8-4c58-b684-671691b2c613",
+        "feature_id": "8ae64626-e58c-4dbc-a664-54f855bfc63e",
+        "value": { "enabled": true },
+        "status": "draft"
+      }
+    },
+    {
+      "collection": "plan_entitlements",
+      "match": { "external_key": "pro.route_alternatives", "version": 1 },
+      "values": {
+        "id": "04812429-6446-4daa-9407-646ddf25f076",
+        "external_key": "pro.route_alternatives",
+        "version": 1,
+        "plan_id": "a8e7dcf3-e3e8-4c58-b684-671691b2c613",
+        "feature_id": "e251d358-4ab3-41f4-9cf7-9d28614633d6",
+        "value": { "limit": 3, "unit": "options" },
+        "status": "draft"
+      }
+    },
+    {
+      "collection": "plan_entitlements",
+      "match": { "external_key": "pro.saved_locations", "version": 1 },
+      "values": {
+        "id": "a2a6e985-2c46-47a3-aab9-75437058f7dc",
+        "external_key": "pro.saved_locations",
+        "version": 1,
+        "plan_id": "a8e7dcf3-e3e8-4c58-b684-671691b2c613",
+        "feature_id": "8ad60c85-4c86-44a4-8cdf-797776969f7d",
+        "value": { "limit": 50, "unit": "items" },
+        "status": "draft"
+      }
+    },
+    {
+      "collection": "plan_entitlements",
+      "match": { "external_key": "pro.saved_routes", "version": 1 },
+      "values": {
+        "id": "be931695-14ce-4686-9094-59ebc6a9981a",
+        "external_key": "pro.saved_routes",
+        "version": 1,
+        "plan_id": "a8e7dcf3-e3e8-4c58-b684-671691b2c613",
+        "feature_id": "47a5d961-f21e-488f-95f8-ec292cb78321",
+        "value": { "limit": 20, "unit": "items" },
+        "status": "draft"
+      }
+    },
+    {
+      "collection": "plan_entitlements",
+      "match": { "external_key": "pro.history_retention_days", "version": 1 },
+      "values": {
+        "id": "64c1212e-0e18-47f5-b2a1-a0892119a108",
+        "external_key": "pro.history_retention_days",
+        "version": 1,
+        "plan_id": "a8e7dcf3-e3e8-4c58-b684-671691b2c613",
+        "feature_id": "37d57d96-16a8-489d-866e-104032b92569",
+        "value": { "duration": 90, "unit": "days" },
+        "status": "draft"
+      }
+    },
+    {
+      "collection": "usage_policies",
+      "match": { "external_key": "free.location_search.daily", "version": 1 },
+      "values": {
+        "id": "e6c32b9b-f9e7-4919-a406-e93b395a950c",
+        "external_key": "free.location_search.daily",
+        "version": 1,
+        "plan_id": "60e620d6-7a14-4652-ad5b-d6c35c4e25fe",
+        "feature_id": "a5503174-ffcc-48ad-a9bb-2bc20dcb21fb",
+        "limit_value": 10,
+        "period_unit": "day",
+        "period_timezone": "Asia/Ho_Chi_Minh",
+        "reset_time": "00:00:00",
+        "status": "draft"
+      }
+    },
+    {
+      "collection": "usage_policies",
+      "match": { "external_key": "pro.location_search.daily", "version": 1 },
+      "values": {
+        "id": "2df41e60-c75a-42d5-8f44-083d80abf80b",
+        "external_key": "pro.location_search.daily",
+        "version": 1,
+        "plan_id": "a8e7dcf3-e3e8-4c58-b684-671691b2c613",
+        "feature_id": "a5503174-ffcc-48ad-a9bb-2bc20dcb21fb",
+        "limit_value": 200,
+        "period_unit": "day",
+        "period_timezone": "Asia/Ho_Chi_Minh",
+        "reset_time": "00:00:00",
+        "status": "draft"
+      }
+    },
+    {
+      "collection": "usage_policies",
+      "match": { "external_key": "free.route_evaluation.daily", "version": 1 },
+      "values": {
+        "id": "242162bc-2483-45d9-a10a-2d351f07d98a",
+        "external_key": "free.route_evaluation.daily",
+        "version": 1,
+        "plan_id": "60e620d6-7a14-4652-ad5b-d6c35c4e25fe",
+        "feature_id": "8ae64626-e58c-4dbc-a664-54f855bfc63e",
+        "limit_value": 3,
+        "period_unit": "day",
+        "period_timezone": "Asia/Ho_Chi_Minh",
+        "reset_time": "00:00:00",
+        "status": "draft"
+      }
+    },
+    {
+      "collection": "usage_policies",
+      "match": { "external_key": "pro.route_evaluation.daily", "version": 1 },
+      "values": {
+        "id": "490b9ea8-5dc6-4751-b500-f6c4ca4a3e88",
+        "external_key": "pro.route_evaluation.daily",
+        "version": 1,
+        "plan_id": "a8e7dcf3-e3e8-4c58-b684-671691b2c613",
+        "feature_id": "8ae64626-e58c-4dbc-a664-54f855bfc63e",
+        "limit_value": 30,
+        "period_unit": "day",
+        "period_timezone": "Asia/Ho_Chi_Minh",
+        "reset_time": "00:00:00",
+        "status": "draft"
+      }
+    }
+  ]
+}
