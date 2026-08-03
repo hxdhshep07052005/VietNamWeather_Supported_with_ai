@@ -1,9 +1,9 @@
 # Project Status
 
 **Ngày khởi tạo plan mới:** 2026-07-25  
-**Trạng thái tổng:** PHASE_2_LOCAL_VERIFIED_REMOTE_CI_PENDING
-**Phase hiện tại:** Phase 2 — Directus Foundation & Environments
-**Cập nhật gần nhất:** 2026-07-31 — Product Owner / Technical Owner
+**Trạng thái tổng:** PHASE_3_IN_PROGRESS
+**Phase hiện tại:** Phase 3 — Identity, JWT, RBAC & Security
+**Cập nhật gần nhất:** 2026-08-04 — Technical Owner
 
 ## Phase board
 
@@ -11,8 +11,8 @@
 |---|---|---|---|
 | 0. Discovery | VERIFIED | Product Owner approved Phase 0 contract | `PRODUCT-011`, `PRD.md`, `PROVIDER_COMPARISON.md`, `PRIVACY_INVENTORY.md`, `ACCEPTANCE_METRICS.md`, `PHASE_0_EVIDENCE.md` |
 | 1. Architecture | VERIFIED | Product Owner approved architecture/NFR/provider/security/cost baseline | [`PHASE_1_EVIDENCE.md`](PHASE_1_EVIDENCE.md), [`VIETNAM_PROVIDER_FIXTURE_REPORT.md`](VIETNAM_PROVIDER_FIXTURE_REPORT.md), `ARCH-004..013`, `SEC-002`, `OPS-005..006`, `DATA-004`, `PRODUCT-012` |
-| 2. Directus Foundation | IN_PROGRESS (LOCAL_VERIFIED) | GitHub Actions/GHCR remote run chưa thực hiện | [`PHASE_2_EVIDENCE.md`](PHASE_2_EVIDENCE.md), `ARCH-014`, `SEC-003`, `DATA-005`, `OPS-007` |
-| 3. Security & Identity | BLOCKED | Phase 2 VERIFIED | Chưa có |
+| 2. Directus Foundation | VERIFIED | Product Owner approved closure | [`PHASE_2_EVIDENCE.md`](PHASE_2_EVIDENCE.md), run `30577216479`, `PRODUCT-014` |
+| 3. Security & Identity | IN_PROGRESS (LOCAL_IMPLEMENTATION_VERIFIED / CLOSURE_APPROVAL_PENDING) | Phase 2 VERIFIED; Decision Gate Phase 3 approved | `SEC-004..010`, `ARCH-015`, `DATA-006`, `PRODUCT-015`, [`PHASE_3_EVIDENCE.md`](PHASE_3_EVIDENCE.md) |
 | 4. Data Model & Admin | BLOCKED | Phase 3 VERIFIED | Chưa có |
 | 5. Weather Integration | BLOCKED | Phase 4 VERIFIED | Chưa có |
 | 6. Risk Engine | BLOCKED | Phase 5 VERIFIED | Chưa có |
@@ -37,9 +37,11 @@ Mỗi lần đổi trạng thái phải ghi:
 
 ## Blocker hiện tại
 
-- Repository/runtime/schema/seed/backup/clean rebuild/secret scan/SBOM đã pass validator local.
-- Workflow `.github/workflows/ci.yml` đã qua Actionlint, nhưng chưa có remote run vì thay đổi chưa được commit/push.
-- Không được chuyển Phase 2 sang `VERIFIED` hoặc mở Phase 3 trước khi GitHub Actions pass, GHCR tạo image immutable theo commit SHA và Product Owner duyệt evidence đóng phase.
+- Phase 2 không còn blocker; local và remote evidence đã pass.
+- Phase 3 không còn local implementation/test blocker: licensed Open Innovation Grant, 7 self-TFA permission tối thiểu, managed-staff/admin MFA, negative permission tests, session revoke/rotation, Redis fail-closed, retention và secret scan đều pass trong `pnpm run validate:stage3` ngày 2026-08-04.
+- Credential license chỉ nằm trong `.env.local` Git-ignore; Directus xác nhận `active`, production/custom permissions=true. Không có secret trong source, image, seed, log hoặc evidence.
+- Phase 3 vẫn `IN_PROGRESS` cho tới khi Product Owner phê duyệt closure và remote CI chạy trên commit cuối; local output không thay thế CI evidence.
+- Ownership/field/item và cross-user permission trên schema nghiệp vụ thật là acceptance gate Phase 4. Admin Studio WireGuard cùng production retention scheduler/alert evidence thuộc Phase 13 theo `OPS-003`; không tạo fake evidence để đóng các mục production này.
 
 ## Lưu ý
 

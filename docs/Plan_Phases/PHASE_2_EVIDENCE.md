@@ -2,13 +2,15 @@
 
 ## Status
 
-**Phase:** IN_PROGRESS — LOCAL_VERIFIED / REMOTE_CI_PENDING  
-**Kickoff approval:** `PRODUCT-013`  
+**Phase:** VERIFIED
+**Kickoff approval:** `PRODUCT-013`
+**Closure approval:** `PRODUCT-014`
 **Local implementation date:** 2026-07-31  
 **Local validator:** PASS  
-**Remaining blocker:** GitHub Actions and GHCR evidence require the workflow to be committed and pushed; no remote CI run or registry publish is claimed yet.
+**Remote CI/GHCR:** PASS
+**Remaining blocker:** None for Phase 2.
 
-Phase 2 is not marked `VERIFIED` until the pinned GitHub Actions workflow passes on the repository and the immutable worker image is built/published by that workflow. All repository, runtime, schema, seed, backup and local supply-chain gates are complete.
+Phase 2 is `VERIFIED` because repository, runtime, schema, seed, backup, local supply-chain, clean rebuild, remote GitHub Actions and immutable GHCR image evidence are all reproducible.
 
 ## Approved decisions
 
@@ -44,8 +46,11 @@ Phase 2 is not marked `VERIFIED` until the pinned GitHub Actions workflow passes
 | Backup/restore | Custom-format `pg_dump`, restore into isolated temporary database | PASS; Directus user, seed audit and PostGIS verified |
 | Clean rebuild | `tools/environment/rebuild-local.ps1 -ConfirmLocalDataReset` | PASS; volumes recreated, schema/seed applied, admin rotated, stack healthy |
 | GitHub workflow syntax | Actionlint `1.7.12` image pinned by digest | PASS |
-| GitHub Actions remote run | Requires commit/push | PENDING — not claimed |
-| GHCR immutable image publish | Workflow tags image with `${{ github.sha }}` and never deploys production | PENDING — not claimed |
+| GitHub Actions remote run | Run `30577216479`, commit `3ac524579308e1f7365370643ed7257a22570acd` | PASS; `quality` and `worker-image` succeeded |
+| Source SBOM artifact | `source-sbom-3ac524579308e1f7365370643ed7257a22570acd`, artifact ID `8773180652` | PASS; 9,213 bytes, retention 14 days |
+| GHCR immutable image publish | `ghcr.io/hxdhshep07052005/vietnam-weather-worker:3ac524579308e1f7365370643ed7257a22570acd` | PASS; manifest `sha256:747e0d2ff9fc6a3549687014ec5b0c2b2791311c9baffadaa7a10f8ee28fb4c2` |
+
+The first remote run `30575550998` failed at source SBOM output because its parent directory was missing. The workflow was corrected, revalidated locally and rerun; only successful run `30577216479` is accepted as closure evidence.
 
 ## Seed scope clarification
 
@@ -61,16 +66,22 @@ Run the complete non-destructive local validator:
 powershell -ExecutionPolicy Bypass -File tools/validation/validate-stage2.ps1
 ```
 
+Verify the accepted GitHub Actions, source SBOM artifact and immutable GHCR image:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File tools/validation/validate-stage2-remote.ps1
+```
+
 Run a destructive clean local rebuild only after a verified backup:
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File tools/environment/rebuild-local.ps1 -ConfirmLocalDataReset
 ```
 
-The latest validator output ended with:
+The local validator output ended with:
 
 ```text
-STAGE2_LOCAL_VALIDATION_OK remote_github_ci=not_executed
+STAGE2_LOCAL_VALIDATION_OK remote_github_ci=use_validate-stage2-remote.ps1
 ```
 
 The latest clean rebuild output ended with:
@@ -84,4 +95,4 @@ LOCAL_CLEAN_REBUILD_OK schema_applied=true seed_applied=true admin_rotated=true 
 - No credential value, provider key, access token, bootstrap password or database connection string appears in committed files or evidence output.
 - Local backups and SBOM output are stored under Git-ignored `artifacts/phase2/local/`.
 - Test and staging fixtures may never be promoted to production; Phase 2 creates no demo account or fabricated business record.
-- Phase 2 remains `IN_PROGRESS` until remote GitHub Actions/GHCR evidence exists and Product Owner approves closure.
+- Phase 2 closure is approved by `PRODUCT-014`; later image/version changes require new CI, migration and rollback evidence rather than reusing this run.

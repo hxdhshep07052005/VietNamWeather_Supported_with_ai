@@ -1,6 +1,6 @@
 # Phase 2 — Directus Foundation & Environments
 
-**Status:** IN_PROGRESS — LOCAL_VERIFIED / REMOTE_CI_PENDING
+**Status:** VERIFIED
 **Phụ thuộc:** Phase 1 VERIFIED  
 **Mục tiêu:** Dựng nền Directus có thể tái lập cho local, development, staging và production.
 
@@ -83,4 +83,5 @@ Phase 2 kickoff được phê duyệt tại `PRODUCT-013`.
 - Bootstrap admin đã rotate; credential cũ bị từ chối; stack restart không cần `.env.bootstrap.local`.
 - Schema snapshot/dry-run/drift, security foundation, seed audit/idempotency, backup/isolated restore, secret scan và worker SBOM đã pass.
 - Foundation seed không chứa business operation để tránh chốt lén schema Phase 3/4 hoặc tạo dữ liệu giả.
-- GitHub Actions workflow đã được Actionlint xác minh nhưng chưa chạy trên GitHub và GHCR chưa publish image; đây là blocker duy nhất trước khi đề nghị Product Owner đóng Phase 2.
+- GitHub Actions run `30577216479` đã pass cả `quality` và `worker-image`; source SBOM đã upload và GHCR image theo commit SHA đã publish.
+- Product Owner đóng Phase 2 và mở Decision Gate Phase 3 tại `PRODUCT-014`.

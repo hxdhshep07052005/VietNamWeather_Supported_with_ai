@@ -1,0 +1,315 @@
+{
+  "manifestVersion": 2,
+  "directusVersion": "12.1.1",
+  "key": "phase3-default-deny-roles",
+  "version": "2026.08.04.1",
+  "description": "Phase 3 roles and policies with only the licensed self-service TFA permission required by human staff. Business collections remain default-deny until Phase 4 maps approved domains to real schema.",
+  "permissions": [
+    {
+      "key": "platform_admin_self_tfa",
+      "roleKey": "platform_admin",
+      "collection": "directus_users",
+      "action": "update",
+      "permissions": { "id": { "_eq": "$CURRENT_USER" } },
+      "validation": { "id": { "_eq": "$CURRENT_USER" } },
+      "presets": null,
+      "fields": ["tfa_secret"]
+    },
+    {
+      "key": "weather_operations_self_tfa",
+      "roleKey": "weather_operations",
+      "collection": "directus_users",
+      "action": "update",
+      "permissions": { "id": { "_eq": "$CURRENT_USER" } },
+      "validation": { "id": { "_eq": "$CURRENT_USER" } },
+      "presets": null,
+      "fields": ["tfa_secret"]
+    },
+    {
+      "key": "risk_analyst_self_tfa",
+      "roleKey": "risk_analyst",
+      "collection": "directus_users",
+      "action": "update",
+      "permissions": { "id": { "_eq": "$CURRENT_USER" } },
+      "validation": { "id": { "_eq": "$CURRENT_USER" } },
+      "presets": null,
+      "fields": ["tfa_secret"]
+    },
+    {
+      "key": "risk_approver_self_tfa",
+      "roleKey": "risk_approver",
+      "collection": "directus_users",
+      "action": "update",
+      "permissions": { "id": { "_eq": "$CURRENT_USER" } },
+      "validation": { "id": { "_eq": "$CURRENT_USER" } },
+      "presets": null,
+      "fields": ["tfa_secret"]
+    },
+    {
+      "key": "content_editor_self_tfa",
+      "roleKey": "content_editor",
+      "collection": "directus_users",
+      "action": "update",
+      "permissions": { "id": { "_eq": "$CURRENT_USER" } },
+      "validation": { "id": { "_eq": "$CURRENT_USER" } },
+      "presets": null,
+      "fields": ["tfa_secret"]
+    },
+    {
+      "key": "product_billing_admin_self_tfa",
+      "roleKey": "product_billing_admin",
+      "collection": "directus_users",
+      "action": "update",
+      "permissions": { "id": { "_eq": "$CURRENT_USER" } },
+      "validation": { "id": { "_eq": "$CURRENT_USER" } },
+      "presets": null,
+      "fields": ["tfa_secret"]
+    },
+    {
+      "key": "support_auditor_self_tfa",
+      "roleKey": "support_auditor",
+      "collection": "directus_users",
+      "action": "update",
+      "permissions": { "id": { "_eq": "$CURRENT_USER" } },
+      "validation": { "id": { "_eq": "$CURRENT_USER" } },
+      "presets": null,
+      "fields": ["tfa_secret"]
+    }
+  ],
+  "roles": [
+    {
+      "key": "platform_admin",
+      "classification": "human_staff",
+      "id": "defe9820-db53-4796-8703-2d33f5b210ca",
+      "name": "Platform Admin",
+      "icon": "admin_panel_settings",
+      "description": "Delegated non-secret platform operations. No role, policy or secret administration.",
+      "policy": {
+        "id": "bddf5414-4e3d-4c42-9bb3-574e50233020",
+        "name": "Platform Admin Policy",
+        "icon": "shield",
+        "description": "MFA-enforced Studio access with default-deny collection permissions.",
+        "enforceTfa": true,
+        "adminAccess": false,
+        "appAccess": true
+      },
+      "access": { "id": "ff4de78c-7bd8-474f-ad2b-7bcc25c47167", "sort": 1 }
+    },
+    {
+      "key": "weather_operations",
+      "classification": "human_staff",
+      "id": "c32c47a7-dddc-4569-a97c-ade309aee05a",
+      "name": "Weather Operations",
+      "icon": "cloud",
+      "description": "Provider health, ingestion operations and weather diagnostics.",
+      "policy": {
+        "id": "51b5fbc8-7004-49af-98c3-07c0d9d0676f",
+        "name": "Weather Operations Policy",
+        "icon": "shield",
+        "description": "MFA-enforced Studio access with default-deny collection permissions.",
+        "enforceTfa": true,
+        "adminAccess": false,
+        "appAccess": true
+      },
+      "access": { "id": "47d23e02-be94-45e9-8616-664fea8fad6f", "sort": 1 }
+    },
+    {
+      "key": "risk_analyst",
+      "classification": "human_staff",
+      "id": "01929767-a1ad-4008-abc0-d2798f74291a",
+      "name": "Risk Analyst",
+      "icon": "edit_note",
+      "description": "Authors risk-rule drafts and evidence without publish permission.",
+      "policy": {
+        "id": "4478474e-d207-4343-beae-c26e54a09ff1",
+        "name": "Risk Analyst Policy",
+        "icon": "shield",
+        "description": "MFA-enforced Studio access with default-deny collection permissions.",
+        "enforceTfa": true,
+        "adminAccess": false,
+        "appAccess": true
+      },
+      "access": { "id": "61c4f192-ac81-498f-a3b6-0b0ad14815e7", "sort": 1 }
+    },
+    {
+      "key": "risk_approver",
+      "classification": "human_staff",
+      "id": "8d941c93-96f1-4d3b-823e-a645cdbe73b1",
+      "name": "Risk Approver",
+      "icon": "approval",
+      "description": "Reviews and publishes approved risk-rule versions without draft-author permission.",
+      "policy": {
+        "id": "f81c5726-1c4f-4cb5-ac3f-aed1fd536535",
+        "name": "Risk Approver Policy",
+        "icon": "shield",
+        "description": "MFA-enforced Studio access with default-deny collection permissions.",
+        "enforceTfa": true,
+        "adminAccess": false,
+        "appAccess": true
+      },
+      "access": { "id": "9e8322f8-80cf-4cbb-b290-ede982fe6401", "sort": 1 }
+    },
+    {
+      "key": "content_editor",
+      "classification": "human_staff",
+      "id": "db20acc9-0592-483f-9d91-a6689de9b39b",
+      "name": "Content Editor",
+      "icon": "translate",
+      "description": "Manages approved content, translations and legal copy workflows.",
+      "policy": {
+        "id": "8b44d160-7923-4b35-b067-5c83b2a07efd",
+        "name": "Content Editor Policy",
+        "icon": "shield",
+        "description": "MFA-enforced Studio access with default-deny collection permissions.",
+        "enforceTfa": true,
+        "adminAccess": false,
+        "appAccess": true
+      },
+      "access": { "id": "60ab029c-6e7f-4e1b-b959-81cf14d5ecea", "sort": 1 }
+    },
+    {
+      "key": "product_billing_admin",
+      "classification": "human_staff",
+      "id": "839e7f3c-2cc7-43d0-a97f-1d1940e9d9de",
+      "name": "Product/Billing Admin",
+      "icon": "payments",
+      "description": "Manages approved product and billing projections without payment-secret access.",
+      "policy": {
+        "id": "8aba5ffc-db8c-4d03-9b25-50701e79f9fc",
+        "name": "Product/Billing Admin Policy",
+        "icon": "shield",
+        "description": "MFA-enforced Studio access with default-deny collection permissions.",
+        "enforceTfa": true,
+        "adminAccess": false,
+        "appAccess": true
+      },
+      "access": { "id": "bc152521-e935-4253-90d7-e7f7c27c988f", "sort": 1 }
+    },
+    {
+      "key": "support_auditor",
+      "classification": "human_staff",
+      "id": "abffc5cc-8fef-4525-92c7-4168b6e2ceed",
+      "name": "Support/Auditor",
+      "icon": "fact_check",
+      "description": "Read-only support and sanitized audit investigation role.",
+      "policy": {
+        "id": "ee82f644-a6ab-4c84-9405-5bfe216fbece",
+        "name": "Support/Auditor Policy",
+        "icon": "shield",
+        "description": "MFA-enforced Studio access with default-deny collection permissions.",
+        "enforceTfa": true,
+        "adminAccess": false,
+        "appAccess": true
+      },
+      "access": { "id": "d5e4ab28-8b32-499f-b7dd-3aafbe3c201c", "sort": 1 }
+    },
+    {
+      "key": "registered_traveler",
+      "classification": "registered_user",
+      "id": "03b314c5-30b7-475d-a626-3b291a7fabc2",
+      "name": "Registered Traveler",
+      "icon": "travel_explore",
+      "description": "Authenticated product user; browser access is restricted to the Application API.",
+      "policy": {
+        "id": "04485039-25fa-453d-a0e8-8317ebf1b0d2",
+        "name": "Registered Traveler Policy",
+        "icon": "shield",
+        "description": "No Studio access and default-deny collection permissions.",
+        "enforceTfa": false,
+        "adminAccess": false,
+        "appAccess": false
+      },
+      "access": { "id": "d1d24f1a-ce98-46d4-8818-9e8762c30bff", "sort": 1 }
+    },
+    {
+      "key": "weather_ingestion_service",
+      "classification": "service",
+      "id": "a2f41b58-7e9d-48d0-bd98-ffb5ccd86950",
+      "name": "Weather Ingestion Service",
+      "icon": "cloud_sync",
+      "description": "Non-interactive weather ingestion workload identity.",
+      "policy": {
+        "id": "4502b844-ecba-489a-9677-93b150e41c68",
+        "name": "Weather Ingestion Service Policy",
+        "icon": "shield",
+        "description": "No Studio access and default-deny collection permissions.",
+        "enforceTfa": false,
+        "adminAccess": false,
+        "appAccess": false
+      },
+      "access": { "id": "7e0d3310-ebd9-4f6c-9e48-bd2527e25d77", "sort": 1 }
+    },
+    {
+      "key": "route_evaluation_service",
+      "classification": "service",
+      "id": "fe5ec1c8-f57e-4ca8-aa1c-8e7ac5f75825",
+      "name": "Route Evaluation Service",
+      "icon": "route",
+      "description": "Non-interactive route and weather-risk evaluation workload identity.",
+      "policy": {
+        "id": "c6139460-c689-4d6b-ba69-1583182ccd89",
+        "name": "Route Evaluation Service Policy",
+        "icon": "shield",
+        "description": "No Studio access and default-deny collection permissions.",
+        "enforceTfa": false,
+        "adminAccess": false,
+        "appAccess": false
+      },
+      "access": { "id": "f0d20b15-6489-444c-9c03-40907fcf35e6", "sort": 1 }
+    },
+    {
+      "key": "payment_webhook_ingress",
+      "classification": "service",
+      "id": "02dca184-f9a1-4427-afff-15ad0fcf2b08",
+      "name": "Payment Webhook Ingress",
+      "icon": "webhook",
+      "description": "Non-interactive immutable payment-event ingress identity.",
+      "policy": {
+        "id": "68ad67da-2373-469e-91c5-c12792502bd0",
+        "name": "Payment Webhook Ingress Policy",
+        "icon": "shield",
+        "description": "No Studio access and default-deny collection permissions.",
+        "enforceTfa": false,
+        "adminAccess": false,
+        "appAccess": false
+      },
+      "access": { "id": "5b53f65a-bd9e-4c65-8553-d1e349f4e28a", "sort": 1 }
+    },
+    {
+      "key": "payment_reconciliation_service",
+      "classification": "service",
+      "id": "a626c114-2409-4e4a-a53c-894eacda13b3",
+      "name": "Payment Reconciliation Service",
+      "icon": "sync_alt",
+      "description": "Non-interactive payment reconciliation and entitlement-projection identity.",
+      "policy": {
+        "id": "76874177-f825-4058-8576-3d1113ca4175",
+        "name": "Payment Reconciliation Service Policy",
+        "icon": "shield",
+        "description": "No Studio access and default-deny collection permissions.",
+        "enforceTfa": false,
+        "adminAccess": false,
+        "appAccess": false
+      },
+      "access": { "id": "3ee58b81-a444-4532-93ed-4a93d4685a1b", "sort": 1 }
+    },
+    {
+      "key": "ai_tool_service",
+      "classification": "service_disabled",
+      "id": "e62c9163-0b98-447c-ab57-c90c56ceefe7",
+      "name": "AI Tool Service",
+      "icon": "smart_toy",
+      "description": "Reserved disabled identity for optional Phase 11 allowlisted AI tools.",
+      "policy": {
+        "id": "5802bf34-66fd-4917-a776-c45658e0c2b3",
+        "name": "AI Tool Service Policy",
+        "icon": "shield",
+        "description": "Disabled by zero permissions, no Studio access and no provisioned user.",
+        "enforceTfa": false,
+        "adminAccess": false,
+        "appAccess": false
+      },
+      "access": { "id": "c1d140e9-ef77-40d2-b2aa-8971c4e0caf0", "sort": 1 }
+    }
+  ]
+}

@@ -14,7 +14,11 @@
     "typecheck": "pnpm -r --if-present typecheck",
     "test": "pnpm run build && pnpm -r --if-present test",
     "validate:stage1": "powershell -ExecutionPolicy Bypass -File tools/validation/validate-stage1.ps1",
-    "validate:stage2": "powershell -ExecutionPolicy Bypass -File tools/validation/validate-stage2.ps1"
+    "validate:stage2": "powershell -ExecutionPolicy Bypass -File tools/validation/validate-stage2.ps1",
+    "validate:stage2:remote": "powershell -ExecutionPolicy Bypass -File tools/validation/validate-stage2-remote.ps1",
+    "validate:stage3": "powershell -ExecutionPolicy Bypass -File tools/validation/validate-stage3.ps1",
+    "inspect:directus-license": "powershell -ExecutionPolicy Bypass -File tools/directus/validate-license.ps1",
+    "validate:directus-license": "powershell -ExecutionPolicy Bypass -File tools/directus/validate-license.ps1 -RequireLicensed"
   },
   "devDependencies": {
     "@eslint/js": "10.0.1",

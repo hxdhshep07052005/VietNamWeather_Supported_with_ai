@@ -52,7 +52,7 @@ try {
 
     & (Join-Path $workspaceRoot 'tools\environment\rotate-local-admin.ps1') -RuntimeEnvPath $RuntimeEnvPath -BootstrapEnvPath $BootstrapEnvPath -AdminEnvPath $AdminEnvPath
     if ($LASTEXITCODE -ne 0) { throw 'Admin rotation failed during rebuild.' }
-    docker compose --env-file $RuntimeEnvPath up -d --force-recreate --wait --wait-timeout 180 directus worker
+    docker compose --env-file $RuntimeEnvPath up -d --force-recreate --wait --wait-timeout 180 directus worker api
     if ($LASTEXITCODE -ne 0) { throw 'Unable to restart stack without bootstrap credential.' }
 
     & (Join-Path $workspaceRoot 'tools\validation\validate-local-stack.ps1') -RuntimeEnvPath $RuntimeEnvPath -AdminEnvPath $AdminEnvPath

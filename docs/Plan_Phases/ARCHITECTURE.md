@@ -33,7 +33,7 @@ flowchart LR
     WEB -->|"Tile/style only; browser key"| MAPTILES["Geoapify Map Tiles / Style"]
     ADMIN --> STUDIO["Directus Admin Studio"]
 
-    API --> DIRECTUS["Directus Core + Custom Endpoints"]
+    API --> DIRECTUS["Directus 12.1.1 Licensed + Custom Permissions"]
     DIRECTUS --> PG["PostgreSQL + PostGIS"]
     DIRECTUS --> REDIS["Redis Cache / Queue / Locks"]
     REDIS --> WORKER["Integration Worker"]
@@ -77,14 +77,19 @@ flowchart LR
 
 ## 6. Session and identity architecture
 
-1. Browser posts credentials/OAuth callback only to the same-origin Application API.
+1. Browser posts login/registration/recovery credentials only to the same-origin Application API.
 2. Application API delegates authentication to Directus.
 3. Browser receives an opaque, random session handle in `Secure`, `HttpOnly`, `SameSite` cookie; it never receives refresh/static tokens.
 4. Server-side session record maps to Directus identity/token metadata with encryption and expiry.
 5. Every API request resolves the session and rechecks role/policy plus item ownership/entitlement.
 6. Logout, password reset, account disable and security event revoke the session family.
+7. Directus password-reset/email-verification query tokens are consumed only by redacted API endpoints, encrypted server-side and exchanged for short-lived opaque fragment handles under `SEC-009`/`SEC-010`.
 
 State-changing requests additionally validate `Origin`/`Host` and use CSRF protection where SameSite behavior alone is insufficient.
+
+Phase 3 implements this boundary as the thin TypeScript/Fastify service in [`../../apps/api`](../../apps/api). Its dedicated PostgreSQL role can access only `app_security` session/audit/auth-token objects; Directus tokens are encrypted at rest, transactional key rotation is available, and Redis is used for rate limiting rather than authoritative session validity. Runtime details and current residual gates are recorded in [`PHASE_3_RUNTIME_SECURITY.md`](PHASE_3_RUNTIME_SECURITY.md).
+
+Directus identity-security changes are synchronized into the application-session boundary by an idempotent PostgreSQL trigger. Password, status, role, MFA-secret changes and user deletion revoke all active `app_security.sessions` for that user. Retention deletion is exposed only through a DB-owner function with validated cutoffs; the Application API role cannot execute it or delete audit events.
 
 ## 7. Background job architecture
 

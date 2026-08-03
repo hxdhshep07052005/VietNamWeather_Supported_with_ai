@@ -9,7 +9,7 @@
 | Container pin | `directus/directus@sha256:27fd291463f4e746a7911139377a1dbc7a5c09ae82ee15b028b97bcc4950c69d` |
 | License identifier in release | `MSCL-1.0-GPL` |
 | Decision | `ARCH-011` |
-| Status | VERIFIED TECHNICAL BASELINE / LEGAL REVIEW REQUIRED IF BUSINESS MODEL CHANGES |
+| Status | VERIFIED IMAGE/LICENSE TEXT / LICENSED PATH APPROVED / CREDENTIAL PENDING |
 
 Không dùng tag `latest` trong local/staging/production definitions. Manifest digest được pin để cùng version không âm thầm đổi image.
 
@@ -42,6 +42,12 @@ The release license also:
 - Grants a future GPL-3.0 license on the fourth anniversary of the release availability date, under the terms in the included license.
 
 This is a technical/compliance record, not legal advice. A qualified legal review is required if the product begins reselling, hosting or exposing Directus itself as a commercial service, modifies protected functionality, redistributes a derivative, or otherwise changes business model.
+
+### 3.1 Runtime entitlement correction
+
+Phase 3 runtime testing found enforced Core entitlements that were not enumerated in the original Phase 1 review: 3 active Admin/App seats, 25 active collections, 5 active flows and custom permission rules disabled. See [`DIRECTUS_ENTITLEMENT_REPORT.md`](DIRECTUS_ENTITLEMENT_REPORT.md) for package-source and live-probe evidence.
+
+The non-competing-use license fit does not remove these technical entitlement limits. Product Owner selected the official licensed path at `ARCH-015`; production permission architecture must not assume item/field custom rules are available until the licensed entitlement validator passes.
 
 ## 4. Version and upgrade policy
 

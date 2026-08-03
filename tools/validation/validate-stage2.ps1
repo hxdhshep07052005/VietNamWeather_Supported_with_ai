@@ -86,7 +86,7 @@ try {
     if (-not $backup) { throw 'Database backup artifact was not created.' }
     Invoke-CheckedScript (Join-Path $workspaceRoot 'tools\database\verify-backup.ps1') @{ BackupPath = "artifacts\phase2\local\backups\$($backup.Name)" }
 
-    Write-Output 'STAGE2_LOCAL_VALIDATION_OK remote_github_ci=not_executed'
+    Write-Output 'STAGE2_LOCAL_VALIDATION_OK remote_github_ci=use_validate-stage2-remote.ps1'
 }
 finally {
     Pop-Location

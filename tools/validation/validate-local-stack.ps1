@@ -26,10 +26,10 @@ try {
         $services = @(docker compose --env-file $RuntimeEnvPath ps --format json | ConvertFrom-Json)
         if ($LASTEXITCODE -ne 0) { throw 'Unable to inspect Compose services.' }
         $unhealthy = @($services | Where-Object { $_.Health -ne 'healthy' })
-        if ($services.Count -eq 5 -and $unhealthy.Count -eq 0) { break }
+        if ($services.Count -eq 6 -and $unhealthy.Count -eq 0) { break }
         Start-Sleep -Seconds 2
     } while ([DateTime]::UtcNow -lt $deadline)
-    if ($services.Count -ne 5) { throw 'Expected five Compose services.' }
+    if ($services.Count -ne 6) { throw 'Expected six Compose services.' }
     $unhealthy = @($services | Where-Object { $_.Health -ne 'healthy' })
     if ($unhealthy.Count -gt 0) { throw "Unhealthy Compose services: $($unhealthy.Service -join ', ')" }
 
@@ -65,6 +65,8 @@ try {
 
     $worker = Invoke-RestMethod -Method Get -Uri "http://127.0.0.1:$($runtime['WORKER_HOST_PORT'])/health/ready" -TimeoutSec 10
     if ($worker.status -ne 'ready') { throw 'Worker readiness endpoint failed.' }
+    $api = Invoke-RestMethod -Method Get -Uri "http://127.0.0.1:$($runtime['API_HOST_PORT'])/health/ready" -TimeoutSec 10
+    if ($api.status -ne 'ready') { throw 'Application API readiness endpoint failed.' }
     $mailpit = Invoke-WebRequest -UseBasicParsing -Uri "http://127.0.0.1:$($runtime['MAILPIT_UI_HOST_PORT'])/readyz" -TimeoutSec 10
     if ($mailpit.StatusCode -ne 200) { throw 'Mailpit readiness endpoint failed.' }
 
@@ -73,7 +75,7 @@ try {
     $redisPing = docker compose --env-file $RuntimeEnvPath exec -T redis sh -lc 'REDISCLI_AUTH="$REDIS_PASSWORD" redis-cli ping'
     if ($LASTEXITCODE -ne 0 -or $redisPing.Trim() -ne 'PONG') { throw 'Redis authenticated ping failed.' }
 
-    Write-Output "LOCAL_STACK_VALIDATION_OK services=5 directus_release=$($health.releaseId) directus_checks=$($healthStatuses.Count) postgis=true redis_auth=true private_services=2 secrets_printed=false"
+    Write-Output "LOCAL_STACK_VALIDATION_OK services=6 directus_release=$($health.releaseId) directus_checks=$($healthStatuses.Count) api_ready=true postgis=true redis_auth=true private_services=2 secrets_printed=false"
 }
 finally {
     Pop-Location

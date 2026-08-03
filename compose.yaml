@@ -8,6 +8,8 @@ services:
       POSTGRES_DB: ${DB_DATABASE:?DB_DATABASE is required}
       POSTGRES_USER: ${DB_USER:?DB_USER is required}
       POSTGRES_PASSWORD: ${DB_PASSWORD:?DB_PASSWORD is required}
+      API_DB_USER: ${API_DB_USER:?API_DB_USER is required}
+      API_DB_PASSWORD: ${API_DB_PASSWORD:?API_DB_PASSWORD is required}
     volumes:
       - database_data:/var/lib/postgresql/data
       - ./infra/postgres/init:/docker-entrypoint-initdb.d:ro
@@ -72,6 +74,14 @@ services:
       KEY: ${DIRECTUS_KEY:?DIRECTUS_KEY is required}
       SECRET: ${DIRECTUS_SECRET:?DIRECTUS_SECRET is required}
       PUBLIC_URL: ${DIRECTUS_PUBLIC_URL:?DIRECTUS_PUBLIC_URL is required}
+      PASSWORD_RESET_URL_ALLOW_LIST: ${DIRECTUS_PASSWORD_RESET_URL_ALLOW_LIST:?DIRECTUS_PASSWORD_RESET_URL_ALLOW_LIST is required}
+      USER_REGISTER_URL_ALLOW_LIST: ${DIRECTUS_USER_REGISTER_URL_ALLOW_LIST:?DIRECTUS_USER_REGISTER_URL_ALLOW_LIST is required}
+      EMAIL_VERIFICATION_TOKEN_TTL: ${DIRECTUS_EMAIL_VERIFICATION_TOKEN_TTL:?DIRECTUS_EMAIL_VERIFICATION_TOKEN_TTL is required}
+      LOG_HTTP_IGNORE_PATHS: /users/register/verify-email
+      ACCESS_TOKEN_TTL: ${DIRECTUS_ACCESS_TOKEN_TTL:?DIRECTUS_ACCESS_TOKEN_TTL is required}
+      REFRESH_TOKEN_TTL: ${DIRECTUS_REFRESH_TOKEN_TTL:?DIRECTUS_REFRESH_TOKEN_TTL is required}
+      LICENSE_KEY: ${DIRECTUS_LICENSE_KEY:-}
+      LICENSE_TOKEN: ${DIRECTUS_LICENSE_TOKEN:-}
       ADMIN_EMAIL: ${DIRECTUS_ADMIN_EMAIL:-}
       ADMIN_PASSWORD: ${DIRECTUS_ADMIN_PASSWORD:-}
       DB_CLIENT: pg
@@ -137,6 +147,71 @@ services:
       timeout: 5s
       retries: 12
       start_period: 10s
+
+  api:
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+    restart: unless-stopped
+    depends_on:
+      database:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      directus:
+        condition: service_healthy
+    ports:
+      - "127.0.0.1:${API_HOST_PORT:?API_HOST_PORT is required}:${API_PORT:?API_PORT is required}"
+    environment:
+      NODE_ENV: production
+      APP_ENV: ${APP_ENV:?APP_ENV is required}
+      API_SERVICE_NAME: ${API_SERVICE_NAME:?API_SERVICE_NAME is required}
+      API_PORT: ${API_PORT:?API_PORT is required}
+      API_DIRECTUS_URL: ${API_DIRECTUS_URL:?API_DIRECTUS_URL is required}
+      API_ALLOWED_ORIGINS: ${API_ALLOWED_ORIGINS:?API_ALLOWED_ORIGINS is required}
+      API_PASSWORD_RESET_CONSUME_URL: ${API_PASSWORD_RESET_CONSUME_URL:?API_PASSWORD_RESET_CONSUME_URL is required}
+      API_PASSWORD_RESET_REDIRECT_URL: ${API_PASSWORD_RESET_REDIRECT_URL:?API_PASSWORD_RESET_REDIRECT_URL is required}
+      API_PASSWORD_RESET_TTL_SECONDS: ${API_PASSWORD_RESET_TTL_SECONDS:?API_PASSWORD_RESET_TTL_SECONDS is required}
+      API_PASSWORD_RESET_MIN_LENGTH: ${API_PASSWORD_RESET_MIN_LENGTH:?API_PASSWORD_RESET_MIN_LENGTH is required}
+      API_EMAIL_VERIFICATION_CONSUME_URL: ${API_EMAIL_VERIFICATION_CONSUME_URL:?API_EMAIL_VERIFICATION_CONSUME_URL is required}
+      API_EMAIL_VERIFICATION_REDIRECT_URL: ${API_EMAIL_VERIFICATION_REDIRECT_URL:?API_EMAIL_VERIFICATION_REDIRECT_URL is required}
+      API_EMAIL_VERIFICATION_TTL_SECONDS: ${API_EMAIL_VERIFICATION_TTL_SECONDS:?API_EMAIL_VERIFICATION_TTL_SECONDS is required}
+      API_REGISTRATION_MIN_LENGTH: ${API_REGISTRATION_MIN_LENGTH:?API_REGISTRATION_MIN_LENGTH is required}
+      API_TRAVELER_ROLE_ID: ${API_TRAVELER_ROLE_ID:?API_TRAVELER_ROLE_ID is required}
+      API_SESSION_COOKIE_NAME: ${API_SESSION_COOKIE_NAME:?API_SESSION_COOKIE_NAME is required}
+      API_CSRF_COOKIE_NAME: ${API_CSRF_COOKIE_NAME:?API_CSRF_COOKIE_NAME is required}
+      API_SESSION_SAME_SITE: ${API_SESSION_SAME_SITE:?API_SESSION_SAME_SITE is required}
+      API_SESSION_TTL_SECONDS: ${API_SESSION_TTL_SECONDS:?API_SESSION_TTL_SECONDS is required}
+      API_USER_SESSION_LIMIT: ${API_USER_SESSION_LIMIT:?API_USER_SESSION_LIMIT is required}
+      API_STAFF_SESSION_LIMIT: ${API_STAFF_SESSION_LIMIT:?API_STAFF_SESSION_LIMIT is required}
+      API_MAX_BODY_BYTES: ${API_MAX_BODY_BYTES:?API_MAX_BODY_BYTES is required}
+      API_RATE_LIMIT_DEFAULT_MAX: ${API_RATE_LIMIT_DEFAULT_MAX:?API_RATE_LIMIT_DEFAULT_MAX is required}
+      API_RATE_LIMIT_LOGIN_MAX: ${API_RATE_LIMIT_LOGIN_MAX:?API_RATE_LIMIT_LOGIN_MAX is required}
+      API_RATE_LIMIT_WINDOW_MS: ${API_RATE_LIMIT_WINDOW_MS:?API_RATE_LIMIT_WINDOW_MS is required}
+      API_REDIS_TIMEOUT_MS: ${API_REDIS_TIMEOUT_MS:?API_REDIS_TIMEOUT_MS is required}
+      API_ACCESS_REFRESH_SKEW_MS: ${API_ACCESS_REFRESH_SKEW_MS:?API_ACCESS_REFRESH_SKEW_MS is required}
+      API_TRUST_PROXY: ${API_TRUST_PROXY:?API_TRUST_PROXY is required}
+      API_SESSION_ENCRYPTION_KEY: ${API_SESSION_ENCRYPTION_KEY:?API_SESSION_ENCRYPTION_KEY is required}
+      API_CSRF_SIGNING_KEY: ${API_CSRF_SIGNING_KEY:?API_CSRF_SIGNING_KEY is required}
+      DB_HOST: database
+      DB_PORT: 5432
+      DB_DATABASE: ${DB_DATABASE:?DB_DATABASE is required}
+      API_DB_USER: ${API_DB_USER:?API_DB_USER is required}
+      API_DB_PASSWORD: ${API_DB_PASSWORD:?API_DB_PASSWORD is required}
+      API_REDIS_URL: redis://:${REDIS_PASSWORD:?REDIS_PASSWORD is required}@redis:6379/1
+    networks:
+      - application
+      - data
+    healthcheck:
+      test:
+        - CMD
+        - node
+        - -e
+        - fetch('http://127.0.0.1:${API_PORT:?API_PORT is required}/health/ready').then((response)=>{if(!response.ok)process.exit(1)}).catch(()=>process.exit(1))
+      interval: 10s
+      timeout: 5s
+      retries: 30
+      start_period: 20s
 
 networks:
   application:

@@ -23,10 +23,10 @@ if (-not (Test-Path -LiteralPath $PlanRoot)) {
 }
 
 Write-Output 'CHECK relative Markdown links'
-Get-ChildItem -LiteralPath $WorkspaceRoot -Recurse -Filter '*.md' |
-    Where-Object { $_.FullName -notmatch '\\.git\\' } |
-    ForEach-Object {
-        $file = $_
+$trackedMarkdown = @(git -C $WorkspaceRoot ls-files -- '*.md')
+if ($LASTEXITCODE -ne 0) { throw 'Unable to list tracked Markdown files.' }
+$trackedMarkdown | ForEach-Object {
+        $file = Get-Item -LiteralPath (Join-Path $WorkspaceRoot $_)
         $content = Get-Content -Raw -Encoding UTF8 -LiteralPath $file.FullName
         [regex]::Matches($content, '(?<!\!)\[[^\]]+\]\(([^)]+)\)') | ForEach-Object {
             $target = $_.Groups[1].Value.Trim().Trim('<', '>')
@@ -52,9 +52,9 @@ $definitions | Group-Object | Where-Object Count -gt 1 | ForEach-Object {
     Add-Failure "Duplicate Decision ID: $($_.Name)"
 }
 
-$allMarkdown = (Get-ChildItem -LiteralPath $WorkspaceRoot -Recurse -Filter '*.md' |
-    Where-Object { $_.FullName -notmatch '\\.git\\' } |
-    ForEach-Object { Get-Content -Raw -Encoding UTF8 -LiteralPath $_.FullName }) -join "`n"
+$allMarkdown = ($trackedMarkdown | ForEach-Object {
+    Get-Content -Raw -Encoding UTF8 -LiteralPath (Join-Path $WorkspaceRoot $_)
+}) -join "`n"
 
 $references = [regex]::Matches(
     $allMarkdown,
@@ -95,11 +95,11 @@ $status = Get-Content -Raw -Encoding UTF8 -LiteralPath (Join-Path $PlanRoot 'STA
 
 if ($phase0 -notmatch '\*\*Status:\*\* VERIFIED') { Add-Failure 'Phase 0 file is not VERIFIED' }
 if ($phase1 -notmatch '\*\*Status:\*\* VERIFIED') { Add-Failure 'Phase 1 file is not VERIFIED' }
-if ($phase2 -notmatch '\*\*Status:\*\* (?:AWAITING_DECISION|IN_PROGRESS)') { Add-Failure 'Phase 2 file has an invalid post-Phase-1 status' }
+if ($phase2 -notmatch '\*\*Status:\*\* (?:AWAITING_DECISION|IN_PROGRESS(?:\s+—.*)?|VERIFIED)') { Add-Failure 'Phase 2 file has an invalid post-Phase-1 status' }
 if ($index -notmatch '\| 0 \|.*\| VERIFIED \|') { Add-Failure 'Index Phase 0 status mismatch' }
 if ($index -notmatch '\| 1 \|.*\| VERIFIED \|') { Add-Failure 'Index Phase 1 status mismatch' }
-if ($index -notmatch '\| 2 \|.*\| (?:AWAITING_DECISION|IN_PROGRESS) \|') { Add-Failure 'Index Phase 2 status mismatch' }
-if ($status -notmatch 'PHASE_2_(?:AWAITING_DECISION|IN_PROGRESS)') { Add-Failure 'STATUS.md overall status mismatch' }
+if ($index -notmatch '\| 2 \|.*\| (?:AWAITING_DECISION|IN_PROGRESS(?:\s+—.*)?|VERIFIED) \|') { Add-Failure 'Index Phase 2 status mismatch' }
+if ($status -notmatch '\| 2\. Directus Foundation \| (?:AWAITING_DECISION|IN_PROGRESS(?:\s+\([^)]*\))?|VERIFIED) \|') { Add-Failure 'STATUS.md Phase 2 status mismatch' }
 if ($status -notmatch '\| 1\. Architecture \| VERIFIED \|') { Add-Failure 'STATUS.md Phase 1 status mismatch' }
 
 Write-Output 'CHECK evidence report guardrails'
@@ -209,6 +209,10 @@ if (Test-Path -LiteralPath $LocalSecretPath) {
     Get-ChildItem -LiteralPath $WorkspaceRoot -Recurse -File -Force |
         Where-Object {
             $_.FullName -notmatch '\\.git\\' -and
+            $_.FullName -notmatch '\\node_modules\\' -and
+            $_.FullName -notmatch '\\artifacts\\phase2\\local\\' -and
+            $_.FullName -notmatch '\\secrets\\decrypted\\' -and
+            $_.FullName -notmatch '\\.env(?:\..*)?\.local$' -and
             $_.FullName -ne $LocalSecretPath
         } |
         ForEach-Object {
@@ -237,7 +241,9 @@ try {
     $gitExitCode = $LASTEXITCODE
     $ErrorActionPreference = $previousErrorAction
     if ($gitExitCode -ne 0) {
-        $diffCheck | ForEach-Object { Add-Failure "git diff --check: $_" }
+        $diffCheck |
+            Where-Object { $_ -notmatch '^warning: in the working copy of' } |
+            ForEach-Object { Add-Failure "git diff --check: $_" }
     }
 }
 finally {

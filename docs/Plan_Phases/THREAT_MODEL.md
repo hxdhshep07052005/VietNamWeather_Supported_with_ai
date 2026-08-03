@@ -4,11 +4,11 @@
 
 | Field | Value |
 |---|---|
-| Version | 1.0 |
-| Date | 2026-07-29 |
-| Status | DRAFT / MITIGATIONS TO VERIFY IN PHASES 2–12 |
+| Version | 1.1 |
+| Date | 2026-07-31 |
+| Status | ACTIVE / PHASE 3 BASELINE PARTIALLY VERIFIED |
 | Owner | Product Owner / Technical Owner |
-| Related decisions | `SEC-001`, `SEC-002`, `ARCH-003`, `ARCH-004`, `ARCH-008`, `OPS-003` |
+| Related decisions | `SEC-001..010`, `ARCH-003`, `ARCH-004`, `ARCH-008`, `ARCH-015`, `OPS-003` |
 
 ## 2. Assets
 
@@ -90,3 +90,18 @@
 ## 8. Security gate
 
 Phase 1 can produce the threat model, but Phase 12 must show mitigation evidence and no open Critical/High finding before release.
+
+## 9. Phase 3 implementation update
+
+- `TM-001` baseline: browser receives only opaque Secure HttpOnly cookies; Directus tokens remain encrypted server-side. Session rotation, old-handle replay denial and logout revoke pass against local services.
+- `TM-002` baseline: state-changing auth routes require exact Origin/Host plus a separately signed CSRF cookie/header token. Missing CSRF and unknown origin are denied.
+- `TM-004` partial: product API exposes only versioned routes and returns 404 for unknown/generic paths. Production reverse-proxy and WireGuard network proof remains pending.
+- `TM-006` partial: login, registration, password recovery and email verification have Redis-backed configurable rate limiting, generic registration/recovery responses, encrypted one-time handles and replay denial. Account lockout/breached-password controls remain pending.
+- `TM-005` local baseline: Directus password, status, role, MFA-secret change and user deletion trigger immediate application-session revocation; old browser handles return 401 in the live drill. Licensed managed-staff TFA enrollment, missing-OTP denial and OTP login now pass.
+- `TM-014` partial: API logger redacts authorization, cookie, auth consume URL, redirect location and credential fields; Directus email-verify path is excluded from access logging and live response/log marker scans pass. Full frontend bundle/source-map and backup scans remain pending.
+- `TM-018` partial: PostgreSQL is authoritative for session revoke/expiry; Redis is only a rate-limit store. Redis stop/start drill proves readiness and mutation fail-closed with retryable dependency errors; production HA/alerting evidence remains pending.
+- `TM-021` partial: payload and route/IP rate limits pass unit tests; edge/load/bypass testing remains pending.
+
+The previous role-change window is closed for the Application API by a PostgreSQL trigger on `directus_users`; password/status/role/MFA/delete changes revoke active application sessions immediately. Residual risk remains that the encrypted upstream Directus token material is retained until the configured session purge and cannot be actively logged out by a database trigger; it is no longer reachable through the revoked browser handle. Business ownership/field policy and cross-user tests remain a Phase 4 acceptance gate after the real schema exists.
+
+Recovery/verification residual risk: `SEC-009` and `SEC-010` accept Directus one-time tokens only on redacted HTTPS consume requests. The token is still present in that first request URL by design; production edge/proxy/log/analytics controls must preserve redaction, no-referrer and no-store behavior. The Application API immediately exchanges it for an encrypted server-side record plus opaque fragment handle, and live tests deny expiry/replay and verify no token appears in API/Directus logs.

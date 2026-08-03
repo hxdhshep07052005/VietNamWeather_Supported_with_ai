@@ -468,3 +468,118 @@ Evidence/ADR:
 - **Quyết định:** Phê duyệt Decision Gate Phase 2 theo `ARCH-014`, `SEC-003`, `DATA-005` và `OPS-007`.
 - **Kết quả:** Phase 2 chuyển từ `AWAITING_DECISION` sang `IN_PROGRESS`.
 - **Ràng buộc:** Kickoff không đồng nghĩa Directus runtime, schema, seed, CI, backup hoặc production environment đã hoàn thành. Phase 2 chỉ được `VERIFIED` sau clean rebuild, credential rotation, idempotent seed, schema promotion/rollback và CI evidence có thể tái hiện.
+
+### PRODUCT-014 — Phase 2 closure and Phase 3 kickoff
+
+- **Ngày quyết định:** 2026-07-31
+- **Người quyết định:** Product Owner
+- **Phase:** 2 / 3
+- **Quyết định:** Phê duyệt đóng Phase 2 sau khi local validator, clean rebuild và remote GitHub Actions/GHCR evidence đều pass; mở Phase 3 ở trạng thái `AWAITING_DECISION`.
+- **Remote evidence:** Commit `3ac524579308e1f7365370643ed7257a22570acd`; GitHub Actions run `30577216479` có cả `quality` và `worker-image` thành công; source SBOM artifact `source-sbom-3ac524579308e1f7365370643ed7257a22570acd` đã upload.
+- **Image evidence:** `ghcr.io/hxdhshep07052005/vietnam-weather-worker:3ac524579308e1f7365370643ed7257a22570acd` được push với manifest digest `sha256:747e0d2ff9fc6a3549687014ec5b0c2b2791311c9baffadaa7a10f8ee28fb4c2`.
+- **Kết quả:** Phase 2 chuyển `VERIFIED`; Phase 3 chuyển từ `BLOCKED` sang `AWAITING_DECISION`.
+- **Ràng buộc:** Kickoff Phase 3 chỉ mở Decision Gate. Không triển khai auth transport, TTL, MFA, Admin Studio network control hoặc retention bằng giả định trước khi Product Owner chốt.
+
+### SEC-004 — Browser authentication and session policy
+
+- **Ngày quyết định:** 2026-07-31
+- **Người quyết định:** Product Owner / Technical Owner
+- **Phase:** 3 / 9
+- **Quyết định:** Browser dùng opaque application session do backend quản lý qua same-origin Application API. Session identifier chỉ nằm trong cookie có `Secure`, `HttpOnly` và `SameSite` phù hợp; frontend không giữ Directus access token, refresh token hoặc session secret.
+- **MVP identity:** Chỉ hỗ trợ email/password. Social login và enterprise SSO chưa nằm trong MVP; muốn bổ sung phải có decision, threat review và account-linking contract riêng.
+- **Lifetime:** Directus access token phía server có TTL 10 phút. Application session/refresh lifetime tối đa 14 ngày và phải cấu hình qua environment, không hardcode trong frontend hoặc business code.
+- **Concurrency:** User thường tối đa 5 session hoạt động; staff/admin tối đa 2. Login/refresh nhạy cảm phải rotate session identifier; logout, reset password, disable account hoặc security event có thể revoke session liên quan.
+- **Ràng buộc:** Session store phải hỗ trợ server-side revoke, expiry, rotation và audit. Không lưu credential trong `localStorage`, `sessionStorage`, URL, analytics hoặc log.
+
+### SEC-005 — Admin Studio access and staff MFA
+
+- **Ngày quyết định:** 2026-07-31
+- **Người quyết định:** Product Owner / Technical Owner
+- **Phase:** 3 / 13
+- **Quyết định:** Production Directus Admin Studio chỉ được truy cập qua WireGuard VPN. IP allowlist chỉ là emergency/fallback control, không thay thế VPN trong vận hành bình thường.
+- **MFA:** Bắt buộc MFA cho toàn bộ human staff/admin có quyền vào Admin Studio hoặc thao tác quản trị. User sản phẩm thông thường chưa bị bắt buộc MFA trong MVP.
+- **Service identity:** Service account không đăng nhập tương tác, không dùng shared human account và chỉ nhận policy least-privilege đúng workload.
+- **Ràng buộc:** Break-glass access phải có audit, thời hạn ngắn và rotate/revoke sau sử dụng theo `SEC-003`.
+
+### DATA-006 — Security, audit and billing-reference retention
+
+- **Ngày quyết định:** 2026-07-31
+- **Người quyết định:** Product Owner / Technical Owner
+- **Phase:** 3 / 10 / 12 / 13
+- **Quyết định:** Security/session log giữ 90 ngày; admin/security audit giữ 12 tháng; billing/payment reference giữ tối thiểu 24 tháng.
+- **Legal gate:** Mốc billing/payment là baseline kỹ thuật và phải được legal/accounting review trước production; nếu nghĩa vụ pháp lý yêu cầu khác, retention policy phải được cập nhật bằng decision mới.
+- **Data minimization:** Không ghi card number, CVV, password, token, cookie, secret hoặc precise GPS vào log. PII phải được redact/pseudonymize và quyền đọc audit log phải tách biệt theo least privilege.
+- **Ràng buộc:** Retention, purge và legal hold phải là cấu hình versioned, có test và audit evidence; không dựa vào xóa thủ công tùy ý.
+
+### SEC-006 — Entitlement source of truth and stale-state policy
+
+- **Ngày quyết định:** 2026-07-31
+- **Người quyết định:** Product Owner / Technical Owner
+- **Phase:** 3 / 10
+- **Quyết định:** Entitlement projection trong database là nguồn sự thật. JWT/session claim nếu có chỉ là cache hint, không đủ để cấp quyền Pro hoặc thay đổi quota.
+- **Cache:** Backend có thể dùng read-only entitlement cache tối đa 60 giây. TTL phải cấu hình qua environment và cache invalidation phải chạy khi subscription/plan thay đổi.
+- **Fail-safe:** Pro mutation, quota consumption, checkout/payment action và thao tác nhạy cảm phải deny khi entitlement stale, thiếu hoặc không revalidate được. Read-only UX có thể trả trạng thái retry/degraded rõ ràng nhưng không được giả lập quyền Pro.
+- **Ràng buộc:** Frontend không gửi role, plan, quota hoặc entitlement để backend tin cậy; mọi enforcement nằm ở Application API/backend.
+
+### PRODUCT-015 — Phase 3 kickoff approval
+
+- **Ngày quyết định:** 2026-07-31
+- **Người quyết định:** Product Owner
+- **Phase:** 3
+- **Quyết định:** Phê duyệt Decision Gate Phase 3 theo `SEC-004`, `SEC-005`, `DATA-006` và `SEC-006`; chuyển Phase 3 từ `AWAITING_DECISION` sang `IN_PROGRESS`.
+- **Thứ tự triển khai:** (1) auth sequence, trust boundary và session contract; (2) role-policy-permission matrix; (3) CSRF/CORS/rate-limit/secure-header controls; (4) MFA, email verification, password reset và recovery; (5) automated permission/security tests và revoke/rotation drill.
+- **Ràng buộc:** Kickoff không đồng nghĩa authentication hoặc security đã hoàn thành. Phase 3 chỉ được `VERIFIED` khi có implementation, negative permission tests, rotation/revoke evidence, security checklist và threat-model update có thể tái hiện.
+
+### SEC-007 — Phase 3 auth/session contract approval
+
+- **Ngày quyết định:** 2026-07-31
+- **Người quyết định:** Product Owner
+- **Phase:** 3
+- **Quyết định:** Phê duyệt [`PHASE_3_AUTH_SESSION_CONTRACT.md`](PHASE_3_AUTH_SESSION_CONTRACT.md) làm contract triển khai auth/session của Phase 3.
+- **Boundary được duyệt:** Same-origin Application API, opaque secure cookie, server-side Directus token, durable authoritative session state, Redis không là nguồn cấp quyền, CSRF/origin validation và fail-closed khi session/revalidation lỗi.
+- **Kết quả:** Contract chuyển `DRAFT_FOR_REVIEW` sang `APPROVED`; Phase 3 được phép chuyển sang thiết kế role-policy-permission matrix.
+- **Ràng buộc:** Approval này chưa chứng minh code, cookie, encryption, revoke hoặc negative tests đã tồn tại. Evidence implementation vẫn phải được tạo bằng local/CI test thật.
+
+### SEC-008 — Phase 3 role-policy-permission matrix approval
+
+- **Ngày quyết định:** 2026-07-31
+- **Người quyết định:** Product Owner
+- **Phase:** 3 / 4
+- **Quyết định:** Phê duyệt [`PHASE_3_ROLE_POLICY_MATRIX.md`](PHASE_3_ROLE_POLICY_MATRIX.md) làm authorization contract cho human role, registered traveler, public và service identity.
+- **Separation of duties:** Tách `Risk Analyst`/`Risk Approver`, `Payment Webhook Ingress`/`Payment Reconciliation Service`; không tạo broad `Integration Service` và không dùng Super Admin cho workload.
+- **Implementation baseline:** Phase 3 được phép provision role/policy bằng manifest versioned với zero collection permission, staff MFA flag và service Studio deny. Phase 4 mới map logical domain sang collection/field/item filter thật.
+- **Ràng buộc:** Approval matrix không tự tạo quyền. Mọi allow permission về sau phải có schema thật, manifest, positive/negative test và evidence; public và managed role giữ default-deny cho tới lúc đó.
+
+### ARCH-015 — Licensed Directus entitlement path
+
+- **Ngày quyết định:** 2026-07-31
+- **Người quyết định:** Product Owner
+- **Phase:** 3 / 4 / 13
+- **Vấn đề:** Directus Core 12.1.1 giới hạn 3 active Admin/App seats và chặn custom permission rules cần cho ownership/field/item authorization.
+- **Quyết định:** Chọn official licensed Directus path thay vì Core-constrained architecture để giữ Directus policy defense-in-depth, granular Admin Studio RBAC và production quality đã duyệt.
+- **Credential contract:** Chỉ inject một trong `LICENSE_KEY` hoặc `LICENSE_TOKEN` bằng protected runtime secret; không đặt license credential trong Git, image, seed, frontend, log hoặc evidence. Nếu cả hai cùng tồn tại, deployment phải fail closed.
+- **Verification gate:** Trước khi tạo custom business permission, `/license` phải báo non-Core active source, `production_enabled=true` và `custom_permission_rules_enabled=true`. Seat/collection/flow capacity phải được đối chiếu với staffing/schema thật trước staging/production.
+- **Current state:** Local runtime vẫn dùng Core cho tới khi Product Owner cung cấp official key/token. Default-deny role baseline hợp lệ; ownership/custom permission implementation chưa được mở.
+- **Evidence:** [`DIRECTUS_ENTITLEMENT_REPORT.md`](DIRECTUS_ENTITLEMENT_REPORT.md).
+
+### SEC-009 — Password recovery token transport (ACCEPTED)
+
+- **Ngày quyết định:** 2026-08-01
+- **Người quyết định:** Product Owner / Technical Owner
+- **Phase:** 3
+- **Vấn đề:** Directus 12.1.1 native `POST /auth/password/request` đưa one-time reset token vào query string của `reset_url`.
+- **Quyết định:** Chọn phương án native Directus với hardening có kiểm soát. Query token chỉ được phép trên HTTPS ở consume endpoint allowlist; API redacts request URL, không gửi analytics/third-party asset, đặt `Referrer-Policy: no-referrer` và `Cache-Control: no-store`, mã hóa token server-side, đổi token ngay thành opaque one-time handle trong URL fragment sạch, TTL handle 15 phút và replay bị deny.
+- **Recovery boundary:** Browser không nhận Directus reset token trong response/body/storage. Browser chỉ gửi opaque handle tới Application API; Application API mới gọi Directus `/auth/password/reset` server-to-server.
+- **Session impact:** Directus password reset làm PostgreSQL identity trigger revoke toàn bộ application sessions của user; live test phải chứng minh old session 401 và new password login pass.
+- **Ràng buộc:** Reset URL production phải HTTPS, query-free ở cấu hình redirect, allowlist chính xác; log/analytics/proxy phải redacted. Nếu sau này policy cấm tuyệt đối token query kể cả request đầu tiên, phải mở decision mới và chuyển sang custom bridge.
+
+### SEC-010 — Email verification and registration transport (ACCEPTED)
+
+- **Ngày quyết định:** 2026-08-02
+- **Người quyết định:** Product Owner / Technical Owner
+- **Phase:** 3
+- **Vấn đề:** Directus gửi one-time email-verification token trong query string và native verify endpoint redirect theo backend behavior; không được để browser product nhận Directus token hoặc bị đưa vào Admin Studio.
+- **Quyết định:** Public registration chỉ đi qua Application API. Directus gửi email tới allowlisted API consume URL; API redact toàn bộ request URL, mã hóa Directus token trong PostgreSQL, trả `303` tới product URL sạch với opaque one-time handle trong fragment, rồi browser hoàn tất qua CSRF-protected API mutation.
+- **Privacy/security behavior:** Registration luôn trả DTO generic `202 { accepted: true }`; duplicate registration không tiết lộ account tồn tại. Handle có TTL cấu hình, lưu hash, consume atomic và replay/expired/invalid đều trả stable generic error.
+- **Log boundary:** Directus `/users/register/verify-email` bị loại khỏi HTTP access log; Application API redact request URL/query, response location, cookie và credential. Browser không nhận token Directus trong body, header, cookie, storage hoặc clean redirect.
+- **Ràng buộc:** Directus registration policy phải dùng approved traveler role và bắt buộc verify email. Production consume/redirect URL phải HTTPS, query-free trong cấu hình và thuộc exact application-origin allowlist. Mọi thay đổi flow phải giữ frontend chỉ gọi Application API.

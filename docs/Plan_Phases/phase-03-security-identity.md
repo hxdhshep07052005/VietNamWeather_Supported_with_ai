@@ -1,6 +1,6 @@
 # Phase 3 — Identity, JWT, RBAC & Security
 
-**Status:** BLOCKED  
+**Status:** IN_PROGRESS — LOCAL_IMPLEMENTATION_VERIFIED / CLOSURE_APPROVAL_PENDING
 **Phụ thuộc:** Phase 2 VERIFIED  
 **Mục tiêu:** Xây authentication và authorization theo least privilege, phù hợp browser production và Admin Studio.
 
@@ -48,17 +48,22 @@
 
 ## Deliverables và evidence
 
-- Auth sequence diagram.
-- Role-policy-permission matrix.
+- Auth sequence diagram và session contract: [`PHASE_3_AUTH_SESSION_CONTRACT.md`](PHASE_3_AUTH_SESSION_CONTRACT.md).
+- Role-policy-permission matrix: [`PHASE_3_ROLE_POLICY_MATRIX.md`](PHASE_3_ROLE_POLICY_MATRIX.md).
+- Versioned Directus role/policy manifest: [`../../apps/directus/security/phase3-default-deny.json`](../../apps/directus/security/phase3-default-deny.json).
+- Apply/validation/negative permission tools: [`../../tools/directus/apply-phase3-security.ps1`](../../tools/directus/apply-phase3-security.ps1), [`../../tools/directus/validate-phase3-security.ps1`](../../tools/directus/validate-phase3-security.ps1), [`../../tools/directus/test-phase3-negative-permissions.ps1`](../../tools/directus/test-phase3-negative-permissions.ps1).
+- Application API runtime boundary and controls: [`PHASE_3_RUNTIME_SECURITY.md`](PHASE_3_RUNTIME_SECURITY.md), [`../../apps/api`](../../apps/api), [`../../infra/postgres/init/003-create-api-security.sh`](../../infra/postgres/init/003-create-api-security.sh).
+- Auth/session unit and live integration tests: [`../../apps/api/test/security.test.mjs`](../../apps/api/test/security.test.mjs), [`../../tools/api/test-phase3-auth-runtime.ps1`](../../tools/api/test-phase3-auth-runtime.ps1).
+- Identity-change revoke, retention, MFA, password recovery, email verification and encryption-key rotation drills: [`../../tools/database/test-phase3-security-retention.ps1`](../../tools/database/test-phase3-security-retention.ps1), [`../../tools/database/run-security-retention.ps1`](../../tools/database/run-security-retention.ps1), [`../../tools/directus/test-phase3-mfa.ps1`](../../tools/directus/test-phase3-mfa.ps1), [`../../tools/api/test-phase3-password-recovery.ps1`](../../tools/api/test-phase3-password-recovery.ps1), [`../../tools/api/test-phase3-email-verification.ps1`](../../tools/api/test-phase3-email-verification.ps1), [`../../tools/api/test-phase3-encryption-key-rotation.ps1`](../../tools/api/test-phase3-encryption-key-rotation.ps1).
 - Automated permission tests cho từng role.
-- Security configuration checklist và threat-model update.
+- Security configuration checklist, incident/access-review runbook và threat-model update: [`PHASE_3_SECURITY_OPERATIONS.md`](PHASE_3_SECURITY_OPERATIONS.md), [`THREAT_MODEL.md`](THREAT_MODEL.md).
 - Token revoke/rotation drill evidence.
 
 ## Acceptance criteria
 
 - Public user không đọc được field nội bộ hoặc collection admin.
 - Public user không gọi được weather, search, forecast, risk, route, saved-item hoặc chatbot API.
-- User A không truy cập được dữ liệu riêng của User B.
+- Phase 3 không cấp broad business collection access; User A không truy cập được dữ liệu riêng của User B là acceptance gate của Phase 4 sau khi schema/ownership rule thật tồn tại.
 - Service account không thể quản lý user, role hoặc policy.
 - Logout/revoke làm refresh credential mất hiệu lực theo thiết kế.
 - Không có static token trong frontend bundle, source map hoặc log.
@@ -66,14 +71,28 @@
 - Frontend không thể bypass facade để gọi Directus generic collection API trong production network/policy.
 - Mọi admin action quan trọng để lại audit evidence.
 
-## Decision Gate — phải hỏi và chốt với bạn
+Runtime baseline đã được triển khai và kiểm chứng ở local stack. Open Innovation Grant entitlement, least-privilege self-TFA permission cho 7 human staff policy, staff/admin TOTP, password/status/role/MFA session revoke, retention rollback drill, hardened password recovery, registration/email verification, Redis fail-closed và encryption-key rotation đều đã pass. Phase 3 đang chờ Product Owner closure approval và CI evidence trên commit cuối; Admin Studio VPN cùng production retention scheduler thuộc Phase 13 theo `OPS-003`, còn business ownership/cross-user permission thuộc Phase 4 sau khi schema thật tồn tại.
+
+## Decision Gate — completed
 
 **Đã chốt:** User phải đăng nhập để dùng mọi product feature; anonymous chỉ xem landing page (`PRODUCT-006`).
 
-1. Chọn auth transport nào cho browser? Khuyến nghị: secure HttpOnly cookie/same-origin flow khi kiến trúc cho phép.
-2. Có yêu cầu social login hoặc enterprise SSO không?
-3. Admin Studio được bảo vệ bằng VPN, IP allowlist hay identity-aware proxy?
-4. Access token TTL, refresh lifetime và session concurrency policy mong muốn là gì?
-5. Có bắt buộc MFA cho toàn bộ staff hay chỉ admin/risk approver/billing admin?
-6. Audit/security log và billing event reference cần giữ bao lâu?
-7. Khi subscription state và JWT claim khác nhau, policy revalidation/deny Pro mong muốn là gì?
+Phase 3 Decision Gate được mở bởi `PRODUCT-014` và được Product Owner phê duyệt tại `PRODUCT-015`.
+
+1. Browser dùng opaque server-side application session qua same-origin API và secure cookie; frontend không giữ Directus token (`SEC-004`).
+2. MVP chỉ có email/password, chưa có social login hoặc enterprise SSO (`SEC-004`).
+3. Production Admin Studio dùng WireGuard VPN; IP allowlist chỉ là emergency/fallback (`SEC-005`).
+4. Directus access token phía server 10 phút; session/refresh tối đa 14 ngày; user tối đa 5 session, staff/admin tối đa 2 (`SEC-004`).
+5. MFA bắt buộc cho toàn bộ human staff/admin; user thông thường chưa bắt buộc trong MVP (`SEC-005`).
+6. Security/session log giữ 90 ngày, admin/security audit 12 tháng, billing/payment reference tối thiểu 24 tháng và phải legal review trước production (`DATA-006`).
+7. Database entitlement projection là nguồn sự thật; cache read-only tối đa 60 giây; Pro mutation/quota/payment action deny khi entitlement stale (`SEC-006`).
+
+## Implementation order đã duyệt
+
+1. Auth sequence, trust boundary và session contract.
+2. Role-policy-permission matrix và ownership rules.
+3. CSRF, CORS, rate limit, secure headers và log redaction.
+4. MFA, email verification, password reset và recovery controls.
+5. Automated negative permission tests, token/session revoke-rotation drill và evidence closure.
+
+Mọi TTL, concurrency limit, retention, allowlist và policy phải đi qua cấu hình versioned hoặc Directus-managed configuration phù hợp; frontend không được hardcode hay tự enforcement.
