@@ -49,24 +49,70 @@ jobs:
         run: |
           set -euo pipefail
           db_password="$(openssl rand -hex 32)"
+          api_db_password="$(openssl rand -hex 32)"
           redis_password="$(openssl rand -hex 32)"
           directus_key="$(openssl rand -hex 32)"
           directus_secret="$(openssl rand -hex 64)"
-          printf '::add-mask::%s\n' "$db_password" "$redis_password" "$directus_key" "$directus_secret"
+          api_session_encryption_key="$(openssl rand -base64 32 | tr '/+' '_-' | tr -d '=\n')"
+          api_csrf_signing_key="$(openssl rand -base64 32 | tr '/+' '_-' | tr -d '=\n')"
+          printf '::add-mask::%s\n' \
+            "$db_password" \
+            "$api_db_password" \
+            "$redis_password" \
+            "$directus_key" \
+            "$directus_secret" \
+            "$api_session_encryption_key" \
+            "$api_csrf_signing_key"
           export COMPOSE_PROJECT_NAME=vietnam_weather_ci
           export APP_ENV=development
           export DIRECTUS_HOST_PORT=8055
+          export API_HOST_PORT=8080
           export WORKER_HOST_PORT=8081
           export MAILPIT_SMTP_HOST_PORT=1025
           export MAILPIT_UI_HOST_PORT=8025
           export DB_DATABASE=directus
           export DB_USER=directus
           export DB_PASSWORD="$db_password"
+          export API_DB_USER=vnwa_api
+          export API_DB_PASSWORD="$api_db_password"
           export REDIS_PASSWORD="$redis_password"
           export DIRECTUS_KEY="$directus_key"
           export DIRECTUS_SECRET="$directus_secret"
           export DIRECTUS_PUBLIC_URL=http://localhost:8055
           export DIRECTUS_EMAIL_FROM=noreply@example.com
+          export DIRECTUS_PASSWORD_RESET_URL_ALLOW_LIST=http://localhost:8080/api/v1/auth/password/consume
+          export DIRECTUS_USER_REGISTER_URL_ALLOW_LIST=http://localhost:8080/api/v1/auth/verification/consume
+          export DIRECTUS_EMAIL_VERIFICATION_TOKEN_TTL=15m
+          export DIRECTUS_ACCESS_TOKEN_TTL=10m
+          export DIRECTUS_REFRESH_TOKEN_TTL=14d
+          export API_SERVICE_NAME=application-api
+          export API_PORT=8080
+          export API_DIRECTUS_URL=http://directus:8055
+          export API_ALLOWED_ORIGINS=http://localhost:8080
+          export API_PASSWORD_RESET_CONSUME_URL=http://localhost:8080/api/v1/auth/password/consume
+          export API_PASSWORD_RESET_REDIRECT_URL=http://localhost:8080/reset-password
+          export API_PASSWORD_RESET_TTL_SECONDS=900
+          export API_PASSWORD_RESET_MIN_LENGTH=12
+          export API_EMAIL_VERIFICATION_CONSUME_URL=http://localhost:8080/api/v1/auth/verification/consume
+          export API_EMAIL_VERIFICATION_REDIRECT_URL=http://localhost:8080/verify-email
+          export API_EMAIL_VERIFICATION_TTL_SECONDS=900
+          export API_REGISTRATION_MIN_LENGTH=12
+          export API_TRAVELER_ROLE_ID=00000000-0000-4000-8000-000000000001
+          export API_SESSION_COOKIE_NAME=__Host-vnwa_session
+          export API_CSRF_COOKIE_NAME=__Host-vnwa_csrf
+          export API_SESSION_SAME_SITE=strict
+          export API_SESSION_TTL_SECONDS=1209600
+          export API_USER_SESSION_LIMIT=5
+          export API_STAFF_SESSION_LIMIT=2
+          export API_MAX_BODY_BYTES=16384
+          export API_RATE_LIMIT_DEFAULT_MAX=120
+          export API_RATE_LIMIT_LOGIN_MAX=5
+          export API_RATE_LIMIT_WINDOW_MS=60000
+          export API_REDIS_TIMEOUT_MS=2000
+          export API_ACCESS_REFRESH_SKEW_MS=60000
+          export API_TRUST_PROXY=false
+          export API_SESSION_ENCRYPTION_KEY="$api_session_encryption_key"
+          export API_CSRF_SIGNING_KEY="$api_csrf_signing_key"
           export WORKER_SERVICE_NAME=integration-worker
           export WORKER_PORT=8081
           docker compose config --quiet
