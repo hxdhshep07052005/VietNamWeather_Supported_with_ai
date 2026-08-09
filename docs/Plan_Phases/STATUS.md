@@ -3,7 +3,7 @@
 **Ngày khởi tạo plan mới:** 2026-07-25  
 **Trạng thái tổng:** PHASE_4_IN_PROGRESS
 **Phase hiện tại:** Phase 4 — Data Model, Governance & Admin Panel
-**Cập nhật gần nhất:** 2026-08-04 — Technical Owner
+**Cập nhật gần nhất:** 2026-08-09 — Technical Owner
 
 ## Phase board
 
@@ -39,7 +39,8 @@ Mỗi lần đổi trạng thái phải ghi:
 
 - Phase 2 không còn blocker; local và remote evidence đã pass.
 - Phase 3 đã `VERIFIED`: local security/runtime baseline pass, CI run `30852140331` xanh trên commit `f91f549`, Product Owner chấp thuận closure tại `PRODUCT-016`.
-- Phase 4 local implementation đã pass: 40 collections, schema drift bằng 0, seed idempotent, governance/maker-checker/immutable-event tests, 149 business permissions và traveler cross-user denial thật.
+- Phase 4 local implementation đã pass trên working tree hiện tại: 40 collections, 33 indexes, 191 constraints, 16 governance triggers, schema drift bằng 0, seed idempotent, 151 business permissions, governance/maker-checker/immutable-event tests và traveler cross-user denial thật.
+- Build, lint, typecheck, 12 Node test, API/worker Docker build và `pnpm run validate:stage4` đều pass. PostgreSQL clean-bootstrap contract không còn chạy migration phụ thuộc Directus trước khi Directus tạo system schema.
 - Không có administrative unit, location, observation, forecast hoặc payment event giả. Official Vietnam location import chờ source/version/checksum/license theo `DATA-005` và `DATA-007`.
 - Phase 4 còn remote CI run trên commit cuối trước khi chuyển `VERIFIED`. Provider retention value thuộc Phase 5; route cleanup job thuộc Phase 8/13; Admin Studio VPN và production scheduler/alert thuộc Phase 13.
 - Credential license chỉ nằm trong `.env.local` Git-ignore; Directus xác nhận `active`, production/custom permissions=true. Không có secret trong source, image, seed, log hoặc evidence.

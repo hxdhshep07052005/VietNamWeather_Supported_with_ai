@@ -206,9 +206,29 @@ CREATE TABLE IF NOT EXISTS weather_providers (
     user_updated uuid NULL REFERENCES directus_users(id) ON DELETE SET NULL,
     date_updated timestamptz NULL,
     CONSTRAINT weather_providers_external_key_ck CHECK (external_key ~ '^[a-z0-9][a-z0-9._-]{1,127}$'),
+    CONSTRAINT weather_providers_base_origin_ck CHECK (
+        base_url ~ '^https://[A-Za-z0-9][A-Za-z0-9.-]*(:[0-9]{1,5})?$'
+        AND base_url !~* '^https://(localhost|[^.]+\.local|127\.|10\.|192\.168\.|169\.254\.|172\.(1[6-9]|2[0-9]|3[01])\.)'
+    ),
     CONSTRAINT weather_providers_status_ck CHECK (status IN ('disabled', 'testing', 'active', 'degraded', 'retired')),
     CONSTRAINT weather_providers_no_inline_secret_ck CHECK (credential_reference !~* '(api[_-]?key|secret|token)=[^& ]+')
 );
+
+DO $do$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1 FROM pg_constraint
+         WHERE conrelid = 'weather_providers'::regclass
+           AND conname = 'weather_providers_base_origin_ck'
+    ) THEN
+        ALTER TABLE weather_providers
+            ADD CONSTRAINT weather_providers_base_origin_ck CHECK (
+                base_url ~ '^https://[A-Za-z0-9][A-Za-z0-9.-]*(:[0-9]{1,5})?$'
+                AND base_url !~* '^https://(localhost|[^.]+\.local|127\.|10\.|192\.168\.|169\.254\.|172\.(1[6-9]|2[0-9]|3[01])\.)'
+            );
+    END IF;
+END
+$do$;
 
 CREATE TABLE IF NOT EXISTS provider_runs (
     id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -242,8 +262,10 @@ CREATE TABLE IF NOT EXISTS weather_observations (
     id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
     provider_id uuid NOT NULL REFERENCES weather_providers(id) ON DELETE RESTRICT,
     provider_run_id uuid NULL REFERENCES provider_runs(id) ON DELETE RESTRICT,
-    location_id uuid NOT NULL REFERENCES locations(id) ON DELETE RESTRICT,
+    location_id uuid NULL REFERENCES locations(id) ON DELETE RESTRICT,
+    coordinates geometry(Point, 4326) NOT NULL,
     idempotency_key varchar(255) NOT NULL,
+    normalized_payload_checksum_sha256 char(64) NOT NULL,
     provider_record_id varchar(255) NULL,
     observed_at timestamptz NOT NULL,
     fetched_at timestamptz NOT NULL,
@@ -264,6 +286,7 @@ CREATE TABLE IF NOT EXISTS weather_observations (
     user_created uuid NULL REFERENCES directus_users(id) ON DELETE SET NULL,
     date_created timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT weather_observations_times_ck CHECK (fetched_at >= observed_at AND expires_at >= fetched_at),
+    CONSTRAINT weather_observations_checksum_ck CHECK (normalized_payload_checksum_sha256 ~ '^[0-9a-f]{64}$'),
     CONSTRAINT weather_observations_humidity_ck CHECK (humidity_percent IS NULL OR humidity_percent BETWEEN 0 AND 100),
     CONSTRAINT weather_observations_precip_ck CHECK (precipitation_mm IS NULL OR precipitation_mm >= 0),
     CONSTRAINT weather_observations_wind_ck CHECK ((wind_speed_mps IS NULL OR wind_speed_mps >= 0) AND (wind_gust_mps IS NULL OR wind_gust_mps >= 0)),
@@ -281,11 +304,13 @@ CREATE TABLE IF NOT EXISTS weather_forecasts (
     id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
     provider_id uuid NOT NULL REFERENCES weather_providers(id) ON DELETE RESTRICT,
     provider_run_id uuid NULL REFERENCES provider_runs(id) ON DELETE RESTRICT,
-    location_id uuid NOT NULL REFERENCES locations(id) ON DELETE RESTRICT,
+    location_id uuid NULL REFERENCES locations(id) ON DELETE RESTRICT,
+    coordinates geometry(Point, 4326) NOT NULL,
     idempotency_key varchar(255) NOT NULL,
+    normalized_payload_checksum_sha256 char(64) NOT NULL,
     provider_record_id varchar(255) NULL,
     horizon_kind varchar(32) NOT NULL,
-    issued_at timestamptz NULL,
+    provider_issued_at timestamptz NULL,
     valid_from timestamptz NOT NULL,
     valid_to timestamptz NOT NULL,
     fetched_at timestamptz NOT NULL,
@@ -305,6 +330,7 @@ CREATE TABLE IF NOT EXISTS weather_forecasts (
     date_created timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT weather_forecasts_horizon_ck CHECK (horizon_kind IN ('current', 'hourly', 'daily', 'outlook')),
     CONSTRAINT weather_forecasts_times_ck CHECK (valid_to >= valid_from AND fetched_at <= expires_at),
+    CONSTRAINT weather_forecasts_checksum_ck CHECK (normalized_payload_checksum_sha256 ~ '^[0-9a-f]{64}$'),
     CONSTRAINT weather_forecasts_probability_ck CHECK (precipitation_probability_percent IS NULL OR precipitation_probability_percent BETWEEN 0 AND 100),
     CONSTRAINT weather_forecasts_confidence_ck CHECK (confidence_percent IS NULL OR confidence_percent BETWEEN 0 AND 100),
     CONSTRAINT weather_forecasts_status_ck CHECK (status IN ('valid', 'stale', 'unsupported_horizon', 'invalid', 'superseded')),
@@ -312,8 +338,106 @@ CREATE TABLE IF NOT EXISTS weather_forecasts (
 );
 
 CREATE INDEX IF NOT EXISTS weather_forecasts_location_valid_idx ON weather_forecasts (location_id, valid_from, valid_to);
-CREATE INDEX IF NOT EXISTS weather_forecasts_provider_issued_idx ON weather_forecasts (provider_id, issued_at DESC);
 CREATE INDEX IF NOT EXISTS weather_forecasts_expiry_idx ON weather_forecasts (expires_at);
+
+ALTER TABLE weather_observations
+    ADD COLUMN IF NOT EXISTS coordinates geometry(Point, 4326),
+    ADD COLUMN IF NOT EXISTS normalized_payload_checksum_sha256 char(64);
+ALTER TABLE weather_observations ALTER COLUMN location_id DROP NOT NULL;
+UPDATE weather_observations AS weather
+   SET coordinates = location.coordinates
+  FROM locations AS location
+ WHERE weather.coordinates IS NULL
+   AND weather.location_id = location.id;
+
+DO $do$
+BEGIN
+    IF EXISTS (SELECT 1 FROM weather_observations WHERE coordinates IS NULL) THEN
+        RAISE EXCEPTION 'Existing weather observations require coordinates before Phase 5 migration';
+    END IF;
+    IF EXISTS (SELECT 1 FROM weather_observations WHERE normalized_payload_checksum_sha256 IS NULL) THEN
+        RAISE EXCEPTION 'Existing weather observations require a normalized payload checksum before Phase 5 migration';
+    END IF;
+END
+$do$;
+
+ALTER TABLE weather_observations ALTER COLUMN coordinates SET NOT NULL;
+ALTER TABLE weather_observations ALTER COLUMN normalized_payload_checksum_sha256 SET NOT NULL;
+DO $do$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1 FROM pg_constraint
+         WHERE conrelid = 'weather_observations'::regclass
+           AND conname = 'weather_observations_checksum_ck'
+    ) THEN
+        ALTER TABLE weather_observations
+            ADD CONSTRAINT weather_observations_checksum_ck
+            CHECK (normalized_payload_checksum_sha256 ~ '^[0-9a-f]{64}$');
+    END IF;
+END
+$do$;
+CREATE INDEX IF NOT EXISTS weather_observations_coordinates_gix ON weather_observations USING gist (coordinates);
+
+DO $do$
+BEGIN
+    IF EXISTS (
+        SELECT 1 FROM information_schema.columns
+         WHERE table_schema = 'public' AND table_name = 'weather_forecasts' AND column_name = 'issued_at'
+    ) AND NOT EXISTS (
+        SELECT 1 FROM information_schema.columns
+         WHERE table_schema = 'public' AND table_name = 'weather_forecasts' AND column_name = 'provider_issued_at'
+    ) THEN
+        ALTER TABLE weather_forecasts RENAME COLUMN issued_at TO provider_issued_at;
+    END IF;
+END
+$do$;
+
+ALTER TABLE weather_forecasts
+    ADD COLUMN IF NOT EXISTS coordinates geometry(Point, 4326),
+    ADD COLUMN IF NOT EXISTS normalized_payload_checksum_sha256 char(64),
+    ADD COLUMN IF NOT EXISTS provider_issued_at timestamptz;
+ALTER TABLE weather_forecasts ALTER COLUMN location_id DROP NOT NULL;
+UPDATE weather_forecasts AS weather
+   SET coordinates = location.coordinates
+  FROM locations AS location
+ WHERE weather.coordinates IS NULL
+   AND weather.location_id = location.id;
+
+DO $do$
+BEGIN
+    IF EXISTS (SELECT 1 FROM weather_forecasts WHERE coordinates IS NULL) THEN
+        RAISE EXCEPTION 'Existing weather forecasts require coordinates before Phase 5 migration';
+    END IF;
+    IF EXISTS (SELECT 1 FROM weather_forecasts WHERE normalized_payload_checksum_sha256 IS NULL) THEN
+        RAISE EXCEPTION 'Existing weather forecasts require a normalized payload checksum before Phase 5 migration';
+    END IF;
+END
+$do$;
+
+ALTER TABLE weather_forecasts ALTER COLUMN coordinates SET NOT NULL;
+ALTER TABLE weather_forecasts ALTER COLUMN normalized_payload_checksum_sha256 SET NOT NULL;
+DO $do$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1 FROM pg_constraint
+         WHERE conrelid = 'weather_forecasts'::regclass
+           AND conname = 'weather_forecasts_checksum_ck'
+    ) THEN
+        ALTER TABLE weather_forecasts
+            ADD CONSTRAINT weather_forecasts_checksum_ck
+            CHECK (normalized_payload_checksum_sha256 ~ '^[0-9a-f]{64}$');
+    END IF;
+END
+$do$;
+CREATE INDEX IF NOT EXISTS weather_forecasts_coordinates_gix ON weather_forecasts USING gist (coordinates);
+CREATE INDEX IF NOT EXISTS weather_forecasts_provider_issued_idx ON weather_forecasts (provider_id, provider_issued_at DESC);
+DELETE FROM directus_fields
+ WHERE collection = 'weather_forecasts'
+   AND field = 'issued_at'
+   AND NOT EXISTS (
+       SELECT 1 FROM information_schema.columns
+        WHERE table_schema = 'public' AND table_name = 'weather_forecasts' AND column_name = 'issued_at'
+   );
 
 CREATE TABLE IF NOT EXISTS risk_rule_sets (
     id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -1094,6 +1218,24 @@ BEGIN
     ];
     IF OLD.status <> 'draft' AND old_business IS DISTINCT FROM new_business THEN
         RAISE EXCEPTION 'Governed business fields are immutable after draft submission';
+    END IF;
+
+    IF NEW.status IS DISTINCT FROM OLD.status AND (
+        NEW.user_updated IS NULL OR NEW.user_updated IS NOT DISTINCT FROM OLD.user_updated
+    ) THEN
+        RAISE EXCEPTION 'Governed transition actor must match the Directus accountability actor';
+    END IF;
+    IF NEW.status IS DISTINCT FROM OLD.status AND NEW.status = 'review' THEN
+        NEW.submitted_by := NEW.user_updated;
+        NEW.submitted_at := CURRENT_TIMESTAMP;
+    END IF;
+    IF NEW.status IS DISTINCT FROM OLD.status AND NEW.status = 'approved' THEN
+        NEW.approved_by := NEW.user_updated;
+        NEW.approved_at := CURRENT_TIMESTAMP;
+    END IF;
+    IF NEW.status IS DISTINCT FROM OLD.status AND NEW.status = 'published' THEN
+        NEW.published_by := NEW.user_updated;
+        NEW.published_at := CURRENT_TIMESTAMP;
     END IF;
 
     IF NEW.status IN ('review', 'approved', 'published') AND (NEW.submitted_by IS NULL OR NEW.submitted_at IS NULL) THEN

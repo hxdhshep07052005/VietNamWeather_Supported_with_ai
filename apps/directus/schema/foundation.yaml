@@ -24757,7 +24757,7 @@ fields:
       max_length: null
       numeric_precision: null
       numeric_scale: null
-      is_nullable: false
+      is_nullable: true
       is_unique: false
       is_indexed: false
       is_primary_key: false
@@ -25370,46 +25370,6 @@ fields:
       foreign_key_table: null
       foreign_key_column: null
   - collection: weather_forecasts
-    field: issued_at
-    type: timestamp
-    meta:
-      collection: weather_forecasts
-      conditions: null
-      display: null
-      display_options: null
-      field: issued_at
-      group: null
-      hidden: false
-      interface: datetime
-      note: null
-      options: null
-      readonly: false
-      required: false
-      searchable: true
-      sort: 8
-      special: null
-      translations: null
-      validation: null
-      validation_message: null
-      width: half
-    schema:
-      name: issued_at
-      table: weather_forecasts
-      data_type: timestamp with time zone
-      default_value: null
-      max_length: null
-      numeric_precision: null
-      numeric_scale: null
-      is_nullable: true
-      is_unique: false
-      is_indexed: false
-      is_primary_key: false
-      is_generated: false
-      generation_expression: null
-      has_auto_increment: false
-      foreign_key_table: null
-      foreign_key_column: null
-  - collection: weather_forecasts
     field: confidence_percent
     type: decimal
     meta:
@@ -25560,6 +25520,126 @@ fields:
       max_length: null
       numeric_precision: 6
       numeric_scale: 3
+      is_nullable: true
+      is_unique: false
+      is_indexed: false
+      is_primary_key: false
+      is_generated: false
+      generation_expression: null
+      has_auto_increment: false
+      foreign_key_table: null
+      foreign_key_column: null
+  - collection: weather_forecasts
+    field: coordinates
+    type: geometry.Point
+    meta:
+      collection: weather_forecasts
+      conditions: null
+      display: map
+      display_options: null
+      field: coordinates
+      group: null
+      hidden: false
+      interface: map
+      note: null
+      options: null
+      readonly: false
+      required: true
+      searchable: true
+      sort: 26
+      special: null
+      translations: null
+      validation: null
+      validation_message: null
+      width: half
+    schema:
+      name: coordinates
+      table: weather_forecasts
+      data_type: POINT
+      default_value: null
+      max_length: null
+      numeric_precision: null
+      numeric_scale: null
+      is_nullable: false
+      is_unique: false
+      is_indexed: true
+      is_primary_key: false
+      is_generated: false
+      generation_expression: null
+      has_auto_increment: false
+      foreign_key_table: null
+      foreign_key_column: null
+  - collection: weather_forecasts
+    field: normalized_payload_checksum_sha256
+    type: string
+    meta:
+      collection: weather_forecasts
+      conditions: null
+      display: null
+      display_options: null
+      field: normalized_payload_checksum_sha256
+      group: null
+      hidden: false
+      interface: input
+      note: null
+      options: null
+      readonly: false
+      required: true
+      searchable: true
+      sort: 27
+      special: null
+      translations: null
+      validation: null
+      validation_message: null
+      width: half
+    schema:
+      name: normalized_payload_checksum_sha256
+      table: weather_forecasts
+      data_type: character
+      default_value: null
+      max_length: 64
+      numeric_precision: null
+      numeric_scale: null
+      is_nullable: false
+      is_unique: false
+      is_indexed: false
+      is_primary_key: false
+      is_generated: false
+      generation_expression: null
+      has_auto_increment: false
+      foreign_key_table: null
+      foreign_key_column: null
+  - collection: weather_forecasts
+    field: provider_issued_at
+    type: timestamp
+    meta:
+      collection: weather_forecasts
+      conditions: null
+      display: null
+      display_options: null
+      field: provider_issued_at
+      group: null
+      hidden: false
+      interface: datetime
+      note: null
+      options: null
+      readonly: false
+      required: false
+      searchable: true
+      sort: 8
+      special: null
+      translations: null
+      validation: null
+      validation_message: null
+      width: half
+    schema:
+      name: provider_issued_at
+      table: weather_forecasts
+      data_type: timestamp with time zone
+      default_value: null
+      max_length: null
+      numeric_precision: null
+      numeric_scale: null
       is_nullable: true
       is_unique: false
       is_indexed: false
@@ -25801,7 +25881,7 @@ fields:
       max_length: null
       numeric_precision: null
       numeric_scale: null
-      is_nullable: false
+      is_nullable: true
       is_unique: false
       is_indexed: false
       is_primary_key: false
@@ -26530,6 +26610,86 @@ fields:
       is_unique: true
       is_indexed: false
       is_primary_key: true
+      is_generated: false
+      generation_expression: null
+      has_auto_increment: false
+      foreign_key_table: null
+      foreign_key_column: null
+  - collection: weather_observations
+    field: coordinates
+    type: geometry.Point
+    meta:
+      collection: weather_observations
+      conditions: null
+      display: map
+      display_options: null
+      field: coordinates
+      group: null
+      hidden: false
+      interface: map
+      note: null
+      options: null
+      readonly: false
+      required: true
+      searchable: true
+      sort: 25
+      special: null
+      translations: null
+      validation: null
+      validation_message: null
+      width: half
+    schema:
+      name: coordinates
+      table: weather_observations
+      data_type: POINT
+      default_value: null
+      max_length: null
+      numeric_precision: null
+      numeric_scale: null
+      is_nullable: false
+      is_unique: false
+      is_indexed: true
+      is_primary_key: false
+      is_generated: false
+      generation_expression: null
+      has_auto_increment: false
+      foreign_key_table: null
+      foreign_key_column: null
+  - collection: weather_observations
+    field: normalized_payload_checksum_sha256
+    type: string
+    meta:
+      collection: weather_observations
+      conditions: null
+      display: null
+      display_options: null
+      field: normalized_payload_checksum_sha256
+      group: null
+      hidden: false
+      interface: input
+      note: null
+      options: null
+      readonly: false
+      required: true
+      searchable: true
+      sort: 26
+      special: null
+      translations: null
+      validation: null
+      validation_message: null
+      width: half
+    schema:
+      name: normalized_payload_checksum_sha256
+      table: weather_observations
+      data_type: character
+      default_value: null
+      max_length: 64
+      numeric_precision: null
+      numeric_scale: null
+      is_nullable: false
+      is_unique: false
+      is_indexed: false
+      is_primary_key: false
       is_generated: false
       generation_expression: null
       has_auto_increment: false

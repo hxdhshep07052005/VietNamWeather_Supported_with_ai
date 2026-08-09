@@ -53,6 +53,52 @@ $permissionIdentities = @($permissions | ForEach-Object { "$([string]$_.roleKey)
 if (@($permissionIdentities | Sort-Object -Unique).Count -ne $permissions.Count) { throw 'Phase 4 permission identities are not unique.' }
 if (@($permissions | Where-Object roleKey -eq 'ai_tool_service').Count -ne 0) { throw 'AI tool service must remain disabled in Phase 4.' }
 
+$weatherReadCollections = @(
+    $permissions |
+        Where-Object {
+            [string]$_.roleKey -eq 'weather_ingestion_service' -and
+            [string]$_.action -eq 'read' -and
+            [string]$_.collection -in @('weather_observations', 'weather_forecasts')
+        } |
+        ForEach-Object { [string]$_.collection } |
+        Sort-Object -Unique
+)
+if (($weatherReadCollections -join '|') -ne 'weather_forecasts|weather_observations') {
+    throw 'Weather ingestion service must have narrow idempotency-read permissions for observations and forecasts.'
+}
+foreach ($entry in @($permissions | Where-Object {
+    [string]$_.roleKey -eq 'weather_ingestion_service' -and
+    [string]$_.action -eq 'read' -and
+    [string]$_.collection -in @('weather_observations', 'weather_forecasts')
+})) {
+    $fields = @($entry.fields | ForEach-Object { [string]$_ })
+    if (($fields | Sort-Object) -join '|' -ne 'id|idempotency_key|normalized_payload_checksum_sha256|provider_id') {
+        throw "Weather idempotency-read permission exposes unexpected fields: $([string]$entry.key)"
+    }
+}
+
+foreach ($requiredPattern in @(
+    'weather_providers_base_origin_ck',
+    'weather_observations_coordinates_gix',
+    'weather_forecasts_coordinates_gix',
+    'normalized_payload_checksum_sha256',
+    'provider_issued_at',
+    'Governed transition actor must match the Directus accountability actor'
+)) {
+    if ($migration -notmatch [regex]::Escape($requiredPattern)) {
+        throw "Phase 4 migration is missing the readiness invariant: $requiredPattern"
+    }
+}
+$weatherObservationTable = [regex]::Match($migration, '(?ims)^CREATE TABLE IF NOT EXISTS weather_observations\s*\(.*?^\);').Value
+$weatherForecastTable = [regex]::Match($migration, '(?ims)^CREATE TABLE IF NOT EXISTS weather_forecasts\s*\(.*?^\);').Value
+if ([string]::IsNullOrWhiteSpace($weatherObservationTable) -or [string]::IsNullOrWhiteSpace($weatherForecastTable)) {
+    throw 'Normalized weather table definitions are missing from the Phase 4 migration.'
+}
+if ($weatherObservationTable -match '(?im)^\s*location_id\s+uuid\s+NOT\s+NULL\b' -or
+    $weatherForecastTable -match '(?im)^\s*location_id\s+uuid\s+NOT\s+NULL\b') {
+    throw 'Normalized weather rows must support coordinate targets without requiring a canonical location.'
+}
+
 $approvedSeedCollections = @('supported_locales', 'product_plans', 'product_features', 'plan_entitlements', 'usage_policies')
 $actualSeedCollections = @($seedManifest.allowedCollections | ForEach-Object { [string]$_ } | Sort-Object)
 if (($actualSeedCollections -join '|') -ne (($approvedSeedCollections | Sort-Object) -join '|')) {

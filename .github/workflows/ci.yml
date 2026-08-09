@@ -44,6 +44,9 @@ jobs:
       - name: Test
         run: pnpm run test
 
+      - name: Audit production dependencies
+        run: pnpm run audit:prod
+
       - name: Validate Compose contract
         shell: bash
         run: |

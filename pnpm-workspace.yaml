@@ -2,7 +2,18 @@ packages:
   - "apps/*"
   - "packages/*"
 
+engineStrict: true
+saveExact: true
+strictPeerDependencies: true
+
+overrides:
+  "fast-uri@>=3.0.0 <3.1.5": "3.1.5"
+  "fast-uri@>=4.0.0 <4.1.2": "4.1.2"
+
 minimumReleaseAgeExclude:
   - fastify@5.11.0
+  - fastify@5.11.2
+  - fast-uri@3.1.5
+  - fast-uri@4.1.2
 
 onlyBuiltDependencies: []

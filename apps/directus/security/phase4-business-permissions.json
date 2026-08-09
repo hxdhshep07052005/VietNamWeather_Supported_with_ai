@@ -2,7 +2,7 @@
   "manifestVersion": 1,
   "directusVersion": "12.1.1",
   "key": "phase4-business-permissions",
-  "version": "2026.08.04.2",
+  "version": "2026.08.09.1",
   "description": "Phase 4 business collection permissions mapped from the approved logical authorization contract. Directus browser access remains forbidden; Application API remains the public facade.",
   "provenance": [
     "SEC-008",
@@ -947,10 +947,24 @@
       "action": "create"
     },
     {
+      "key": "weather_service_read_observation_idempotency",
+      "roleKey": "weather_ingestion_service",
+      "collection": "weather_observations",
+      "action": "read",
+      "fields": ["id", "provider_id", "idempotency_key", "normalized_payload_checksum_sha256"]
+    },
+    {
       "key": "weather_service_create_forecasts",
       "roleKey": "weather_ingestion_service",
       "collection": "weather_forecasts",
       "action": "create"
+    },
+    {
+      "key": "weather_service_read_forecast_idempotency",
+      "roleKey": "weather_ingestion_service",
+      "collection": "weather_forecasts",
+      "action": "read",
+      "fields": ["id", "provider_id", "idempotency_key", "normalized_payload_checksum_sha256"]
     },
     {
       "key": "route_service_read_locations",

@@ -31,8 +31,8 @@ STAGE4_DATA_MODEL_ADMIN_OK collections=40 ... fixture_rows=0 ... secrets_printed
 
 Các gate bên trong:
 
-- Schema snapshot drift bằng 0; 40 Directus collections, 31 declared indexes, 188 named constraints và 16 governance triggers tồn tại.
-- 149 business permission cộng 7 self-TFA permission; apply idempotent; AI permission bằng 0.
+- Schema snapshot drift bằng 0; 40 Directus collections, 33 declared indexes, 191 named constraints và 16 governance triggers tồn tại.
+- 151 business permission cộng 7 self-TFA permission; apply idempotent; AI permission bằng 0.
 - Stage 3 security bootstrap chạy lại với `permission_deleted=0`.
 - Administrative parent cross-version, invalid workflow transition, self-approval rule/advisory, post-submit rule mutation, usage/payment identity update/delete đều bị từ chối.
 - Traveler positive path cho published location, favorite và saved route pass; cross-user list/read/update/delete bị từ chối.
@@ -42,7 +42,15 @@ Các gate bên trong:
 
 ## Current local data evidence
 
-Tại lần validation Phase 4 ngày 2026-08-04: `administrative_units=0`, `locations=0`, `weather_observations=0`, `weather_forecasts=0`, `payment_events=0`. Các row hiện có chỉ là approved config seed (locale, plan, feature, entitlement, usage policy) và seed audit.
+Tại lần validation Phase 4 ngày 2026-08-09: `administrative_units=0`, `locations=0`, `weather_observations=0`, `weather_forecasts=0`, `payment_events=0`. Các row hiện có chỉ là approved config seed (locale, plan, feature, entitlement, usage policy) và seed audit.
+
+Validation trên working tree hiện tại đã pass:
+
+- `pnpm run build`, `pnpm run lint`, `pnpm run typecheck` và 12 Node test.
+- API và worker Docker image build từ Dockerfile hiện tại.
+- `pnpm run validate:stage4` với marker `STAGE4_DATA_MODEL_ADMIN_OK`.
+- Directus schema SHA-256 `260c629828adf8a905a1774668b32a2d24769e78a68c804dfb8eb9bb2edf7800` và drift bằng 0.
+- Compose bootstrap không còn chạy migration phụ thuộc `directus_users` trong PostgreSQL init; migration Phase 4 được apply sau khi Directus system schema tồn tại.
 
 ## Open evidence
 

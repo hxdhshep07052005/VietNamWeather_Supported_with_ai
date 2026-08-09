@@ -3,7 +3,7 @@ FROM node:24.18.0-alpine3.24@sha256:a0b9bf06e4e6193cf7a0f58816cc935ff8c2a908f81e
 WORKDIR /workspace
 RUN corepack enable && corepack prepare pnpm@11.9.0 --activate
 
-COPY package.json pnpm-lock.yaml pnpm-workspace.yaml .npmrc tsconfig.base.json ./
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml tsconfig.base.json ./
 COPY apps/worker/package.json apps/worker/tsconfig.json ./apps/worker/
 COPY packages/config/package.json packages/config/tsconfig.json ./packages/config/
 COPY packages/contracts/package.json packages/contracts/tsconfig.json ./packages/contracts/

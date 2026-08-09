@@ -118,9 +118,9 @@ INSERT INTO locations (
     '$locationId', '$locationKey', 'other', 'Phase 4 ephemeral permission fixture',
     ST_SetSRID(ST_MakePoint(0, 0), 4326), 'draft', '$adminUserId'
 );
-UPDATE locations SET status = 'review', submitted_by = '$adminUserId', submitted_at = CURRENT_TIMESTAMP WHERE id = '$locationId';
-UPDATE locations SET status = 'approved', approved_by = '$adminUserId', approved_at = CURRENT_TIMESTAMP WHERE id = '$locationId';
-UPDATE locations SET status = 'published', published_by = '$adminUserId', published_at = CURRENT_TIMESTAMP WHERE id = '$locationId';
+UPDATE locations SET status = 'review', user_updated = '$adminUserId' WHERE id = '$locationId';
+UPDATE locations SET status = 'approved', user_updated = '$($userIds[0])' WHERE id = '$locationId';
+UPDATE locations SET status = 'published', user_updated = '$adminUserId' WHERE id = '$locationId';
 COMMIT;
 "@
     docker compose --env-file $RuntimeEnvPath exec -T database psql -q -v ON_ERROR_STOP=1 `
@@ -194,13 +194,13 @@ COMMIT;
     $favoriteIds.Clear()
     $savedRouteIds.Clear()
 
+    docker compose --env-file $RuntimeEnvPath exec -T database psql -q -v ON_ERROR_STOP=1 `
+        -U $runtime['DB_USER'] -d $runtime['DB_DATABASE'] -c "DELETE FROM locations WHERE id = '$locationId';"
+    if ($LASTEXITCODE -ne 0) { throw 'Unable to remove the ephemeral location fixture.' }
     foreach ($userId in @($userIds)) {
         Invoke-Api -Method Delete -Uri "$baseUrl/users/$userId" -Headers $adminHeaders | Out-Null
     }
     $userIds.Clear()
-    docker compose --env-file $RuntimeEnvPath exec -T database psql -q -v ON_ERROR_STOP=1 `
-        -U $runtime['DB_USER'] -d $runtime['DB_DATABASE'] -c "DELETE FROM locations WHERE id = '$locationId';"
-    if ($LASTEXITCODE -ne 0) { throw 'Unable to remove the ephemeral location fixture.' }
 
     $remaining = [string](docker compose --env-file $RuntimeEnvPath exec -T database psql -qAt -v ON_ERROR_STOP=1 `
         -U $runtime['DB_USER'] -d $runtime['DB_DATABASE'] `
@@ -216,13 +216,13 @@ finally {
     foreach ($savedRouteId in @($savedRouteIds)) {
         try { Invoke-Api -Method Delete -Uri "$baseUrl/items/saved_routes/$savedRouteId" -Headers $adminHeaders | Out-Null } catch { }
     }
-    foreach ($userId in @($userIds)) {
-        try { Invoke-Api -Method Delete -Uri "$baseUrl/users/$userId" -Headers $adminHeaders | Out-Null } catch { }
-    }
     try {
         docker compose --env-file $RuntimeEnvPath exec -T database psql -q -v ON_ERROR_STOP=1 `
             -U $runtime['DB_USER'] -d $runtime['DB_DATABASE'] -c "DELETE FROM locations WHERE id = '$locationId';" | Out-Null
     } catch { }
+    foreach ($userId in @($userIds)) {
+        try { Invoke-Api -Method Delete -Uri "$baseUrl/users/$userId" -Headers $adminHeaders | Out-Null } catch { }
+    }
     if ($login.data.refresh_token) {
         try { Invoke-Api -Method Post -Uri "$baseUrl/auth/logout" -Headers $adminHeaders -Body @{ refresh_token = $login.data.refresh_token } | Out-Null } catch { }
     }

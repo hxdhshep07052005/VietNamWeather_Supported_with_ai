@@ -24,6 +24,7 @@ $adminId = [string](docker compose --env-file $RuntimeEnvPath exec -T database p
 if ($LASTEXITCODE -ne 0 -or $adminId.Trim() -notmatch '^[0-9a-fA-F-]{36}$') { throw 'A Directus actor is required for governance fixtures.' }
 $adminId = $adminId.Trim()
 
+$reviewerId = New-Id
 $sourceId = New-Id
 $versionOneId = New-Id
 $versionTwoId = New-Id
@@ -67,6 +68,9 @@ DECLARE
     immutable_payment_update boolean := false;
     immutable_payment_delete boolean := false;
 BEGIN
+    INSERT INTO directus_users (id, email, status, provider)
+    VALUES ('$reviewerId', 'phase4-reviewer-$suffix@example.com', 'active', 'default');
+
     INSERT INTO reference_sources (
         id, external_key, name, publisher, source_url, publication_version, status, user_created
     ) VALUES (
@@ -102,7 +106,7 @@ BEGIN
         id, external_key, version, content_type, slug, status, user_created
     ) VALUES ('$contentId', '$contentKey', 1, 'help', '$contentKey', 'draft', '$adminId');
     BEGIN
-        UPDATE content_pages SET status = 'approved', approved_by = '$adminId', approved_at = CURRENT_TIMESTAMP WHERE id = '$contentId';
+        UPDATE content_pages SET status = 'approved', user_updated = '$reviewerId' WHERE id = '$contentId';
     EXCEPTION WHEN OTHERS THEN
         IF SQLERRM NOT LIKE '%Invalid governed status transition%' THEN RAISE; END IF;
         invalid_workflow := true;
@@ -119,7 +123,7 @@ BEGIN
         'low', 'phase4.test.rule', 'fixture', '$adminId'
     );
     UPDATE risk_rule_sets
-       SET status = 'review', submitted_by = '$adminId', submitted_at = CURRENT_TIMESTAMP
+       SET status = 'review', user_updated = '$reviewerId'
      WHERE id = '$ruleSetId';
     BEGIN
         UPDATE risk_rules SET notes = 'must be rejected' WHERE id = '$riskRuleId';
@@ -129,7 +133,7 @@ BEGIN
     END;
     BEGIN
         UPDATE risk_rule_sets
-           SET status = 'approved', approved_by = '$adminId', approved_at = CURRENT_TIMESTAMP
+           SET status = 'approved', user_updated = '$adminId'
          WHERE id = '$ruleSetId';
     EXCEPTION WHEN OTHERS THEN
         IF SQLERRM NOT LIKE '%Maker-checker separation forbids self-approval%' THEN RAISE; END IF;
@@ -144,11 +148,11 @@ BEGIN
         'phase4.test.title', 'phase4.test.body', 'https://example.invalid/advisory', 'draft', '$adminId'
     );
     UPDATE risk_advisories
-       SET status = 'review', submitted_by = '$adminId', submitted_at = CURRENT_TIMESTAMP
+       SET status = 'review', user_updated = '$reviewerId'
      WHERE id = '$advisoryId';
     BEGIN
         UPDATE risk_advisories
-           SET status = 'approved', approved_by = '$adminId', approved_at = CURRENT_TIMESTAMP
+           SET status = 'approved', user_updated = '$adminId'
          WHERE id = '$advisoryId';
     EXCEPTION WHEN OTHERS THEN
         IF SQLERRM NOT LIKE '%Maker-checker separation forbids self-approval%' THEN RAISE; END IF;

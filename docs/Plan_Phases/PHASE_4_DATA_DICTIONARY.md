@@ -24,8 +24,8 @@
 | `location_provider_mappings` | Mapping canonical location sang provider ID | provider domain/key/id unique |
 | `weather_providers` | Cấu hình provider không chứa secret | stable key; credential reference; status |
 | `provider_runs` | Job ingestion có audit/idempotency | provider + idempotency unique; parser version |
-| `weather_observations` | Weather quan trắc đã normalize | provider/idempotency unique; explicit units/expiry |
-| `weather_forecasts` | Forecast interval đã normalize | issued/valid/fetched/expiry; parser provenance |
+| `weather_observations` | Weather quan trắc đã normalize | provider/idempotency unique; coordinate target; normalized checksum; explicit units/expiry |
+| `weather_forecasts` | Forecast interval đã normalize | nullable provider-issued time; coordinate target; normalized checksum; valid/fetched/expiry; parser provenance |
 | `risk_rule_sets` | Release rule-set versioned | maker-checker workflow; key/version unique |
 | `risk_rules` | Rule deterministic trong rule-set | chỉ sửa khi parent còn draft |
 | `risk_assessments` | Kết quả risk có idempotency | rule-set FK, score/confidence/status |

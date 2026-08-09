@@ -12,7 +12,9 @@ services:
       API_DB_PASSWORD: ${API_DB_PASSWORD:?API_DB_PASSWORD is required}
     volumes:
       - database_data:/var/lib/postgresql/data
-      - ./infra/postgres/init:/docker-entrypoint-initdb.d:ro
+      - ./infra/postgres/init/001-enable-postgis.sql:/docker-entrypoint-initdb.d/001-enable-postgis.sql:ro
+      - ./infra/postgres/init/002-create-seed-audit.sql:/docker-entrypoint-initdb.d/002-create-seed-audit.sql:ro
+      - ./infra/postgres/init/003-create-api-security.sh:/docker-entrypoint-initdb.d/003-create-api-security.sh:ro
     networks:
       - data
     healthcheck:
