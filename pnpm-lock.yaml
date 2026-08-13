@@ -48,6 +48,9 @@ importers:
       '@vietnam-weather/config':
         specifier: workspace:*
         version: link:../../packages/config
+      '@vietnam-weather/contracts':
+        specifier: workspace:*
+        version: link:../../packages/contracts
       fastify:
         specifier: 5.11.2
         version: 5.11.2
