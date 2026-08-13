@@ -748,3 +748,91 @@ Evidence/ADR:
 - **Lý do:** MVP tập trung core forecast display. Export thêm complexity.
 - **Trade-off:** User không thể export chart.
 - **Review lại:** Khi cần export/share feature.
+
+### ROUTE-001 — Vehicle Type Support
+
+- **Ngày quyết định:** 2026-08-14
+- **Người quyết định:** Technical Owner
+- **Phase:** 8
+- **Vấn đề:** Loại phương tiện được hỗ trợ.
+- **Quyết định:** MVP hỗ trợ Car và Motorcycle. Walking deferred Phase 9+.
+- **Lý do:** Phổ biến ở Việt Nam; 45+ triệu xe máy, car là phương tiện phổ biến thứ hai.
+- **Trade-off:** Không hỗ trợ walking/cycling trong MVP.
+- **Review lại:** Khi cần thêm loại phương tiện.
+
+### ROUTE-002 — Departure Time Input
+
+- **Ngày quyết định:** 2026-08-14
+- **Người quyết định:** Technical Owner
+- **Phase:** 8
+- **Vấn đề:** Nhập thời gian khởi hành.
+- **Quyết định:** Optional, default "now". Phải trong 72 giờ.
+- **Lý do:** Đơn giản hóa MVP; hầu hết user muốn route ngay.
+- **Trade-off:** Không hỗ trợ departure time quá 72 giờ.
+- **Review lại:** Khi cần schedule trip.
+
+### ROUTE-003 — Route Alternatives
+
+- **Ngày quyết định:** 2026-08-14
+- **Người quyết định:** Technical Owner
+- **Phase:** 8
+- **Vấn đề:** Số lượng route alternatives.
+- **Quyết định:** MVP trả 3 alternatives: Fastest (duration min), Shortest (distance min), Weather-safer (risk min).
+- **Lý do:** Ba alternatives cho choice có ý nghĩa; dựa trên Phase 6 risk engine.
+- **Trade-off:** Không claim "optimal global" nếu provider không hỗ trợ alternatives.
+- **Review lại:** Khi cần thêm alternatives.
+
+### ROUTE-004 — Route Scoring Weights
+
+- **Ngày quyết định:** 2026-08-14
+- **Người quyết định:** Technical Owner
+- **Phase:** 8
+- **Vấn đề:** Cân bằng các yếu tố trong scoring.
+- **Quyết định:** Configurable via Directus. MVP default: risk=0.5, time=0.3, distance=0.2.
+- **Lý do:** Configurable cho phép tuning không cần code change.
+- **Trade-off:** Default weights có thể không phù hợp với tất cả use cases.
+- **Review lại:** Khi có user feedback.
+
+### ROUTE-005 — Maximum Route Length
+
+- **Ngày quyết định:** 2026-08-14
+- **Người quyết định:** Technical Owner
+- **Phase:** 8
+- **Vấn đề:** Giới hạn độ dài route.
+- **Quyết định:** Tối đa 50 km.
+- **Lý do:** Geoapify Free plan limits; 50 km cover hầu hết intra-city routes.
+- **Trade-off:** Không support long-distance routes.
+- **Review lại:** Khi có Pro tier với longer limits.
+
+### ROUTE-006 — Route History/Favorites
+
+- **Ngày quyết định:** 2026-08-14
+- **Người quyết định:** Technical Owner
+- **Phase:** 8
+- **Vấn đề:** Lưu route history hoặc favorites.
+- **Quyết định:** MVP stateless - không lưu history/favorites.
+- **Lý do:** MVP tập trung core planning; history thêm complexity.
+- **Trade-off:** User không thể save routes.
+- **Review lại:** Khi cần route saving feature.
+
+### ROUTE-007 — Auto-Reroute Behavior
+
+- **Ngày quyết định:** 2026-08-14
+- **Người quyết định:** Technical Owner
+- **Phase:** 8
+- **Vấn đề:** Tự động reroute khi deviated.
+- **Quyết định:** Luôn hỏi user confirmation trước reroute (Free và Pro).
+- **Lý do:** Safety-first; không tự đổi route user.
+- **Trade-off:** User phải tương tác để reroute.
+- **Review lại:** Khi có auto-reroute feature request.
+
+### ROUTE-008 — Deviation Threshold
+
+- **Ngày quyết định:** 2026-08-14
+- **Người quyết định:** Technical Owner
+- **Phase:** 8
+- **Vấn đề:** Ngưỡng deviated để trigger reroute.
+- **Quyết định:** Default 100m deviation threshold, 60s minimum reroute interval. Configurable.
+- **Lý do:** 100m handle GPS accuracy issues; 60s prevents notification spam.
+- **Trade-off:** Có thể miss small deviations.
+- **Review lại:** Khi có GPS accuracy data.

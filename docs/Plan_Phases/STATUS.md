@@ -1,8 +1,8 @@
 # Project Status
 
 **Ngày khởi tạo plan mới:** 2026-07-25  
-**Trạng thái tổng:** PHASE_7_IN_PROGRESS
-**Phase hiện tại:** Phase 7 — Forecast & Trend Experience
+**Trạng thái tổng:** PHASE_8_IN_PROGRESS
+**Phase hiện tại:** Phase 8 — Weather-Aware Route Planner
 **Cập nhật gần nhất:** 2026-08-14 — Technical Owner
 
 ## Phase board
@@ -16,8 +16,8 @@
 | 4. Data Model & Admin | VERIFIED | Phase 3 VERIFIED; CI run verified | `DATA-007`, [`PHASE_4_EVIDENCE.md`](PHASE_4_EVIDENCE.md), `pnpm run validate:stage4` |
 | 5. Weather Integration | VERIFIED | Phase 4 VERIFIED; CI run verified | `ARCH-016`, `DATA-008`, [`PHASE_5_EVIDENCE.md`](PHASE_5_EVIDENCE.md), `pnpm run validate:stage5` |
 | 6. Risk Engine | VERIFIED | Phase 5 VERIFIED; CI run `f801c28` | [`PHASE_6_EVIDENCE.md`](PHASE_6_EVIDENCE.md), [`PHASE_6_DECISIONS.md`](PHASE_6_DECISIONS.md), `RISK-001..007` |
-| 7. Forecast & Trends | IN_PROGRESS | Phase 5 & 6 VERIFIED; Decision Gate `FCAST-001..006` | [`PHASE_7_DECISIONS.md`](PHASE_7_DECISIONS.md) |
-| 8. Route Planner | BLOCKED | Phase 6 và 7 VERIFIED | Chưa có |
+| 7. Forecast & Trends | VERIFIED | Phase 5 & 6 VERIFIED; CI run `6feeb3c` | [`PHASE_7_DECISIONS.md`](PHASE_7_DECISIONS.md), [`PHASE_7_EVIDENCE.md`](PHASE_7_EVIDENCE.md), `FCAST-001..006` |
+| 8. Route Planner | IN_PROGRESS | Phase 6 & 7 VERIFIED; Decision Gate `ROUTE-001..008` | [`PHASE_8_DECISIONS.md`](PHASE_8_DECISIONS.md) |
 | 9. Frontend | BLOCKED | Phase 4–8 có API contract ổn định | Chưa có |
 | 10. Monetization | BLOCKED | Phase 3–9 contracts stable | Chưa có |
 | 11. AI Chatbot | BLOCKED/OPTIONAL | Core product + monetization VERIFIED | Chưa có |
