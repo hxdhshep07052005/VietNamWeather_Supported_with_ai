@@ -1,9 +1,9 @@
 # Project Status
 
 **Ngày khởi tạo plan mới:** 2026-07-25  
-**Trạng thái tổng:** PHASE_6_IN_PROGRESS
-**Phase hiện tại:** Phase 6 — Config-Driven Weather Risk Engine
-**Cập nhật gần nhất:** 2026-08-13 — Technical Owner
+**Trạng thái tổng:** PHASE_7_IN_PROGRESS
+**Phase hiện tại:** Phase 7 — Forecast & Trend Experience
+**Cập nhật gần nhất:** 2026-08-14 — Technical Owner
 
 ## Phase board
 
@@ -15,8 +15,8 @@
 | 3. Security & Identity | VERIFIED | CI run `30852140331`, commit `f91f549`, closure `PRODUCT-016` | `SEC-004..010`, `ARCH-015`, `DATA-006`, [`PHASE_3_EVIDENCE.md`](PHASE_3_EVIDENCE.md) |
 | 4. Data Model & Admin | VERIFIED | Phase 3 VERIFIED; CI run verified | `DATA-007`, [`PHASE_4_EVIDENCE.md`](PHASE_4_EVIDENCE.md), `pnpm run validate:stage4` |
 | 5. Weather Integration | VERIFIED | Phase 4 VERIFIED; CI run verified | `ARCH-016`, `DATA-008`, [`PHASE_5_EVIDENCE.md`](PHASE_5_EVIDENCE.md), `pnpm run validate:stage5` |
-| 6. Risk Engine | IN_PROGRESS | Phase 5 VERIFIED; Decision Gate `RISK-001..007` | [`PHASE_6_EVIDENCE.md`](PHASE_6_EVIDENCE.md), [`PHASE_6_DECISIONS.md`](PHASE_6_DECISIONS.md) |
-| 7. Forecast & Trends | BLOCKED | Phase 6 API stable | Chưa có |
+| 6. Risk Engine | VERIFIED | Phase 5 VERIFIED; CI run `f801c28` | [`PHASE_6_EVIDENCE.md`](PHASE_6_EVIDENCE.md), [`PHASE_6_DECISIONS.md`](PHASE_6_DECISIONS.md), `RISK-001..007` |
+| 7. Forecast & Trends | IN_PROGRESS | Phase 5 & 6 VERIFIED; Decision Gate `FCAST-001..006` | [`PHASE_7_DECISIONS.md`](PHASE_7_DECISIONS.md) |
 | 8. Route Planner | BLOCKED | Phase 6 và 7 VERIFIED | Chưa có |
 | 9. Frontend | BLOCKED | Phase 4–8 có API contract ổn định | Chưa có |
 | 10. Monetization | BLOCKED | Phase 3–9 contracts stable | Chưa có |

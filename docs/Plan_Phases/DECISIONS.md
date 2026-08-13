@@ -682,3 +682,69 @@ Evidence/ADR:
 - **Lý do:** WeatherAPI free tier yêu cầu attribution; Vietnam regulations yêu cầu safety disclaimers.
 - **Trade-off:** Phải translate cho cả hai locale.
 - **Review lại:** Khi có legal review.
+
+### FCAST-001 — Forecast Horizon
+
+- **Ngày quyết định:** 2026-08-14
+- **Người quyết định:** Technical Owner
+- **Phase:** 7
+- **Vấn đề:** Forecast horizon cho hourly và daily.
+- **Quyết định:** Hourly tối đa 72 giờ, daily tối đa 3 ngày.
+- **Lý do:** WeatherAPI baseline cung cấp hourly 72h và daily 3d; day 4-7 disabled theo `ARCH-013`.
+- **Trade-off:** Không hiển thị >72h hourly hoặc >3d daily.
+- **Review lại:** Khi có capability verification cho day 4-7.
+
+### FCAST-002 — Trend Definition
+
+- **Ngày quyết định:** 2026-08-14
+- **Người quyết định:** Technical Owner
+- **Phase:** 7
+- **Vấn đề:** Định nghĩa "trend".
+- **Quyết định:** Trend = thay đổi trong forecast window. Temperature: >2°C rise/decrease = increasing/decreasing, else stable.
+- **Lý do:** Historical climatology analysis nằm ngoài scope MVP.
+- **Trade-off:** Không có historical trend trong MVP.
+- **Review lại:** Khi cần historical analysis.
+
+### FCAST-003 — Chart Variables
+
+- **Ngày quyết định:** 2026-08-14
+- **Người quyết định:** Technical Owner
+- **Phase:** 7 / 9
+- **Vấn đề:** Variables hiển thị trên chart.
+- **Quyết định:** MVP chart: Temperature (line), Precip probability/amount (bar), Wind (line), Condition (icon). Detail screen: Humidity, UV, Visibility.
+- **Lý do:** Core travel variables là temp, rain, wind. Detail screen cho additional fields.
+- **Trade-off:** Không hiển thị all fields trên main chart.
+- **Review lại:** Khi có user research về data needs.
+
+### FCAST-004 — Multi-Provider Comparison
+
+- **Ngày quyết định:** 2026-08-14
+- **Người quyết định:** Technical Owner
+- **Phase:** 7
+- **Vấn đề:** So sánh nhiều providers.
+- **Quyết định:** MVP không hỗ trợ multi-provider comparison.
+- **Lý do:** Phase 5 dùng WeatherAPI là single provider.
+- **Trade-off:** Không so sánh được nhiều nguồn.
+- **Review lại:** Khi cần multi-provider feature.
+
+### FCAST-005 — Timezone Display
+
+- **Ngày quyết định:** 2026-08-14
+- **Người quyết định:** Technical Owner
+- **Phase:** 7 / 9
+- **Vấn đề:** Timezone hiển thị.
+- **Quyết định:** Cố định Vietnam (`Asia/Ho_Chi_Minh`). Format: HH:mm ICT, date: DD MMM.
+- **Lý do:** Product chủ yếu cho user Việt Nam. Theo `DATA-008`.
+- **Trade-off:** Không tự động theo device timezone.
+- **Review lại:** Khi hỗ trợ international users.
+
+### FCAST-006 — Export/Share Capability
+
+- **Ngày quyết định:** 2026-08-14
+- **Người quyết định:** Technical Owner
+- **Phase:** 7
+- **Vấn đề:** Export hoặc share chart.
+- **Quyết định:** MVP view-only, không export/share.
+- **Lý do:** MVP tập trung core forecast display. Export thêm complexity.
+- **Trade-off:** User không thể export chart.
+- **Review lại:** Khi cần export/share feature.

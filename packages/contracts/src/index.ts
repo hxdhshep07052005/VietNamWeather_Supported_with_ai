@@ -93,7 +93,6 @@ export {
   type RiskDimension,
   type RiskOperator,
   type NormalizedWeatherInput,
-  type FreshnessState,
   type RiskAssessmentRequest,
   type TriggeredRule,
   type RiskAssessmentResponse,
@@ -101,3 +100,46 @@ export {
   type RiskErrorResponse,
   type RiskErrorCode,
 } from "./risk-v1.js";
+
+// Re-export forecast-v1 types for API contracts
+export {
+  FORECAST_HOURLY_MAX_HOURS,
+  FORECAST_DAILY_MAX_DAYS,
+  DISPLAY_TIMEZONE,
+  DISPLAY_TIMEZONE_OFFSET_HOURS,
+  formatDisplayTime,
+  formatDisplayDate,
+  FRESHNESS_STATES,
+  CHART_VARIABLES,
+  FORECAST_ERROR_CODES,
+  FORECAST_REQUEST_SCHEMA,
+  FORECAST_SERIES_SCHEMA,
+  type FreshnessState,
+  type ChartVariable,
+  type ForecastAttribution,
+  type HourlyForecastPoint,
+  type DailyForecastPoint,
+  type ForecastSeries,
+  type ForecastRequest,
+  type ForecastErrorCode,
+} from "./forecast-v1.js";
+
+// Re-export trend-v1 types for API contracts
+export {
+  TREND_DIRECTIONS,
+  TEMP_TREND_THRESHOLD_C,
+  TREND_VARIABLES,
+  MIN_TREND_DATA_POINTS,
+  MAX_TREND_PERIOD_HOURS,
+  DEFAULT_TREND_PERIOD_HOURS,
+  PRECIP_TREND_THRESHOLD_MM,
+  WIND_TREND_THRESHOLD_MS,
+  TREND_TEXT,
+  TREND_REQUEST_SCHEMA,
+  TREND_SUMMARY_SCHEMA,
+  type TrendDirection,
+  type TrendVariable,
+  type VariableTrend,
+  type TrendSummary,
+  type TrendRequest,
+} from "./trend-v1.js";

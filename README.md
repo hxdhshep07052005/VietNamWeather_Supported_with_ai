@@ -10,7 +10,8 @@ Web platform hỗ trợ người dùng đưa ra quyết định du lịch tại 
 - Phase 3 — Identity, JWT, RBAC & Security: `VERIFIED` (`PRODUCT-016`, CI `30852140331`).
 - Phase 4 — Data Model, Governance & Admin Panel: `VERIFIED` (`PRODUCT-016`).
 - Phase 5 — Weather Integration: `VERIFIED` (`ARCH-016`, `DATA-008`).
-- Phase 6 — Config-Driven Weather Risk Engine: `IN_PROGRESS` (`RISK-001..007`).
+- Phase 6 — Config-Driven Weather Risk Engine: `VERIFIED` (`RISK-001..007`, CI `f801c28`).
+- Phase 7 — Forecast & Trends: `IN_PROGRESS` (`FCAST-001..006`).
 - Source of truth: [docs/Plan_Phases/index.md](docs/Plan_Phases/index.md).
 - Trạng thái và blockers hiện tại: [docs/Plan_Phases/STATUS.md](docs/Plan_Phases/STATUS.md).
 - Phase 1 evidence gate: [docs/Plan_Phases/PHASE_1_EVIDENCE.md](docs/Plan_Phases/PHASE_1_EVIDENCE.md).
@@ -104,8 +105,17 @@ Phase 1 đã được phê duyệt bằng `PRODUCT-012`. WeatherAPI là capabili
 - Risk levels: Low (1), Caution (2), High (3), Unknown (4).
 - Risk dimensions: Precipitation, Wind, Temperature, Visibility, Thunderstorm, Official Alert.
 - Aggregation: Priority-based max severity.
-- Baseline thresholds đã được định nghĩa.
-- Đang implement: Database schema, Directus schema, Risk Engine core.
+- Risk Engine: 30 unit tests pass, deterministic output verified.
+- CI run `f801c28` đã pass.
+
+## Tiến độ Phase 7
+
+- Decision Gate đã được chốt: `FCAST-001..006`.
+- Forecast horizon: Hourly 72h, Daily 3d (per `ARCH-013`).
+- Trend definition: Forecast window change (temperature >2°C threshold).
+- Timezone: Fixed Vietnam (`Asia/Ho_Chi_Minh`).
+- Chart variables: Temperature, Precipitation, Wind (primary).
+- Đang implement: Forecast service, Trend service, chart contracts.
 
 ## Validation
 
@@ -152,6 +162,22 @@ pnpm run validate:stage5
 ```
 
 Validator này verify WeatherAPI adapter, normalization, worker runtime, weather service, cache, database schema, security, contracts, OpenAPI, seed, retention policy, tests passed, no raw payload và no fake weather.
+
+Chạy Phase 6 risk engine baseline bằng:
+
+```powershell
+pnpm run validate:stage6
+```
+
+Validator này verify risk engine, risk service, contracts, database schema, seed data, 30 tests passed và decision gate compliance (RISK-001..007).
+
+Chạy Phase 7 forecast & trends baseline bằng:
+
+```powershell
+pnpm run validate:stage7
+```
+
+Validator này verify forecast contracts, trend service, horizon limits (72h/3d), timezone handling, gap detection và decision gate compliance (FCAST-001..006).
 
 Clean rebuild local là thao tác xóa volume và chỉ chạy sau khi backup đã verify:
 
