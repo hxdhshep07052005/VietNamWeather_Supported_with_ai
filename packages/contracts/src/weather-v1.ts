@@ -667,3 +667,92 @@ export function safeParseWeatherErrorResponse(
 export function parseWeatherErrorResponse(value: unknown): WeatherErrorResponse {
   return parse("WeatherErrorResponse", value);
 }
+
+// =============================================================================
+// Worker and API shared types for normalized weather data
+// These represent the internal shape used by worker persistence and API queries
+// =============================================================================
+
+export interface NormalizedWeatherPoint {
+  readonly latitude: number;
+  readonly longitude: number;
+}
+
+export interface NormalizedWeatherSource {
+  readonly provider: string;
+  readonly attribution: Attribution;
+  readonly parserVersion: string;
+}
+
+export interface CurrentWeatherObservation {
+  readonly kind: "observation";
+  readonly providerIssuedAt: string | null;
+  readonly expiresAt: string;
+  readonly observedAt: string;
+  readonly validInterval: ValidInterval;
+  readonly quality: WeatherQuality;
+  readonly temperatureCelsius: number | null;
+  readonly apparentTemperatureCelsius: number | null;
+  readonly relativeHumidityPercent: number | null;
+  readonly windSpeedMetresPerSecond: number | null;
+  readonly windGustMetresPerSecond: number | null;
+  readonly windDirectionDegrees: number | null;
+  readonly precipitationMillimetres: number | null;
+  readonly pressureHectopascals: number | null;
+  readonly visibilityMetres: number | null;
+  readonly uvIndex: number | null;
+  readonly cloudCoverPercent: number | null;
+  readonly conditionCode: WeatherConditionCode | null;
+}
+
+export interface HourlyWeatherForecast {
+  readonly kind: "forecast";
+  readonly granularity: "hour";
+  readonly providerIssuedAt: string | null;
+  readonly expiresAt: string;
+  readonly validInterval: ValidInterval;
+  readonly quality: WeatherQuality;
+  readonly temperatureCelsius: number | null;
+  readonly apparentTemperatureCelsius: number | null;
+  readonly relativeHumidityPercent: number | null;
+  readonly windSpeedMetresPerSecond: number | null;
+  readonly windGustMetresPerSecond: number | null;
+  readonly windDirectionDegrees: number | null;
+  readonly precipitationMillimetres: number | null;
+  readonly pressureHectopascals: number | null;
+  readonly visibilityMetres: number | null;
+  readonly uvIndex: number | null;
+  readonly cloudCoverPercent: number | null;
+  readonly conditionCode: WeatherConditionCode | null;
+  readonly precipitationProbabilityPercent: number | null;
+}
+
+export interface DailyWeatherForecast {
+  readonly kind: "forecast";
+  readonly granularity: "day";
+  readonly date: string;
+  readonly providerIssuedAt: string | null;
+  readonly expiresAt: string;
+  readonly validInterval: ValidInterval;
+  readonly quality: WeatherQuality;
+  readonly minimumTemperatureCelsius: number | null;
+  readonly maximumTemperatureCelsius: number | null;
+  readonly precipitationMillimetres: number | null;
+  readonly maximumPrecipitationProbabilityPercent: number | null;
+  readonly maximumWindSpeedMetresPerSecond: number | null;
+  readonly averageRelativeHumidityPercent: number | null;
+  readonly conditionCode: WeatherConditionCode | null;
+}
+
+export interface WeatherBundle {
+  readonly schemaVersion: "weather.v1";
+  readonly source: NormalizedWeatherSource;
+  readonly target: NormalizedWeatherPoint;
+  readonly providerIssuedAt: string | null;
+  readonly fetchedAt: string;
+  readonly units: WeatherUnits;
+  readonly current: CurrentWeatherObservation;
+  readonly hourly: readonly HourlyWeatherForecast[];
+  readonly daily: readonly DailyWeatherForecast[];
+  readonly normalizedPayloadChecksumSha256: string;
+}
