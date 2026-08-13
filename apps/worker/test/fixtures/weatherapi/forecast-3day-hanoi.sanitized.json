@@ -1,0 +1,136 @@
+{
+  "location": { "lat": 21.0278, "lon": 105.8342 },
+  "current": {
+    "last_updated_epoch": 1786278896,
+    "last_updated": "ignored-local-time",
+    "temp_c": 31.5,
+    "feelslike_c": 35.2,
+    "precip_mm": 0.2,
+    "wind_kph": 3.6,
+    "gust_kph": 7.2,
+    "wind_degree": 360,
+    "pressure_mb": 1005,
+    "humidity": 70,
+    "cloud": 25,
+    "vis_km": 1.25,
+    "uv": 7,
+    "condition": { "code": 1183 }
+  },
+  "forecast": {
+    "forecastday": [
+      {
+        "date_epoch": 1786233600,
+        "date": "ignored-local-date",
+        "day": {
+          "avgtemp_c": 30,
+          "mintemp_c": 26,
+          "maxtemp_c": 34,
+          "totalprecip_mm": 4.5,
+          "daily_chance_of_rain": 80,
+          "daily_chance_of_snow": 0,
+          "maxwind_kph": 36,
+          "avghumidity": 75,
+          "avgvis_km": 8,
+          "uv": 8,
+          "condition": { "code": 1273 }
+        },
+        "hour": [
+          { "time_epoch": 1786233600, "time": "ignored", "temp_c": 26, "condition": { "code": 1000 }, "wind_kph": 0, "gust_kph": 0, "vis_km": 0, "chance_of_rain": 0, "chance_of_snow": 0 },
+          { "time_epoch": 1786237200, "temp_c": 26, "condition": { "code": 1000 } },
+          { "time_epoch": 1786240800, "temp_c": 26, "condition": { "code": 1000 } },
+          { "time_epoch": 1786244400, "temp_c": 26, "condition": { "code": 1000 } },
+          { "time_epoch": 1786248000, "temp_c": 26, "condition": { "code": 1000 } },
+          { "time_epoch": 1786251600, "temp_c": 26, "condition": { "code": 1000 } },
+          { "time_epoch": 1786255200, "temp_c": 27, "condition": { "code": 1003 } },
+          { "time_epoch": 1786258800, "temp_c": 28, "condition": { "code": 1003 } },
+          { "time_epoch": 1786262400, "temp_c": 29, "condition": { "code": 1003 } },
+          { "time_epoch": 1786266000, "temp_c": 30, "condition": { "code": 1003 } },
+          { "time_epoch": 1786269600, "temp_c": 31, "condition": { "code": 1006 } },
+          { "time_epoch": 1786273200, "temp_c": 32, "condition": { "code": 1006 } },
+          { "time_epoch": 1786276800, "temp_c": 33, "condition": { "code": 1183 } },
+          { "time_epoch": 1786280400, "temp_c": 34, "condition": { "code": 1183 } },
+          { "time_epoch": 1786284000, "temp_c": 34, "condition": { "code": 1183 } },
+          { "time_epoch": 1786287600, "temp_c": 33, "condition": { "code": 1183 } },
+          { "time_epoch": 1786291200, "temp_c": 32, "condition": { "code": 1183 } },
+          { "time_epoch": 1786294800, "temp_c": 31, "condition": { "code": 1183 } },
+          { "time_epoch": 1786298400, "temp_c": 30, "condition": { "code": 1006 } },
+          { "time_epoch": 1786302000, "temp_c": 29, "condition": { "code": 1006 } },
+          { "time_epoch": 1786305600, "temp_c": 28, "condition": { "code": 1003 } },
+          { "time_epoch": 1786309200, "temp_c": 28, "condition": { "code": 1003 } },
+          { "time_epoch": 1786312800, "temp_c": 27, "condition": { "code": 1000 } },
+          { "time_epoch": 1786316400, "temp_c": 27, "condition": { "code": 1000 } }
+        ]
+      },
+      {
+        "date_epoch": 1786320000,
+        "day": {
+          "avgtemp_c": 29,
+          "mintemp_c": 25,
+          "maxtemp_c": 33,
+          "condition": { "code": 1189 }
+        },
+        "hour": [
+          { "time_epoch": 1786320000, "temp_c": 26, "condition": { "code": 1189 } },
+          { "time_epoch": 1786323600, "temp_c": 26, "condition": { "code": 1189 } },
+          { "time_epoch": 1786327200, "temp_c": 25, "condition": { "code": 1189 } },
+          { "time_epoch": 1786330800, "temp_c": 25, "condition": { "code": 1189 } },
+          { "time_epoch": 1786334400, "temp_c": 25, "condition": { "code": 1189 } },
+          { "time_epoch": 1786338000, "temp_c": 25, "condition": { "code": 1189 } },
+          { "time_epoch": 1786341600, "temp_c": 26, "condition": { "code": 1189 } },
+          { "time_epoch": 1786345200, "temp_c": 27, "condition": { "code": 1189 } },
+          { "time_epoch": 1786348800, "temp_c": 28, "condition": { "code": 1189 } },
+          { "time_epoch": 1786352400, "temp_c": 29, "condition": { "code": 1189 } },
+          { "time_epoch": 1786356000, "temp_c": 30, "condition": { "code": 1189 } },
+          { "time_epoch": 1786359600, "temp_c": 31, "condition": { "code": 1189 } },
+          { "time_epoch": 1786363200, "temp_c": 32, "condition": { "code": 1189 } },
+          { "time_epoch": 1786366800, "temp_c": 33, "condition": { "code": 1189 } },
+          { "time_epoch": 1786370400, "temp_c": 33, "condition": { "code": 1189 } },
+          { "time_epoch": 1786374000, "temp_c": 32, "condition": { "code": 1189 } },
+          { "time_epoch": 1786377600, "temp_c": 31, "condition": { "code": 1189 } },
+          { "time_epoch": 1786381200, "temp_c": 30, "condition": { "code": 1189 } },
+          { "time_epoch": 1786384800, "temp_c": 29, "condition": { "code": 1189 } },
+          { "time_epoch": 1786388400, "temp_c": 28, "condition": { "code": 1189 } },
+          { "time_epoch": 1786392000, "temp_c": 27, "condition": { "code": 1189 } },
+          { "time_epoch": 1786395600, "temp_c": 27, "condition": { "code": 1189 } },
+          { "time_epoch": 1786399200, "temp_c": 26, "condition": { "code": 1189 } },
+          { "time_epoch": 1786402800, "temp_c": 26, "condition": { "code": 1189 } }
+        ]
+      },
+      {
+        "date_epoch": 1786406400,
+        "day": {
+          "avgtemp_c": 28,
+          "mintemp_c": 24,
+          "maxtemp_c": 32,
+          "condition": { "code": 1003 }
+        },
+        "hour": [
+          { "time_epoch": 1786406400, "temp_c": 25, "condition": { "code": 1003 } },
+          { "time_epoch": 1786410000, "temp_c": 25, "condition": { "code": 1003 } },
+          { "time_epoch": 1786413600, "temp_c": 24, "condition": { "code": 1003 } },
+          { "time_epoch": 1786417200, "temp_c": 24, "condition": { "code": 1003 } },
+          { "time_epoch": 1786420800, "temp_c": 24, "condition": { "code": 1003 } },
+          { "time_epoch": 1786424400, "temp_c": 24, "condition": { "code": 1003 } },
+          { "time_epoch": 1786428000, "temp_c": 25, "condition": { "code": 1003 } },
+          { "time_epoch": 1786431600, "temp_c": 26, "condition": { "code": 1003 } },
+          { "time_epoch": 1786435200, "temp_c": 27, "condition": { "code": 1003 } },
+          { "time_epoch": 1786438800, "temp_c": 28, "condition": { "code": 1003 } },
+          { "time_epoch": 1786442400, "temp_c": 29, "condition": { "code": 1003 } },
+          { "time_epoch": 1786446000, "temp_c": 30, "condition": { "code": 1003 } },
+          { "time_epoch": 1786449600, "temp_c": 31, "condition": { "code": 1003 } },
+          { "time_epoch": 1786453200, "temp_c": 32, "condition": { "code": 1003 } },
+          { "time_epoch": 1786456800, "temp_c": 32, "condition": { "code": 1003 } },
+          { "time_epoch": 1786460400, "temp_c": 31, "condition": { "code": 1003 } },
+          { "time_epoch": 1786464000, "temp_c": 30, "condition": { "code": 1003 } },
+          { "time_epoch": 1786467600, "temp_c": 29, "condition": { "code": 1003 } },
+          { "time_epoch": 1786471200, "temp_c": 28, "condition": { "code": 1003 } },
+          { "time_epoch": 1786474800, "temp_c": 27, "condition": { "code": 1003 } },
+          { "time_epoch": 1786478400, "temp_c": 26, "condition": { "code": 1003 } },
+          { "time_epoch": 1786482000, "temp_c": 26, "condition": { "code": 1003 } },
+          { "time_epoch": 1786485600, "temp_c": 25, "condition": { "code": 1003 } },
+          { "time_epoch": 1786489200, "temp_c": 25, "condition": { "code": 1003 } }
+        ]
+      }
+    ]
+  }
+}

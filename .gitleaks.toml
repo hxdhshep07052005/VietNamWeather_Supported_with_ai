@@ -11,3 +11,9 @@ paths = [
   '''(^|/)node_modules/''',
   '''(^|/)artifacts/phase2/local/'''
 ]
+
+[[allowlists]]
+description = "Test files with intentional fake secrets for security testing"
+paths = [
+  '''apps/worker/test/weatherapi-adapter\.test\.mjs'''
+]

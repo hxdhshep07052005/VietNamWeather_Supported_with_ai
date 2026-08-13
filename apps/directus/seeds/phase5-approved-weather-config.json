@@ -1,0 +1,132 @@
+{
+  "manifestVersion": 2,
+  "key": "phase5-approved-weather-config",
+  "version": "2026.08.09.1",
+  "environmentScopes": [
+    "local",
+    "development",
+    "staging",
+    "production"
+  ],
+  "provenance": [
+    {
+      "type": "decision",
+      "reference": "DATA-008"
+    },
+    {
+      "type": "decision",
+      "reference": "ARCH-016"
+    },
+    {
+      "type": "decision",
+      "reference": "ARCH-013"
+    },
+    {
+      "type": "decision",
+      "reference": "PRODUCT-017"
+    }
+  ],
+  "allowedCollections": [
+    "weather_providers",
+    "retention_policies"
+  ],
+  "operations": [
+    {
+      "collection": "weather_providers",
+      "match": {
+        "external_key": "weatherapi"
+      },
+      "values": {
+        "id": "6e34f8ae-5d75-4a64-97db-cb8c9e478624",
+        "external_key": "weatherapi",
+        "display_name": "WeatherAPI.com",
+        "base_url": "https://api.weatherapi.com",
+        "credential_reference": "env:WEATHERAPI_API_KEY",
+        "terms_url": "https://www.weatherapi.com/terms.aspx",
+        "attribution_text": "Weather data provided by WeatherAPI.com.",
+        "capabilities": {
+          "current": true,
+          "hourly": true,
+          "daily": true,
+          "hourly_interval_minutes": 60,
+          "daily_interval_days": 1,
+          "forecast_days": 3,
+          "operational_horizon_hours": 72,
+          "day_4_to_7": false,
+          "nowcast": false,
+          "alerts": false,
+          "spatial_layers": false,
+          "fallback": "none",
+          "provider_mixing": false,
+          "units": "metric_si"
+        },
+        "rate_limit_policy": {
+          "quota_source": "provider_account",
+          "automatic_spend_vnd": 0,
+          "automatic_paid_upgrade": false,
+          "on_rate_limited": "degraded",
+          "retry_after_respected": true
+        },
+        "last_verified_at": null,
+        "status": "active"
+      }
+    },
+    {
+      "collection": "retention_policies",
+      "match": {
+        "external_key": "weather.normalized-current",
+        "version": 1
+      },
+      "values": {
+        "id": "5ed36ee5-3f18-48a2-aab8-57b1e1bccf07",
+        "external_key": "weather.normalized-current",
+        "version": 1,
+        "data_category": "weather_observations",
+        "retention_value": 1,
+        "retention_unit": "hours",
+        "purge_strategy": "delete",
+        "legal_hold_supported": false,
+        "description": "Normalized current weather is retained for at most 60 minutes; raw provider payloads are never retained.",
+        "status": "draft"
+      }
+    },
+    {
+      "collection": "retention_policies",
+      "match": {
+        "external_key": "weather.normalized-forecast",
+        "version": 1
+      },
+      "values": {
+        "id": "9e37baf1-4571-43e8-a482-69dab4f134b6",
+        "external_key": "weather.normalized-forecast",
+        "version": 1,
+        "data_category": "weather_forecasts",
+        "retention_value": 24,
+        "retention_unit": "hours",
+        "purge_strategy": "delete",
+        "legal_hold_supported": false,
+        "description": "Normalized weather forecasts are retained for at most 24 hours; raw provider payloads are never retained.",
+        "status": "draft"
+      }
+    },
+    {
+      "collection": "retention_policies",
+      "match": {
+        "external_key": "weather.sanitized-provider-run-metadata",
+        "version": 1
+      },
+      "values": {
+        "id": "6c62419d-d7ee-4f19-b935-d7fcf76e684e",
+        "external_key": "weather.sanitized-provider-run-metadata",
+        "version": 1,
+        "data_category": "provider_runs_sanitized_metadata",
+        "retention_value": 30,
+        "retention_unit": "days",
+        "purge_strategy": "delete",
+        "legal_hold_supported": false,
+        "description": "Sanitized provider-run metadata is retained for at most 30 days and excludes credentials, request URLs, raw coordinates, and user identity.",
+        "status": "draft"
+      }
+    }
+  ]
+}
