@@ -602,3 +602,83 @@ Evidence/ADR:
 - **Quyết định:** Sau khi Phase 3 CI run `30852140331` pass trên commit `f91f549`, chấp thuận Phase 3 closure ở trạng thái `VERIFIED` và phê duyệt khởi động Phase 4 theo `DATA-007`, `SEC-008`, `DATA-005`, `DATA-006`, `PRODUCT-004` và `PRODUCT-005`.
 - **Implementation order:** (1) schema/migration và provenance; (2) governance workflow/constraints; (3) Directus metadata/dashboard/presets; (4) permission manifest và ownership tests; (5) approved config seed; (6) documentation/evidence.
 - **Ràng buộc:** Không hardcode business data, không fake location/weather/payment/provider/user data, không lưu secret trong Directus. Phase 4 chỉ `VERIFIED` khi schema drift, constraint, permission positive/negative, cross-user ownership, seed idempotency và remote CI evidence đều pass.
+
+### RISK-001 — Risk Levels
+
+- **Ngày quyết định:** 2026-08-13
+- **Người quyết định:** Technical Owner (based on Phase 6 Decision Gate)
+- **Phase:** 6
+- **Vấn đề:** Số lượng và tên của risk levels.
+- **Quyết định:** 4 levels: Low (1), Caution (2), High (3), Unknown (4).
+- **Lý do:** Không tuyên bố Safe/Danger tuyệt đối; Unknown tách biệt với Low.
+- **Trade-off:** Unknown không phải Low; thiếu dữ liệu không bao giờ mặc định thành an toàn.
+- **Review lại:** Khi có feedback từ user testing.
+
+### RISK-002 — Risk Dimensions
+
+- **Ngày quyết định:** 2026-08-13
+- **Người quyết định:** Technical Owner (based on Phase 6 Decision Gate)
+- **Phase:** 6
+- **Vấn đề:** Các weather dimensions dùng để đánh giá risk.
+- **Quyết định:** 6 dimensions: Precipitation (mm/h), Wind (m/s), Temperature (°C), Visibility (km), Thunderstorm (boolean), Official Alert (N/A).
+- **Lý do:** Phủ hết các yếu tố thời tiết ảnh hưởng du lịch tại Việt Nam.
+- **Trade-off:** Official alerts deferred to Phase 10+.
+- **Review lại:** Khi bổ sung official alerts integration.
+
+### RISK-003 — Activity/Context Classification
+
+- **Ngày quyết định:** 2026-08-13
+- **Người quyết định:** Technical Owner
+- **Phase:** 6
+- **Vấn đề:** Phân loại risk theo activity/context (city/beach/mountain/road).
+- **Quyết định:** MVP dùng một rule set chung duy nhất, không phân loại theo activity.
+- **Lý do:** Đơn giản hóa MVP, dễ validate và maintain.
+- **Trade-off:** Không có activity-specific rules trong MVP.
+- **Review lại:** Khi user research cho thấy nhu cầu phân loại.
+
+### RISK-004 — Official Authority Alerts Integration
+
+- **Ngày quyết định:** 2026-08-13
+- **Người quyết định:** Technical Owner
+- **Phase:** 6
+- **Vấn đề:** Tích hợp cảnh báo chính thức từ NCHMF/VNDMC.
+- **Quyết định:** MVP không tích hợp official alerts.
+- **Lý do:** Yêu cầu legal agreements, API access nằm ngoài scope MVP.
+- **Trade-off:** Không có official alert trong Phase 6.
+- **Review lại:** Phase 10+ nếu cần thiết.
+
+### RISK-005 — Risk Aggregation Method
+
+- **Ngày quyết định:** 2026-08-13
+- **Người quyết định:** Technical Owner
+- **Phase:** 6
+- **Vấn đề:** Cách tổng hợp nhiều yếu tố risk thành một level.
+- **Quyết định:** Priority-based max severity — highest severity triggered rule wins.
+- **Formula:** `risk_level = MAX(triggered_rules.severity)`
+- **Lý do:** Deterministic, easy to explain, aligns with "worst case" safety principle.
+- **Trade-off:** Không có weighted scores; mỗi dimension là binary pass/fail.
+- **Review lại:** Khi có yêu cầu weighted scoring.
+
+### RISK-006 — Unknown/Unknown Threshold
+
+- **Ngày quyết định:** 2026-08-13
+- **Người quyết định:** Technical Owner
+- **Phase:** 6
+- **Vấn đề:** Khi nào risk là Unknown thay vì Low/Caution/High.
+- **Quyết định:** Stale data (>60min current, >24h forecast) hoặc no data → Unknown.
+- **Lý do:** Safety-first principle; không đưa ra false confidence.
+- **Trade-off:** Unknown nhiều hơn có thể gây confusion, nhưng an toàn hơn.
+- **Review lại:** Khi có user feedback về Unknown states.
+
+### RISK-007 — Disclaimer and Advisory Language
+
+- **Ngày quyết định:** 2026-08-13
+- **Người quyết định:** Technical Owner
+- **Phase:** 6 / 9
+- **Vấn đề:** Disclaimer và advisory text hiển thị ở đâu và bằng ngôn ngữ nào.
+- **Quyết định:** Vietnamese primary, English secondary; hiển thị trên mọi risk/weather response.
+- **Disclaimer Vietnamese:** "Thông tin thời tiết chỉ mang tính tham khảo. Không thay thế cảnh báo chính thức từ cơ quan chức năng. Quyết định du lịch cuối cùng thuộc về bạn."
+- **Disclaimer English:** "Weather information is for reference only. Does not replace official advisories from authorities. Final travel decisions are yours."
+- **Lý do:** WeatherAPI free tier yêu cầu attribution; Vietnam regulations yêu cầu safety disclaimers.
+- **Trade-off:** Phải translate cho cả hai locale.
+- **Review lại:** Khi có legal review.

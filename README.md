@@ -8,7 +8,9 @@ Web platform hỗ trợ người dùng đưa ra quyết định du lịch tại 
 - Phase 1 — Architecture & Non-Functional Requirements: `VERIFIED`.
 - Phase 2 — Directus Foundation & Environments: `VERIFIED` (`PRODUCT-014`).
 - Phase 3 — Identity, JWT, RBAC & Security: `VERIFIED` (`PRODUCT-016`, CI `30852140331`).
-- Phase 4 — Data Model, Governance & Admin Panel: `IN_PROGRESS` (`LOCAL_IMPLEMENTATION_VERIFIED / REMOTE_CI_PENDING`).
+- Phase 4 — Data Model, Governance & Admin Panel: `VERIFIED` (`PRODUCT-016`).
+- Phase 5 — Weather Integration: `VERIFIED` (`ARCH-016`, `DATA-008`).
+- Phase 6 — Config-Driven Weather Risk Engine: `IN_PROGRESS` (`RISK-001..007`).
 - Source of truth: [docs/Plan_Phases/index.md](docs/Plan_Phases/index.md).
 - Trạng thái và blockers hiện tại: [docs/Plan_Phases/STATUS.md](docs/Plan_Phases/STATUS.md).
 - Phase 1 evidence gate: [docs/Plan_Phases/PHASE_1_EVIDENCE.md](docs/Plan_Phases/PHASE_1_EVIDENCE.md).
@@ -83,7 +85,27 @@ Phase 1 đã được phê duyệt bằng `PRODUCT-012`. WeatherAPI là capabili
 - Directus có dashboard 4 panel, 7 role presets và 149 business permissions; Stage 3 bootstrap chạy lại không xóa permission Stage 4.
 - Approved config seed chỉ chứa `vi`/`en`, Free/Pro plan, feature, entitlement và usage policy đã có decision; không seed location, weather, payment, provider hay demo user.
 - Positive/cross-user test dùng hai traveler ephemeral thật đã pass cho favorite và saved route; cleanup xác nhận còn 0 fixture.
-- `pnpm run validate:stage4` đã pass local. Phase 4 chờ remote CI trên commit cuối trước khi chuyển `VERIFIED`.
+- `pnpm run validate:stage4` đã pass local và remote CI đã verified.
+
+## Tiến độ Phase 5
+
+- WeatherAPI adapter với SSRF protection, error classification và circuit breaker.
+- Response normalization: 80+ WeatherAPI condition codes mapped to canonical weather conditions.
+- Worker durable runtime: lease-based heartbeat, exponential backoff with jitter, dead-letter handling.
+- Weather service với Redis cache: contract-valid responses, TTL boundary, stale marking.
+- Database schema: 4 tables (provider_runs, weather_observations, weather_hourly_forecasts, weather_daily_forecasts), 10 indexes, 8 constraints.
+- Worker security: least privilege role `app_weather_worker`, SQL-only operations.
+- Retention policy: 60 min (current), 24 hours (forecast), 30 days (metadata).
+- `pnpm run validate:stage5` đã pass với 16 gates verified.
+
+## Tiến độ Phase 6
+
+- Decision Gate đã được chốt: `RISK-001..007`.
+- Risk levels: Low (1), Caution (2), High (3), Unknown (4).
+- Risk dimensions: Precipitation, Wind, Temperature, Visibility, Thunderstorm, Official Alert.
+- Aggregation: Priority-based max severity.
+- Baseline thresholds đã được định nghĩa.
+- Đang implement: Database schema, Directus schema, Risk Engine core.
 
 ## Validation
 
@@ -122,6 +144,14 @@ pnpm run validate:stage4
 ```
 
 Validator này apply migration/permission/seed idempotently, restart Directus để làm mới schema metadata, kiểm tra schema drift, constraint/index/trigger/dashboard/preset, API DB denial, governance và traveler ownership/cross-user denial. Mọi fixture được rollback/xóa và kiểm tra còn 0 row.
+
+Chạy Phase 5 weather integration baseline bằng:
+
+```powershell
+pnpm run validate:stage5
+```
+
+Validator này verify WeatherAPI adapter, normalization, worker runtime, weather service, cache, database schema, security, contracts, OpenAPI, seed, retention policy, tests passed, no raw payload và no fake weather.
 
 Clean rebuild local là thao tác xóa volume và chỉ chạy sau khi backup đã verify:
 

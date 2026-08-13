@@ -1,0 +1,248 @@
+{
+  "version": "2026.08.13.1",
+  "collections": {
+    "risk_rule_sets": [
+      {
+        "id": "00000000-0000-0000-0000-000000000001",
+        "external_key": "vietnam-weather-risk-v1",
+        "name": "Vietnam Weather Risk Rules v1",
+        "description": "Default risk rules for Vietnam weather conditions per RISK-001..007",
+        "version": 1,
+        "status": "draft",
+        "source_reference": "WeatherAPI documentation, WHO travel health guidelines",
+        "owner_role_id": "00000000-0000-4000-8000-000000000001",
+        "reviewer_role_id": "00000000-0000-4000-8000-000000000002",
+        "effective_from": "2026-08-13T00:00:00Z",
+        "effective_to": null
+      }
+    ],
+    "risk_rules": [
+      {
+        "id": "00000000-0000-0000-0001-000000000001",
+        "rule_set_id": "00000000-0000-0000-0000-000000000001",
+        "external_key": "wind-high",
+        "name": "High Wind Speed",
+        "description": "Wind speed exceeds safe threshold for travel",
+        "dimension": "wind",
+        "field_path": "wind_speed",
+        "operator": "gt",
+        "threshold_value": 15,
+        "threshold_unit": "m/s",
+        "severity": "high",
+        "sort": 10
+      },
+      {
+        "id": "00000000-0000-0000-0001-000000000002",
+        "rule_set_id": "00000000-0000-0000-0000-000000000001",
+        "external_key": "wind-caution",
+        "name": "Elevated Wind Speed",
+        "description": "Wind speed requires caution",
+        "dimension": "wind",
+        "field_path": "wind_speed",
+        "operator": "gt",
+        "threshold_value": 10,
+        "threshold_unit": "m/s",
+        "severity": "caution",
+        "sort": 11
+      },
+      {
+        "id": "00000000-0000-0000-0001-000000000003",
+        "rule_set_id": "00000000-0000-0000-0000-000000000001",
+        "external_key": "temp-extreme-cold",
+        "name": "Extreme Cold",
+        "description": "Temperature below freezing",
+        "dimension": "temperature",
+        "field_path": "temp_c",
+        "operator": "lt",
+        "threshold_value": 5,
+        "threshold_unit": "°C",
+        "severity": "high",
+        "sort": 20
+      },
+      {
+        "id": "00000000-0000-0000-0001-000000000004",
+        "rule_set_id": "00000000-0000-0000-0000-000000000001",
+        "external_key": "temp-extreme-heat",
+        "name": "Extreme Heat",
+        "description": "Temperature above safe threshold",
+        "dimension": "temperature",
+        "field_path": "temp_c",
+        "operator": "gt",
+        "threshold_value": 38,
+        "threshold_unit": "°C",
+        "severity": "high",
+        "sort": 21
+      },
+      {
+        "id": "00000000-0000-0000-0001-000000000005",
+        "rule_set_id": "00000000-0000-0000-0000-000000000001",
+        "external_key": "temp-cold-caution",
+        "name": "Cold Weather Caution",
+        "description": "Temperature requires caution",
+        "dimension": "temperature",
+        "field_path": "temp_c",
+        "operator": "lt",
+        "threshold_value": 10,
+        "threshold_unit": "°C",
+        "severity": "caution",
+        "sort": 22
+      },
+      {
+        "id": "00000000-0000-0000-0001-000000000006",
+        "rule_set_id": "00000000-0000-0000-0000-000000000001",
+        "external_key": "temp-hot-caution",
+        "name": "Hot Weather Caution",
+        "description": "Temperature requires caution",
+        "dimension": "temperature",
+        "field_path": "temp_c",
+        "operator": "gt",
+        "threshold_value": 35,
+        "threshold_unit": "°C",
+        "severity": "caution",
+        "sort": 23
+      },
+      {
+        "id": "00000000-0000-0000-0001-000000000007",
+        "rule_set_id": "00000000-0000-0000-0000-000000000001",
+        "external_key": "vis-low",
+        "name": "Low Visibility",
+        "description": "Visibility below safe threshold",
+        "dimension": "visibility",
+        "field_path": "vis_km",
+        "operator": "lt",
+        "threshold_value": 1,
+        "threshold_unit": "km",
+        "severity": "high",
+        "sort": 30
+      },
+      {
+        "id": "00000000-0000-0000-0001-000000000008",
+        "rule_set_id": "00000000-0000-0000-0000-000000000001",
+        "external_key": "vis-reduced",
+        "name": "Reduced Visibility",
+        "description": "Visibility reduced",
+        "dimension": "visibility",
+        "field_path": "vis_km",
+        "operator": "lt",
+        "threshold_value": 5,
+        "threshold_unit": "km",
+        "severity": "caution",
+        "sort": 31
+      },
+      {
+        "id": "00000000-0000-0000-0001-000000000009",
+        "rule_set_id": "00000000-0000-0000-0000-000000000001",
+        "external_key": "thunderstorm",
+        "name": "Thunderstorm Present",
+        "description": "Thunderstorm detected",
+        "dimension": "storm",
+        "field_path": "thunderstorm",
+        "operator": "eq",
+        "threshold_value": 1,
+        "threshold_unit": null,
+        "severity": "high",
+        "sort": 40
+      },
+      {
+        "id": "00000000-0000-0000-0001-000000000010",
+        "rule_set_id": "00000000-0000-0000-0000-000000000001",
+        "external_key": "rain-heavy",
+        "name": "Heavy Rain",
+        "description": "Heavy rainfall causing disruption",
+        "dimension": "precipitation",
+        "field_path": "rain_mm",
+        "operator": "gt",
+        "threshold_value": 25,
+        "threshold_unit": "mm/h",
+        "severity": "high",
+        "sort": 50
+      },
+      {
+        "id": "00000000-0000-0000-0001-000000000011",
+        "rule_set_id": "00000000-0000-0000-0000-000000000001",
+        "external_key": "rain-moderate",
+        "name": "Moderate Rain",
+        "description": "Moderate rainfall",
+        "dimension": "precipitation",
+        "field_path": "rain_mm",
+        "operator": "gt",
+        "threshold_value": 10,
+        "threshold_unit": "mm/h",
+        "severity": "caution",
+        "sort": 51
+      }
+    ],
+    "risk_rule_translations": [
+      {
+        "id": "00000000-0000-0000-0002-000000000001",
+        "rule_id": "00000000-0000-0000-0001-000000000001",
+        "language": "vi",
+        "message": "Tốc độ gió cao ({value} m/s) vượt ngưỡng an toàn. Cân nhắc hoãn di chuyển hoặc chọn tuyến đường kín đáo hơn.",
+        "explanation": "Gió mạnh có thể gây khó khăn cho việc di chuyển, đặc biệt với xe hai bánh."
+      },
+      {
+        "id": "00000000-0000-0000-0002-000000000002",
+        "rule_id": "00000000-0000-0000-0001-000000000001",
+        "language": "en",
+        "message": "High wind speed ({value} m/s) exceeds safe threshold. Consider postponing travel or choosing a more sheltered route.",
+        "explanation": "Strong winds can make travel difficult, especially for two-wheeled vehicles."
+      },
+      {
+        "id": "00000000-0000-0000-0002-000000000003",
+        "rule_id": "00000000-0000-0000-0001-000000000002",
+        "language": "vi",
+        "message": "Tốc độ gió ({value} m/s) cần chú ý khi di chuyển.",
+        "explanation": "Gió cấp {value} m/s có thể ảnh hưởng đến sự thoải mái khi di chuyển ngoài trời."
+      },
+      {
+        "id": "00000000-0000-0000-0002-000000000004",
+        "rule_id": "00000000-0000-0000-0001-000000000002",
+        "language": "en",
+        "message": "Wind speed ({value} m/s) requires caution when traveling.",
+        "explanation": "Winds at {value} m/s may affect comfort during outdoor travel."
+      },
+      {
+        "id": "00000000-0000-0000-0002-000000000005",
+        "rule_id": "00000000-0000-0000-0001-000000000003",
+        "language": "vi",
+        "message": "Nhiệt độ cực thấp ({value}°C). Tránh di chuyển lâu ngoài trời.",
+        "explanation": "Nhiệt độ dưới 5°C có thể gây nguy hiểm cho sức khỏe."
+      },
+      {
+        "id": "00000000-0000-0000-0002-000000000006",
+        "rule_id": "00000000-0000-0000-0001-000000000003",
+        "language": "en",
+        "message": "Extreme cold ({value}°C). Avoid prolonged outdoor travel.",
+        "explanation": "Temperatures below 5°C can be hazardous to health."
+      },
+      {
+        "id": "00000000-0000-0000-0002-000000000007",
+        "rule_id": "00000000-0000-0000-0001-000000000004",
+        "language": "vi",
+        "message": "Nhiệt độ cực cao ({value}°C). Hạn chế di chuyển giữa trưa.",
+        "explanation": "Nhiệt độ trên 38°C có thể gây sốc nhiệt và mất nước."
+      },
+      {
+        "id": "00000000-0000-0000-0002-000000000008",
+        "rule_id": "00000000-0000-0000-0001-000000000004",
+        "language": "en",
+        "message": "Extreme heat ({value}°C). Limit travel during midday hours.",
+        "explanation": "Temperatures above 38°C can cause heat stroke and dehydration."
+      },
+      {
+        "id": "00000000-0000-0000-0002-000000000009",
+        "rule_id": "00000000-0000-0000-0001-000000000009",
+        "language": "vi",
+        "message": "Có dông sét. Tránh xa khu vực trống và cây cao.",
+        "explanation": "Dông sét có thể gây nguy hiểm đến tính mạng."
+      },
+      {
+        "id": "00000000-0000-0000-0002-000000000010",
+        "rule_id": "00000000-0000-0000-0001-000000000009",
+        "language": "en",
+        "message": "Thunderstorm detected. Avoid open areas and tall trees.",
+        "explanation": "Thunderstorms can be life-threatening."
+      }
+    ]
+  }
+}

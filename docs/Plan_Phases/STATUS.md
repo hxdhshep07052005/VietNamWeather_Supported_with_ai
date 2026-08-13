@@ -1,9 +1,9 @@
 # Project Status
 
 **Ngày khởi tạo plan mới:** 2026-07-25  
-**Trạng thái tổng:** PHASE_4_IN_PROGRESS
-**Phase hiện tại:** Phase 4 — Data Model, Governance & Admin Panel
-**Cập nhật gần nhất:** 2026-08-09 — Technical Owner
+**Trạng thái tổng:** PHASE_6_IN_PROGRESS
+**Phase hiện tại:** Phase 6 — Config-Driven Weather Risk Engine
+**Cập nhật gần nhất:** 2026-08-13 — Technical Owner
 
 ## Phase board
 
@@ -13,10 +13,10 @@
 | 1. Architecture | VERIFIED | Product Owner approved architecture/NFR/provider/security/cost baseline | [`PHASE_1_EVIDENCE.md`](PHASE_1_EVIDENCE.md), [`VIETNAM_PROVIDER_FIXTURE_REPORT.md`](VIETNAM_PROVIDER_FIXTURE_REPORT.md), `ARCH-004..013`, `SEC-002`, `OPS-005..006`, `DATA-004`, `PRODUCT-012` |
 | 2. Directus Foundation | VERIFIED | Product Owner approved closure | [`PHASE_2_EVIDENCE.md`](PHASE_2_EVIDENCE.md), run `30577216479`, `PRODUCT-014` |
 | 3. Security & Identity | VERIFIED | CI run `30852140331`, commit `f91f549`, closure `PRODUCT-016` | `SEC-004..010`, `ARCH-015`, `DATA-006`, [`PHASE_3_EVIDENCE.md`](PHASE_3_EVIDENCE.md) |
-| 4. Data Model & Admin | IN_PROGRESS (LOCAL_IMPLEMENTATION_VERIFIED / REMOTE_CI_PENDING) | Phase 3 VERIFIED; kickoff `PRODUCT-016` | `DATA-007`, [`PHASE_4_EVIDENCE.md`](PHASE_4_EVIDENCE.md), `pnpm run validate:stage4` |
-| 5. Weather Integration | BLOCKED | Phase 4 VERIFIED | Chưa có |
-| 6. Risk Engine | BLOCKED | Phase 5 VERIFIED | Chưa có |
-| 7. Forecast & Trends | BLOCKED | Phase 5 VERIFIED | Chưa có |
+| 4. Data Model & Admin | VERIFIED | Phase 3 VERIFIED; CI run verified | `DATA-007`, [`PHASE_4_EVIDENCE.md`](PHASE_4_EVIDENCE.md), `pnpm run validate:stage4` |
+| 5. Weather Integration | VERIFIED | Phase 4 VERIFIED; CI run verified | `ARCH-016`, `DATA-008`, [`PHASE_5_EVIDENCE.md`](PHASE_5_EVIDENCE.md), `pnpm run validate:stage5` |
+| 6. Risk Engine | IN_PROGRESS | Phase 5 VERIFIED; Decision Gate `RISK-001..007` | [`PHASE_6_EVIDENCE.md`](PHASE_6_EVIDENCE.md), [`PHASE_6_DECISIONS.md`](PHASE_6_DECISIONS.md) |
+| 7. Forecast & Trends | BLOCKED | Phase 6 API stable | Chưa có |
 | 8. Route Planner | BLOCKED | Phase 6 và 7 VERIFIED | Chưa có |
 | 9. Frontend | BLOCKED | Phase 4–8 có API contract ổn định | Chưa có |
 | 10. Monetization | BLOCKED | Phase 3–9 contracts stable | Chưa có |

@@ -77,3 +77,27 @@ export {
   safeParseWeatherErrorResponse,
   validateWeatherV1Component,
 } from "./weather-v1.js";
+
+// Re-export risk-v1 types for API contracts
+export {
+  RISK_LEVELS,
+  RISK_SEVERITY_SCORES,
+  RISK_COLORS,
+  RISK_DIMENSIONS,
+  RISK_OPERATORS,
+  RISK_ERROR_CODES,
+  RISK_DISCLAIMERS,
+  RISK_ASSESSMENT_REQUEST_SCHEMA,
+  RISK_ASSESSMENT_RESPONSE_SCHEMA,
+  type RiskLevel,
+  type RiskDimension,
+  type RiskOperator,
+  type NormalizedWeatherInput,
+  type FreshnessState,
+  type RiskAssessmentRequest,
+  type TriggeredRule,
+  type RiskAssessmentResponse,
+  type RiskCapabilitiesResponse,
+  type RiskErrorResponse,
+  type RiskErrorCode,
+} from "./risk-v1.js";

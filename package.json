@@ -20,6 +20,7 @@
     "validate:stage3": "powershell -ExecutionPolicy Bypass -File tools/validation/validate-stage3.ps1",
     "validate:stage4": "powershell -ExecutionPolicy Bypass -File tools/validation/validate-stage4.ps1",
     "validate:stage5": "powershell -ExecutionPolicy Bypass -File tools/validation/validate-stage5.ps1",
+    "validate:stage6": "powershell -ExecutionPolicy Bypass -File tools/validation/validate-stage6.ps1",
     "inspect:directus-license": "powershell -ExecutionPolicy Bypass -File tools/directus/validate-license.ps1",
     "validate:directus-license": "powershell -ExecutionPolicy Bypass -File tools/directus/validate-license.ps1 -RequireLicensed"
   },
