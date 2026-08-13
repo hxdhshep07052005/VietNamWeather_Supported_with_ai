@@ -53,6 +53,27 @@ export type {
   ContractValidationKeyword,
   ContractValidationIssue,
   ContractValidationResult,
+  NormalizedWeatherPoint,
+  NormalizedWeatherSource,
+  CurrentWeatherObservation,
+  HourlyWeatherForecast,
+  DailyWeatherForecast,
+  WeatherBundle,
 } from "./weather-v1.js";
 
-export { ContractValidationError } from "./weather-v1.js";
+export {
+  ContractValidationError,
+  isWeatherQueryRequest,
+  parseWeatherQueryRequest,
+  safeParseWeatherQueryRequest,
+  isWeatherCapabilitiesResponse,
+  parseWeatherCapabilitiesResponse,
+  safeParseWeatherCapabilitiesResponse,
+  isWeatherQueryResponse,
+  parseWeatherQueryResponse,
+  safeParseWeatherQueryResponse,
+  isWeatherErrorResponse,
+  parseWeatherErrorResponse,
+  safeParseWeatherErrorResponse,
+  validateWeatherV1Component,
+} from "./weather-v1.js";
