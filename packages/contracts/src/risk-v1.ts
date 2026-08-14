@@ -32,6 +32,7 @@ export type RiskLevel = (typeof RISK_LEVELS)[keyof typeof RISK_LEVELS];
 /**
  * Numeric severity score for comparison
  * Higher number = more severe
+ * Per RISK-005: Max severity aggregation uses these scores
  */
 export const RISK_SEVERITY_SCORES: Record<RiskLevel, number> = {
   [RISK_LEVELS.HIGH]: 3,
@@ -135,21 +136,14 @@ export interface NormalizedWeatherInput {
 }
 
 // =============================================================================
-// Freshness States (from Phase 5)
+// Freshness States (imported from forecast-v1)
 // =============================================================================
 
-/**
- * Freshness state from Phase 5 weather service
- */
-export const FRESHNESS_STATES = {
-  FRESH: "fresh",
-  STALE: "stale",
-  EXPIRED: "expired",
-  UNAVAILABLE: "unavailable"
-} as const;
+// Import for use within this file (single source of truth)
+import { FRESHNESS_STATES, type FreshnessState } from "./forecast-v1.js";
 
-export type FreshnessState =
-  (typeof FRESHNESS_STATES)[keyof typeof FRESHNESS_STATES];
+// Re-export for external consumers
+export { FRESHNESS_STATES, type FreshnessState };
 
 // =============================================================================
 // Risk Assessment Request

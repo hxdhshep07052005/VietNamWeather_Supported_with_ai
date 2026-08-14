@@ -59,13 +59,33 @@ export class RouteService {
   private readonly routingService: RoutingService;
   private readonly routeSampler: RouteSampler;
   private readonly routeRiskEngine: RouteRiskEngine;
+  private routeRiskEngineInitialized: boolean;
 
   constructor(options: RouteServiceOptions) {
     this.dbPool = options.dbPool;
     this.geocodingService = options.geocodingService ?? createGeocodingService();
     this.routingService = options.routingService ?? createRoutingService();
     this.routeSampler = options.routeSampler ?? createRouteSampler({ dbPool: this.dbPool });
-    this.routeRiskEngine = options.routeRiskEngine ?? createRouteRiskEngine({ dbPool: this.dbPool });
+
+    // RouteRiskEngine requires Phase 6 risk rules - loaded per request
+    if (options.routeRiskEngine) {
+      this.routeRiskEngine = options.routeRiskEngine;
+      this.routeRiskEngineInitialized = true;
+    } else {
+      this.routeRiskEngine = createRouteRiskEngine({
+        dbPool: this.dbPool,
+        ruleSet: {
+          id: "",
+          external_key: "",
+          version: 0,
+          status: "draft",
+          effective_from: null,
+          effective_to: null,
+        },
+        rules: [],
+      });
+      this.routeRiskEngineInitialized = false;
+    }
   }
 
   /**
@@ -74,6 +94,11 @@ export class RouteService {
   async calculateRoutes(request: RouteRequest): Promise<RouteResponse> {
     const correlationId = randomUUID();
     const warnings: string[] = [];
+
+    // Initialize route risk engine with Phase 6 rules if not already initialized
+    if (!this.routeRiskEngineInitialized) {
+      await this.initializeRouteRiskEngine();
+    }
 
     // Parse departure time
     const departureTime = request.departure_time
@@ -350,6 +375,93 @@ export class RouteService {
       time_weight: override?.time_weight ?? defaults.time_weight,
       distance_weight: override?.distance_weight ?? defaults.distance_weight,
     };
+  }
+
+  /**
+   * Initialize route risk engine with active risk rule set from database
+   */
+  private async initializeRouteRiskEngine(): Promise<void> {
+    try {
+      // Fetch active rule set (same as Phase 6 risk service)
+      const ruleSetResult = await this.dbPool.query<{
+        id: string;
+        external_key: string;
+        version: number;
+        effective_from: string | null;
+        effective_to: string | null;
+      }>(
+        `SELECT id, external_key, version, effective_from, effective_to
+         FROM app_risk.risk_rule_sets
+         WHERE status = 'published'
+         ORDER BY version DESC
+         LIMIT 1`
+      );
+
+      if (ruleSetResult.rows.length === 0) {
+        throw new RouteServiceError(
+          "ROUTE_PROVIDER_ERROR",
+          "No active risk rule set found - Phase 6 risk rules must be configured",
+          randomUUID(),
+          false
+        );
+      }
+
+      const ruleSet = ruleSetResult.rows[0]!;
+
+      // Fetch rules for this rule set
+      const rulesResult = await this.dbPool.query<{
+        id: string;
+        external_key: string;
+        dimension: string;
+        field_path: string;
+        operator: string;
+        threshold_value: number | null;
+        threshold_upper_value: number | null;
+        threshold_unit: string | null;
+        severity: string;
+        sort: number;
+      }>(
+        `SELECT id, external_key, dimension, field_path, operator,
+                threshold_value, threshold_upper_value, threshold_unit,
+                severity, sort
+         FROM app_risk.risk_rules
+         WHERE rule_set_id = $1
+         ORDER BY sort ASC`,
+        [ruleSet.id]
+      );
+
+      const rules = rulesResult.rows;
+
+      // Re-create route risk engine with loaded rules
+      const newEngine = createRouteRiskEngine({
+        dbPool: this.dbPool,
+        ruleSet: {
+          id: ruleSet.id,
+          external_key: ruleSet.external_key,
+          version: ruleSet.version,
+          status: "published",
+          effective_from: ruleSet.effective_from,
+          effective_to: ruleSet.effective_to,
+        },
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        rules: rules as any,
+      });
+
+      // Replace engine reference (using mutability)
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (this as any).routeRiskEngine = newEngine;
+      this.routeRiskEngineInitialized = true;
+    } catch (error) {
+      if (error instanceof RouteServiceError) {
+        throw error;
+      }
+      throw new RouteServiceError(
+        "ROUTE_PROVIDER_ERROR",
+        `Failed to initialize risk engine: ${error instanceof Error ? error.message : "Unknown"}`,
+        randomUUID(),
+        true
+      );
+    }
   }
 
   /**

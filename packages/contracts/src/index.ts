@@ -101,6 +101,9 @@ export {
   type RiskErrorCode,
 } from "./risk-v1.js";
 
+// Re-export freshness types from forecast-v1 (single source of truth)
+export { FRESHNESS_STATES, type FreshnessState } from "./forecast-v1.js";
+
 // Re-export forecast-v1 types for API contracts
 export {
   FORECAST_HOURLY_MAX_HOURS,
@@ -109,12 +112,10 @@ export {
   DISPLAY_TIMEZONE_OFFSET_HOURS,
   formatDisplayTime,
   formatDisplayDate,
-  FRESHNESS_STATES,
   CHART_VARIABLES,
   FORECAST_ERROR_CODES,
   FORECAST_REQUEST_SCHEMA,
   FORECAST_SERIES_SCHEMA,
-  type FreshnessState,
   type ChartVariable,
   type ForecastAttribution,
   type HourlyForecastPoint,
@@ -126,8 +127,6 @@ export {
 
 // Re-export trend-v1 types for API contracts
 export {
-  TREND_DIRECTIONS,
-  TEMP_TREND_THRESHOLD_C,
   TREND_VARIABLES,
   MIN_TREND_DATA_POINTS,
   MAX_TREND_PERIOD_HOURS,
@@ -137,12 +136,14 @@ export {
   TREND_TEXT,
   TREND_REQUEST_SCHEMA,
   TREND_SUMMARY_SCHEMA,
-  type TrendDirection,
   type TrendVariable,
   type VariableTrend,
   type TrendSummary,
   type TrendRequest,
 } from "./trend-v1.js";
+
+// Re-export Trend Direction and Threshold from forecast-v1 (single source of truth)
+export { TREND_DIRECTIONS, TEMP_TREND_THRESHOLD_C, type TrendDirection } from "./forecast-v1.js";
 
 // Re-export route-v1 types for API contracts
 export {
@@ -156,6 +157,8 @@ export {
   SAMPLE_INTERVAL_MINUTES,
   SAMPLE_INTERVAL_METERS,
   GEOAPIFY_TRANSPORT_MODES,
+  VIETNAM_BOUNDS,
+  VIETNAM_COUNTRY_CODE,
   ROUTE_ERROR_CODES,
   ROUTE_REQUEST_SCHEMA,
   ROUTE_RESPONSE_SCHEMA,

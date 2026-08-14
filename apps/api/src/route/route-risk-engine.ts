@@ -3,6 +3,8 @@
  * Integrates Phase 6 risk engine with route sampling
  *
  * Calculates risk along route segments and overall route risk
+ * Uses Phase 6 evaluateRisk() for individual point risk evaluation
+ * (config-driven thresholds, no hardcoded values)
  */
 
 import type { Pool } from "pg";
@@ -10,7 +12,17 @@ import type { Pool } from "pg";
 import {
   type SamplePoint,
   type SegmentRisk,
+  type NormalizedWeatherInput,
+  type FreshnessState,
+  RISK_SEVERITY_SCORES,
 } from "@vietnam-weather/contracts";
+
+import {
+  evaluateRisk,
+  type RiskRule,
+  type RiskRuleSet,
+  type RiskAssessmentResult,
+} from "../risk/risk-engine.js";
 
 // =============================================================================
 // Types
@@ -18,6 +30,8 @@ import {
 
 export interface RouteRiskEngineOptions {
   readonly dbPool: Pool;
+  readonly ruleSet: RiskRuleSet;
+  readonly rules: readonly RiskRule[];
 }
 
 interface RiskResult {
@@ -34,18 +48,19 @@ interface WeatherAtPoint {
   wind_speed: number | null;
   vis_km: number | null;
   condition_code: number | null;
-  freshness: string;
+  freshness: FreshnessState;
 }
 
 // =============================================================================
-// Risk Level Mapping
+// Risk Level Mapping (per RISK-005: Max severity aggregation)
+// Uses Phase 6 risk severity scores: LOW=1, CAUTION=2, HIGH=3, UNKNOWN=0
 // =============================================================================
 
 const RISK_LEVEL_MAP: Record<number, "low" | "caution" | "high" | "unknown"> = {
+  0: "unknown",
   1: "low",
   2: "caution",
   3: "high",
-  4: "unknown",
 };
 
 // =============================================================================
@@ -54,25 +69,30 @@ const RISK_LEVEL_MAP: Record<number, "low" | "caution" | "high" | "unknown"> = {
 
 export class RouteRiskEngine {
   private readonly dbPool: Pool;
+  private readonly ruleSet: RiskRuleSet;
+  private readonly rules: readonly RiskRule[];
 
   constructor(options: RouteRiskEngineOptions) {
     this.dbPool = options.dbPool;
+    this.ruleSet = options.ruleSet;
+    this.rules = options.rules;
   }
 
   /**
    * Calculate risk for each sample point along route
+   * Uses Phase 6 evaluateRisk() with config-driven rules
    */
   async calculatePointRisks(samples: SamplePoint[]): Promise<Map<number, RiskResult>> {
     const results = new Map<number, RiskResult>();
 
     for (let i = 0; i < samples.length; i++) {
       const sample = samples[i]!;
-      
+
       if (!sample.has_weather_data) {
         results.set(i, {
           risk_level: "unknown",
           risk_score: 1.0,
-          severity: 4,
+          severity: 0, // RISK-005: UNKNOWN = 0
           factors: ["No weather data available"],
           conditions_summary: {
             vi: "Không có dữ liệu thời tiết",
@@ -83,7 +103,7 @@ export class RouteRiskEngine {
       }
 
       const weather = await this.getWeatherAtPoint(sample.coordinates, sample.eta);
-      const risk = this.calculateRisk(weather, sample.weather_freshness);
+      const risk = this.evaluateWithPhase6Engine(weather);
       results.set(i, risk);
     }
 
@@ -108,7 +128,7 @@ export class RouteRiskEngine {
           segment_end: segment.end,
           risk_level: "unknown" as const,
           risk_score: 1.0,
-          severity: 4,
+          severity: 0, // RISK-005: UNKNOWN = 0
           factors: [],
           conditions_summary: {
             vi: "Không có dữ liệu",
@@ -231,18 +251,16 @@ export class RouteRiskEngine {
   }
 
   /**
-   * Calculate risk from weather data
+   * Evaluate risk using Phase 6 config-driven risk engine
+   * No hardcoded thresholds - all rules come from Phase 6 risk rule set
    */
-  private calculateRisk(
-    weather: WeatherAtPoint,
-    freshness?: string
-  ): RiskResult {
+  private evaluateWithPhase6Engine(weather: WeatherAtPoint): RiskResult {
     // Handle stale/unavailable data (per RISK-006)
-    if (freshness === "stale" || freshness === "expired" || freshness === "unavailable") {
+    if (!weather.freshness || weather.freshness !== "fresh") {
       return {
         risk_level: "unknown",
         risk_score: 1.0,
-        severity: 4,
+        severity: 0, // RISK-005: UNKNOWN = 0
         factors: ["Data is stale or unavailable"],
         conditions_summary: {
           vi: "Dữ liệu không còn mới",
@@ -251,75 +269,60 @@ export class RouteRiskEngine {
       };
     }
 
-    const factors: string[] = [];
-    let severity = 1; // Default to Low
+    // Convert to Phase 6 NormalizedWeatherInput format
+    const normalizedWeather: NormalizedWeatherInput = {
+      temp_c: weather.temp_c ?? undefined,
+      wind_speed: weather.wind_speed ?? undefined,
+      vis_km: weather.vis_km ?? undefined,
+      rain_mm: weather.precip_mm ?? undefined,
+      thunderstorm: this.isThunderstormCode(weather.condition_code) ? 1 : 0,
+      condition_code: weather.condition_code ?? undefined,
+    };
 
-    // Temperature check (>35°C caution, >38°C high)
-    if (weather.temp_c !== null) {
-      if (weather.temp_c > 38) {
-        severity = Math.max(severity, 3);
-        factors.push("Extreme heat");
-      } else if (weather.temp_c > 35) {
-        severity = Math.max(severity, 2);
-        factors.push("High temperature");
-      }
-    }
+    // Delegate to Phase 6 evaluateRisk (uses config-driven rules)
+    const assessment: RiskAssessmentResult = evaluateRisk(
+      normalizedWeather,
+      weather.freshness,
+      { rule_set: this.ruleSet, rules: this.rules }
+    );
 
-    // Precipitation check (>25mm/h high, >10mm/h caution)
-    if (weather.precip_mm !== null) {
-      if (weather.precip_mm > 25) {
-        severity = Math.max(severity, 3);
-        factors.push("Heavy rain");
-      } else if (weather.precip_mm > 10) {
-        severity = Math.max(severity, 2);
-        factors.push("Moderate rain");
-      }
-    }
-
-    // Wind check (>15 m/s high, >10 m/s caution)
-    if (weather.wind_speed !== null) {
-      if (weather.wind_speed > 15) {
-        severity = Math.max(severity, 3);
-        factors.push("Strong wind");
-      } else if (weather.wind_speed > 10) {
-        severity = Math.max(severity, 2);
-        factors.push("Moderate wind");
-      }
-    }
-
-    // Visibility check (<1km high, <5km caution)
-    if (weather.vis_km !== null) {
-      if (weather.vis_km < 1) {
-        severity = Math.max(severity, 3);
-        factors.push("Very low visibility");
-      } else if (weather.vis_km < 5) {
-        severity = Math.max(severity, 2);
-        factors.push("Reduced visibility");
-      }
-    }
-
-    // Thunderstorm check (condition codes 1087, 1273, 1276, 1279, 1282)
-    if (weather.condition_code !== null) {
-      const thunderstormCodes = [1087, 1273, 1276, 1279, 1282];
-      if (thunderstormCodes.includes(weather.condition_code)) {
-        severity = 3;
-        factors.push("Thunderstorm");
-      }
-    }
-
-    const riskScore = severity / 3; // Normalize to 0-1
-    const riskLevel = RISK_LEVEL_MAP[severity] ?? "unknown";
+    const severity = RISK_SEVERITY_SCORES[assessment.level];
+    const riskScore = severity / 3;
 
     return {
-      risk_level: riskLevel,
+      risk_level: assessment.level,
       risk_score: riskScore,
       severity,
-      factors,
+      factors: assessment.triggered_rules.map(r => r.external_key),
       conditions_summary: {
-        vi: factors.length > 0 ? factors.join(", ") : "Thời tiết thuận lợi",
-        en: factors.length > 0 ? factors.join(", ") : "Favorable conditions",
+        vi: this.generateConditionsSummary(assessment, "vi"),
+        en: this.generateConditionsSummary(assessment, "en"),
       },
     };
+  }
+
+  /**
+   * Check if weather condition code indicates thunderstorm
+   */
+  private isThunderstormCode(conditionCode: number | null): boolean {
+    if (conditionCode === null) return false;
+    return [1087, 1273, 1276, 1279, 1282].includes(conditionCode);
+  }
+
+  /**
+   * Generate conditions summary from Phase 6 risk assessment
+   */
+  private generateConditionsSummary(
+    assessment: RiskAssessmentResult,
+    language: "vi" | "en"
+  ): string {
+    if (assessment.triggered_rules.length === 0) {
+      return language === "vi" ? "Thời tiết thuận lợi" : "Favorable conditions";
+    }
+    return assessment.triggered_rules
+      .map(r => r.dimension)
+      .filter((v, i, arr) => arr.indexOf(v) === i)
+      .join(", ");
   }
 }
 

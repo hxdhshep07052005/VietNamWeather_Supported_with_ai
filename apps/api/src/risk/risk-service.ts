@@ -148,25 +148,62 @@ export class RiskService {
 
   /**
    * Get weather data from Phase 5 weather store
-   * This is a placeholder - actual implementation will integrate with weather-service.ts
+   * Integrates with weather service to fetch real forecast data
    */
   private async getWeatherData(
     locationId: string
   ): Promise<{ data: Record<string, unknown>; freshness: FreshnessState } | null> {
-    // locationId will be used when integrating with Phase 5 weather service
-    void locationId;
-    // TODO: Integrate with Phase 5 weather service
-    // For now, return mock data for testing
-    return {
-      data: {
-        temp_c: 35,
-        wind_speed: 12,
-        vis_km: 8,
-        rain_mm: 0,
-        thunderstorm: 0,
-      },
-      freshness: "fresh",
-    };
+    try {
+      const result = await this.dbPool.query<{
+        temp_c: number | null;
+        wind_speed: number | null;
+        vis_km: number | null;
+        precip_mm: number | null;
+        condition_code: number | null;
+        freshness: FreshnessState;
+      }>(
+        `SELECT
+           temp_c,
+           wind_speed,
+           vis_km,
+           precip_mm,
+           condition_code,
+           freshness
+         FROM app_weather.weather_observations
+         WHERE location_id = $1
+         ORDER BY valid_at DESC
+         LIMIT 1`,
+        [locationId]
+      );
+
+      if (result.rows.length === 0) {
+        return null;
+      }
+
+      const row = result.rows[0]!;
+
+      return {
+        data: {
+          temp_c: row.temp_c,
+          wind_speed: row.wind_speed,
+          vis_km: row.vis_km,
+          rain_mm: row.precip_mm,
+          thunderstorm: this.isThunderstorm(row.condition_code),
+        },
+        freshness: row.freshness,
+      };
+    } catch {
+      return null;
+    }
+  }
+
+  /**
+   * Check if weather condition code indicates thunderstorm
+   */
+  private isThunderstorm(conditionCode: number | null): boolean {
+    if (conditionCode === null) return false;
+    // WeatherAPI thunderstorm codes: 1087, 1273, 1276, 1279, 1282
+    return [1087, 1273, 1276, 1279, 1282].includes(conditionCode);
   }
 
   /**

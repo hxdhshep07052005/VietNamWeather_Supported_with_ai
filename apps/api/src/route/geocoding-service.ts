@@ -12,6 +12,8 @@ import {
   type LocationInput,
   type ResolvedLocation,
   type RouteErrorCode,
+  VIETNAM_BOUNDS,
+  VIETNAM_COUNTRY_CODE,
 } from "@vietnam-weather/contracts";
 
 import { requireEnvironmentValue } from "@vietnam-weather/config";
@@ -99,7 +101,7 @@ export class GeocodingService {
     try {
       const url = new URL(`${this.baseUrl}/search`);
       url.searchParams.set("text", query);
-      url.searchParams.set("filter", "countrycode:vn"); // Vietnam only
+      url.searchParams.set("filter", `countrycode:${VIETNAM_COUNTRY_CODE}`); // Vietnam only
       url.searchParams.set("limit", "1");
       url.searchParams.set("format", "json");
       url.searchParams.set("apiKey", this.apiKey);
@@ -189,17 +191,11 @@ export class GeocodingService {
    * Validate coordinates are within Vietnam bounds
    */
   private validateCoordinates(coords: Coordinates): void {
-    // Vietnam approximate bounds
-    const MIN_LAT = 8.4;
-    const MAX_LAT = 23.4;
-    const MIN_LON = 102.1;
-    const MAX_LON = 109.5;
-
     if (
-      coords.latitude < MIN_LAT ||
-      coords.latitude > MAX_LAT ||
-      coords.longitude < MIN_LON ||
-      coords.longitude > MAX_LON
+      coords.latitude < VIETNAM_BOUNDS.MIN_LAT ||
+      coords.latitude > VIETNAM_BOUNDS.MAX_LAT ||
+      coords.longitude < VIETNAM_BOUNDS.MIN_LON ||
+      coords.longitude > VIETNAM_BOUNDS.MAX_LON
     ) {
       throw new GeocodingError(
         "ROUTE_INVALID_ORIGIN",

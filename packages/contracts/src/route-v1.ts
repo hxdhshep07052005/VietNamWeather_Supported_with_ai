@@ -100,6 +100,26 @@ export const GEOAPIFY_TRANSPORT_MODES: Record<VehicleType, string> = {
 } as const;
 
 // =============================================================================
+// Vietnam Geographic Bounds (per ROUTE-005)
+// =============================================================================
+
+/**
+ * Vietnam bounds for coordinate validation
+ * Source: Vietnam territorial boundaries
+ */
+export const VIETNAM_BOUNDS = {
+  MIN_LAT: 8.4,
+  MAX_LAT: 23.4,
+  MIN_LON: 102.1,
+  MAX_LON: 109.5
+} as const;
+
+/**
+ * Country code filter for geocoding (per ROUTE-001: Vietnam-focused)
+ */
+export const VIETNAM_COUNTRY_CODE = "vn";
+
+// =============================================================================
 // Coordinates
 // =============================================================================
 

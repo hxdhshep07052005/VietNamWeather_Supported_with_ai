@@ -8,22 +8,18 @@
  */
 
 // =============================================================================
-// Trend Direction (shared with forecast-v1)
+// Import Trend Direction and Threshold from forecast-v1
+// (Single source of truth pattern)
 // =============================================================================
 
-export const TREND_DIRECTIONS = {
-  INCREASING: "increasing",
-  DECREASING: "decreasing",
-  STABLE: "stable"
-} as const;
+import {
+  TREND_DIRECTIONS,
+  TEMP_TREND_THRESHOLD_C,
+  type TrendDirection,
+} from "./forecast-v1.js";
 
-export type TrendDirection = (typeof TREND_DIRECTIONS)[keyof typeof TREND_DIRECTIONS];
-
-/**
- * Temperature threshold for trend change (°C)
- * Per FCAST-002: >2°C = increasing/decreasing, else stable
- */
-export const TEMP_TREND_THRESHOLD_C = 2;
+// Re-export for external consumers
+export { TREND_DIRECTIONS, TEMP_TREND_THRESHOLD_C, type TrendDirection };
 
 // =============================================================================
 // Trend Variable Types
