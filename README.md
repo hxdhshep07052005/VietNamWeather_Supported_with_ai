@@ -12,7 +12,8 @@ Web platform hỗ trợ người dùng đưa ra quyết định du lịch tại 
 - Phase 5 — Weather Integration: `VERIFIED` (`ARCH-016`, `DATA-008`).
 - Phase 6 — Config-Driven Weather Risk Engine: `VERIFIED` (`RISK-001..007`, CI `f801c28`).
 - Phase 7 — Forecast & Trends: `VERIFIED` (`FCAST-001..006`, CI `6feeb3c`).
-- Phase 8 — Weather-Aware Route Planner: `IN_PROGRESS` (`ROUTE-001..008`).
+- Phase 8 — Weather-Aware Route Planner: `VERIFIED` (`ROUTE-001..008`, CI `f102bc2`).
+- Phase 9 — Frontend Web Application: `IN_PROGRESS` (`FRONT-001..008`).
 - Source of truth: [docs/Plan_Phases/index.md](docs/Plan_Phases/index.md).
 - Trạng thái và blockers hiện tại: [docs/Plan_Phases/STATUS.md](docs/Plan_Phases/STATUS.md).
 - Phase 1 evidence gate: [docs/Plan_Phases/PHASE_1_EVIDENCE.md](docs/Plan_Phases/PHASE_1_EVIDENCE.md).
@@ -126,7 +127,18 @@ Phase 1 đã được phê duyệt bằng `PRODUCT-012`. WeatherAPI là capabili
 - Route alternatives: 3 options (Fastest, Shortest, Weather-safer).
 - Max route length: 50 km (Geoapify Free limit).
 - Auto-reroute: Always ask user confirmation.
-- Đang implement: Route service, geocoding, routing adapters.
+- CI run `f102bc2` đã pass.
+
+## Tiến độ Phase 9
+
+- Decision Gate đã được chốt: `FRONT-001..008`.
+- Framework: React + Vite + TypeScript.
+- Styling: CSS Modules + CSS Variables.
+- State: Zustand (lightweight).
+- Visual: Minimal with Vietnamese accents (Primary #0066CC, Secondary #FFCD00).
+- Checkout: Stripe Hosted (PCI compliant).
+- Analytics: Minimal + Consent (privacy-first).
+- Đang implement: Frontend project setup, design system, landing page.
 
 ## Validation
 
@@ -197,6 +209,14 @@ pnpm run validate:stage8
 ```
 
 Validator này verify route contracts, geocoding/routing adapters, route sampler, risk integration, route scoring và decision gate compliance (ROUTE-001..008).
+
+Chạy Phase 9 frontend baseline bằng:
+
+```powershell
+pnpm run validate:stage9
+```
+
+Validator này verify frontend project structure, design system, typed API client, landing page components và decision gate compliance (FRONT-001..008).
 
 Clean rebuild local là thao tác xóa volume và chỉ chạy sau khi backup đã verify:
 

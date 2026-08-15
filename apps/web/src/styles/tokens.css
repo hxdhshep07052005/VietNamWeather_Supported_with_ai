@@ -1,0 +1,196 @@
+/**
+ * Phase 9 Design System Tokens
+ * Per FRONT-002: Minimal with Vietnamese color accents
+ * 
+ * Color Palette:
+ * - Primary: #0066CC (Vietnamese blue)
+ * - Secondary: #FFCD00 (Vietnamese yellow)
+ * - Risk colors per RISK-001
+ */
+
+:root {
+  /* ============================================
+   * COLORS - Brand
+   * ============================================ */
+  --color-primary: #0066CC;
+  --color-primary-hover: #0052A3;
+  --color-primary-light: #E6F0FA;
+  --color-primary-dark: #003366;
+
+  --color-secondary: #FFCD00;
+  --color-secondary-hover: #E6B800;
+  --color-secondary-light: #FFF8E6;
+  --color-secondary-dark: #CC9900;
+
+  /* ============================================
+   * COLORS - Semantic
+   * ============================================ */
+  --color-success: #22C55E;
+  --color-success-light: #DCFCE7;
+  --color-success-dark: #16A34A;
+
+  --color-warning: #EAB308;
+  --color-warning-light: #FEF9C3;
+  --color-warning-dark: #CA8A04;
+
+  --color-danger: #F97316;
+  --color-danger-light: #FFF7ED;
+  --color-danger-dark: #EA580C;
+
+  --color-info: #0EA5E9;
+  --color-info-light: #E0F2FE;
+  --color-info-dark: #0284C7;
+
+  /* ============================================
+   * COLORS - Risk Levels (per RISK-001)
+   * ============================================ */
+  --color-risk-low: #22C55E;
+  --color-risk-caution: #EAB308;
+  --color-risk-high: #F97316;
+  --color-risk-unknown: #9CA3AF;
+
+  /* ============================================
+   * COLORS - Neutrals
+   * ============================================ */
+  --color-white: #FFFFFF;
+  --color-black: #000000;
+  
+  --color-gray-50: #F8FAFC;
+  --color-gray-100: #F1F5F9;
+  --color-gray-200: #E2E8F0;
+  --color-gray-300: #CBD5E1;
+  --color-gray-400: #94A3B8;
+  --color-gray-500: #64748B;
+  --color-gray-600: #475569;
+  --color-gray-700: #334155;
+  --color-gray-800: #1E293B;
+  --color-gray-900: #0F172A;
+
+  /* ============================================
+   * COLORS - Background & Surface
+   * ============================================ */
+  --color-background: var(--color-white);
+  --color-background-alt: var(--color-gray-50);
+  --color-surface: var(--color-white);
+  --color-surface-elevated: var(--color-white);
+  
+  /* ============================================
+   * COLORS - Text
+   * ============================================ */
+  --color-text-primary: var(--color-gray-900);
+  --color-text-secondary: var(--color-gray-600);
+  --color-text-tertiary: var(--color-gray-500);
+  --color-text-disabled: var(--color-gray-400);
+  --color-text-inverse: var(--color-white);
+
+  /* ============================================
+   * COLORS - Border
+   * ============================================ */
+  --color-border: var(--color-gray-200);
+  --color-border-hover: var(--color-gray-300);
+  --color-border-focus: var(--color-primary);
+
+  /* ============================================
+   * TYPOGRAPHY - Font Family
+   * ============================================ */
+  --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+
+  /* ============================================
+   * TYPOGRAPHY - Font Size
+   * ============================================ */
+  --font-size-xs: 0.75rem;    /* 12px */
+  --font-size-sm: 0.875rem;   /* 14px */
+  --font-size-base: 1rem;     /* 16px */
+  --font-size-lg: 1.125rem;   /* 18px */
+  --font-size-xl: 1.25rem;    /* 20px */
+  --font-size-2xl: 1.5rem;    /* 24px */
+  --font-size-3xl: 1.875rem;  /* 30px */
+  --font-size-4xl: 2.25rem;   /* 36px */
+  --font-size-5xl: 3rem;       /* 48px */
+
+  /* ============================================
+   * TYPOGRAPHY - Font Weight
+   * ============================================ */
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+
+  /* ============================================
+   * TYPOGRAPHY - Line Height
+   * ============================================ */
+  --line-height-tight: 1.25;
+  --line-height-normal: 1.5;
+  --line-height-relaxed: 1.75;
+
+  /* ============================================
+   * SPACING (per 4px grid)
+   * ============================================ */
+  --space-0: 0;
+  --space-1: 0.25rem;   /* 4px */
+  --space-2: 0.5rem;    /* 8px */
+  --space-3: 0.75rem;   /* 12px */
+  --space-4: 1rem;      /* 16px */
+  --space-5: 1.25rem;   /* 20px */
+  --space-6: 1.5rem;    /* 24px */
+  --space-8: 2rem;      /* 32px */
+  --space-10: 2.5rem;   /* 40px */
+  --space-12: 3rem;      /* 48px */
+  --space-16: 4rem;      /* 64px */
+  --space-20: 5rem;      /* 80px */
+  --space-24: 6rem;      /* 96px */
+
+  /* ============================================
+   * BORDER RADIUS
+   * ============================================ */
+  --radius-none: 0;
+  --radius-sm: 0.25rem;   /* 4px */
+  --radius-md: 0.375rem;   /* 6px */
+  --radius-lg: 0.5rem;     /* 8px */
+  --radius-xl: 0.75rem;    /* 12px */
+  --radius-2xl: 1rem;      /* 16px */
+  --radius-full: 9999px;
+
+  /* ============================================
+   * SHADOWS
+   * ============================================ */
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+
+  /* ============================================
+   * TRANSITIONS
+   * ============================================ */
+  --transition-fast: 150ms ease;
+  --transition-normal: 250ms ease;
+  --transition-slow: 350ms ease;
+
+  /* ============================================
+   * Z-INDEX
+   * ============================================ */
+  --z-index-dropdown: 1000;
+  --z-index-sticky: 1020;
+  --z-index-fixed: 1030;
+  --z-index-modal-backdrop: 1040;
+  --z-index-modal: 1050;
+  --z-index-popover: 1060;
+  --z-index-tooltip: 1070;
+
+  /* ============================================
+   * CONTAINER
+   * ============================================ */
+  --container-sm: 640px;
+  --container-md: 768px;
+  --container-lg: 1024px;
+  --container-xl: 1280px;
+  --container-2xl: 1536px;
+
+  /* ============================================
+   * FOCUS RING (Accessibility)
+   * ============================================ */
+  --focus-ring-color: var(--color-primary);
+  --focus-ring-offset: 2px;
+  --focus-ring-width: 2px;
+}

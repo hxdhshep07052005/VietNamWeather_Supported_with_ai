@@ -836,3 +836,91 @@ Evidence/ADR:
 - **Lý do:** 100m handle GPS accuracy issues; 60s prevents notification spam.
 - **Trade-off:** Có thể miss small deviations.
 - **Review lại:** Khi có GPS accuracy data.
+
+### FRONT-001 — Frontend Framework
+
+- **Ngày quyết định:** 2026-08-14
+- **Người quyết định:** Technical Owner
+- **Phase:** 9
+- **Vấn đề:** Frontend framework và rendering mode.
+- **Quyết định:** React + Vite + TypeScript + React Router + Zustand + CSS Modules.
+- **Lý do:** Mature ecosystem, fast dev, good MapLibre support.
+- **Trade-off:** Không có SSR (not needed for MVP).
+- **Review lại:** Khi cần SSR.
+
+### FRONT-002 — Visual Direction
+
+- **Ngày quyết định:** 2026-08-14
+- **Người quyết định:** Technical Owner
+- **Phase:** 9
+- **Vấn đề:** Visual direction, brand, accessibility.
+- **Quyết định:** Minimal with Vietnamese color accents. Primary #0066CC, Secondary #FFCD00. WCAG 2.1 AA.
+- **Lý do:** Clean, professional, mobile-first.
+- **Trade-off:** Không có bold/regional imagery.
+- **Review lại:** Khi cần redesign.
+
+### FRONT-003 — Landing Page Priority
+
+- **Ngày quyết định:** 2026-08-14
+- **Người quyết định:** Technical Owner
+- **Phase:** 9
+- **Vấn đề:** Landing page content priority.
+- **Quyết định:** Value proposition + Pricing. No interactive map preview (requires auth).
+- **Lý do:** Map requires authentication; focus on conversion.
+- **Trade-off:** User không thấy map trước khi đăng ký.
+- **Review lại:** Khi cần demo preview.
+
+### FRONT-004 — Timeline Default
+
+- **Ngày quyết định:** 2026-08-14
+- **Người quyết định:** Technical Owner
+- **Phase:** 9
+- **Vấn đề:** Default timeline view và horizon.
+- **Quyết định:** Hourly default (72h), Daily toggle. Day 4-7 = outlook only.
+- **Lý do:** Per DATA-004 và ARCH-013.
+- **Trade-off:** Complex UI cho timeline.
+- **Review lại:** Khi cần longer horizon.
+
+### FRONT-005 — PWA/Offline
+
+- **Ngày quyết định:** 2026-08-14
+- **Người quyết định:** Technical Owner
+- **Phase:** 9
+- **Vấn đề:** PWA, offline support, push notification.
+- **Quyết định:** No PWA/offline cho MVP. Defer to Phase 12.
+- **Lý do:** MVP focuses on core functionality; weather data is time-sensitive.
+- **Trade-off:** User không có offline access.
+- **Review lại:** Khi có Phase 12.
+
+### FRONT-006 — Checkout Flow
+
+- **Ngày quyết định:** 2026-08-14
+- **Người quyết định:** Technical Owner
+- **Phase:** 9
+- **Vấn đề:** Subscription checkout implementation.
+- **Quyết định:** Stripe Hosted Checkout (redirect). PCI compliant.
+- **Lý do:** Simple implementation, no card data on our servers.
+- **Trade-off:** External redirect có thể affect conversion.
+- **Review lại:** Khi cần local payment methods.
+
+### FRONT-007 — Analytics
+
+- **Ngày quyết định:** 2026-08-14
+- **Người quyết định:** Technical Owner
+- **Phase:** 9
+- **Vấn đề:** Analytics và tracking.
+- **Quyết định:** Minimal + Consent. Page views, errors, performance only. No precise location.
+- **Lý do:** Privacy-first per ARCH-015.
+- **Trade-off:** Limited insight into user behavior.
+- **Review lại:** Khi cần more analytics.
+
+### FRONT-008 — Browser Support
+
+- **Ngày quyết định:** 2026-08-14
+- **Người quyết định:** Technical Owner
+- **Phase:** 9
+- **Vấn đề:** Minimum browser/device requirements.
+- **Quyết định:** Modern browsers only (Chrome 120+, Firefox 121+, Safari 17+, Edge 120+). iOS Safari 17+.
+- **Lý do:** WebGL requirement for MapLibre; simplify testing.
+- **Trade-off:** Older browser users không supported.
+- **Review lại:** Khi có legacy browser users.
