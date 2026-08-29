@@ -1,13 +1,17 @@
 /**
  * Phase 9 Protected Layout Component
  * Layout for authenticated pages (map, route, settings)
+ * Per ADR-007: Hybrid i18n approach
  */
 
 import { Outlet, Link, useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { useAuthStore } from "@/hooks/useAuthStore";
+import { LanguageSwitcher } from "../common/LanguageSwitcher";
 import styles from "./ProtectedLayout.module.css";
 
 export function ProtectedLayout() {
+  const { t } = useTranslation();
   const { user, logout } = useAuthStore();
   const navigate = useNavigate();
 
@@ -28,20 +32,21 @@ export function ProtectedLayout() {
 
           <nav className={styles.nav}>
             <Link to="/map" className={styles.navLink}>
-              Bản đồ
+              {t("nav.map")}
             </Link>
             <Link to="/route" className={styles.navLink}>
-              Lộ trình
+              {t("nav.route")}
             </Link>
             <Link to="/settings" className={styles.navLink}>
-              Cài đặt
+              {t("nav.settings")}
             </Link>
           </nav>
 
           <div className={styles.userMenu}>
+            <LanguageSwitcher />
             <span className={styles.userName}>{user?.name || user?.email}</span>
             <button onClick={handleLogout} className={styles.logoutButton}>
-              Đăng xuất
+              {t("nav.logout")}
             </button>
           </div>
         </div>

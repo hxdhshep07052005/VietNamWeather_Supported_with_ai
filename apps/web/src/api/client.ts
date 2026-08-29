@@ -1,8 +1,6 @@
 /**
  * Phase 9 Typed API Client
  * Per ARCH-003: API-only integration, no backend imports
- * 
- * All types imported from @vietnam-weather/contracts
  */
 
 import type {
@@ -13,8 +11,7 @@ import type {
   RiskCapabilitiesResponse,
   RouteRequest,
   RouteResponse,
-  Attribution,
-} from "@vietnam-weather/contracts";
+} from "@/types/api";
 
 // =============================================================================
 // API Client Configuration
@@ -26,7 +23,7 @@ const API_BASE_URL = import.meta.env.VITE_API_URL || "/api/v1";
 // HTTP Client
 // =============================================================================
 
-interface ApiError {
+export interface ApiError {
   code: string;
   message: string;
   correlation_id?: string;
@@ -62,6 +59,7 @@ class ApiClient {
 
     const response = await fetch(url, {
       ...options,
+      credentials: "include", // Include cookies for session auth
       headers: {
         ...this.getHeaders(),
         ...options?.headers,
@@ -75,6 +73,11 @@ class ApiClient {
       }));
 
       throw new Error(error.message);
+    }
+
+    // Handle 204 No Content
+    if (response.status === 204) {
+      return undefined as T;
     }
 
     return response.json() as Promise<T>;
@@ -253,9 +256,3 @@ export const userApi = {
       features: Record<string, boolean>;
     }>("/user/entitlements"),
 };
-
-// =============================================================================
-// Types
-// =============================================================================
-
-export type { ApiError };

@@ -1,0 +1,273 @@
+/**
+ * Input Component Styles
+ * Professional input with icons, validation states, and animations
+ */
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  width: 100%;
+}
+
+.label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-primary);
+}
+
+.optional {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-tertiary);
+  font-weight: var(--font-weight-normal);
+}
+
+.inputWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input {
+  width: 100%;
+  padding: var(--space-3) var(--space-4);
+  font-family: var(--font-sans);
+  font-size: var(--font-size-base);
+  color: var(--color-text-primary);
+  background: var(--color-white);
+  border: 2px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  transition: all var(--transition-fast);
+  outline: none;
+}
+
+.input::placeholder {
+  color: var(--color-text-tertiary);
+}
+
+.input:hover:not(:disabled):not(:focus) {
+  border-color: var(--color-border-hover);
+}
+
+.input:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 4px rgba(0, 102, 204, 0.1);
+}
+
+.input:disabled {
+  background: var(--color-gray-50);
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+/* With left icon */
+.hasLeftIcon {
+  padding-left: calc(var(--space-4) + 24px + var(--space-2));
+}
+
+.leftIcon {
+  position: absolute;
+  left: var(--space-3);
+  color: var(--color-text-tertiary);
+  pointer-events: none;
+  transition: color var(--transition-fast);
+}
+
+.input:focus ~ .leftIcon {
+  color: var(--color-primary);
+}
+
+/* With right icon / toggle */
+.hasRightIcon {
+  padding-right: calc(var(--space-4) + 24px + var(--space-2));
+}
+
+.rightIcon {
+  position: absolute;
+  right: var(--space-3);
+  color: var(--color-text-tertiary);
+  transition: color var(--transition-fast);
+}
+
+.rightIconButton {
+  position: absolute;
+  right: var(--space-3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-1);
+  color: var(--color-text-tertiary);
+  background: none;
+  border: none;
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+  transition: color var(--transition-fast);
+}
+
+.rightIconButton:hover {
+  color: var(--color-text-primary);
+}
+
+.rightIconButton:focus-visible {
+  outline: var(--focus-ring-width) solid var(--focus-ring-color);
+  outline-offset: var(--focus-ring-offset);
+}
+
+/* Validation states */
+.error .input {
+  border-color: var(--color-danger);
+  background: var(--color-danger-light);
+}
+
+.error .input:focus {
+  box-shadow: 0 0 0 4px rgba(249, 115, 22, 0.1);
+}
+
+.success .input {
+  border-color: var(--color-success);
+}
+
+.success .input:focus {
+  box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.1);
+}
+
+/* Validation messages */
+.message {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  font-size: var(--font-size-xs);
+  animation: slideIn 0.2s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.errorMessage {
+  color: var(--color-danger);
+}
+
+.successMessage {
+  color: var(--color-success);
+}
+
+.warningMessage {
+  color: var(--color-warning);
+}
+
+.infoMessage {
+  color: var(--color-info);
+}
+
+.messageIcon {
+  flex-shrink: 0;
+}
+
+/* Password strength */
+.passwordStrength {
+  margin-top: var(--space-2);
+}
+
+.strengthBar {
+  display: flex;
+  gap: var(--space-1);
+  margin-bottom: var(--space-1);
+}
+
+.strengthSegment {
+  flex: 1;
+  height: 4px;
+  background: var(--color-gray-200);
+  border-radius: var(--radius-full);
+  transition: background var(--transition-fast);
+}
+
+.strengthSegment.active {
+  background: var(--color-gray-400);
+}
+
+.strengthSegment.weak {
+  background: var(--color-danger);
+}
+
+.strengthSegment.medium {
+  background: var(--color-warning);
+}
+
+.strengthSegment.strong {
+  background: var(--color-success);
+}
+
+.strengthLabel {
+  display: flex;
+  justify-content: space-between;
+  font-size: var(--font-size-xs);
+}
+
+.strengthText {
+  color: var(--color-text-secondary);
+}
+
+.strengthRequirement {
+  color: var(--color-text-tertiary);
+}
+
+/* Helper text */
+.helperText {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-tertiary);
+}
+
+/* Size variants */
+.sm .input {
+  padding: var(--space-2) var(--space-3);
+  font-size: var(--font-size-sm);
+  border-radius: var(--radius-md);
+  min-height: 36px;
+}
+
+.lg .input {
+  padding: var(--space-4) var(--space-5);
+  font-size: var(--font-size-lg);
+  border-radius: var(--radius-xl);
+  min-height: 52px;
+}
+
+/* Input with floating label variant */
+.floatingLabel {
+  position: relative;
+}
+
+.floatingLabel .input {
+  padding-top: var(--space-5);
+}
+
+.floatingLabel .label {
+  position: absolute;
+  top: 50%;
+  left: var(--space-4);
+  transform: translateY(-50%);
+  pointer-events: none;
+  transition: all var(--transition-fast);
+  font-size: var(--font-size-base);
+  color: var(--color-text-tertiary);
+}
+
+.floatingLabel .input:focus ~ .label,
+.floatingLabel .input:not(:placeholder-shown) ~ .label {
+  top: var(--space-2);
+  transform: translateY(0);
+  font-size: var(--font-size-xs);
+  color: var(--color-primary);
+}

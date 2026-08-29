@@ -107,4 +107,12 @@
   .nav {
     display: none;
   }
+
+  .userName {
+    display: none;
+  }
+
+  .userMenu {
+    gap: var(--space-3);
+  }
 }

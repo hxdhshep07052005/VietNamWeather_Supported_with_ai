@@ -168,6 +168,24 @@ a:hover {
 }
 
 /* ============================================
+ * DARK MODE TOKENS
+ * ============================================ */
+
+[data-theme="dark"] {
+  --color-background: #0F172A;
+  --color-background-alt: #1E293B;
+  --color-surface: #1E293B;
+  --color-surface-elevated: #334155;
+
+  --color-text-primary: #F1F5F9;
+  --color-text-secondary: #94A3B8;
+  --color-text-tertiary: #64748B;
+
+  --color-border: #334155;
+  --color-border-hover: #475569;
+}
+
+/* ============================================
  * UTILITY CLASSES
  * ============================================ */
 

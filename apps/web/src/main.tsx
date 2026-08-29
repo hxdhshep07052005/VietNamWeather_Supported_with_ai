@@ -1,6 +1,7 @@
 /**
  * Phase 9 Frontend Application Entry Point
  * Per FRONT-001: React + Vite
+ * Per ADR-007: Hybrid i18n approach
  */
 
 import React from "react";
@@ -9,6 +10,9 @@ import { BrowserRouter } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import App from "./App";
 import "./styles/global.css";
+
+// Initialize i18n
+import "./i18n";
 
 const queryClient = new QueryClient({
   defaultOptions: {

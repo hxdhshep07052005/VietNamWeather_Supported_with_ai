@@ -1,0 +1,230 @@
+/**
+ * Vietnam Map Component Styles
+ * Phase 9 - Landing Page Hero Visual
+ * Accurate province map with d3-geo projection
+ */
+
+.mapContainer {
+  position: relative;
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.mapSvg {
+  width: 100%;
+  height: auto;
+}
+
+/* Fade in animation */
+.loaded {
+  animation: fadeIn 1s ease-out forwards;
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+/* Provinces */
+.provincesGroup {
+  transition: all 0.3s ease;
+}
+
+.province {
+  transition: all 0.2s ease;
+  cursor: default;
+  opacity: 0;
+  animation: provinceFadeIn 0.5s ease-out forwards;
+}
+
+@keyframes provinceFadeIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.province.interactive {
+  cursor: pointer;
+}
+
+.province:hover {
+  fill-opacity: 0.9 !important;
+  stroke-width: 1.2px !important;
+  filter: brightness(1.1);
+}
+
+/* City markers */
+.cityMarkers {
+  animation: fadeIn 1s ease-out forwards;
+  animation-delay: 0.5s;
+  opacity: 0;
+}
+
+.cityMarker {
+  opacity: 0;
+  animation: markerFadeIn 0.5s ease-out forwards;
+}
+
+.cityMarker:nth-child(1) { animation-delay: 0.6s; }
+.cityMarker:nth-child(2) { animation-delay: 0.7s; }
+.cityMarker:nth-child(3) { animation-delay: 0.8s; }
+.cityMarker:nth-child(4) { animation-delay: 0.9s; }
+.cityMarker:nth-child(5) { animation-delay: 1.0s; }
+
+@keyframes markerFadeIn {
+  0% {
+    opacity: 0;
+    transform: scale(0);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.pulse {
+  animation: pulse 2s ease-in-out infinite;
+  transform-origin: center;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.2;
+  }
+  50% {
+    transform: scale(1.8);
+    opacity: 0;
+  }
+}
+
+.cityLabel {
+  font-family: var(--font-sans);
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8), 0 0 8px rgba(0, 0, 0, 0.5);
+  pointer-events: none;
+  user-select: none;
+}
+
+/* Tooltip */
+.provinceTooltip {
+  position: absolute;
+  top: -35px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(26, 35, 126, 0.9);
+  color: white;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 500;
+  white-space: nowrap;
+  pointer-events: none;
+  backdrop-filter: blur(8px);
+  animation: tooltipFadeIn 0.2s ease-out;
+  z-index: 10;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+@keyframes tooltipFadeIn {
+  0% {
+    opacity: 0;
+    transform: translateX(-50%) translateY(5px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+/* Legend */
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px 14px;
+  margin-top: 12px;
+  padding: 10px 14px;
+  background: rgba(26, 35, 126, 0.4);
+  border-radius: 10px;
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.legendItem {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.legendDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  .mapContainer {
+    max-width: 100%;
+  }
+
+  .legend {
+    gap: 5px 10px;
+    padding: 8px 10px;
+  }
+
+  .legendItem {
+    font-size: 9px;
+  }
+
+  .provinceTooltip {
+    font-size: 11px;
+    padding: 5px 12px;
+  }
+
+  .cityLabel {
+    font-size: 8px;
+  }
+}
+
+/* Dark mode - already dark themed */
+@media (prefers-color-scheme: dark) {
+  .mapSvg {
+    filter: drop-shadow(0 4px 20px rgba(0, 0, 0, 0.3));
+  }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .loaded,
+  .province,
+  .cityMarkers,
+  .cityMarker,
+  .pulse {
+    animation: none;
+  }
+
+  .loaded,
+  .cityMarkers,
+  .cityMarker {
+    opacity: 1;
+  }
+
+  .province {
+    opacity: 1;
+  }
+}

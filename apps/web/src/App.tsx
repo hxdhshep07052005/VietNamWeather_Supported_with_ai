@@ -3,7 +3,7 @@
  * Per FRONT-001: React + React Router
  */
 
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route, Navigate, Outlet } from "react-router-dom";
 import { useAuthStore } from "./hooks/useAuthStore";
 
 // Layout
@@ -15,6 +15,7 @@ import { LandingPage } from "./pages/LandingPage";
 import { LoginPage } from "./pages/LoginPage";
 import { RegisterPage } from "./pages/RegisterPage";
 import { ForgotPasswordPage } from "./pages/ForgotPasswordPage";
+import { OtpPage } from "./pages/OtpPage";
 import { TermsPage } from "./pages/TermsPage";
 import { PrivacyPage } from "./pages/PrivacyPage";
 
@@ -25,22 +26,23 @@ import { RoutePlannerPage } from "./pages/RoutePlannerPage";
 import { SettingsPage } from "./pages/SettingsPage";
 import { UpgradePage } from "./pages/UpgradePage";
 
-// Route Guard Component
-function ProtectedRoute({ children }: { children: React.ReactNode }) {
+// Route Guard Component using Outlet pattern
+function ProtectedRoute() {
   const { isAuthenticated } = useAuthStore();
 
   if (!isAuthenticated) {
     return <Navigate to="/login" replace />;
   }
 
-  return <>{children}</>;
+  return <Outlet />;
 }
 
 // Admin Route Guard
-function AdminRoute({ children }: { children: React.ReactNode }) {
+function AdminRoute() {
   const { isAuthenticated, user } = useAuthStore();
 
-  // TODO: Check user role from entitlements
+  // Note: In production, check user role from entitlements via userApi.getEntitlements()
+  // For now, we check the role from the user object
   const isAdmin = user?.role === "admin";
 
   if (!isAuthenticated) {
@@ -51,7 +53,7 @@ function AdminRoute({ children }: { children: React.ReactNode }) {
     return <Navigate to="/" replace />;
   }
 
-  return <>{children}</>;
+  return <Outlet />;
 }
 
 function App() {
@@ -62,6 +64,7 @@ function App() {
         <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
+        <Route path="/verify-otp" element={<OtpPage />} />
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
         <Route path="/legal/terms" element={<TermsPage />} />
         <Route path="/legal/privacy" element={<PrivacyPage />} />

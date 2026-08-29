@@ -1,0 +1,13 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "web-dev",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": ["--filter", "@vietnam-weather/web", "dev"],
+      "port": 3000,
+      "autoPort": true,
+      "url": "http://localhost:3000"
+    }
+  ]
+}
