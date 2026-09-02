@@ -1,5 +1,5 @@
 /**
- * Map Page Styles
+ * Map Page Styles — Phase 9 split-pane layout.
  */
 
 .page {
@@ -7,21 +7,25 @@
   flex-direction: column;
   height: 100%;
   padding: var(--space-4);
+  gap: var(--space-4);
+  overflow: hidden;
 }
 
+/* ─── Header ─────────────────────────────────────────────────────────────── */
 .header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: var(--space-4);
   flex-wrap: wrap;
-  gap: var(--space-4);
+  gap: var(--space-3);
+  flex-shrink: 0;
 }
 
 .title {
   font-size: var(--font-size-2xl);
   font-weight: var(--font-weight-bold);
   color: var(--color-text-primary);
+  margin: 0;
 }
 
 .controls {
@@ -34,7 +38,10 @@
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
   font-size: var(--font-size-sm);
-  min-width: 250px;
+  min-width: 200px;
+  background: var(--color-surface);
+  color: var(--color-text-primary);
+  transition: border-color 0.2s, box-shadow 0.2s;
 }
 
 .searchInput:focus {
@@ -43,69 +50,73 @@
   box-shadow: 0 0 0 2px var(--color-primary-light);
 }
 
-.mapContainer {
-  position: relative;
+/* ─── Split pane ─────────────────────────────────────────────────────────── */
+.splitPane {
+  display: flex;
   flex: 1;
-  min-height: 400px;
+  gap: 0;
   border-radius: var(--radius-lg);
   overflow: hidden;
-  background-color: var(--color-gray-100);
+  min-height: 0;
 }
 
-.mapPlaceholder {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+/* ─── Left map pane ──────────────────────────────────────────────────────── */
+.mapPane {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  background: #0d1b2a;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
 }
 
-.mapLoading {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: var(--space-4);
-  color: var(--color-text-secondary);
+/* ─── Right info pane ────────────────────────────────────────────────────── */
+.infoPane {
+  width: 360px;
+  flex-shrink: 0;
+  border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
+  overflow: hidden;
+  animation: slideIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
-.spinner {
-  width: 40px;
-  height: 40px;
-  border: 3px solid var(--color-gray-200);
-  border-top-color: var(--color-primary);
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
+@keyframes slideIn {
+  from {
+    transform: translateX(40px);
+    opacity: 0;
+  }
   to {
-    transform: rotate(360deg);
+    transform: translateX(0);
+    opacity: 1;
   }
 }
 
+/* ─── Layer Controls ─────────────────────────────────────────────────────── */
 .layerPanel {
   position: absolute;
-  top: var(--space-4);
-  left: var(--space-4);
-  background-color: var(--color-surface);
-  border: 1px solid var(--color-border);
+  top: var(--space-3);
+  left: var(--space-3);
+  background: rgba(13, 27, 42, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: var(--radius-lg);
-  padding: var(--space-4);
-  min-width: 160px;
-  box-shadow: var(--shadow-lg);
+  padding: var(--space-3) var(--space-4);
+  min-width: 150px;
+  backdrop-filter: blur(8px);
+  z-index: 10;
 }
 
 .panelTitle {
-  font-size: var(--font-size-sm);
+  font-size: var(--font-size-xs);
   font-weight: var(--font-weight-semibold);
-  margin-bottom: var(--space-3);
-  color: var(--color-text-primary);
+  margin: 0 0 var(--space-2);
+  color: rgba(255, 255, 255, 0.6);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
 }
 
 .layerList {
   display: flex;
   flex-direction: column;
-  gap: var(--space-2);
+  gap: var(--space-1);
 }
 
 .layerItem {
@@ -114,108 +125,154 @@
   gap: var(--space-2);
   font-size: var(--font-size-sm);
   cursor: pointer;
+  color: rgba(255, 255, 255, 0.8);
 }
 
-.layerItem input {
-  accent-color: var(--color-primary);
+.layerItem input[type="checkbox"] {
+  accent-color: #ffd700;
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
 }
 
+/* ─── Legend ──────────────────────────────────────────────────────────────── */
 .legend {
   position: absolute;
-  bottom: var(--space-4);
-  left: var(--space-4);
-  background-color: var(--color-surface);
-  border: 1px solid var(--color-border);
+  bottom: var(--space-3);
+  left: var(--space-3);
+  background: rgba(13, 27, 42, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: var(--radius-lg);
   padding: var(--space-3);
-  box-shadow: var(--shadow-lg);
+  backdrop-filter: blur(8px);
+  z-index: 10;
 }
 
 .legendTitle {
   font-size: var(--font-size-xs);
   font-weight: var(--font-weight-semibold);
   text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: var(--color-text-secondary);
-  margin-bottom: var(--space-2);
+  letter-spacing: 0.08em;
+  color: rgba(255, 255, 255, 0.5);
+  margin: 0 0 var(--space-2);
 }
 
 .legendItems {
   display: flex;
   flex-direction: column;
-  gap: var(--space-2);
+  gap: var(--space-1);
 }
 
 .legendItem {
   display: flex;
   align-items: center;
   gap: var(--space-2);
-  font-size: var(--font-size-sm);
+  font-size: var(--font-size-xs);
+  color: rgba(255, 255, 255, 0.75);
 }
 
 .legendDot {
-  width: 12px;
-  height: 12px;
+  width: 10px;
+  height: 10px;
   border-radius: 50%;
+  flex-shrink: 0;
 }
 
-.riskLow {
-  background-color: var(--color-risk-low);
-}
+.riskLow     { background-color: #4CAF50; }
+.riskCaution { background-color: #FF9800; }
+.riskHigh    { background-color: #F44336; }
+.riskUnknown { background-color: #9E9E9E; }
 
-.riskCaution {
-  background-color: var(--color-risk-caution);
-}
-
-.riskHigh {
-  background-color: var(--color-risk-high);
-}
-
-.riskUnknown {
-  background-color: var(--color-risk-unknown);
-}
-
+/* ─── GPS button ─────────────────────────────────────────────────────────── */
 .gpsButton {
   position: absolute;
-  bottom: var(--space-4);
-  right: var(--space-4);
-  width: 48px;
-  height: 48px;
+  bottom: var(--space-3);
+  right: var(--space-3);
+  width: 44px;
+  height: 44px;
   border-radius: 50%;
-  background-color: var(--color-surface);
-  border: 1px solid var(--color-border);
-  box-shadow: var(--shadow-lg);
+  background: rgba(13, 27, 42, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all var(--transition-fast);
+  color: rgba(255, 255, 255, 0.7);
+  transition: background 0.2s, color 0.2s, border-color 0.2s;
+  backdrop-filter: blur(8px);
+  z-index: 10;
 }
 
 .gpsButton:hover {
-  background-color: var(--color-primary-light);
-  border-color: var(--color-primary);
-  color: var(--color-primary);
+  background: rgba(255, 215, 0, 0.15);
+  color: #ffd700;
+  border-color: rgba(255, 215, 0, 0.4);
 }
 
 .gpsButton:focus-visible {
-  outline: var(--focus-ring-width) solid var(--focus-ring-color);
-  outline-offset: var(--focus-ring-offset);
+  outline: 2px solid var(--focus-ring-color);
+  outline-offset: 2px;
 }
 
+/* ─── Footer ─────────────────────────────────────────────────────────────── */
 .footer {
   display: flex;
   justify-content: flex-end;
-  margin-top: var(--space-4);
+  flex-shrink: 0;
 }
 
 .lastUpdated {
-  font-size: var(--font-size-sm);
+  font-size: var(--font-size-xs);
   color: var(--color-text-tertiary);
 }
 
-/* Mobile adjustments */
+/* ─── Responsive ─────────────────────────────────────────────────────────── */
+@media (max-width: 900px) {
+  .splitPane {
+    flex-direction: column;
+  }
+
+  .mapPane {
+    min-height: 50vh;
+    flex: none;
+    height: 50vh;
+  }
+
+  .infoPane {
+    width: 100%;
+    flex: 1;
+    border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+    animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  @keyframes slideUp {
+    from { transform: translateY(40px); opacity: 0; }
+    to   { transform: translateY(0);    opacity: 1; }
+  }
+
+  .layerPanel {
+    top: var(--space-2);
+    left: var(--space-2);
+  }
+
+  .legend {
+    bottom: var(--space-2);
+    left: var(--space-2);
+  }
+
+  .gpsButton {
+    bottom: var(--space-2);
+    right: var(--space-2);
+  }
+}
+
 @media (max-width: 640px) {
+  .page {
+    padding: var(--space-2);
+    gap: var(--space-2);
+  }
+
   .header {
     flex-direction: column;
     align-items: stretch;
@@ -223,17 +280,10 @@
 
   .searchInput {
     width: 100%;
+    min-width: unset;
   }
 
   .layerPanel {
-    top: auto;
-    bottom: 80px;
-    left: var(--space-4);
-    right: var(--space-4);
-    min-width: auto;
-  }
-
-  .legend {
     display: none;
   }
 }

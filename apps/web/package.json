@@ -14,6 +14,7 @@
     "test:coverage": "vitest --coverage"
   },
   "dependencies": {
+    "@vietnam-weather/contracts": "workspace:*",
     "@tanstack/react-query": "^5.51.23",
     "@xdev-asia/vietnam-map-34-provinces": "2.1.0",
     "clsx": "^2.1.1",

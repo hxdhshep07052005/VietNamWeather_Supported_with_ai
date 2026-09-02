@@ -22,6 +22,12 @@ import { MemoryRecoveryStore, PostgresRecoveryStore, type RecoveryStore } from "
 import { PasswordRecoveryService } from "./password-recovery.js";
 import { PostgresSessionStore, type SessionStore } from "./session-store.js";
 import { MemoryVerificationStore, PostgresVerificationStore, type VerificationStore } from "./verification-store.js";
+import {
+  AdvisoryService,
+  createAdvisoryService,
+  createRiskService,
+  RiskService
+} from "./risk/index.js";
 
 declare module "fastify" {
   interface FastifyRequest {
@@ -36,6 +42,7 @@ export interface ApiServerDependencies {
   readonly recovery?: RecoveryStore;
   readonly verification?: VerificationStore;
   readonly redis?: Redis;
+  readonly pool?: Pool;
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -366,6 +373,48 @@ export async function createApiServer(dependencies: ApiServerDependencies): Prom
     ttlSeconds: config.emailVerificationTtlSeconds,
     minimumPasswordLength: config.registrationMinLength
   });
+
+  let riskService: RiskService | undefined;
+  let advisoryService: AdvisoryService | undefined;
+  if (pool) {
+    riskService = createRiskService({ pool });
+    advisoryService = createAdvisoryService({
+      pool,
+      cacheTtlSeconds: config.weatherCacheTtlSeconds
+    });
+  }
+
+  if (pool) {
+    const { WeatherService, PostgresWeatherStore, RedisWeatherCache } = await import("./weather/index.js");
+    const store = new PostgresWeatherStore(
+      pool,
+      "weatherapi",
+      "weatherapi-forecast-v1"
+    );
+    const cache: import("./weather-cache.js").WeatherCache | null = redis
+      ? new RedisWeatherCache(redis)
+      : null;
+    const service = new WeatherService({
+      store,
+      cache: cache ?? undefined,
+      cacheTtlSeconds: config.weatherCacheTtlSeconds,
+      pendingRetrySeconds: config.weatherPendingRetrySeconds
+    });
+    const { buildWeatherRoutes: _build } = await import("./weather/routes.js");
+    _build(app, {
+      service,
+      store,
+      cache,
+      defaultRateLimitMax: config.defaultRateLimitMax,
+      rateLimitWindowMs: config.rateLimitWindowMilliseconds,
+      weatherRateLimitMax: config.weatherRateLimitMax
+    });
+  }
+
+  if (riskService && advisoryService) {
+    riskService.registerRiskRoutes(app, { correlationIdFn: correlationId });
+    advisoryService.registerAdvisoryRoutes(app, { correlationIdFn: correlationId });
+  }
 
   app.addHook("onSend", async (_request, reply) => {
     reply.header("cache-control", "no-store");

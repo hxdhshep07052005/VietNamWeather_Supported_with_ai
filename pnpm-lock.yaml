@@ -72,6 +72,9 @@ importers:
       '@tanstack/react-query':
         specifier: ^5.51.23
         version: 5.101.4(react@18.3.1)
+      '@vietnam-weather/contracts':
+        specifier: workspace:*
+        version: link:../../packages/contracts
       '@xdev-asia/vietnam-map-34-provinces':
         specifier: 2.1.0
         version: 2.1.0(highcharts@11.4.8)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)

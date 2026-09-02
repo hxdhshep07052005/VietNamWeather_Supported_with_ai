@@ -250,5 +250,42 @@
     "hpa": "hPa",
     "km": "km",
     "mi": "mi"
+  },
+  "infoPanel": {
+    "ariaLabel": "Province information",
+    "selectProvince": "Select a province",
+    "close": "Close info panel",
+    "loading": "Loading data...",
+    "lastUpdated": "Last updated: {{time}}",
+    "dangerAlert": "⚠ Dangerous weather alert",
+    "riskLevel": "Risk Level",
+    "currentWeather": "Current Weather",
+    "temp": "Temperature",
+    "wind": "Wind Speed",
+    "precipitation": "Precipitation",
+    "visibility": "Visibility",
+    "unit": {
+      "kph": "km/h",
+      "km": "km"
+    },
+    "noWeatherData": "No weather data available",
+    "weatherError": "Unable to load weather data",
+    "advisories": {
+      "title": "Weather Advisories",
+      "empty": "No advisories",
+      "kind": {
+        "wind": "Strong Wind",
+        "precipitation": "Heavy Rain",
+        "visibility": "Low Visibility",
+        "thunderstorm": "Thunderstorm"
+      },
+      "severity": {
+        "info": "Info",
+        "caution": "Caution",
+        "high": "High Danger"
+      },
+      "metric": "Value: {{value}}{{unit}} (threshold: {{threshold}}{{unit}})"
+    },
+    "attribution": "Data from WeatherAPI.com"
   }
 }

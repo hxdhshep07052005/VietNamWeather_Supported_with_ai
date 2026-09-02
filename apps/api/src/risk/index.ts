@@ -20,3 +20,13 @@ export {
   createRiskService,
   type RiskServiceOptions,
 } from "./risk-service.js";
+
+export {
+  AdvisoryService,
+  createAdvisoryService,
+  type AdvisorySeverity,
+  type AdvisoryKind,
+  type Advisory,
+  type AdvisoryListResponse,
+  type AdvisoryServiceOptions,
+} from "./advisory-service.js";

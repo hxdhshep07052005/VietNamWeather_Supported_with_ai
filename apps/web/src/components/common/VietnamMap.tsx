@@ -15,7 +15,10 @@ import styles from "./VietnamMap.module.css";
 interface VietnamMapProps {
   className?: string;
   interactive?: boolean;
-  onProvinceClick?: (province: string, code: string) => void;
+  onProvinceClick?: (province: string, code: string, latitude: number, longitude: number) => void;
+  onProvinceHover?: (province: string | null, code: string | null) => void;
+  selectedProvinceId?: string | null;
+  highlightProvinceId?: string | null;
 }
 
 interface ProvinceData {
@@ -84,6 +87,9 @@ export function VietnamMap({
   className,
   interactive = false,
   onProvinceClick,
+  onProvinceHover,
+  selectedProvinceId,
+  highlightProvinceId,
 }: VietnamMapProps) {
   const [isLoaded, setIsLoaded] = useState(false);
   const [hoveredProvince, setHoveredProvince] = useState<string | null>(null);
@@ -161,8 +167,8 @@ export function VietnamMap({
       // Extract coords from path string (rough parse)
       const matches = p.path.matchAll(/([ML])\s*([-\d.]+)[,\s]+([-\d.]+)/g);
       for (const m of matches) {
-        const x = parseFloat(m[2]);
-        const y = parseFloat(m[3]);
+        const x = parseFloat(m[2] ?? "");
+        const y = parseFloat(m[3] ?? "");
         if (!isNaN(x) && !isNaN(y)) {
           minX = Math.min(minX, x);
           minY = Math.min(minY, y);
@@ -195,8 +201,9 @@ export function VietnamMap({
   // Compute glow ellipse based on tightViewBox center
   const glowCenter = useMemo(() => {
     const parts = tightViewBox.split(" ").map(parseFloat);
-    if (parts.length === 4 && parts.every((n) => !isNaN(n))) {
-      return { cx: parts[0] + parts[2] / 2, cy: parts[1] + parts[3] / 2, rx: parts[2] / 2, ry: parts[3] / 2 };
+    const [p0, p1, p2, p3] = parts;
+    if (parts.length === 4 && p0 !== undefined && p1 !== undefined && p2 !== undefined && p3 !== undefined && !isNaN(p0) && !isNaN(p1) && !isNaN(p2) && !isNaN(p3)) {
+      return { cx: p0 + p2 / 2, cy: p1 + p3 / 2, rx: p2 / 2, ry: p3 / 2 };
     }
     return { cx: SVG_WIDTH / 2, cy: SVG_HEIGHT / 2, rx: 160, ry: 360 };
   }, [tightViewBox]);
@@ -209,10 +216,21 @@ export function VietnamMap({
   const handleProvinceClick = useCallback(
     (province: ProvinceData) => {
       if (interactive && onProvinceClick) {
-        onProvinceClick(province.name, province.code);
+        const [lng, lat] = convertCoord(province.centerX, province.centerY);
+        onProvinceClick(province.name, province.code, lat, lng);
       }
     },
     [interactive, onProvinceClick]
+  );
+
+  const handleProvinceHover = useCallback(
+    (province: ProvinceData | null) => {
+      setHoveredProvince(province?.id ?? null);
+      if (onProvinceHover) {
+        onProvinceHover(province?.name ?? null, province?.code ?? null);
+      }
+    },
+    [onProvinceHover]
   );
 
   return (
@@ -243,10 +261,10 @@ export function VietnamMap({
 
         {/* Ocean background */}
         <rect
-          x={parseFloat(tightViewBox.split(" ")[0]) - 50}
-          y={parseFloat(tightViewBox.split(" ")[1]) - 50}
-          width={parseFloat(tightViewBox.split(" ")[2]) + 100}
-          height={parseFloat(tightViewBox.split(" ")[3]) + 100}
+          x={(parseFloat(tightViewBox.split(" ")[0] ?? "") ?? 0) - 50}
+          y={(parseFloat(tightViewBox.split(" ")[1] ?? "") ?? 0) - 50}
+          width={(parseFloat(tightViewBox.split(" ")[2] ?? "") ?? 0) + 100}
+          height={(parseFloat(tightViewBox.split(" ")[3] ?? "") ?? 0) + 100}
           fill="url(#oceanGradient)"
         />
 
@@ -257,19 +275,28 @@ export function VietnamMap({
         <g filter="url(#mapShadow)" className={styles.provincesGroup}>
           {provinces.map((province, index) => {
             const isHovered = hoveredProvince === province.id;
+            const isSelected = selectedProvinceId === province.id;
+            const isHighlighted = highlightProvinceId === province.id;
+            const fill = isSelected
+              ? "#FFD700"
+              : isHovered
+              ? "#FFA726"
+              : isHighlighted
+              ? "#80DEEA"
+              : province.color;
             return (
               <path
                 key={province.id}
                 d={province.path}
-                fill={isHovered ? "#FFD700" : province.color}
-                fillOpacity={isHovered ? 0.95 : 0.75}
+                fill={fill}
+                fillOpacity={isSelected || isHovered ? 0.95 : 0.75}
                 stroke="#FFFFFF"
-                strokeWidth={isHovered ? 1.2 : 0.5}
+                strokeWidth={isSelected || isHovered ? 1.5 : 0.5}
                 strokeOpacity={0.85}
                 className={`${styles.province} ${interactive ? styles.interactive : ""}`}
                 style={{ animationDelay: `${index * 0.01}s` }}
-                onMouseEnter={() => setHoveredProvince(province.id)}
-                onMouseLeave={() => setHoveredProvince(null)}
+                onMouseEnter={() => handleProvinceHover(province)}
+                onMouseLeave={() => handleProvinceHover(null)}
                 onClick={() => handleProvinceClick(province)}
               />
             );
@@ -284,6 +311,21 @@ export function VietnamMap({
             <g transform={`translate(${province.centerX}, ${province.centerY})`} className={styles.provinceLabel}>
               <rect x="-45" y="-11" width="90" height="22" rx="11" fill="rgba(0,0,0,0.85)" stroke="#FFD700" strokeWidth="1" />
               <text x="0" y="4" textAnchor="middle" fill="#FFFFFF" fontSize="11" fontWeight="700" style={{ pointerEvents: "none" }}>
+                {province.name}
+              </text>
+            </g>
+          );
+        })()}
+
+        {/* Province label on selection */}
+        {selectedProvinceId && (() => {
+          const province = provinces.find((p) => p.id === selectedProvinceId);
+          if (!province) return null;
+          const labelX = Math.max(-45, Math.min(tightViewBox ? (parseFloat(tightViewBox.split(" ")[2] ?? "") ?? SVG_WIDTH - 45) : SVG_WIDTH - 45, province.centerX + 30));
+          return (
+            <g transform={`translate(${labelX}, ${province.centerY - 40})`} className={styles.provinceLabel}>
+              <rect x="-45" y="-11" width="90" height="22" rx="11" fill="rgba(0,0,0,0.85)" stroke="#FFD700" strokeWidth="1.5" />
+              <text x="0" y="4" textAnchor="middle" fill="#FFD700" fontSize="11" fontWeight="700" style={{ pointerEvents: "none" }}>
                 {province.name}
               </text>
             </g>

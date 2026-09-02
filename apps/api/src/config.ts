@@ -31,6 +31,9 @@ export interface ApiConfig {
   readonly bodyLimitBytes: number;
   readonly defaultRateLimitMax: number;
   readonly loginRateLimitMax: number;
+  readonly weatherRateLimitMax: number;
+  readonly weatherCacheTtlSeconds: number;
+  readonly weatherPendingRetrySeconds: number;
   readonly rateLimitWindowMilliseconds: number;
   readonly redisTimeoutMilliseconds: number;
   readonly accessRefreshSkewMilliseconds: number;
@@ -204,6 +207,9 @@ export function loadApiConfig(environment: NodeJS.ProcessEnv): ApiConfig {
     bodyLimitBytes: requireInteger(environment, "API_MAX_BODY_BYTES", 1024, 1_048_576),
     defaultRateLimitMax: requireInteger(environment, "API_RATE_LIMIT_DEFAULT_MAX", 1, 10_000),
     loginRateLimitMax: requireInteger(environment, "API_RATE_LIMIT_LOGIN_MAX", 1, 100),
+    weatherRateLimitMax: requireInteger(environment, "API_RATE_LIMIT_WEATHER_MAX", 1, 100),
+    weatherCacheTtlSeconds: requireInteger(environment, "API_WEATHER_CACHE_TTL_SECONDS", 10, 300),
+    weatherPendingRetrySeconds: requireInteger(environment, "API_WEATHER_PENDING_RETRY_SECONDS", 1, 60),
     rateLimitWindowMilliseconds: requireInteger(
       environment,
       "API_RATE_LIMIT_WINDOW_MS",

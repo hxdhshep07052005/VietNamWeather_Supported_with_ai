@@ -5,6 +5,7 @@
 
 import { randomUUID } from "node:crypto";
 
+import type { FastifyInstance } from "fastify";
 import type { Pool } from "pg";
 
 import {
@@ -333,6 +334,48 @@ export class RiskService {
    */
   clearCache(): void {
     this.cachedRuleSet = null;
+  }
+
+  /**
+   * Register Fastify routes for risk assessment.
+   * Exposed as a method so server.ts can wire them conditionally.
+   */
+  registerRiskRoutes(
+    app: FastifyInstance,
+    options: { readonly correlationIdFn: (request: { id: string }) => string }
+  ): void {
+    const { correlationIdFn } = options;
+
+    app.get("/api/v1/risk/capabilities", async (request) => ({
+      data: await this.getCapabilities()
+    }));
+
+    app.post("/api/v1/risk/assess", async (request, reply) => {
+      const body = request.body as Record<string, unknown> | undefined;
+      if (
+        !body ||
+        typeof body !== "object" ||
+        !("location_id" in body) ||
+        typeof (body as Record<string, unknown>).location_id !== "string"
+      ) {
+        reply.code(400);
+        return {
+          error: {
+            code: "VALIDATION_FAILED",
+            message: "Invalid risk assessment request",
+            retryable: false
+          }
+        };
+      }
+      const req = {
+        location_id: String((body as Record<string, unknown>).location_id),
+        target_time: (body as Record<string, unknown>).target_time as string | undefined,
+        include_triggered_rules: (body as Record<string, unknown>).include_triggered_rules as boolean | undefined
+      };
+      const result = await this.assessRisk(req);
+      reply.header("cache-control", "no-store");
+      return { data: result };
+    });
   }
 }
 

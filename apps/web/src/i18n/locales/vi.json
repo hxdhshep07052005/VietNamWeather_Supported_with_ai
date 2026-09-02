@@ -250,5 +250,42 @@
     "hpa": "hPa",
     "km": "km",
     "mi": "mi"
+  },
+  "infoPanel": {
+    "ariaLabel": "Thông tin tỉnh/thành",
+    "selectProvince": "Chọn một tỉnh/thành",
+    "close": "Đóng bảng thông tin",
+    "loading": "Đang tải dữ liệu...",
+    "lastUpdated": "Cập nhật lần cuối: {{time}}",
+    "dangerAlert": "⚠ Cảnh báo thời tiết nguy hiểm",
+    "riskLevel": "Mức rủi ro",
+    "currentWeather": "Thời tiết hiện tại",
+    "temp": "Nhiệt độ",
+    "wind": "Tốc độ gió",
+    "precipitation": "Lượng mưa",
+    "visibility": "Tầm nhìn",
+    "unit": {
+      "kph": "km/h",
+      "km": "km"
+    },
+    "noWeatherData": "Không có dữ liệu thời tiết",
+    "weatherError": "Không thể tải dữ liệu thời tiết",
+    "advisories": {
+      "title": "Cảnh báo thời tiết",
+      "empty": "Không có cảnh báo nào",
+      "kind": {
+        "wind": "Gió mạnh",
+        "precipitation": "Mưa lớn",
+        "visibility": "Tầm nhìn kém",
+        "thunderstorm": "Dông bão"
+      },
+      "severity": {
+        "info": "Thông tin",
+        "caution": "Cảnh báo",
+        "high": "Nguy hiểm"
+      },
+      "metric": "Giá trị: {{value}}{{unit}} (ngưỡng: {{threshold}}{{unit}})"
+    },
+    "attribution": "Dữ liệu từ WeatherAPI.com"
   }
 }
