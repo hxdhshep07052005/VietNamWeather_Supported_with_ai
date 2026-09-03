@@ -377,15 +377,18 @@ export async function createApiServer(dependencies: ApiServerDependencies): Prom
   let riskService: RiskService | undefined;
   let advisoryService: AdvisoryService | undefined;
   if (pool) {
-    riskService = createRiskService({ pool });
+    riskService = createRiskService({ dbPool: pool });
     advisoryService = createAdvisoryService({
-      pool,
+      dbPool: pool,
       cacheTtlSeconds: config.weatherCacheTtlSeconds
     });
   }
 
+  // Weather scheduler for pre-loading weather data
+  let weatherScheduler: import("./weather/scheduler.js").WeatherScheduler | null = null;
+
   if (pool) {
-    const { WeatherService, PostgresWeatherStore, RedisWeatherCache } = await import("./weather/index.js");
+    const { WeatherService, PostgresWeatherStore, RedisWeatherCache, WeatherScheduler, createDefaultSchedulerConfig } = await import("./weather/index.js");
     const store = new PostgresWeatherStore(
       pool,
       "weatherapi",
@@ -400,11 +403,27 @@ export async function createApiServer(dependencies: ApiServerDependencies): Prom
       cacheTtlSeconds: config.weatherCacheTtlSeconds,
       pendingRetrySeconds: config.weatherPendingRetrySeconds
     });
+
+    // Start weather scheduler to pre-load weather data for all Vietnam provinces
+    const schedulerConfig = createDefaultSchedulerConfig();
+    weatherScheduler = new WeatherScheduler(
+      store,
+      schedulerConfig,
+      {
+        info: (message, meta) => app.log.info({ ...meta, component: "weather-scheduler" }, message),
+        error: (message, meta) => app.log.error({ ...meta, component: "weather-scheduler" }, message),
+        warn: (message, meta) => app.log.warn({ ...meta, component: "weather-scheduler" }, message),
+      }
+    );
+    weatherScheduler.start();
+
+    // Register weather routes with the scheduler
     const { buildWeatherRoutes: _build } = await import("./weather/routes.js");
     _build(app, {
       service,
       store,
       cache,
+      scheduler: weatherScheduler,
       defaultRateLimitMax: config.defaultRateLimitMax,
       rateLimitWindowMs: config.rateLimitWindowMilliseconds,
       weatherRateLimitMax: config.weatherRateLimitMax
@@ -412,8 +431,8 @@ export async function createApiServer(dependencies: ApiServerDependencies): Prom
   }
 
   if (riskService && advisoryService) {
-    riskService.registerRiskRoutes(app, { correlationIdFn: correlationId });
-    advisoryService.registerAdvisoryRoutes(app, { correlationIdFn: correlationId });
+    riskService.registerRiskRoutes(app, { correlationIdFn: (r) => correlationId(r as unknown as FastifyRequest) });
+    advisoryService.registerAdvisoryRoutes(app, { correlationIdFn: (r) => correlationId(r as unknown as FastifyRequest) });
   }
 
   app.addHook("onSend", async (_request, reply) => {
@@ -575,6 +594,7 @@ export async function createApiServer(dependencies: ApiServerDependencies): Prom
     await verification.close();
     if (ownsSessions) await sessions.close();
     if (ownsRedis && redis) await redis.quit().catch(() => undefined);
+    if (weatherScheduler) await weatherScheduler.stop();
   });
   return app;
 }

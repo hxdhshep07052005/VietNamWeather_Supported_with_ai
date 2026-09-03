@@ -1,122 +1,145 @@
 /**
- * Phase 9 Landing Page - Professional Introduction Design
- * Vietnam Map Visual + GSAP Animations
+ * Phase 9 Landing Page - Modern Split-Hero & Interactive Weather Experience
+ * Features 2-column Hero layout, Quick Province Search, and Real-time Map Showcase
  */
 
-import { useEffect, useRef } from "react";
-import { Link } from "react-router-dom";
+import { useState, useEffect, useRef } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { useAuthStore } from "@/hooks/useAuthStore";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { VietnamMap } from "../components/common/VietnamMap";
-import { WeatherIcon, RiskIcon, RouteIcon, ArrowRightIcon } from "../components/ui/Icons";
+import {
+  WeatherIcon,
+  RiskIcon,
+  RouteIcon,
+  ArrowRightIcon,
+  CheckIcon,
+  CarIcon,
+  MotorcycleIcon,
+  SunIcon,
+  RainIcon,
+  WindIcon,
+} from "../components/ui/Icons";
 import styles from "./LandingPage.module.css";
 
 // Register GSAP plugins
 gsap.registerPlugin(ScrollTrigger);
 
+interface SelectedProvince {
+  name: string;
+  code: string;
+  lat?: number;
+  lng?: number;
+}
+
 export function LandingPage() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const { isAuthenticated } = useAuthStore();
+  const navigate = useNavigate();
+
+  // If already logged in, redirect to /map
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate("/map", { replace: true });
+    }
+  }, [isAuthenticated, navigate]);
   const heroRef = useRef<HTMLDivElement>(null);
   const featuresRef = useRef<HTMLDivElement>(null);
   const statsRef = useRef<HTMLDivElement>(null);
   const pricingRef = useRef<HTMLDivElement>(null);
 
-  // GSAP Animations
+  // View state
+  const [viewMode, setViewMode] = useState<"region" | "risk">("region");
+  const [selectedProvince, setSelectedProvince] = useState<SelectedProvince | null>(null);
+
+
+  // GSAP Entrance and Scroll Animations
   useEffect(() => {
-    // Hero animations
     const ctx = gsap.context(() => {
-      // Title animation
+      // Hero Left Column Stagger
       gsap.fromTo(
-        `.${styles.heroTitle}`,
-        { opacity: 0, y: 50 },
-        { opacity: 1, y: 0, duration: 1, ease: "power3.out", delay: 0.3 }
+        `.${styles.animHeroText}`,
+        { opacity: 0, y: 35 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.9,
+          stagger: 0.12,
+          ease: "power3.out",
+          delay: 0.15,
+        }
       );
 
-      // Subtitle animation
+      // Hero Map Showcase Entrance
       gsap.fromTo(
-        `.${styles.heroSubtitle}`,
-        { opacity: 0, y: 30 },
-        { opacity: 1, y: 0, duration: 1, ease: "power3.out", delay: 0.5 }
+        `.${styles.mapShowcaseWrapper}`,
+        { opacity: 0, scale: 0.9, y: 30 },
+        {
+          opacity: 1,
+          scale: 1,
+          y: 0,
+          duration: 1.1,
+          ease: "power3.out",
+          delay: 0.35,
+        }
       );
 
-      // CTA buttons animation
-      gsap.fromTo(
-        `.${styles.heroCta}`,
-        { opacity: 0, y: 20 },
-        { opacity: 1, y: 0, duration: 0.8, ease: "power3.out", delay: 0.7 }
-      );
-
-      // Vietnam map animation
-      gsap.fromTo(
-        `.${styles.vietnamMapWrapper}`,
-        { opacity: 0, scale: 0.8 },
-        { opacity: 1, scale: 1, duration: 1.2, ease: "elastic.out(1, 0.5)", delay: 0.1 }
-      );
-
-      // Feature cards stagger animation
+      // Feature cards stagger on scroll
       gsap.fromTo(
         `.${styles.featureCard}`,
-        { opacity: 0, y: 60 },
+        { opacity: 0, y: 50 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.75,
+          stagger: 0.15,
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: `.${styles.featureGrid}`,
+            start: "top 82%",
+            toggleActions: "play none none reverse",
+          },
+        }
+      );
+
+      // Stats counters stagger
+      gsap.fromTo(
+        `.${styles.statItem}`,
+        { opacity: 0, y: 30, scale: 0.95 },
+        {
+          opacity: 1,
+          y: 0,
+          scale: 1,
+          duration: 0.65,
+          stagger: 0.1,
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: `.${styles.statsGrid}`,
+            start: "top 85%",
+            toggleActions: "play none none reverse",
+          },
+        }
+      );
+
+      // Pricing cards entrance
+      gsap.fromTo(
+        `.${styles.pricingCard}`,
+        { opacity: 0, y: 40 },
         {
           opacity: 1,
           y: 0,
           duration: 0.8,
-          ease: "power3.out",
-          stagger: 0.15,
-          scrollTrigger: {
-            trigger: `.${styles.featureGrid}`,
-            start: "top 80%",
-            toggleActions: "play none none reverse",
-          },
-        }
-      );
-
-      // Stats counter animation
-      gsap.fromTo(
-        `.${styles.statItem}`,
-        { opacity: 0, scale: 0.9 },
-        {
-          opacity: 1,
-          scale: 1,
-          duration: 0.6,
-          ease: "power2.out",
-          stagger: 0.1,
-          scrollTrigger: {
-            trigger: `.${styles.statsGrid}`,
-            start: "top 80%",
-            toggleActions: "play none none reverse",
-          },
-        }
-      );
-
-      // Pricing cards animation
-      gsap.fromTo(
-        `.${styles.pricingCard}`,
-        { opacity: 0, x: (i) => (i === 0 ? -50 : 50) },
-        {
-          opacity: 1,
-          x: 0,
-          duration: 0.8,
-          ease: "power3.out",
           stagger: 0.2,
+          ease: "power3.out",
           scrollTrigger: {
             trigger: `.${styles.pricingGrid}`,
-            start: "top 80%",
+            start: "top 82%",
             toggleActions: "play none none reverse",
           },
         }
       );
-
-      // Scroll indicator pulse
-      gsap.to(`.${styles.scrollIndicator}`, {
-        opacity: 0.5,
-        y: 10,
-        duration: 1.5,
-        repeat: -1,
-        yoyo: true,
-        ease: "power1.inOut",
-      });
     }, heroRef);
 
     return () => ctx.revert();
@@ -124,66 +147,129 @@ export function LandingPage() {
 
   return (
     <div className={styles.page}>
-      {/* Hero Section */}
+      {/* =========================================================================
+          HERO SECTION - Modern 2-Column Split
+          ========================================================================= */}
       <section ref={heroRef} className={styles.hero}>
-        {/* Animated background */}
+        {/* Ambient background glows */}
         <div className={styles.heroBackground} />
+        <div className={styles.heroGlowSphere1} />
+        <div className={styles.heroGlowSphere2} />
 
-        {/* Floating particles */}
-        <div className={styles.particles}>
-          {[...Array(10)].map((_, i) => (
-            <div key={i} className={styles.particle} />
-          ))}
-        </div>
+        <div className={styles.container}>
+          <div className={styles.heroGrid}>
+            {/* Left Column: Brand, Headline, Search & CTAs */}
+            <div className={styles.heroLeft}>
+              {/* Eyebrow Badge */}
+              <div className={`${styles.eyebrowBadge} ${styles.animHeroText}`}>
+                <span className={styles.eyebrowPulse} />
+                <span className={styles.eyebrowText}>{t("landing.heroEyebrow")}</span>
+              </div>
 
-        {/* Hero content */}
-        <div className={styles.heroContent}>
-          {/* Vietnam Map Visualization */}
-          <div className={styles.vietnamMapWrapper}>
-            <VietnamMap />
+              {/* Main Headline */}
+              <h1 className={`${styles.heroTitle} ${styles.animHeroText}`}>
+                {i18n.language === "vi" ? (
+                  <>
+                    Hành trình trọn vẹn với{" "}
+                    <span className={styles.heroHighlight}>Dự báo Thời tiết</span> thông minh
+                  </>
+                ) : (
+                  <>
+                    Travel Confidently with{" "}
+                    <span className={styles.heroHighlight}>Intelligent Weather</span> Foresight
+                  </>
+                )}
+              </h1>
+
+              {/* Subtitle */}
+              <p className={`${styles.heroSubtitle} ${styles.animHeroText}`}>
+                {t("landing.heroSubtitle")}
+              </p>
+
+              {/* Hero CTA Buttons - Side by Side, Minimalist & Clean */}
+              <div className={`${styles.heroCtaGroup} ${styles.animHeroText}`}>
+                <Link to="/register" className={styles.heroPrimaryBtn}>
+                  <span>{t("landing.getStarted") || "Bắt đầu ngay"}</span>
+                  <ArrowRightIcon size={18} />
+                </Link>
+                <Link to="/login" className={styles.heroSecondaryBtn}>
+                  <span>{t("auth.login") || "Đăng nhập"}</span>
+                </Link>
+              </div>
+
+              {/* Trust Indicators / Badges */}
+              <div className={`${styles.trustMetrics} ${styles.animHeroText}`}>
+                <div className={styles.trustItem}>
+                  <div className={styles.trustIconOk}>
+                    <CheckIcon size={14} />
+                  </div>
+                  <span>{t("landing.trustMetric1")}</span>
+                </div>
+                <div className={styles.trustItem}>
+                  <div className={styles.trustIconOk}>
+                    <CheckIcon size={14} />
+                  </div>
+                  <span>{t("landing.trustMetric2")}</span>
+                </div>
+                <div className={styles.trustItem}>
+                  <div className={styles.trustIconOk}>
+                    <CheckIcon size={14} />
+                  </div>
+                  <span>{t("landing.trustMetric3")}</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Right Column: Interactive Vietnam Map Showcase */}
+            <div className={styles.heroRight}>
+              <div className={styles.mapShowcaseWrapper}>
+                {/* View Mode Toggle Bar */}
+                <div className={styles.mapControlHeader}>
+                  <div className={styles.mapBadgeTag}>
+                    <span className={styles.liveIndicator} />
+                    <span>{t("landing.liveMapBadge")}</span>
+                  </div>
+                  <div className={styles.viewModeToggle}>
+                    <button
+                      type="button"
+                      className={`${styles.viewModeBtn} ${viewMode === "region" ? styles.viewModeBtnActive : ""}`}
+                      onClick={() => setViewMode("region")}
+                    >
+                      {t("landing.viewModeRegions")}
+                    </button>
+                    <button
+                      type="button"
+                      className={`${styles.viewModeBtn} ${viewMode === "risk" ? styles.viewModeBtnActive : ""}`}
+                      onClick={() => setViewMode("risk")}
+                    >
+                      {t("landing.viewModeRisk")}
+                    </button>
+                  </div>
+                </div>
+
+                {/* VietnamMap Component with Showcase Mode */}
+                <VietnamMap
+                  interactive={true}
+                  showcaseMode={true}
+                  viewMode={viewMode}
+                  selectedProvinceId={selectedProvince?.code || null}
+                  onProvinceClick={(name, code, lat, lng) => {
+                    setSelectedProvince({ name, code, lat, lng });
+                  }}
+                />
+              </div>
+            </div>
           </div>
-
-          {/* Hero text */}
-          <h1 className={styles.heroTitle}>
-            {t("landing.heroTitle").split("Du lịch").map((part, i, arr) =>
-              i === arr.length - 1 ? (
-                <span key={i}>{part}</span>
-              ) : (
-                <span key={i}>
-                  {part}
-                  <span className={styles.heroHighlight}>Du lịch</span>
-                </span>
-              )
-            )}
-          </h1>
-
-          <p className={styles.heroSubtitle}>
-            {t("landing.heroSubtitle")}
-          </p>
-
-          {/* CTA Buttons */}
-          <div className={styles.heroCta}>
-            <Link to="/register" className={styles.primaryButton}>
-              <ArrowRightIcon size={20} />
-              {t("landing.getStarted")}
-            </Link>
-            <Link to="/login" className={styles.secondaryButton}>
-              {t("landing.login")}
-            </Link>
-          </div>
-        </div>
-
-        {/* Scroll indicator */}
-        <div className={styles.scrollIndicator}>
-          <span>{t("landing.scrollDown")}</span>
-          <div className={styles.scrollArrow} />
         </div>
       </section>
 
-      {/* Features Section */}
-      <section ref={featuresRef} className={styles.features}>
+      {/* =========================================================================
+          FEATURES SECTION - 3 Core Pillars with Visual Highlights
+          ========================================================================= */}
+      <section id="features" ref={featuresRef} className={styles.features}>
         <div className={styles.container}>
           <div className={styles.sectionHeader}>
+            <span className={styles.sectionEyebrow}>{t("landing.featureTechEyebrow")}</span>
             <h2 className={styles.sectionTitle}>{t("landing.featuresTitle")}</h2>
             <p className={styles.sectionSubtitle}>
               {t("landing.featuresSubtitle")}
@@ -191,10 +277,13 @@ export function LandingPage() {
           </div>
 
           <div className={styles.featureGrid}>
-            {/* Feature 1: Accurate Forecast */}
+            {/* Feature 1: Accurate 72h Forecast */}
             <div className={styles.featureCard}>
-              <div className={styles.featureIconWrapper}>
-                <WeatherIcon size={32} />
+              <div className={styles.featureCardHeader}>
+                <div className={`${styles.featureIconBox} ${styles.iconBoxWeather}`}>
+                  <WeatherIcon size={26} />
+                </div>
+                <span className={styles.featurePill}>{t("landing.pill72h")}</span>
               </div>
               <h3 className={styles.featureTitle}>
                 {t("landing.featureAccurateForecast")}
@@ -202,12 +291,40 @@ export function LandingPage() {
               <p className={styles.featureDescription}>
                 {t("landing.featureAccurateForecastDesc")}
               </p>
+              {/* Mini visual mockup */}
+              <div className={styles.featureMiniVisual}>
+                <div className={styles.miniForecastRow}>
+                  <div className={styles.miniForecastItem}>
+                    <SunIcon size={18} />
+                    <span>+1h</span>
+                    <strong>28°C</strong>
+                  </div>
+                  <div className={styles.miniForecastItem}>
+                    <SunIcon size={18} />
+                    <span>+6h</span>
+                    <strong>31°C</strong>
+                  </div>
+                  <div className={styles.miniForecastItem}>
+                    <WindIcon size={18} />
+                    <span>+12h</span>
+                    <strong>29°C</strong>
+                  </div>
+                  <div className={styles.miniForecastItem}>
+                    <RainIcon size={18} />
+                    <span>+24h</span>
+                    <strong>26°C</strong>
+                  </div>
+                </div>
+              </div>
             </div>
 
-            {/* Feature 2: Risk Assessment */}
+            {/* Feature 2: 6-Dimension Risk Evaluation */}
             <div className={styles.featureCard}>
-              <div className={styles.featureIconWrapper}>
-                <RiskIcon size={32} />
+              <div className={styles.featureCardHeader}>
+                <div className={`${styles.featureIconBox} ${styles.iconBoxRisk}`}>
+                  <RiskIcon size={26} />
+                </div>
+                <span className={styles.featurePill}>{t("landing.pillRiskEngine")}</span>
               </div>
               <h3 className={styles.featureTitle}>
                 {t("landing.featureRiskAssessment")}
@@ -215,12 +332,26 @@ export function LandingPage() {
               <p className={styles.featureDescription}>
                 {t("landing.featureRiskAssessmentDesc")}
               </p>
+              {/* Mini visual mockup: 6 Risk Dimensions */}
+              <div className={styles.featureMiniVisual}>
+                <div className={styles.miniRiskPills}>
+                  <span className={`${styles.riskChip} ${styles.riskChipLow}`}>{t("landing.riskRainLow")}</span>
+                  <span className={`${styles.riskChip} ${styles.riskChipLow}`}>{t("landing.riskWindLow")}</span>
+                  <span className={`${styles.riskChip} ${styles.riskChipCaution}`}>{t("landing.riskTempCaution")}</span>
+                  <span className={`${styles.riskChip} ${styles.riskChipLow}`}>{t("landing.riskVisGood")}</span>
+                  <span className={`${styles.riskChip} ${styles.riskChipLow}`}>{t("landing.riskStormNone")}</span>
+                  <span className={`${styles.riskChip} ${styles.riskChipLow}`}>{t("landing.riskAlertSafe")}</span>
+                </div>
+              </div>
             </div>
 
-            {/* Feature 3: Route Planning */}
+            {/* Feature 3: ETA-Aware Route Planning */}
             <div className={styles.featureCard}>
-              <div className={styles.featureIconWrapper}>
-                <RouteIcon size={32} />
+              <div className={styles.featureCardHeader}>
+                <div className={`${styles.featureIconBox} ${styles.iconBoxRoute}`}>
+                  <RouteIcon size={26} />
+                </div>
+                <span className={styles.featurePill}>{t("landing.pillEta")}</span>
               </div>
               <h3 className={styles.featureTitle}>
                 {t("landing.featureRoutePlanning")}
@@ -228,12 +359,32 @@ export function LandingPage() {
               <p className={styles.featureDescription}>
                 {t("landing.featureRoutePlanningDesc")}
               </p>
+              {/* Mini visual mockup: Route Comparison */}
+              <div className={styles.featureMiniVisual}>
+                <div className={styles.miniRouteTags}>
+                  <div className={styles.vehiclePill}>
+                    <CarIcon size={14} />
+                    <MotorcycleIcon size={14} />
+                    <span>{t("landing.vehicleCarMotor")}</span>
+                  </div>
+                  <div className={styles.routeOptionItem}>
+                    <span>{t("landing.routeFastest")}</span>
+                    <strong className={styles.tagSpeed}>{t("landing.routeFastestTime")}</strong>
+                  </div>
+                  <div className={`${styles.routeOptionItem} ${styles.routeOptionSafer}`}>
+                    <span>{t("landing.routeSafer")}</span>
+                    <strong className={styles.tagSafe}>{t("landing.routeSaferTime")}</strong>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Stats Section */}
+      {/* =========================================================================
+          STATS SECTION - Real-time metrics
+          ========================================================================= */}
       <section ref={statsRef} className={styles.stats}>
         <div className={styles.container}>
           <div className={styles.statsGrid}>
@@ -242,7 +393,7 @@ export function LandingPage() {
               <div className={styles.statLabel}>{t("landing.statsProvinces")}</div>
             </div>
             <div className={styles.statItem}>
-              <div className={styles.statNumber}>1000+</div>
+              <div className={styles.statNumber}>1,000+</div>
               <div className={styles.statLabel}>{t("landing.statsLocations")}</div>
             </div>
             <div className={styles.statItem}>
@@ -257,10 +408,13 @@ export function LandingPage() {
         </div>
       </section>
 
-      {/* Pricing Section */}
+      {/* =========================================================================
+          PRICING SECTION - Free vs Pro
+          ========================================================================= */}
       <section ref={pricingRef} className={styles.pricing}>
         <div className={styles.container}>
           <div className={styles.sectionHeader}>
+            <span className={styles.sectionEyebrow}>{t("landing.pricingEyebrow")}</span>
             <h2 className={styles.sectionTitle}>{t("landing.pricingTitle")}</h2>
             <p className={styles.sectionSubtitle}>
               {t("landing.pricingSubtitle")}
@@ -270,19 +424,34 @@ export function LandingPage() {
           <div className={styles.pricingGrid}>
             {/* Free Plan */}
             <div className={styles.pricingCard}>
-              <h3 className={styles.pricingTitle}>{t("landing.planFree")}</h3>
+              <div className={styles.planHeader}>
+                <h3 className={styles.pricingTitle}>{t("landing.planFree")}</h3>
+                <p className={styles.planTarget}>{t("landing.planFreeTarget")}</p>
+              </div>
               <div className={styles.pricingAmount}>
                 <span className={styles.pricingCurrency}>₫</span>
                 <span className={styles.pricingValue}>0</span>
                 <span className={styles.pricingPeriod}>{t("landing.perMonth")}</span>
               </div>
               <ul className={styles.pricingFeatures}>
-                <li>{t("landing.featureCurrentWeather")}</li>
-                <li>{t("landing.featureWeatherMap")}</li>
-                <li>{t("landing.featureBasicRisk")}</li>
-                <li>{t("landing.feature10Queries")}</li>
+                <li>
+                  <CheckIcon size={16} />
+                  <span>{t("landing.featureCurrentWeather")}</span>
+                </li>
+                <li>
+                  <CheckIcon size={16} />
+                  <span>{t("landing.featureWeatherMap")}</span>
+                </li>
+                <li>
+                  <CheckIcon size={16} />
+                  <span>{t("landing.featureBasicRisk")}</span>
+                </li>
+                <li>
+                  <CheckIcon size={16} />
+                  <span>{t("landing.feature10Queries")}</span>
+                </li>
               </ul>
-              <Link to="/register" className={styles.pricingButton + " " + styles.pricingButtonSecondary}>
+              <Link to="/register" className={`${styles.pricingBtn} ${styles.pricingBtnSecondary}`}>
                 {t("landing.signUpFree")}
               </Link>
             </div>
@@ -290,20 +459,38 @@ export function LandingPage() {
             {/* Pro Plan */}
             <div className={`${styles.pricingCard} ${styles.pricingCardHighlight}`}>
               <div className={styles.pricingBadge}>{t("landing.popular")}</div>
-              <h3 className={styles.pricingTitle}>{t("landing.planPro")}</h3>
+              <div className={styles.planHeader}>
+                <h3 className={styles.pricingTitle}>{t("landing.planPro")}</h3>
+                <p className={styles.planTarget}>{t("landing.planProTarget")}</p>
+              </div>
               <div className={styles.pricingAmount}>
                 <span className={styles.pricingCurrency}>₫</span>
                 <span className={styles.pricingValue}>99,000</span>
                 <span className={styles.pricingPeriod}>{t("landing.perMonth")}</span>
               </div>
               <ul className={styles.pricingFeatures}>
-                <li>{t("landing.featureAllFree")}</li>
-                <li>{t("landing.feature72hForecast")}</li>
-                <li>{t("landing.featureTrends")}</li>
-                <li>{t("landing.featureAdvancedRoute")}</li>
-                <li>{t("landing.featureUnlimited")}</li>
+                <li>
+                  <CheckIcon size={16} />
+                  <span>{t("landing.featureAllFree")}</span>
+                </li>
+                <li>
+                  <CheckIcon size={16} />
+                  <span>{t("landing.feature72hForecast")}</span>
+                </li>
+                <li>
+                  <CheckIcon size={16} />
+                  <span>{t("landing.featureTrends")}</span>
+                </li>
+                <li>
+                  <CheckIcon size={16} />
+                  <span>{t("landing.featureAdvancedRoute")}</span>
+                </li>
+                <li>
+                  <CheckIcon size={16} />
+                  <span>{t("landing.featureUnlimited")}</span>
+                </li>
               </ul>
-              <Link to="/register?plan=pro" className={styles.pricingButton + " " + styles.pricingButtonPrimary}>
+              <Link to="/register?plan=pro" className={`${styles.pricingBtn} ${styles.pricingBtnPrimary}`}>
                 {t("landing.signUpPro")}
               </Link>
             </div>
@@ -311,28 +498,29 @@ export function LandingPage() {
         </div>
       </section>
 
-      {/* CTA Section */}
+      {/* =========================================================================
+          CTA BANNER SECTION
+          ========================================================================= */}
       <section className={styles.cta}>
         <div className={styles.container}>
-          <h2 className={styles.ctaTitle}>{t("landing.ctaReady")}</h2>
-          <p className={styles.ctaSubtitle}>
-            {t("landing.ctaDescription")}
-          </p>
-          <Link to="/register" className={styles.primaryButton}>
-            <ArrowRightIcon size={20} />
-            {t("landing.getStarted")}
-          </Link>
-        </div>
-      </section>
-
-      {/* Attribution Section */}
-      <section className={styles.attribution}>
-        <div className={styles.container}>
-          <p className={styles.attributionText}>
-            {t("landing.attribution")}
-          </p>
+          <div className={styles.ctaCard}>
+            <h2 className={styles.ctaTitle}>{t("landing.ctaReady")}</h2>
+            <p className={styles.ctaSubtitle}>
+              {t("landing.ctaDescription")}
+            </p>
+            <div className={styles.ctaActions}>
+              <Link to="/register" className={styles.ctaPrimaryBtn}>
+                <span>{t("landing.getStarted")}</span>
+                <ArrowRightIcon size={18} />
+              </Link>
+              <Link to="/map" className={styles.ctaSecondaryBtn}>
+                <span>{t("landing.exploreMap")}</span>
+              </Link>
+            </div>
+          </div>
         </div>
       </section>
     </div>
   );
 }
+

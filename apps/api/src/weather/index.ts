@@ -36,3 +36,18 @@ export {
   buildWeatherRoutes,
   type WeatherRoutesOptions
 } from "./routes.js";
+
+// Weather scheduler exports
+export {
+  WeatherScheduler,
+  createDefaultSchedulerConfig,
+  type WeatherSchedulerConfig,
+  type WeatherSchedulerLogger
+} from "./scheduler.js";
+
+export {
+  VIETNAM_PROVINCES,
+  VIETNAM_PROVINCES_BY_ID,
+  VIETNAM_PROVINCES_BY_COORDS,
+  type VietnamProvince
+} from "./vietnam-provinces.js";

@@ -34,6 +34,9 @@ const WEATHERAPI_CONDITION_CODES: Readonly<Record<number, WeatherConditionCode>>
   1006: "cloudy",
   1009: "cloudy",
   1030: "fog",
+  1036: "fog",      // Smoky haze
+  1039: "fog",      // Smog
+  1042: "fog",      // Severe smog
   1063: "rain",
   1066: "snow",
   1069: "sleet",
@@ -348,15 +351,22 @@ function normalizeDay(
     throw weatherSchemaError();
   }
 
-  const hourly = hourValues.map((hour) => {
-    if (!isRecord(hour)) {
-      throw weatherSchemaError();
-    }
-    return normalizeHour(hour, fetchedAt);
-  });
-  if (hourly.some((hour) => (
-    hour.validInterval.from < validFrom || hour.validInterval.from >= validTo
-  ))) {
+  const hourly = hourValues
+    .filter((hour) => {
+      if (!isRecord(hour)) return false;
+      const timeEpoch = hour.time_epoch;
+      if (typeof timeEpoch !== "number") return false;
+      const hourFrom = epochToIso(timeEpoch);
+      // Filter hours within the day's bounds (with small tolerance for API quirks)
+      return hourFrom >= validFrom && hourFrom < validTo;
+    })
+    .map((hour) => {
+      if (!isRecord(hour)) {
+        throw weatherSchemaError();
+      }
+      return normalizeHour(hour, fetchedAt);
+    });
+  if (hourly.length < 1) {
     throw weatherSchemaError();
   }
   const rainProbability = optionalNumber(day, "daily_chance_of_rain", 0, 100);

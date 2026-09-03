@@ -340,27 +340,32 @@
   font-size: var(--font-size-2xl);
   font-weight: var(--font-weight-bold);
   text-align: center;
-  border: 2px solid var(--color-border);
+  border: 1.5px solid rgba(255, 255, 255, 0.2);
   border-radius: var(--radius-xl);
-  background: var(--color-white);
-  color: var(--color-text-primary);
+  background: rgba(15, 23, 42, 0.75);
+  color: #FFFFFF;
   transition: all var(--transition-fast);
   outline: none;
 }
 
 .otpInput:focus {
-  border-color: var(--color-primary);
-  box-shadow: 0 0 0 4px rgba(0, 102, 204, 0.1);
+  border-color: #0066CC;
+  background: rgba(15, 23, 42, 0.95);
+  box-shadow: 0 0 0 4px rgba(0, 102, 204, 0.35);
+  color: #FFFFFF;
 }
 
 .otpInput.error {
-  border-color: var(--color-danger);
-  background: var(--color-danger-light);
+  border-color: #EF4444;
+  background: rgba(239, 68, 68, 0.15);
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.25);
+  color: #FFFFFF;
 }
 
 .otpInput.success {
-  border-color: var(--color-success);
-  background: var(--color-success-light);
+  border-color: #10B981;
+  background: rgba(16, 185, 129, 0.12);
+  color: #FFFFFF;
 }
 
 @media (max-width: 400px) {
@@ -545,6 +550,48 @@
   margin-bottom: var(--space-6);
 }
 
+
+
+/* Password Reset Fields */
+.passwordFields {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+  margin-bottom: var(--space-2);
+}
+
+.passwordField {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  text-align: left;
+}
+
+.passwordLabel {
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  color: var(--color-text-primary);
+}
+
+.passwordInput {
+  width: 100%;
+  padding: 12px 16px;
+  background: rgba(15, 23, 42, 0.75) !important;
+  color: #FFFFFF !important;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: var(--radius-lg);
+  font-size: var(--font-size-sm);
+  transition: border-color 0.2s, box-shadow 0.2s;
+  box-sizing: border-box;
+}
+
+.passwordInput:focus {
+  outline: none;
+  border-color: #0066CC;
+  box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.25);
+}
+
 /* Dark Mode */
 [data-theme="dark"] {
   .formPanel {
@@ -556,12 +603,13 @@
   }
 
   .otpInput {
-    background: var(--color-gray-800);
-    border-color: var(--color-gray-700);
-    color: var(--color-white);
+    background: rgba(15, 23, 42, 0.75);
+    border-color: rgba(255, 255, 255, 0.2);
+    color: #FFFFFF;
   }
 
   .otpInput:focus {
-    border-color: var(--color-secondary);
+    border-color: #0066CC;
+    box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.25);
   }
 }

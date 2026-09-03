@@ -3,6 +3,23 @@
  * Type definitions for authentication
  */
 
+export interface SavedLocation {
+  id: string;
+  name: string;
+  provinceCode: string;
+  savedAt: string;
+}
+
+export interface SavedRoute {
+  id: string;
+  fromName: string;
+  toName: string;
+  vehicle: "car" | "motorcycle";
+  distanceKm: number;
+  durationMinutes: number;
+  savedAt: string;
+}
+
 export interface User {
   id: string;
   email: string;
@@ -10,6 +27,10 @@ export interface User {
   role: string;
   plan: "free" | "pro";
   isVerified: boolean;
+  savedLocations?: SavedLocation[];
+  savedRoutes?: SavedRoute[];
+  dailyRouteCount?: number;
+  lastQuotaResetDate?: string;
 }
 
 export interface LoginCredentials {

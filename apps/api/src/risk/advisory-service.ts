@@ -248,7 +248,6 @@ export class AdvisoryService {
     }
     return out;
   }
-}
 
   /**
    * Register Fastify routes for advisories.
@@ -265,9 +264,13 @@ export class AdvisoryService {
     });
 
     app.get("/api/v1/advisories/by-location/:locationId", async (request, reply) => {
-      const params = request.params as Record<string, string>;
+      const params = request.params as Record<string, string | undefined>;
       const query = request.query as Record<string, string | undefined>;
       const locationId = params.locationId;
+      if (!locationId) {
+        reply.code(400);
+        return { error: { code: "VALIDATION_FAILED", message: "Location ID is required" } };
+      }
       const language = (query.language as "vi" | "en") ?? "vi";
       const result = await this.listAdvisoriesForLocation(locationId, language);
       reply.header("cache-control", `private, max-age=${this.#cacheTtlSeconds}`);

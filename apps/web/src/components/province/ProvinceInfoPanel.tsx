@@ -6,10 +6,12 @@
  * Phase 9 — split-pane map layout.
  */
 import { useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import type { TFunction } from "i18next";
 import { gsap } from "gsap";
 
+import { useAuthStore } from "../../hooks/useAuthStore";
 import { useProvinceWeather } from "../../hooks/useProvinceWeather";
 import type { ProvinceWeatherTarget } from "../../hooks/useProvinceWeather";
 import { useProvinceRisk } from "../../hooks/useProvinceRisk";
@@ -283,6 +285,37 @@ export function ProvinceInfoPanel({ weatherTarget, locationTarget, provinceName,
   const dangerAdvisories = advisoryList.filter((a) => a.severity === "high");
   const otherAdvisories = advisoryList.filter((a) => a.severity !== "high");
 
+  const navigate = useNavigate();
+  const { user, saveLocation, removeSavedLocation } = useAuthStore();
+  const isSaved = user?.savedLocations?.some(
+    (l) => l.name.toLowerCase() === provinceName?.toLowerCase()
+  );
+
+  const handleToggleSave = () => {
+    if (!provinceName) return;
+    if (isSaved) {
+      removeSavedLocation(provinceName);
+    } else {
+      const res = saveLocation({
+        name: provinceName,
+        provinceCode: provinceName,
+      });
+      if (!res.success) {
+        alert(res.message);
+      }
+    }
+  };
+
+  const handlePlanRoute = () => {
+    if (!provinceName) return;
+    navigate(`/route?to=${encodeURIComponent(provinceName)}`);
+  };
+
+  const handleViewLocationDetail = () => {
+    if (!provinceName) return;
+    navigate(`/location/${encodeURIComponent(provinceName)}`);
+  };
+
   return (
     <div ref={panelRef} className={styles.panel} role="complementary" aria-label={t("infoPanel.ariaLabel")}>
       {/* Header */}
@@ -305,6 +338,33 @@ export function ProvinceInfoPanel({ weatherTarget, locationTarget, provinceName,
           aria-label={t("infoPanel.close")}
         >
           <CloseIcon />
+        </button>
+      </div>
+
+      {/* Quick Actions Bar */}
+      <div className={styles.actionsBar}>
+        <button
+          type="button"
+          onClick={handleToggleSave}
+          className={`${styles.actionBtn} ${isSaved ? styles.actionBtnSaved : ""}`}
+        >
+          <span>{isSaved ? "★ Đã lưu" : "☆ Lưu địa điểm"}</span>
+        </button>
+
+        <button
+          type="button"
+          onClick={handlePlanRoute}
+          className={styles.actionBtn}
+        >
+          <span>🚗 Lên lộ trình đến đây</span>
+        </button>
+
+        <button
+          type="button"
+          onClick={handleViewLocationDetail}
+          className={styles.actionBtn}
+        >
+          <span>🔍 Xem chi tiết</span>
         </button>
       </div>
 

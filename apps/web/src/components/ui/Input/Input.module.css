@@ -63,6 +63,44 @@
   opacity: 0.7;
 }
 
+/* Dark theme support */
+:global([data-theme="dark"]) .input {
+  background: rgba(15, 23, 42, 0.75);
+  border-color: rgba(255, 255, 255, 0.18);
+  color: #FFFFFF;
+}
+
+:global([data-theme="dark"]) .input:hover:not(:disabled):not(:focus) {
+  border-color: rgba(255, 255, 255, 0.35);
+}
+
+:global([data-theme="dark"]) .input:focus {
+  background: rgba(15, 23, 42, 0.95);
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 4px rgba(0, 102, 204, 0.25);
+  color: #FFFFFF;
+}
+
+:global([data-theme="dark"]) .input::placeholder {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+:global([data-theme="dark"]) .error .input {
+  background: rgba(239, 68, 68, 0.15);
+  border-color: #EF4444;
+  color: #FFFFFF;
+}
+
+:global([data-theme="dark"]) .leftIcon,
+:global([data-theme="dark"]) .rightIcon,
+:global([data-theme="dark"]) .rightIconButton {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+:global([data-theme="dark"]) .rightIconButton:hover {
+  color: #FFFFFF;
+}
+
 /* With left icon */
 .hasLeftIcon {
   padding-left: calc(var(--space-4) + 24px + var(--space-2));

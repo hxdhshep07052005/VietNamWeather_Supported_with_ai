@@ -3,19 +3,20 @@
  * Split-screen layout with real-time validation
  */
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useAuthStore } from "@/hooks/useAuthStore";
 import { Button } from "@/components/ui/Button/Button";
 import { Input } from "@/components/ui/Input/Input";
-import { WeatherIcon, RiskIcon, RouteIcon, MailIcon, LockIcon } from "@/components/ui/Icons";
+import { MailIcon, LockIcon } from "@/components/ui/Icons";
 import {
   AuthCard,
   AuthVisualPanel,
   AuthFormPanel,
   AuthFormHeader,
   AuthErrorAlert,
+  AuthSuccessAlert,
 } from "@/components/auth/AuthCard";
 import styles from "@/components/auth/AuthCard.module.css";
 
@@ -23,16 +24,46 @@ export function LoginPage() {
   const { t } = useTranslation();
   const [searchParams] = useSearchParams();
   const returnUrl = searchParams.get("return") || "/map";
+  const justRegistered = searchParams.get("registered") === "true";
+  const prefillEmail = searchParams.get("email") || "";
 
-  const { login, isLoading: storeLoading, error: storeError } = useAuthStore();
+  const { isAuthenticated, login, isLoading: storeLoading, error: storeError } = useAuthStore();
   const navigate = useNavigate();
 
+  // If already authenticated, redirect directly to /map
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate("/map", { replace: true });
+    }
+  }, [isAuthenticated, navigate]);
+
+  // Prevent browser back navigation away from /login (cannot back to home or register)
+  useEffect(() => {
+    window.history.pushState(null, "", window.location.href);
+
+    const handlePopState = () => {
+      window.history.pushState(null, "", window.location.href);
+    };
+
+    window.addEventListener("popstate", handlePopState);
+    return () => {
+      window.removeEventListener("popstate", handlePopState);
+    };
+  }, []);
+
   // Form state
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState(prefillEmail);
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // Update email if prefill changes
+  useEffect(() => {
+    if (prefillEmail) {
+      setEmail(prefillEmail);
+    }
+  }, [prefillEmail]);
 
   // Validation state
   const [emailError, setEmailError] = useState<string | null>(null);
@@ -42,12 +73,13 @@ export function LoginPage() {
 
   // Validate email
   const validateEmail = useCallback((value: string): string | null => {
-    if (!value.trim()) {
-      return t("auth.errors.required") || "Trường này là bắt buộc";
+    const trimmed = value.trim();
+    if (!trimmed) {
+      return t("auth.errors.emailRequired") || t("auth.errors.required") || "Vui lòng nhập địa chỉ email";
     }
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(value)) {
-      return t("auth.errors.invalidEmail") || "Email không hợp lệ";
+    const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)+$/;
+    if (!emailRegex.test(trimmed)) {
+      return t("auth.errors.invalidEmail") || "Email không đúng định dạng (ví dụ: name@example.com)";
     }
     return null;
   }, [t]);
@@ -55,7 +87,7 @@ export function LoginPage() {
   // Validate password
   const validatePassword = useCallback((value: string): string | null => {
     if (!value) {
-      return t("auth.errors.required") || "Trường này là bắt buộc";
+      return t("auth.errors.passwordRequired") || t("auth.errors.required") || "Vui lòng nhập mật khẩu";
     }
     if (value.length < 8) {
       return t("auth.errors.passwordMinLength") || "Mật khẩu phải có ít nhất 8 ký tự";
@@ -67,7 +99,7 @@ export function LoginPage() {
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setEmail(value);
-    if (emailTouched) {
+    if (emailTouched || emailError) {
       setEmailError(validateEmail(value));
     }
   };
@@ -75,7 +107,7 @@ export function LoginPage() {
   const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setPassword(value);
-    if (passwordTouched) {
+    if (passwordTouched || passwordError) {
       setPasswordError(validatePassword(value));
     }
   };
@@ -112,7 +144,7 @@ export function LoginPage() {
 
     try {
       await login({ email, password });
-      navigate(returnUrl);
+      navigate(returnUrl, { replace: true });
     } catch (err) {
       setError(err instanceof Error ? err.message : (t("auth.errors.loginFailed") || "Email hoặc mật khẩu không đúng"));
     } finally {
@@ -123,36 +155,35 @@ export function LoginPage() {
   // Check if form is valid
   const isFormValid = !emailError && !passwordError && email.length > 0 && password.length > 0;
 
-  // Visual panel features
-  const features = [
-    {
-      icon: <WeatherIcon size={20} />,
-      text: t("landing.featureAccurateForecast") || "Dự báo chính xác với độ phủ toàn quốc",
-    },
-    {
-      icon: <RiskIcon size={20} />,
-      text: t("landing.featureRiskAssessment") || "Đánh giá rủi ro 6 chiều",
-    },
-    {
-      icon: <RouteIcon size={20} />,
-      text: t("landing.featureRoutePlanning") || "Lập kế hoạch lộ trình thông minh",
-    },
-  ];
-
   return (
     <AuthCard>
-      {/* Left Visual Panel */}
-      <AuthVisualPanel
-        tagline={t("landing.heroSubtitle") || "Đưa ra quyết định du lịch thông minh với thời tiết"}
-        features={features}
-      />
+      {/* Left Visual Panel - Pure Vietnam Map */}
+      <AuthVisualPanel />
 
       {/* Right Form Panel */}
       <AuthFormPanel>
+        {/* Auth Switcher Tabs */}
+        <div className={styles.authTabs}>
+          <span className={`${styles.authTab} ${styles.authTabActive}`}>
+            {t("auth.login") || "Đăng nhập"}
+          </span>
+          <Link to="/register" className={styles.authTab}>
+            {t("auth.register") || "Đăng ký"}
+          </Link>
+        </div>
+
         <AuthFormHeader
           title={t("auth.loginTitle") || "Chào mừng trở lại"}
-          subtitle={t("auth.loginSubtitle") || "Đăng nhập để truy cập dịch vụ"}
+          subtitle={t("auth.loginSubtitle") || "Đăng nhập để xem dự báo chi tiết và lộ trình thông minh"}
         />
+
+        {/* Success Alert if just registered */}
+        {justRegistered && (
+          <AuthSuccessAlert
+            title="Đăng ký thành công!"
+            message="Tài khoản của bạn đã được xác minh thành công. Vui lòng nhập mật khẩu để đăng nhập."
+          />
+        )}
 
         {/* Error Alert */}
         {(error || storeError) && (

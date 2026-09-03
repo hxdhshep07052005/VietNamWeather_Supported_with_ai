@@ -17,6 +17,7 @@ import { ApiError } from "../errors.js";
 import type { WeatherService } from "../weather-service.js";
 import type { WeatherCache } from "../weather-cache.js";
 import { WeatherStore } from "../weather-store.js";
+import type { WeatherScheduler } from "./scheduler.js";
 import {
   DEFAULT_FRESHNESS
 } from "./constants.js";
@@ -25,6 +26,7 @@ export interface WeatherRoutesOptions {
   readonly service: WeatherService;
   readonly store: WeatherStore;
   readonly cache: WeatherCache | null;
+  readonly scheduler: WeatherScheduler | null;
   readonly defaultRateLimitMax: number;
   readonly rateLimitWindowMs: number;
   readonly weatherRateLimitMax: number;
@@ -126,8 +128,7 @@ export function buildWeatherRoutes(
     // info panel needs: weather freshness + current reading, no hourly.
     const observationRequest: WeatherQueryRequest = {
       target,
-      include: ["current"],
-      freshness: "fresh"
+      include: ["current"]
     };
     if (!isWeatherQueryRequest(observationRequest)) {
       throw new ApiError(500, "VALIDATION_FAILED", false, "Weather request shape rejected");
@@ -135,6 +136,19 @@ export function buildWeatherRoutes(
     const response = await service.query(observationRequest, cid);
     reply.header("cache-control", "public, max-age=15, stale-while-revalidate=30");
     return { data: response };
+  });
+
+  // Admin endpoint to trigger manual weather data refresh for all provinces
+  app.post("/api/v1/weather/refresh", {
+    config: { rateLimit: { max: 1, timeWindow: 60_000 } } // Very limited: 1 request per minute
+  }, async (_request, reply) => {
+    if (options.scheduler) {
+      await options.scheduler.runOnce();
+      reply.header("cache-control", "no-store");
+      return { data: { status: "ok", message: "Weather refresh triggered" } };
+    } else {
+      throw new ApiError(503, "SERVICE_UNAVAILABLE", false, "Weather scheduler is not available");
+    }
   });
 
   // Suppress unused-import lint when the file ships in environments

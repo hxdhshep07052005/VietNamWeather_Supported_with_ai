@@ -184,6 +184,13 @@ importers:
       '@vietnam-weather/contracts':
         specifier: workspace:*
         version: link:../../packages/contracts
+      pg:
+        specifier: 8.22.0
+        version: 8.22.0
+    devDependencies:
+      '@types/pg':
+        specifier: 8.15.6
+        version: 8.15.6
 
   packages/config: {}
 

@@ -4,6 +4,9 @@
  */
 
 import { useState, useCallback, useMemo, type ChangeEvent } from "react";
+import i18n from "../i18n";
+
+const tMsg = (vi: string, en: string) => (i18n.language?.startsWith("en") ? en : vi);
 
 // Validation rules
 export interface ValidationRule {
@@ -43,28 +46,28 @@ export interface UseFormValidationOptions {
 
 // Common validation rules
 export const validationRules = {
-  required: (message = "Trường này là bắt buộc / This field is required"): ValidationRule => ({
+  required: (message?: string): ValidationRule => ({
     validate: (value) => value.trim().length > 0,
-    message,
+    message: message || tMsg("Trường này là bắt buộc", "This field is required"),
   }),
 
-  email: (message = "Email không hợp lệ / Invalid email address"): ValidationRule => ({
+  email: (message?: string): ValidationRule => ({
     validate: (value) => {
       if (!value) return true; // Let required handle empty
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       return emailRegex.test(value);
     },
-    message,
+    message: message || tMsg("Email không hợp lệ", "Invalid email address"),
   }),
 
   minLength: (length: number, message?: string): ValidationRule => ({
     validate: (value) => !value || value.length >= length,
-    message: message || `Ít nhất ${length} ký tự / At least ${length} characters`,
+    message: message || tMsg(`Ít nhất ${length} ký tự`, `At least ${length} characters`),
   }),
 
   maxLength: (length: number, message?: string): ValidationRule => ({
     validate: (value) => !value || value.length <= length,
-    message: message || `Tối đa ${length} ký tự / At most ${length} characters`,
+    message: message || tMsg(`Tối đa ${length} ký tự`, `At most ${length} characters`),
   }),
 
   pattern: (regex: RegExp, message: string): ValidationRule => ({
@@ -78,12 +81,18 @@ export const validationRules = {
       // At least 8 chars, 1 uppercase, 1 lowercase, 1 number
       return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/.test(value);
     },
-    message: "Mật khẩu phải có ít nhất 8 ký tự, gồm chữ hoa, chữ thường và số / Password must be at least 8 characters with uppercase, lowercase and number",
+    message: tMsg(
+      "Mật khẩu phải có ít nhất 8 ký tự, gồm chữ hoa, chữ thường và số",
+      "Password must be at least 8 characters with uppercase, lowercase and number"
+    ),
   }),
 
   passwordMatch: (confirmValue: string, fieldLabel: string): ValidationRule => ({
     validate: (value) => !value || value === confirmValue,
-    message: `Mật khẩu xác nhận không khớp / ${fieldLabel} confirmation does not match`,
+    message: tMsg(
+      `${fieldLabel} không khớp`,
+      `${fieldLabel} confirmation does not match`
+    ),
   }),
 };
 
@@ -117,7 +126,7 @@ export function useFormValidation(options: UseFormValidationOptions) {
 
       // Required check
       if (config.required && !value.trim()) {
-        return "Trường này là bắt buộc / This field is required";
+        return tMsg("Trường này là bắt buộc", "This field is required");
       }
 
       // Skip other validations if empty and not required
@@ -127,35 +136,35 @@ export function useFormValidation(options: UseFormValidationOptions) {
 
       // Min length
       if (config.minLength && value.length < config.minLength) {
-        return `Ít nhất ${config.minLength} ký tự / At least ${config.minLength} characters`;
+        return tMsg(`Ít nhất ${config.minLength} ký tự`, `At least ${config.minLength} characters`);
       }
 
       // Max length
       if (config.maxLength && value.length > config.maxLength) {
-        return `Tối đa ${config.maxLength} ký tự / At most ${config.maxLength} characters`;
+        return tMsg(`Tối đa ${config.maxLength} ký tự`, `At most ${config.maxLength} characters`);
       }
 
       // Email
       if (config.email) {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(value)) {
-          return "Email không hợp lệ / Invalid email address";
+          return tMsg("Email không hợp lệ", "Invalid email address");
         }
       }
 
       // Password strength
       if (config.password) {
         if (value.length < 8) {
-          return "Mật khẩu phải có ít nhất 8 ký tự / Password must be at least 8 characters";
+          return tMsg("Mật khẩu phải có ít nhất 8 ký tự", "Password must be at least 8 characters");
         }
         if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(value)) {
-          return "Mật khẩu cần chữ hoa, chữ thường và số / Password needs uppercase, lowercase and number";
+          return tMsg("Mật khẩu cần chữ hoa, chữ thường và số", "Password needs uppercase, lowercase and number");
         }
       }
 
       // Pattern
       if (config.pattern && !config.pattern.test(value)) {
-        return config.patternMessage || "Giá trị không hợp lệ / Invalid value";
+        return config.patternMessage || tMsg("Giá trị không hợp lệ", "Invalid value");
       }
 
       // Custom validation
@@ -167,7 +176,7 @@ export function useFormValidation(options: UseFormValidationOptions) {
       if (config.match && allValues) {
         const matchValue = allValues[config.match.field];
         if (value !== matchValue) {
-          return `${config.match.label} không khớp / ${config.match.label} does not match`;
+          return tMsg(`${config.match.label} không khớp`, `${config.match.label} does not match`);
         }
       }
 
@@ -286,7 +295,7 @@ export function useFormValidation(options: UseFormValidationOptions) {
         );
         await onSubmit?.(values);
       } catch (error) {
-        setSubmitError(error instanceof Error ? error.message : "Đã xảy ra lỗi / An error occurred");
+        setSubmitError(error instanceof Error ? error.message : tMsg("Đã xảy ra lỗi", "An error occurred"));
       } finally {
         setIsSubmitting(false);
       }

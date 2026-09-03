@@ -4,13 +4,16 @@
  */
 
 import { useState, useEffect } from "react";
-import { Outlet, Link } from "react-router-dom";
+import { Outlet, Link, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { LanguageSwitcher } from "../common/LanguageSwitcher";
 import styles from "./PublicLayout.module.css";
 
 export function PublicLayout() {
   const { t } = useTranslation();
+  const location = useLocation();
+  const isAuthPage = ["/login", "/register", "/verify-otp", "/forgot-password"].includes(location.pathname);
+
   const [theme, setTheme] = useState<"light" | "dark">("light");
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -49,16 +52,28 @@ export function PublicLayout() {
       {/* Header */}
       <header className={`${styles.header} ${isScrolled ? styles.scrolled : ""}`}>
         <div className={styles.container}>
-          {/* Logo */}
-          <Link to="/" className={styles.logo}>
-            <div className={styles.logoIcon}>
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41" stroke="white" strokeWidth="2" strokeLinecap="round" />
-                <circle cx="12" cy="12" r="4" fill="white" />
-              </svg>
+          {/* Logo - non-clickable on auth pages to prevent leaving auth flow */}
+          {isAuthPage ? (
+            <div className={styles.logo} style={{ cursor: "default" }}>
+              <div className={styles.logoIcon}>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                  <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41" stroke="white" strokeWidth="2" strokeLinecap="round" />
+                  <circle cx="12" cy="12" r="4" fill="white" />
+                </svg>
+              </div>
+              <span className={styles.logoText}>VietnamWeather AI</span>
             </div>
-            <span className={styles.logoText}>VietnamWeather AI</span>
-          </Link>
+          ) : (
+            <Link to="/" className={styles.logo}>
+              <div className={styles.logoIcon}>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                  <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41" stroke="white" strokeWidth="2" strokeLinecap="round" />
+                  <circle cx="12" cy="12" r="4" fill="white" />
+                </svg>
+              </div>
+              <span className={styles.logoText}>VietnamWeather AI</span>
+            </Link>
+          )}
 
           <div className={styles.headerRight}>
             {/* Language Switcher */}
@@ -127,14 +142,25 @@ export function PublicLayout() {
           onClick={(e) => e.stopPropagation()}
         >
           <div className={styles.mobileMenuHeader}>
-            <Link to="/" className={styles.logo} onClick={() => setIsMobileMenuOpen(false)}>
-              <div className={styles.logoIcon}>
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                  <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41" stroke="white" strokeWidth="2" strokeLinecap="round" />
-                  <circle cx="12" cy="12" r="4" fill="white" />
-                </svg>
+            {isAuthPage ? (
+              <div className={styles.logo} style={{ cursor: "default" }}>
+                <div className={styles.logoIcon}>
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41" stroke="white" strokeWidth="2" strokeLinecap="round" />
+                    <circle cx="12" cy="12" r="4" fill="white" />
+                  </svg>
+                </div>
               </div>
-            </Link>
+            ) : (
+              <Link to="/" className={styles.logo} onClick={() => setIsMobileMenuOpen(false)}>
+                <div className={styles.logoIcon}>
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41" stroke="white" strokeWidth="2" strokeLinecap="round" />
+                    <circle cx="12" cy="12" r="4" fill="white" />
+                  </svg>
+                </div>
+              </Link>
+            )}
             <button
               className={styles.mobileMenuClose}
               onClick={() => setIsMobileMenuOpen(false)}
@@ -176,7 +202,7 @@ export function PublicLayout() {
         <div className={styles.container}>
           <div className={styles.footerContent}>
             <p className={styles.copyright}>
-              © {new Date().getFullYear()} VietNam Weather. {t("common.confirm") || "Mọi quyền được bảo lưu."}
+              © {new Date().getFullYear()} VietNam Weather. {t("footer.allRightsReserved") || "Mọi quyền được bảo lưu."}
             </p>
             <nav className={styles.footerNav}>
               <Link to="/legal/terms">{t("footer.terms")}</Link>

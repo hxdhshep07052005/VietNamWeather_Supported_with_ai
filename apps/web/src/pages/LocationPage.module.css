@@ -1,124 +1,399 @@
 /**
  * Location Page Styles
+ * Full-featured styling for Location Forecast & Risk Assessment
  */
 
 .page {
-  max-width: 1200px;
+  max-width: 1280px;
   margin: 0 auto;
-  padding: var(--space-6);
-}
-
-.header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: var(--space-6);
-}
-
-.title {
-  font-size: var(--font-size-3xl);
-  font-weight: var(--font-weight-bold);
-  color: var(--color-text-primary);
-}
-
-.locationId {
-  font-size: var(--font-size-sm);
-  color: var(--color-text-tertiary);
-  font-family: var(--font-mono);
-}
-
-.content {
+  padding: var(--space-4) var(--space-6);
   display: flex;
   flex-direction: column;
   gap: var(--space-6);
 }
 
-.section {
-  background-color: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-xl);
-  padding: var(--space-6);
+.backBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--color-primary);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  text-decoration: none;
+  width: fit-content;
+  transition: opacity 0.2s;
 }
 
-.sectionTitle {
-  font-size: var(--font-size-lg);
-  font-weight: var(--font-weight-semibold);
-  color: var(--color-text-primary);
-  margin-bottom: var(--space-4);
-  padding-bottom: var(--space-3);
+.backBtn:hover {
+  opacity: 0.8;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+  padding-bottom: var(--space-4);
   border-bottom: 1px solid var(--color-border);
 }
 
-.weatherCard {
-  display: flex;
-  gap: var(--space-8);
-  flex-wrap: wrap;
-}
-
-.weatherMain {
-  flex: 1;
-  min-width: 200px;
-}
-
-.temperature {
-  font-size: 4rem;
-  font-weight: var(--font-weight-bold);
-  color: var(--color-primary);
-  line-height: 1;
-}
-
-.condition {
-  font-size: var(--font-size-lg);
-  color: var(--color-text-secondary);
-  margin-top: var(--space-2);
-}
-
-.weatherDetails {
-  flex: 1;
-  min-width: 200px;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-  gap: var(--space-4);
-}
-
-.detailItem {
+.titleArea {
   display: flex;
   flex-direction: column;
   gap: var(--space-1);
 }
 
-.detailLabel {
-  font-size: var(--font-size-sm);
-  color: var(--color-text-tertiary);
-}
-
-.detailValue {
-  font-size: var(--font-size-lg);
-  font-weight: var(--font-weight-medium);
+.title {
+  font-size: var(--font-size-3xl);
+  font-weight: 800;
   color: var(--color-text-primary);
+  margin: 0;
 }
 
-.riskCard {
-  padding: var(--space-6);
-  background-color: var(--color-background-alt);
-  border-radius: var(--radius-lg);
-  text-align: center;
+.regionTag {
+  font-size: var(--font-size-sm);
   color: var(--color-text-secondary);
 }
 
-/* Mobile adjustments */
-@media (max-width: 640px) {
-  .page {
-    padding: var(--space-4);
-  }
+.headerActions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
 
-  .header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: var(--space-2);
-  }
+.actionBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 8px 16px;
+  border-radius: var(--radius-lg);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  color: var(--color-text-primary);
+  cursor: pointer;
+  transition: all 0.2s;
+  text-decoration: none;
+}
 
-  .temperature {
-    font-size: 3rem;
+.actionBtn:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+.actionBtnSaved {
+  background: rgba(255, 205, 0, 0.15);
+  border-color: rgba(255, 205, 0, 0.4);
+  color: #FFCD00;
+}
+
+.actionBtnPrimary {
+  background: linear-gradient(135deg, #0066CC, #0284C7);
+  border-color: transparent;
+  color: white;
+}
+
+.actionBtnPrimary:hover {
+  color: white;
+  opacity: 0.9;
+}
+
+/* Current Weather Big Card */
+.currentCard {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-2xl);
+  padding: var(--space-6);
+  display: grid;
+  grid-template-columns: 1.2fr 2fr;
+  gap: var(--space-8);
+  align-items: center;
+  box-shadow: var(--shadow-sm);
+}
+
+@media (max-width: 900px) {
+  .currentCard {
+    grid-template-columns: 1fr;
   }
+}
+
+.currentMain {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.tempRow {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-3);
+}
+
+.temperature {
+  font-size: 4.5rem;
+  font-weight: 900;
+  color: #FF5722;
+  line-height: 1;
+}
+
+.feelsLike {
+  font-size: var(--font-size-base);
+  color: var(--color-text-secondary);
+}
+
+.conditionText {
+  font-size: var(--font-size-xl);
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+
+.updateTime {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-tertiary);
+}
+
+/* Metrics Grid */
+.metricsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: var(--space-4);
+}
+
+.metricCard {
+  background: var(--color-background);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  padding: var(--space-3) var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.metricLabel {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+}
+
+.metricVal {
+  font-size: var(--font-size-lg);
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+
+/* Forecast Section */
+.section {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-2xl);
+  padding: var(--space-6);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  box-shadow: var(--shadow-sm);
+}
+
+.sectionHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+
+.sectionTitle {
+  font-size: var(--font-size-xl);
+  font-weight: 800;
+  color: var(--color-text-primary);
+  margin: 0;
+}
+
+.tabsBar {
+  display: flex;
+  gap: var(--space-2);
+  background: var(--color-background);
+  padding: 4px;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border);
+}
+
+.tabBtn {
+  padding: 6px 14px;
+  border-radius: var(--radius-md);
+  border: none;
+  background: transparent;
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.tabBtnActive {
+  background: var(--color-surface);
+  color: var(--color-primary);
+  box-shadow: var(--shadow-xs);
+}
+
+.proBadgeSmall {
+  background: #FFCD00;
+  color: #0F172A;
+  font-size: 10px;
+  font-weight: 800;
+  padding: 1px 5px;
+  border-radius: 4px;
+}
+
+/* Hourly Scrolling Strip */
+.hourlyStrip {
+  display: flex;
+  gap: var(--space-3);
+  overflow-x: auto;
+  padding-bottom: var(--space-2);
+  scrollbar-width: thin;
+}
+
+.hourlyCard {
+  flex: 0 0 110px;
+  background: var(--color-background);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  padding: var(--space-4) var(--space-2);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+  text-align: center;
+}
+
+.hourlyTime {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+  font-weight: 600;
+}
+
+.hourlyTemp {
+  font-size: var(--font-size-lg);
+  font-weight: 800;
+  color: #FF5722;
+}
+
+.hourlyRain {
+  font-size: var(--font-size-xs);
+  color: #38BDF8;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+/* 6-Dimensional Risk Grid */
+.riskGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--space-4);
+}
+
+.riskItemCard {
+  background: var(--color-background);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  padding: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.riskCardTop {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.riskCardTitle {
+  font-size: var(--font-size-sm);
+  font-weight: 700;
+  color: var(--color-text-primary);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.riskBadgeLow {
+  background: rgba(16, 185, 129, 0.15);
+  color: #10B981;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: var(--radius-full);
+}
+
+.riskBadgeCaution {
+  background: rgba(245, 158, 11, 0.15);
+  color: #F59E0B;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: var(--radius-full);
+}
+
+.riskBadgeHigh {
+  background: rgba(239, 68, 68, 0.15);
+  color: #EF4444;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: var(--radius-full);
+}
+
+.riskProgressBar {
+  height: 6px;
+  border-radius: var(--radius-full);
+  background: rgba(148, 163, 184, 0.2);
+  overflow: hidden;
+}
+
+.riskProgressFill {
+  height: 100%;
+  border-radius: var(--radius-full);
+}
+
+.riskDesc {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+  line-height: 1.4;
+}
+
+/* Travel Advisory Items */
+.advisoriesList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.advisoryRow {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  border-radius: var(--radius-lg);
+  background: var(--color-background);
+  border: 1px solid var(--color-border);
+}
+
+.advisoryRowTitle {
+  font-size: var(--font-size-sm);
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin-bottom: 2px;
+}
+
+.advisoryRowDesc {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+  line-height: 1.4;
 }

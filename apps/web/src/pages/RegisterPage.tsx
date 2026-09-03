@@ -3,7 +3,7 @@
  * Split-screen layout with password strength indicator
  */
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useAuthStore } from "@/hooks/useAuthStore";
@@ -23,8 +23,15 @@ export function RegisterPage() {
   const [searchParams] = useSearchParams();
   const planParam = searchParams.get("plan");
 
-  const { register, isLoading: storeLoading, error: storeError } = useAuthStore();
+  const { isAuthenticated, register, isLoading: storeLoading, error: storeError } = useAuthStore();
   const navigate = useNavigate();
+
+  // If already authenticated, redirect to /map
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate("/map", { replace: true });
+    }
+  }, [isAuthenticated, navigate]);
 
   // Form state
   const [name, setName] = useState("");
@@ -45,14 +52,27 @@ export function RegisterPage() {
   const [passwordTouched, setPasswordTouched] = useState(false);
   const [confirmTouched, setConfirmTouched] = useState(false);
 
+  // Validate name
+  const validateName = useCallback((value: string): string | null => {
+    const trimmed = value.trim();
+    if (!trimmed) {
+      return t("auth.errors.nameRequired") || t("auth.errors.required") || "Vui lòng nhập họ và tên";
+    }
+    if (trimmed.length < 2) {
+      return t("auth.errors.nameMinLength") || "Họ và tên phải có ít nhất 2 ký tự";
+    }
+    return null;
+  }, [t]);
+
   // Validate email
   const validateEmail = useCallback((value: string): string | null => {
-    if (!value.trim()) {
-      return t("auth.errors.required") || "Trường này là bắt buộc";
+    const trimmed = value.trim();
+    if (!trimmed) {
+      return t("auth.errors.emailRequired") || t("auth.errors.required") || "Vui lòng nhập địa chỉ email";
     }
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(value)) {
-      return t("auth.errors.invalidEmail") || "Email không hợp lệ";
+    const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)+$/;
+    if (!emailRegex.test(trimmed)) {
+      return t("auth.errors.invalidEmail") || "Email không đúng định dạng (ví dụ: name@example.com)";
     }
     return null;
   }, [t]);
@@ -60,13 +80,13 @@ export function RegisterPage() {
   // Validate password
   const validatePassword = useCallback((value: string): string | null => {
     if (!value) {
-      return t("auth.errors.required") || "Trường này là bắt buộc";
+      return t("auth.errors.passwordRequired") || t("auth.errors.required") || "Vui lòng nhập mật khẩu";
     }
     if (value.length < 8) {
       return t("auth.errors.passwordMinLength") || "Mật khẩu phải có ít nhất 8 ký tự";
     }
     if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(value)) {
-      return "Mật khẩu cần chữ hoa, chữ thường và số / Password needs uppercase, lowercase and number";
+      return t("auth.errors.passwordComplexity") || "Mật khẩu cần ít nhất 1 chữ hoa, 1 chữ thường và 1 số";
     }
     return null;
   }, [t]);
@@ -74,7 +94,7 @@ export function RegisterPage() {
   // Validate password confirmation
   const validateConfirm = useCallback((value: string, passValue: string): string | null => {
     if (!value) {
-      return t("auth.errors.required") || "Trường này là bắt buộc";
+      return t("auth.errors.confirmRequired") || t("auth.errors.required") || "Vui lòng xác nhận lại mật khẩu";
     }
     if (value !== passValue) {
       return t("auth.errors.passwordMismatch") || "Mật khẩu xác nhận không khớp";
@@ -104,9 +124,9 @@ export function RegisterPage() {
 
     const level = score <= 2 ? "weak" : score <= 3 ? "medium" : "strong";
     const labels: Record<string, string> = {
-      weak: t("risk.dangerous") || "Yếu / Weak",
-      medium: "Trung bình / Medium",
-      strong: "Mạnh / Strong",
+      weak: t("common.weak") || "Yếu",
+      medium: t("common.medium") || "Trung bình",
+      strong: t("common.strong") || "Mạnh",
     };
 
     return { score: Math.min(score, 4), level, label: labels[level] };
@@ -114,18 +134,19 @@ export function RegisterPage() {
 
   const passwordStrength = getPasswordStrength(password);
 
-  // Handle input changes
+  // Handle input changes with real-time error clearing
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setName(e.target.value);
-    if (nameTouched) {
-      setNameError(e.target.value.trim() ? null : t("auth.errors.required") || "Trường này là bắt buộc");
+    const value = e.target.value;
+    setName(value);
+    if (nameTouched || nameError) {
+      setNameError(validateName(value));
     }
   };
 
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setEmail(value);
-    if (emailTouched) {
+    if (emailTouched || emailError) {
       setEmailError(validateEmail(value));
     }
   };
@@ -133,21 +154,19 @@ export function RegisterPage() {
   const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setPassword(value);
-    if (passwordTouched) {
+    if (passwordTouched || passwordError) {
       setPasswordError(validatePassword(value));
     }
-    // Re-validate confirm if touched
-    if (confirmTouched && value !== confirmPassword) {
-      setConfirmError(t("auth.errors.passwordMismatch") || "Mật khẩu xác nhận không khớp");
-    } else if (confirmTouched) {
-      setConfirmError(null);
+    // Re-validate confirm if touched or errored
+    if (confirmTouched || confirmError) {
+      setConfirmError(validateConfirm(confirmPassword, value));
     }
   };
 
   const handleConfirmChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setConfirmPassword(value);
-    if (confirmTouched) {
+    if (confirmTouched || confirmError) {
       setConfirmError(validateConfirm(value, password));
     }
   };
@@ -155,7 +174,7 @@ export function RegisterPage() {
   // Handle blur
   const handleNameBlur = () => {
     setNameTouched(true);
-    setNameError(name.trim() ? null : t("auth.errors.required") || "Trường này là bắt buộc");
+    setNameError(validateName(name));
   };
 
   const handleEmailBlur = () => {
@@ -179,7 +198,7 @@ export function RegisterPage() {
     setError(null);
 
     // Validate all fields
-    const nameErr = name.trim() ? null : t("auth.errors.required") || "Trường này là bắt buộc";
+    const nameErr = validateName(name);
     const emailErr = validateEmail(email);
     const passwordErr = validatePassword(password);
     const confirmErr = validateConfirm(confirmPassword, password);
@@ -198,7 +217,7 @@ export function RegisterPage() {
     }
 
     if (!acceptTerms) {
-      setError("Bạn cần đồng ý với Điều khoản sử dụng / You must accept the Terms of Service");
+      setError(t("auth.errors.termsRequired") || "Bạn cần đồng ý với Điều khoản sử dụng và Chính sách bảo mật");
       return;
     }
 
@@ -231,49 +250,23 @@ export function RegisterPage() {
     acceptTerms &&
     passwordStrength.level !== "weak";
 
-  // Visual panel features
-  const features = [
-    {
-      icon: (
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-          <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41" />
-          <circle cx="12" cy="12" r="4" />
-        </svg>
-      ),
-      text: t("landing.featureAccurateForecast") || "Dự báo chính xác với độ phủ toàn quốc",
-    },
-    {
-      icon: (
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-          <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
-          <line x1="12" y1="9" x2="12" y2="13" />
-          <line x1="12" y1="17" x2="12.01" y2="17" />
-        </svg>
-      ),
-      text: t("landing.featureRiskAssessment") || "Đánh giá rủi ro 6 chiều",
-    },
-    {
-      icon: (
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-          <circle cx="6" cy="19" r="3" />
-          <path d="M9 19h8.5a3.5 3.5 0 000-7h-11a3.5 3.5 0 010-7H15" />
-          <circle cx="18" cy="5" r="3" />
-        </svg>
-      ),
-      text: t("landing.featureRoutePlanning") || "Lập kế hoạnh lộ trình thông minh",
-    },
-  ];
-
   return (
     <AuthCard>
-      {/* Left Visual Panel */}
-      <AuthVisualPanel
-        tagline={t("landing.heroSubtitle") || "Đưa ra quyết định du lịch thông minh với thời tiết"}
-        features={features}
-      />
+      {/* Left Visual Panel - Pure Vietnam Map */}
+      <AuthVisualPanel />
 
       {/* Right Form Panel */}
       <AuthFormPanel>
+        {/* Auth Switcher Tabs */}
+        <div className={styles.authTabs}>
+          <Link to="/login" className={styles.authTab}>
+            {t("auth.login") || "Đăng nhập"}
+          </Link>
+          <span className={`${styles.authTab} ${styles.authTabActive}`}>
+            {t("auth.register") || "Đăng ký"}
+          </span>
+        </div>
+
         <AuthFormHeader
           title={t("auth.registerTitle") || "Tạo tài khoản"}
           subtitle={
@@ -386,21 +379,13 @@ export function RegisterPage() {
               onChange={(e) => setAcceptTerms(e.target.checked)}
             />
             <label htmlFor="acceptTerms" className={styles.termsText}>
-              Tôi đồng ý với{" "}
+              {t("auth.agreeToTerms") || "Tôi đồng ý với"}{" "}
               <Link to="/legal/terms" target="_blank">
-                Điều khoản sử dụng
+                {t("auth.termsOfService") || "Điều khoản sử dụng"}
               </Link>{" "}
-              và{" "}
+              {t("auth.and") || "và"}{" "}
               <Link to="/legal/privacy" target="_blank">
-                Chính sách bảo mật
-              </Link>
-              / I agree to the{" "}
-              <Link to="/legal/terms" target="_blank">
-                Terms of Service
-              </Link>{" "}
-              and{" "}
-              <Link to="/legal/privacy" target="_blank">
-                Privacy Policy
+                {t("auth.privacyPolicy") || "Chính sách bảo mật"}
               </Link>
             </label>
           </div>

@@ -1,10 +1,5 @@
-/**
- * AuthCard Component
- * Split-screen authentication with 3D weather visualization
- */
-
 import type { ReactNode } from "react";
-import { WeatherIcon } from "../ui/Icons";
+import { VietnamMap } from "../common/VietnamMap";
 import styles from "./AuthCard.module.css";
 
 interface AuthCardProps {
@@ -14,80 +9,58 @@ interface AuthCardProps {
 
 export function AuthCard({ children, className }: AuthCardProps) {
   return (
-    <div className={`${styles.page} ${className || ""}`}>
-      {children}
-    </div>
+    <section className={`${styles.authPage} ${className || ""}`}>
+      {/* Ambient background glow spheres matching homepage hero */}
+      <div className={styles.ambientGlow1} />
+      <div className={styles.ambientGlow2} />
+
+      <div className={styles.container}>
+        <div className={styles.authGrid}>
+          {children}
+        </div>
+      </div>
+    </section>
   );
 }
 
-// Visual Panel with 3D Weather Effect
-interface VisualPanelProps {
-  tagline: string;
-  features: Array<{
+// Visual Panel with Interactive Vietnam Map - Pure Minimalist
+export interface VisualPanelProps {
+  tagline?: string;
+  features?: Array<{
     icon: ReactNode;
     text: string;
   }>;
 }
 
-export function AuthVisualPanel({ tagline, features }: VisualPanelProps) {
+export function AuthVisualPanel({ tagline, features }: VisualPanelProps = {}) {
   return (
     <div className={styles.visualPanel}>
-      {/* Floating particles */}
-      <div className={styles.particles}>
-        {[...Array(10)].map((_, i) => (
-          <div key={i} className={styles.particle} />
-        ))}
+      {/* Pure Vietnam Map - No duplicate logo since header already has it */}
+      <div className={styles.authMapWrapper}>
+        <div className={styles.ambientBackdrop} />
+        <VietnamMap
+          className={styles.authVietnamMap}
+          interactive={true}
+          showcaseMode={false}
+          hideLegend={true}
+          viewMode="region"
+        />
       </div>
 
-      <div className={styles.visualContent}>
-        {/* 3D Weather Visualization */}
-        <div className={styles.weatherVisual}>
-          <div className={styles.weatherOrb}>
-            <div className={styles.weatherOrbInner} />
-
-            {/* Clouds */}
-            <div className={styles.cloudLayer} />
-            <div className={styles.cloudLayer} />
-            <div className={styles.cloudLayer} />
-
-            {/* Sun */}
-            <div className={styles.sunInOrb} />
-
-            {/* Rain drops */}
-            <div className={styles.rainDrop} />
-            <div className={styles.rainDrop} />
-            <div className={styles.rainDrop} />
-            <div className={styles.rainDrop} />
-            <div className={styles.rainDrop} />
-
-            {/* Orbit rings */}
-            <div className={styles.orbitRing} />
-            <div className={styles.orbitRing} />
-            <div className={styles.orbitRing} />
+      {/* Optional Tagline/Features if explicitly passed */}
+      {tagline && features && features.length > 0 && (
+        <div className={styles.visualFooter}>
+          <p className={styles.tagline}>{tagline}</p>
+          <div className={styles.features}>
+            {features.map((feature, index) => (
+              <div key={index} className={styles.feature}>
+                <div className={styles.featureIcon}>{feature.icon}</div>
+                <span className={styles.featureText}>{feature.text}</span>
+              </div>
+            ))}
           </div>
         </div>
-
-        {/* Brand - Same as header */}
-        <div className={styles.brandMark}>
-          <div className={styles.brandLogo}>
-            <WeatherIcon size={32} />
-          </div>
-          <span className={styles.brandName}>VietnamWeather AI</span>
-        </div>
-
-        {/* Tagline */}
-        <p className={styles.tagline}>{tagline}</p>
-
-        {/* Features */}
-        <div className={styles.features}>
-          {features.map((feature, index) => (
-            <div key={index} className={styles.feature}>
-              <div className={styles.featureIcon}>{feature.icon}</div>
-              <span className={styles.featureText}>{feature.text}</span>
-            </div>
-          ))}
-        </div>
-      </div>
+      )}
     </div>
   );
 }
@@ -159,20 +132,11 @@ export function AuthSuccessAlert({ title, message }: SuccessAlertProps) {
 interface FormHeaderProps {
   title: string;
   subtitle?: string;
-  showMobileLogo?: boolean;
 }
 
-export function AuthFormHeader({ title, subtitle, showMobileLogo = true }: FormHeaderProps) {
+export function AuthFormHeader({ title, subtitle }: FormHeaderProps) {
   return (
     <div className={styles.formHeader}>
-      {showMobileLogo && (
-        <div className={styles.logoMobile}>
-          <div className={styles.logoIconMobile}>
-            <WeatherIcon size={24} />
-          </div>
-          <span className={styles.logoTextMobile}>VietnamWeather AI</span>
-        </div>
-      )}
       <h1 className={styles.title}>{title}</h1>
       {subtitle && <p className={styles.subtitle}>{subtitle}</p>}
     </div>

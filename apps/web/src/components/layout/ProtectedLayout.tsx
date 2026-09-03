@@ -17,7 +17,7 @@ export function ProtectedLayout() {
 
   const handleLogout = async () => {
     await logout();
-    navigate("/");
+    navigate("/", { replace: true });
   };
 
   return (
@@ -25,7 +25,7 @@ export function ProtectedLayout() {
       {/* Header */}
       <header className={styles.header}>
         <div className={styles.container}>
-          <Link to="/" className={styles.logo}>
+          <Link to="/map" className={styles.logo}>
             <img src="/logo.svg" alt="VietnamWeather AI" width={32} height={32} />
             <span>VietnamWeather AI</span>
           </Link>
@@ -40,10 +40,49 @@ export function ProtectedLayout() {
             <Link to="/settings" className={styles.navLink}>
               {t("nav.settings")}
             </Link>
+            <Link to="/upgrade" className={styles.navLink}>
+              {t("nav.upgrade") || "Gói Dịch Vụ"}
+            </Link>
           </nav>
 
           <div className={styles.userMenu}>
             <LanguageSwitcher />
+            {user?.plan === "pro" ? (
+              <span
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: "4px",
+                  padding: "3px 10px",
+                  borderRadius: "999px",
+                  background: "linear-gradient(135deg, rgba(255, 205, 0, 0.2), rgba(251, 146, 60, 0.15))",
+                  border: "1px solid rgba(255, 205, 0, 0.5)",
+                  color: "#FFCD00",
+                  fontSize: "11px",
+                  fontWeight: 800,
+                }}
+              >
+                👑 PRO
+              </span>
+            ) : (
+              <Link
+                to="/upgrade"
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: "4px",
+                  padding: "3px 10px",
+                  borderRadius: "999px",
+                  background: "linear-gradient(135deg, #FFCD00, #F59E0B)",
+                  color: "#0F172A",
+                  fontSize: "11px",
+                  fontWeight: 800,
+                  textDecoration: "none",
+                }}
+              >
+                ⭐ Nâng cấp Pro
+              </Link>
+            )}
             <span className={styles.userName}>{user?.name || user?.email}</span>
             <button onClick={handleLogout} className={styles.logoutButton}>
               {t("nav.logout")}

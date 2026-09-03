@@ -10,6 +10,7 @@ import {
   type InputHTMLAttributes,
   type ReactNode,
 } from "react";
+import { useTranslation } from "react-i18next";
 import clsx from "clsx";
 import styles from "./Input.module.css";
 
@@ -151,13 +152,15 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
       return null;
     };
 
+    const { t } = useTranslation();
+
     const renderPasswordStrength = () => {
       if (!passwordStrength || passwordStrength.level === "none") return null;
 
       const labels = {
-        weak: "Yếu / Weak",
-        medium: "Trung bình / Medium",
-        strong: "Mạnh / Strong",
+        weak: t("common.weak"),
+        medium: t("common.medium"),
+        strong: t("common.strong"),
       };
 
       return (
@@ -177,9 +180,9 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
           <div className={styles.strengthLabel}>
             <span className={styles.strengthText}>{labels[passwordStrength.level]}</span>
             <span className={styles.strengthRequirement}>
-              {passwordStrength.level === "weak" && "8+ ký tự / characters"}
-              {passwordStrength.level === "medium" && "Cần thêm ký tự đặc biệt / special chars"}
-              {passwordStrength.level === "strong" && "✓ Đủ mạnh / Strong enough"}
+              {passwordStrength.level === "weak" && t("common.minCharacters")}
+              {passwordStrength.level === "medium" && t("common.needSpecialChar")}
+              {passwordStrength.level === "strong" && t("common.strongPassword")}
             </span>
           </div>
         </div>
@@ -198,7 +201,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
         {label && (
           <label className={styles.label}>
             {label}
-            {optional && <span className={styles.optional}>(Tùy chọn / Optional)</span>}
+            {optional && <span className={styles.optional}>({t("common.optional")})</span>}
           </label>
         )}
 
@@ -231,7 +234,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
               type="button"
               className={styles.rightIconButton}
               onClick={() => setShowPassword(!showPassword)}
-              aria-label={showPassword ? "Ẩn mật khẩu / Hide password" : "Hiện mật khẩu / Show password"}
+              aria-label={showPassword ? t("common.hidePassword") : t("common.showPassword")}
             >
               {showPassword ? (
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">

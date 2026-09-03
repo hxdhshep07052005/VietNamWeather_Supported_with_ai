@@ -1,33 +1,56 @@
 /**
  * Vietnam Map Component Styles
- * Phase 9 - Landing Page Hero Visual
- * Accurate province map with d3-geo projection
+ * Phase 9 - Landing Page Hero Visual & Interactive Map
+ * Premium Glassmorphism & High-tech Weather Aesthetics
  */
 
 .mapContainer {
   position: relative;
   width: 100%;
-  max-width: 600px;
+  max-width: 520px;
   margin: 0 auto;
+  user-select: none;
+}
+
+.showcaseContainer {
+  max-width: 480px;
+  padding: var(--space-4);
+  border-radius: var(--radius-2xl);
+  background: rgba(15, 23, 42, 0.45);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow:
+    0 20px 50px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+  transition: all var(--transition-normal);
+}
+
+.showcaseContainer:hover {
+  border-color: rgba(255, 205, 0, 0.3);
+  box-shadow:
+    0 25px 60px rgba(0, 0, 0, 0.5),
+    0 0 40px rgba(0, 102, 204, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
 }
 
 .mapSvg {
   width: 100%;
   height: auto;
+  display: block;
+  filter: drop-shadow(0 10px 25px rgba(0, 0, 0, 0.5));
+  opacity: 0;
+  transition: opacity 0.6s ease-out;
 }
 
-/* Fade in animation */
 .loaded {
-  animation: fadeIn 1s ease-out forwards;
+  opacity: 1;
 }
 
-@keyframes fadeIn {
-  0% {
-    opacity: 0;
-  }
-  100% {
-    opacity: 1;
-  }
+/* Ambient glow underneath map */
+.ambientGlow {
+  filter: blur(20px);
+  pointer-events: none;
 }
 
 /* Provinces */
@@ -36,21 +59,13 @@
 }
 
 .province {
-  transition: all 0.2s ease;
+  transition:
+    fill 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+    fill-opacity 0.25s ease,
+    stroke 0.25s ease,
+    stroke-width 0.25s ease,
+    filter 0.25s ease;
   cursor: default;
-  opacity: 0;
-  animation: provinceFadeIn 0.5s ease-out forwards;
-}
-
-@keyframes provinceFadeIn {
-  0% {
-    opacity: 0;
-    transform: scale(0.95);
-  }
-  100% {
-    opacity: 1;
-    transform: scale(1);
-  }
 }
 
 .province.interactive {
@@ -58,122 +73,177 @@
 }
 
 .province:hover {
-  fill-opacity: 0.9 !important;
-  stroke-width: 1.2px !important;
-  filter: brightness(1.1);
+  fill-opacity: 1 !important;
+  stroke-width: 1.8px !important;
+  filter: brightness(1.2) drop-shadow(0 0 6px rgba(255, 205, 0, 0.6));
 }
 
-/* City markers */
-.cityMarkers {
-  animation: fadeIn 1s ease-out forwards;
-  animation-delay: 0.5s;
-  opacity: 0;
-}
 
-.cityMarker {
-  opacity: 0;
-  animation: markerFadeIn 0.5s ease-out forwards;
-}
 
-.cityMarker:nth-child(1) { animation-delay: 0.6s; }
-.cityMarker:nth-child(2) { animation-delay: 0.7s; }
-.cityMarker:nth-child(3) { animation-delay: 0.8s; }
-.cityMarker:nth-child(4) { animation-delay: 0.9s; }
-.cityMarker:nth-child(5) { animation-delay: 1.0s; }
-
-@keyframes markerFadeIn {
-  0% {
-    opacity: 0;
-    transform: scale(0);
-  }
-  100% {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
-.pulse {
-  animation: pulse 2s ease-in-out infinite;
-  transform-origin: center;
-}
-
-@keyframes pulse {
-  0%, 100% {
-    transform: scale(1);
-    opacity: 0.2;
-  }
-  50% {
-    transform: scale(1.8);
-    opacity: 0;
-  }
-}
-
-.cityLabel {
-  font-family: var(--font-sans);
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8), 0 0 8px rgba(0, 0, 0, 0.5);
-  pointer-events: none;
-  user-select: none;
-}
-
-/* Tooltip */
-.provinceTooltip {
+/* On-Demand Interactive Province Hover/Click Card */
+.quickProvinceCard {
   position: absolute;
-  top: -35px;
+  bottom: 45px;
   left: 50%;
   transform: translateX(-50%);
-  background: rgba(26, 35, 126, 0.9);
-  color: white;
-  padding: 6px 14px;
-  border-radius: 20px;
-  font-size: 13px;
-  font-weight: 500;
-  white-space: nowrap;
+  width: 92%;
+  max-width: 320px;
+  background: rgba(15, 23, 42, 0.94);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 205, 0, 0.45);
+  border-radius: var(--radius-xl);
+  padding: var(--space-3) var(--space-4);
+  box-shadow:
+    0 16px 40px rgba(0, 0, 0, 0.7),
+    0 0 25px rgba(255, 205, 0, 0.2);
+  color: var(--color-white);
+  z-index: 25;
   pointer-events: none;
-  backdrop-filter: blur(8px);
-  animation: tooltipFadeIn 0.2s ease-out;
-  z-index: 10;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  animation: popoverFadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-@keyframes tooltipFadeIn {
+@keyframes popoverFadeIn {
   0% {
     opacity: 0;
-    transform: translateX(-50%) translateY(5px);
+    transform: translateX(-50%) translateY(8px) scale(0.97);
   }
   100% {
     opacity: 1;
-    transform: translateX(-50%) translateY(0);
+    transform: translateX(-50%) translateY(0) scale(1);
   }
+}
+
+.quickCardHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-2);
+  margin-bottom: var(--space-2);
+}
+
+.quickTitleWrap {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.quickCardTitle {
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-secondary);
+  line-height: 1.2;
+}
+
+.quickRegionBadge {
+  font-size: 10px;
+  color: #93C5FD;
+  font-weight: var(--font-weight-medium);
+}
+
+.quickCardRiskBadge {
+  font-size: 10px;
+  font-weight: var(--font-weight-semibold);
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
+  white-space: nowrap;
+}
+
+.quickCardBody {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  padding: var(--space-1) 0;
+}
+
+.quickTemp {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-2);
+}
+
+.tempValue {
+  font-size: 2rem;
+  font-weight: var(--font-weight-extrabold);
+  color: var(--color-white);
+  line-height: 1;
+}
+
+.tempDesc {
+  font-size: 11px;
+  font-weight: var(--font-weight-medium);
+  color: #34D399;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.02em;
+}
+
+.liveTimeWrapper {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: rgba(16, 185, 129, 0.15);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
+}
+
+.liveClockDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #10B981;
+  box-shadow: 0 0 6px #10B981;
+  animation: liveBlink 1.5s ease-in-out infinite;
+}
+
+@keyframes liveBlink {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.35; transform: scale(0.85); }
+}
+
+.quickCardHint {
+  margin-top: var(--space-2);
+  padding-top: var(--space-2);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  font-size: 10px;
+  color: #FDE047;
+  text-align: center;
+  font-weight: var(--font-weight-medium);
 }
 
 /* Legend */
-.legend {
+.legendContainer {
+  margin-top: var(--space-3);
+  display: flex;
+  justify-content: center;
+}
+
+.legendPills {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 6px 14px;
-  margin-top: 12px;
-  padding: 10px 14px;
-  background: rgba(26, 35, 126, 0.4);
-  border-radius: 10px;
+  gap: 6px 12px;
+  padding: 8px 14px;
+  background: rgba(15, 23, 42, 0.6);
   backdrop-filter: blur(8px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-full);
+  border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
-.legendItem {
-  display: flex;
+.legendPill {
+  display: inline-flex;
   align-items: center;
   gap: 5px;
   font-size: 10px;
-  color: rgba(255, 255, 255, 0.9);
+  font-weight: var(--font-weight-medium);
+  color: rgba(255, 255, 255, 0.85);
 }
 
-.legendDot {
-  width: 8px;
-  height: 8px;
+.dot {
+  width: 7px;
+  height: 7px;
   border-radius: 50%;
   flex-shrink: 0;
-  border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
 /* Responsive */
@@ -182,49 +252,40 @@
     max-width: 100%;
   }
 
-  .legend {
-    gap: 5px 10px;
-    padding: 8px 10px;
+  .showcaseContainer {
+    padding: var(--space-2);
   }
 
-  .legendItem {
-    font-size: 9px;
+  .floatingChip {
+    padding: 4px 8px;
+    font-size: 10px;
   }
 
-  .provinceTooltip {
-    font-size: 11px;
-    padding: 5px 12px;
+  .chipIcon {
+    font-size: 13px;
   }
 
-  .cityLabel {
+  .chipText strong {
+    font-size: 9.5px;
+  }
+
+  .chipText span {
     font-size: 8px;
   }
-}
 
-/* Dark mode - already dark themed */
-@media (prefers-color-scheme: dark) {
-  .mapSvg {
-    filter: drop-shadow(0 4px 20px rgba(0, 0, 0, 0.3));
+  .quickProvinceCard {
+    width: 95%;
+    bottom: 40px;
+    padding: var(--space-2) var(--space-3);
   }
 }
 
 /* Reduced motion */
 @media (prefers-reduced-motion: reduce) {
-  .loaded,
-  .province,
-  .cityMarkers,
-  .cityMarker,
-  .pulse {
-    animation: none;
-  }
-
-  .loaded,
-  .cityMarkers,
-  .cityMarker {
-    opacity: 1;
-  }
-
-  .province {
-    opacity: 1;
+  .radarRing,
+  .radarRingInner,
+  .floatingChip {
+    animation: none !important;
   }
 }
+

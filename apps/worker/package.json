@@ -12,6 +12,10 @@
   },
   "dependencies": {
     "@vietnam-weather/config": "workspace:*",
-    "@vietnam-weather/contracts": "workspace:*"
+    "@vietnam-weather/contracts": "workspace:*",
+    "pg": "8.22.0"
+  },
+  "devDependencies": {
+    "@types/pg": "8.15.6"
   }
 }

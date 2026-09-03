@@ -1,10 +1,11 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import { resolve } from "node:path";
+import { otpMailerPlugin } from "./vite-plugin-otp-mailer";
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react()],
+  plugins: [react(), otpMailerPlugin()],
   resolve: {
     alias: {
       "@": resolve(__dirname, "./src"),
@@ -14,8 +15,10 @@ export default defineConfig({
     port: 3000,
     proxy: {
       "/api": {
-        target: process.env.VITE_API_URL || "http://localhost:3001",
+        target: process.env.VITE_API_URL || "http://localhost:8080",
         changeOrigin: true,
+        // Add rewrite for /api prefix if backend doesn't use it
+        rewrite: (path) => path,
       },
     },
   },
