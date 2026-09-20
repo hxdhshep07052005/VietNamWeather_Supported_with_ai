@@ -1,0 +1,30 @@
+@startuml
+!include <C4/C4_Context>
+
+skinparam dpi 300
+skinparam defaultFontName "Segoe UI, Arial, sans-serif"
+skinparam wrapWidth 230
+skinparam maxMessageSize 150
+skinparam roundCorner 8
+skinparam shadowing false
+
+LAYOUT_LEFT_RIGHT()
+LAYOUT_WITH_LEGEND()
+
+Person(traveler, "Traveler / Commuter", "Motorcycle and car drivers navigating across Vietnam seeking safe routes and weather alerts.")
+Person(admin, "System Administrator", "Platform managers supervising worker pipelines and user security via Directus Studio.")
+
+System(vietforecast, "VietForecast Platform", "Core Software System\n\nAggregates 63-province meteorology, evaluates multi-path corridor hazards, and serves grounded AI travel assistance.")
+
+System_Ext(weather, "WeatherAPI / WMO Feeds", "Real-time surface observations and numerical weather prediction feeds across 63 provinces.")
+System_Ext(osrm, "OSRM Routing Engine", "OpenStreetMap road network graph engine providing alternative paths and travel times.")
+System_Ext(gemini, "Google Gemini 1.5 Flash", "Multimodal foundation LLM delivering grounded natural language advice via function calling.")
+
+Rel(traveler, vietforecast, "Views live weather map, plans safe routes, consults AI", "HTTPS / Web")
+Rel(admin, vietforecast, "Supervises pipelines, audits station data, broadcasts alerts", "HTTPS / Directus")
+
+Rel(vietforecast, weather, "Fetches hourly observations & station forecasts", "HTTPS / REST")
+Rel(vietforecast, osrm, "Queries alternative driving paths & geometries", "HTTP / REST")
+Rel(vietforecast, gemini, "Dispatches tool calling & receives grounded answers", "gRPC / HTTPS")
+
+@enduml

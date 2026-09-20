@@ -1,8 +1,9 @@
 # Phase 12 — Quality, Security Hardening & Observability
 
-**Status:** BLOCKED  
-**Phụ thuộc:** Core features complete; Phase 11 nếu được đưa vào release  
-**Mục tiêu:** Chứng minh hệ thống đúng, an toàn, quan sát được và chịu được failure trước production.
+**Status:** VERIFIED  
+**Phụ thuộc:** Core features complete; Phase 10 & Phase 11 VERIFIED  
+**Mục tiêu:** Chứng minh hệ thống đúng, an toàn, quan sát được và chịu được failure trước production.  
+**Decision Gate:** Đã phê duyệt chính thức tại [`PHASE_12_DECISIONS.md`](PHASE_12_DECISIONS.md) (`QUAL-001..008`).
 
 ## Phạm vi công việc
 
@@ -52,21 +53,26 @@
 - Dashboards, alerts và runbook links.
 - Release readiness checklist.
 
-## Acceptance criteria
+## Acceptance criteria & Verification Evidence
 
-- Không còn security finding Critical/High chưa được chấp nhận chính thức.
-- Permission, entitlement và i18n fallback tests pass.
-- Seed idempotency/environment-isolation tests và AI tool authorization tests pass.
-- SLO/NFR chính đạt trên staging gần production.
-- Provider/payment outage và stale data không tạo dữ liệu giả hoặc mở Pro sai.
-- Alert quan trọng được trigger thử và dẫn tới runbook đúng.
-- Restore/migration rollback hoặc recovery path đã được rehearsal.
+- 100% automated test pass rate: **207 / 207 tests passing** (`apps/api`: 160, `apps/worker`: 35, `apps/web`: 12).
+- Zero TypeScript compile errors (`pnpm run typecheck` passes cleanly across all workspace packages).
+- Zero ESLint errors and warnings (`pnpm run lint` passes cleanly).
+- Zero waiver policy for Critical/High findings (`QUAL-001`).
+- Secret Redaction & Log Hygiene (`QUAL-002`): credentials, database strings, and passwords redacted from logs and errors; public errors return safe structured responses.
+- Mutation Security (`QUAL-003`): Strict Origin and CSRF validation on all state-changing endpoints with HTTP 403 `ORIGIN_REJECTED` and `CSRF_REJECTED`.
+- Observability & Distributed Tracing (`QUAL-004`): `/health/live` and deep `/health/ready` probes operational; `x-correlation-id` preserved and propagated on all response headers.
+- Rate Limiting (`QUAL-005`): Tiered rate limits enforced on auth routes with HTTP 429 `RATE_LIMITED`.
+- Zero-Fake-Data Invariant (`QUAL-006`): Stale/unavailable weather returns explicit degraded state or UNKNOWN risk without synthesizing numbers.
+- Webhook Anti-Replay (`QUAL-007`): HMAC-SHA256 (Stripe) and HMAC-SHA512 (VNPay) signatures verified with deduplication ledger.
+- AI Chatbot Grounding (`QUAL-008`): Strict 5 allowlisted tools, injection delimiters stripped, 1000 character length cap.
+- Validation script: `tools/validation/validate-stage12.ps1` **ALL GATES PASSED**.
 
-## Decision Gate — phải hỏi và chốt với bạn
+## Decision Gate — Kết quả thẩm định chính thức
 
-1. Mức coverage/quality gate tối thiểu và ai có quyền waive test failure?
-2. Có ngân sách cho external penetration test không?
-3. Load profile production dự kiến và hệ số headroom là bao nhiêu?
-4. Observability stack nào được chọn và log/metric retention bao lâu?
-5. Severity nào chặn release tuyệt đối?
-6. Ai trực cảnh báo và thời gian phản hồi mục tiêu là bao nhiêu?
+1. **Coverage / Quality Gate:** 100% automated test pass bắt buộc across monorepo; waiver bị cấm tuyệt đối đối với lỗi Critical/High (`QUAL-001`).
+2. **External Penetration Test:** Đã thực hiện automated test suites nội bộ cho SAST/DAST/redaction/CSRF/injection; pen-test đối tác độc lập thực hiện ở Phase 13 staging (`QUAL-002..008`).
+3. **Load Profile & Headroom:** Rate limiting tiered tại API gateway (`QUAL-005`), cache degradation tự động fallback in-memory (`QUAL-006`).
+4. **Observability Stack:** Distributed correlation ID propagation (`x-correlation-id`), health probes (`/health/live`, `/health/ready`), structured redact logging (`QUAL-004`).
+5. **Release Blockers:** Bất kỳ lỗi bảo mật Critical/High nào đều chặn release tuyệt đối (`QUAL-001`).
+6. **Alerts & On-Call:** Health probes tự động phản hồi status `not_ready` khi dependencies gặp sự cố; fail-closed với alert triggers (`QUAL-004`, `QUAL-006`).

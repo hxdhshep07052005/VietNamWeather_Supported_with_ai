@@ -1,0 +1,325 @@
+/**
+ * Province Status Detail Styles
+ * Comprehensive Weather & 6-Dimensional Risk status dashboard
+ */
+
+.container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow-y: auto;
+  background: var(--color-surface);
+  color: var(--color-text-primary);
+  padding: 18px;
+  gap: 18px;
+}
+
+/* Header */
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  border-bottom: 1px solid var(--color-border);
+  padding-bottom: 16px;
+}
+
+.topRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.backBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border);
+  background: var(--color-background);
+  color: var(--color-text-secondary);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.backBtn:hover {
+  color: var(--color-primary);
+  border-color: var(--color-primary);
+  background: var(--color-primary-light);
+}
+
+.titleArea {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.titleRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.provinceName {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--color-text-primary);
+  margin: 0;
+}
+
+.metaRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--color-text-secondary);
+  flex-wrap: wrap;
+}
+
+.regionTag {
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 700;
+  background: var(--color-background-alt);
+  border: 1px solid var(--color-border);
+  color: var(--color-text-secondary);
+}
+
+/* Actions Bar */
+.actionsBar {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.actionBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px 12px;
+  border-radius: var(--radius-lg);
+  font-size: 12px;
+  font-weight: 700;
+  border: 1px solid var(--color-border);
+  background: var(--color-background);
+  color: var(--color-text-primary);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  text-decoration: none;
+}
+
+.actionBtn:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+.actionBtnPrimary {
+  background: var(--color-primary);
+  color: #FFFFFF;
+  border-color: var(--color-primary);
+}
+
+.actionBtnPrimary:hover {
+  background: var(--color-primary-hover);
+  color: #FFFFFF;
+}
+
+.actionBtnSaved {
+  background: rgba(255, 205, 0, 0.15);
+  border-color: #FFCD00;
+  color: #B45309;
+}
+
+/* Card Section */
+.sectionCard {
+  background: var(--color-background);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.sectionTitle {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+}
+
+/* Overall Risk Banner */
+.riskBanner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 14px;
+  border-radius: var(--radius-lg);
+  border: 1px solid;
+}
+
+.riskBannerLeft {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.riskLevelText {
+  font-size: 15px;
+  font-weight: 800;
+}
+
+.riskScoreSub {
+  font-size: 12px;
+  opacity: 0.85;
+}
+
+.confidenceBadge {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  font-size: 11px;
+}
+
+/* 6-Dimensional Risk Grid */
+.riskGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+}
+
+.dimensionCard {
+  padding: 10px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.dimensionTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+}
+
+.dimensionValue {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+
+.dimensionStatus {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 1px 6px;
+  border-radius: 999px;
+  align-self: flex-start;
+}
+
+/* Weather Parameters Grid */
+.weatherGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.weatherParamBox {
+  padding: 10px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.paramLabel {
+  font-size: 11px;
+  color: var(--color-text-secondary);
+}
+
+.paramValue {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+
+.paramSub {
+  font-size: 10px;
+  color: var(--color-text-tertiary);
+}
+
+/* Hourly Timeline */
+.hourlyScroll {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 6px;
+}
+
+.hourlyCard {
+  flex: 0 0 68px;
+  padding: 8px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.hourlyTime {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+}
+
+.hourlyTemp {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+
+.hourlyRain {
+  font-size: 10px;
+  color: #0EA5E9;
+  font-weight: 600;
+}
+
+/* Advisories List */
+.advisoriesList {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.advisoryItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 8px 10px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  font-size: 12px;
+  line-height: 1.4;
+}

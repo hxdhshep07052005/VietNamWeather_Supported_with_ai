@@ -8,7 +8,11 @@
  */
 import { useQuery } from "@tanstack/react-query";
 import { apiClient } from "../api/client";
-import type { CurrentWeatherSection } from "@vietnam-weather/contracts";
+import type {
+  CurrentWeatherSection,
+  HourlyWeatherSection,
+  DailyWeatherSection,
+} from "@vietnam-weather/contracts";
 
 const WEATHER_STALE_TIME = 1000 * 60 * 2;   // 2 min
 const WEATHER_GC_TIME    = 1000 * 60 * 15;  // 15 min
@@ -16,8 +20,17 @@ const WEATHER_GC_TIME    = 1000 * 60 * 15;  // 15 min
 export interface WeatherResponse {
   data: {
     status: "success" | "degraded" | "pending" | "error" | "unavailable";
-    data: {
+    data?: {
       current: CurrentWeatherSection | null;
+      hourly?: HourlyWeatherSection | null;
+      daily?: DailyWeatherSection | null;
+    };
+    issues?: readonly unknown[];
+    error?: {
+      code: string;
+      message: string;
+      correlationId: string;
+      retryable: boolean;
     };
     correlationId: string;
   };
@@ -27,6 +40,7 @@ export interface ProvinceWeatherTarget {
   locationId?: string;
   latitude?: number;
   longitude?: number;
+  includeForecast?: boolean;
 }
 
 async function fetchWeatherByCoords(lat: number, lng: number): Promise<WeatherResponse> {
@@ -41,13 +55,28 @@ async function fetchWeatherByLocationId(locationId: string): Promise<WeatherResp
   );
 }
 
+async function fetchWeatherForecast(target: ProvinceWeatherTarget): Promise<WeatherResponse> {
+  const hasCoords = target.latitude !== undefined && target.longitude !== undefined;
+  const payloadTarget = hasCoords
+    ? { coordinates: { latitude: target.latitude!, longitude: target.longitude! } }
+    : { locationId: target.locationId! };
+
+  return apiClient.post<WeatherResponse>("/weather/query", {
+    target: payloadTarget,
+    include: ["current", "hourly", "daily"],
+  });
+}
+
 export function useProvinceWeather(target: ProvinceWeatherTarget) {
-  const { locationId, latitude, longitude } = target;
+  const { locationId, latitude, longitude, includeForecast } = target;
   const hasCoords = latitude !== undefined && longitude !== undefined;
 
   return useQuery({
-    queryKey: ["province-weather", locationId, latitude, longitude] as const,
+    queryKey: ["province-weather", locationId, latitude, longitude, includeForecast] as const,
     queryFn: () => {
+      if (includeForecast) {
+        return fetchWeatherForecast(target);
+      }
       if (hasCoords) {
         return fetchWeatherByCoords(latitude!, longitude!);
       }
@@ -63,3 +92,4 @@ export function useProvinceWeather(target: ProvinceWeatherTarget) {
     refetchOnWindowFocus: false,
   });
 }
+

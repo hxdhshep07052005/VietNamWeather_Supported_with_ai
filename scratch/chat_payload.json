@@ -1,0 +1,35 @@
+{
+  "question": "Chiều nay 14h tôi lái ô tô từ Hà Nội lên Sa Pa, nghỉ ăn tối ở Phú Thọ 1,5 tiếng rồi 19h30 mới leo đèo Yên Bái — Lào Cai. Cung đường nào an toàn nhất để tránh dông lốc Đoan Hùng và sương mù ban đêm?",
+  "response": {
+    "data": {
+      "message": {
+        "id": "msg-ai-complex-101",
+        "role": "assistant",
+        "content": "Dựa trên phân tích đa chặng (multi-leg) và dữ liệu quan trắc trạm thực địa:\n\n1. Chặng 1 (14:00 – 15:20 | Hà Nội → Phú Thọ):\n• Cao tốc Nội Bài – Lào Cai: Thời tiết tạnh ráo, 29°C, gió 12 km/h. Lưu thông an toàn tuyệt đối (R = 0,12).\n\n2. Cảnh báo vùng dông Đoan Hùng:\n• Radar ghi nhận mây đối lưu gây dông lốc từ 16:30 – 18:30. Lịch trình nghỉ ăn tối 1,5h tại Phú Thọ giúp bạn tránh trọn vẹn ổ dông này.\n\n3. Chặng 2 (19:30 – 22:30 | Phú Thọ → Sa Pa):\n• Khuyến nghị: Đi Cao tốc CT05 (Weather-Safer). Yên Bái mưa nhỏ (24°C), tầm nhìn > 10 km.\n• Cảnh báo đèo dốc đêm: Sau 21:30 qua Bảo Hà có sương mù ẩm, tầm nhìn < 300m. Khuyến cáo bật đèn sương mù, giữ tốc độ < 50 km/h.\n• Dự kiến đến Sa Pa lúc 22:35 an toàn.",
+        "timestamp": "2026-09-14T14:02:00Z",
+        "citations": [
+          {
+            "source": "Trạm Láng (Hà Nội)",
+            "stationName": "Trạm khí tượng Láng (Hà Nội)",
+            "dataset": "surface_synop",
+            "timestamp": "13:55 14/09/2026"
+          },
+          {
+            "source": "Trạm TP Yên Bái",
+            "stationName": "Trạm khí tượng TP Yên Bái",
+            "dataset": "surface_synop",
+            "timestamp": "13:50 14/09/2026"
+          },
+          {
+            "source": "Trạm Sa Pa (Lào Cai)",
+            "stationName": "Trạm quan trắc Sa Pa",
+            "dataset": "mountain_station",
+            "timestamp": "13:52 14/09/2026"
+          }
+        ],
+        "disclaimer": "Dữ liệu được bảo chứng bởi các trạm quan trắc tự động dọc tuyến, cập nhật chu kỳ 5 phút."
+      },
+      "remainingQuota": 29
+    }
+  }
+}

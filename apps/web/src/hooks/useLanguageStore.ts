@@ -6,7 +6,7 @@
 
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import i18n, { SUPPORTED_LANGUAGES, SupportedLanguage } from "../i18n";
+import i18n, { SUPPORTED_LANGUAGES, type SupportedLanguage } from "../i18n";
 
 interface LanguageState {
   language: SupportedLanguage;

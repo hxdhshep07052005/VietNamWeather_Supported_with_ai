@@ -23,11 +23,15 @@ import { PasswordRecoveryService } from "./password-recovery.js";
 import { PostgresSessionStore, type SessionStore } from "./session-store.js";
 import { MemoryVerificationStore, PostgresVerificationStore, type VerificationStore } from "./verification-store.js";
 import {
-  AdvisoryService,
+  type AdvisoryService,
   createAdvisoryService,
   createRiskService,
-  RiskService
+  type RiskService
 } from "./risk/index.js";
+import type { WeatherScheduler } from "./weather/scheduler.js";
+import type { WeatherCache } from "./weather-cache.js";
+import type { WeatherService } from "./weather-service.js";
+import type { RouteService } from "./route/index.js";
 
 declare module "fastify" {
   interface FastifyRequest {
@@ -103,6 +107,10 @@ function emailVerificationRedirect(config: ApiConfig, fragment: string): string 
 }
 
 function correlationId(request: FastifyRequest): string {
+  const header = request.headers["x-correlation-id"];
+  if (typeof header === "string" && header.trim().length > 0) {
+    return header.trim();
+  }
   return request.id;
 }
 
@@ -301,6 +309,7 @@ export async function createApiServer(dependencies: ApiServerDependencies): Prom
         censor: "[REDACTED]"
       }
     },
+    requestIdHeader: "x-correlation-id",
     genReqId: () => `api_${randomBytes(12).toString("hex")}`
   });
   app.decorateRequest("authSession");
@@ -376,6 +385,8 @@ export async function createApiServer(dependencies: ApiServerDependencies): Prom
 
   let riskService: RiskService | undefined;
   let advisoryService: AdvisoryService | undefined;
+  let weatherService: WeatherService | undefined;
+  let routeService: RouteService | undefined;
   if (pool) {
     riskService = createRiskService({ dbPool: pool });
     advisoryService = createAdvisoryService({
@@ -385,7 +396,7 @@ export async function createApiServer(dependencies: ApiServerDependencies): Prom
   }
 
   // Weather scheduler for pre-loading weather data
-  let weatherScheduler: import("./weather/scheduler.js").WeatherScheduler | null = null;
+  let weatherScheduler: WeatherScheduler | null = null;
 
   if (pool) {
     const { WeatherService, PostgresWeatherStore, RedisWeatherCache, WeatherScheduler, createDefaultSchedulerConfig } = await import("./weather/index.js");
@@ -394,7 +405,7 @@ export async function createApiServer(dependencies: ApiServerDependencies): Prom
       "weatherapi",
       "weatherapi-forecast-v1"
     );
-    const cache: import("./weather-cache.js").WeatherCache | null = redis
+    const cache: WeatherCache | null = redis
       ? new RedisWeatherCache(redis)
       : null;
     const service = new WeatherService({
@@ -403,6 +414,7 @@ export async function createApiServer(dependencies: ApiServerDependencies): Prom
       cacheTtlSeconds: config.weatherCacheTtlSeconds,
       pendingRetrySeconds: config.weatherPendingRetrySeconds
     });
+    weatherService = service;
 
     // Start weather scheduler to pre-load weather data for all Vietnam provinces
     const schedulerConfig = createDefaultSchedulerConfig();
@@ -428,6 +440,15 @@ export async function createApiServer(dependencies: ApiServerDependencies): Prom
       rateLimitWindowMs: config.rateLimitWindowMilliseconds,
       weatherRateLimitMax: config.weatherRateLimitMax
     });
+
+    // Register route planning service and routes (Phase 8)
+    const { RouteService, buildRouteRoutes } = await import("./route/index.js");
+    routeService = new RouteService({ dbPool: pool });
+    buildRouteRoutes(app, {
+      routeService,
+      defaultRateLimitMax: config.defaultRateLimitMax,
+      rateLimitWindowMs: config.rateLimitWindowMilliseconds,
+    });
   }
 
   if (riskService && advisoryService) {
@@ -435,9 +456,10 @@ export async function createApiServer(dependencies: ApiServerDependencies): Prom
     advisoryService.registerAdvisoryRoutes(app, { correlationIdFn: (r) => correlationId(r as unknown as FastifyRequest) });
   }
 
-  app.addHook("onSend", async (_request, reply) => {
+  app.addHook("onSend", async (request, reply) => {
     reply.header("cache-control", "no-store");
     reply.header("x-content-type-options", "nosniff");
+    reply.header("x-correlation-id", correlationId(request));
   });
   app.setErrorHandler((error, request, reply) => {
     const result = publicError(error, request);
@@ -588,6 +610,45 @@ export async function createApiServer(dependencies: ApiServerDependencies): Prom
   app.get("/api/v1/auth/me", { preHandler: requireAuth }, async (request) => ({
     data: { user: request.authSession?.user }
   }));
+
+  // Phase 10 Billing & Entitlement Routes
+  const { BillingService, buildBillingRoutes } = await import("./billing/index.js");
+  const billingService = new BillingService({ redis: redis ?? undefined });
+  buildBillingRoutes(app, {
+    billingService,
+    requireAuth,
+    requireMutationSecurity,
+  });
+
+  // Phase 11 AI Chatbot Routes
+  const {
+    ChatService,
+    ChatToolEngine,
+    GeminiLlmAdapter,
+    buildChatRoutes,
+  } = await import("./chat/index.js");
+
+  const toolEngine = new ChatToolEngine({
+    weatherService,
+    riskService,
+    routeService,
+  });
+
+  const geminiApiKey = process.env.GEMINI_API_KEY;
+  const llmAdapter = new GeminiLlmAdapter(geminiApiKey);
+
+  const chatService = new ChatService({
+    quotaService: billingService.quotaService,
+    toolEngine,
+    llmAdapter,
+  });
+
+  buildChatRoutes(app, {
+    chatService,
+    billingService,
+    requireAuth,
+    requireMutationSecurity,
+  });
 
   app.addHook("onClose", async () => {
     await recovery.close();

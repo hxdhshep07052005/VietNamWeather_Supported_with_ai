@@ -1,0 +1,276 @@
+\chapter{Theoretical Foundations and Core Technologies}
+\label{ch:theory}
+
+This chapter presents a comprehensive analysis of the scientific foundations, quantitative computational models, and underlying core technologies designed and deployed within the VietForecast ecosystem. The discussion progresses systematically from spatial data representations and geodetic processing in Geographic Information Systems (GIS), World Meteorological Organization (WMO) surface observation standards, and spatio-temporal route discretization algorithms to multi-dimensional transit corridor risk scoring, grounded tool-calling protocols that drastically suppress Large Language Model (LLM) hallucinations, and an in-depth architectural evaluation of the distributed production technology stack.
+
+\section{Spatial Data and Geographic Information Systems (GIS)}
+
+Geographic Information Systems (GIS) constitute the foundational analytical backbone of VietForecast, governing coordinate transformations, reference frame projections, topological road network graph representations, and spatial proximity evaluations between vehicles and ground observation stations.
+
+\subsection{WGS84 Reference Frame and GeoJSON Standard (RFC 7946)}
+
+To resolve absolute geographic coordinates across the terrestrial surface, the system employs the World Geodetic System 1984 (WGS84), cataloged under the international EPSG:4326 identifier. The mathematical model of WGS84 approximates the actual geoid surface of the Earth using an oblate ellipsoid of revolution parameterized by two fundamental geometric constants:
+\begin{itemize}
+    \item[-] Equatorial semi-major axis: $a = 6{,}378{,}137\text{ m}$.
+    \item[-] Geometric flattening factor: $f = \frac{a - b}{a} = \frac{1}{298.257223563}$.
+\end{itemize}
+From these parameters, the polar semi-minor axis $b$ is derived as:
+\begin{equation}
+\label{eq:minor_axis_en}
+b = a(1 - f) \approx 6{,}356{,}752.3142\text{ m}
+\end{equation}
+Any spatial location $P$ on this ellipsoidal surface is uniquely parameterized by geodetic latitude and longitude $(\phi, \lambda)$, where $\phi \in [-90^\circ, +90^\circ]$ and $\lambda \in [-180^\circ, +180^\circ]$.
+
+For service boundary communication and payload transport across Application Programming Interfaces (APIs), the system enforces the GeoJSON standard defined in RFC 7946 \cite{rfc7946}. GeoJSON structures spatial primitives using JSON syntax. A paramount technical convention dictated by RFC 7946 is coordinate ordering: easting (longitude) strictly precedes northing (latitude) within the pair $[\lambda, \phi]$, directly contrasting with traditional Cartesian notation $(latitude, longitude)$. The core spatial geometries utilized throughout the platform include:
+\begin{itemize}
+    \item[-] Point: Uniquely identifies static meteorological observation stations or instantaneous GPS coordinates of traveling vehicles, such as $[105.8542, 21.0285]$ representing an observation post in Hanoi.
+    \item[-] LineString: Represents continuous sequences of connected coordinate vertices describing multi-segment highway centerlines, expressways, or proposed travel routes.
+    \item[-] Polygon and MultiPolygon: Delineates administrative boundaries across 63 Vietnamese provinces as well as dynamic storm convective envelopes.
+    \item[-] FeatureCollection: Aggregates heterogeneous spatial features accompanied by structured property dictionaries containing road surface friction indices, instantaneous wind vectors, and severe weather warning states.
+\end{itemize}
+
+\subsection{PostGIS Spatial Database Engine and GiST Indexing Mechanism}
+
+Managing and querying millions of complex geometric entities under sub-second latency constraints presents significant challenges for traditional relational databases. VietForecast integrates PostGIS \cite{postgis2023}, an enterprise spatial extender for PostgreSQL 16. PostGIS introduces Open Geospatial Consortium (OGC) compliant spatial data types, distinguishing between \texttt{geometry} (planar Euclidean computations) and \texttt{geography} (geodetic great-circle computations over the true WGS84 curved ellipsoid).
+
+As spatial dataset volume scales, full sequential table scans require $O(N)$ asymptotic time complexity, leading to severe CPU starvation during high-concurrency routing events. To overcome this limitation, PostGIS provides Generalized Search Tree (GiST) indexing based on the multi-dimensional R-Tree architecture \cite{guttman1984}.
+
+A GiST index encapsulates complex spatial geometries within orthogonal Minimum Bounding Boxes (BBOX) aligned with coordinate axes. The index hierarchy organizes leaf nodes containing bounding boxes of individual geometric records beneath intermediate nodes enclosing composite clusters. Spatial queries execute through a two-tier evaluation pipeline:
+\begin{itemize}
+    \item[-] Rough Pass (Index Filtering): The query bounding envelope traverses the GiST tree with $O(\log N)$ complexity, immediately discarding candidate geometries whose bounding boxes do not intersect the search envelope without accessing raw coordinate vertices.
+    \item[-] Exact Pass (Geometric Predicate Evaluation): Computationally intensive spherical or ellipsoidal geometric predicates are evaluated exclusively against the small candidate subset surviving the filter pass.
+\end{itemize}
+
+The platform leverages several core PostGIS spatial functions:
+\begin{itemize}
+    \item[-] \texttt{ST\_DWithin(geom1, geom2, distance)}: Discovers all weather stations located within the physical influence radius of a travel corridor utilizing GiST index acceleration without computing pairwise distance matrices across the entire database.
+    \item[-] \texttt{ST\_DistanceSphere(geom1, geom2)}: Calculates great-circle distances over a spherical Earth model, achieving execution speeds an order of magnitude faster than full geodetic inversions with negligible local error.
+    \item[-] \texttt{ST\_LineInterpolatePoint(line, fraction)}: Samples continuous positions along travel geometries at exact fractional intervals, providing the mathematical basis for temporal route sampling.
+\end{itemize}
+
+\subsection{Spatio-Temporal Route Corridor Discretization}
+
+Interprovincial travel corridors in Vietnam frequently span hundreds of kilometers across diverse terrain and microclimatic zones, ranging from coastal plains to mountainous passes. Weather metrics observed at the departure origin at time $t_0$ exhibit virtually zero correlation with atmospheric hazards encountered on a mountain pass 120~km away three hours later. Consequently, the platform implements a continuous spatio-temporal route sampling algorithm.
+
+The great-circle distance between two consecutive coordinate points $(\phi_1, \lambda_1)$ and $(\phi_2, \lambda_2)$ is determined using the Haversine formula:
+\begin{equation}
+\label{eq:haversine_en}
+d = 2R \cdot \arcsin \left( \sqrt{\sin^2\left(\frac{\Delta \phi}{2}\right) + \cos\phi_1 \cos\phi_2 \sin^2\left(\frac{\Delta \lambda}{2}\right)} \right)
+\end{equation}
+where $R \approx 6{,}371\text{ km}$ denotes the volumetric mean radius of the Earth, $\Delta \phi = \phi_2 - \phi_1$, and $\Delta \lambda = \lambda_2 - \lambda_1$ in radians.
+
+Given the cumulative route distance $L$ and estimated transit duration $T$ returned by the routing engine, the nominal traverse velocity along the corridor is $\bar{v} = L / T$. The algorithm discretizes the polyline LineString into an ordered sequence of meteorological evaluation checkpoints $\mathcal{P}_{\text{samples}} = \{p_0, p_1, p_2, \dots, p_K\}$ governed by dual upper bounds:
+\begin{itemize}
+    \item[-] Maximum spatial interval: Physical distance between adjacent sample points must not exceed $\Delta s_{\max} = 5\text{ km}$.
+    \item[-] Maximum temporal interval: Estimated transit duration between successive checkpoints must not exceed $\Delta t_{\max} = 15\text{ minutes}$.
+\end{itemize}
+
+For each discrete checkpoint $p_i$, the estimated arrival timestamp is computed sequentially:
+\begin{equation}
+\label{eq:arrival_time_en}
+t_i = t_0 + \sum_{j=1}^{i} \frac{d(p_{j-1}, p_j)}{\bar{v}}
+\end{equation}
+A spatial buffer corridor of radius $r_{\text{corridor}} = 15\text{ km}$ is subsequently projected around $p_i$. This buffer allows spatial queries to identify the nearest active observation station and map the corresponding forecast field to the checkpoint.
+
+\section{Meteorological Parameters and Risk Modeling}
+
+\subsection{Surface Observation Parameters under WMO-No. 8 Standards}
+
+Input meteorological metrics are standardized in accordance with the World Meteorological Organization Guide to Instruments and Methods of Observation (WMO-No. 8) \cite{wmo2021guidelines}. Five fundamental physical parameters directly influence vehicle dynamics, tire-pavement friction coefficients, and driver control:
+\begin{itemize}
+    \item[-] Surface precipitation intensity ($I_{\text{rain}}$, in mm/h): Excessive precipitation induces hydrodynamic aquaplaning, causing tires to lose traction on wet asphalt.
+    \item[-] Sustained wind speed ($v_{\text{wind}}$) and peak gust speed ($v_{\text{gust}}$, in km/h): Strong lateral aerodynamic gusts create critical overturning moments, particularly dangerous for two-wheeled vehicles crossing bridges or mountain passes.
+    \item[-] Horizontal visibility ($V_{\text{vis}}$, in meters): Visibility attenuation caused by dense fog or tropical downpours severely impairs driver sight distance and reaction times.
+    \item[-] Ambient surface air temperature ($T_{\text{air}}$, in $^\circ$C): Extreme heat exceeding $39^\circ$C induces tire blowouts and driver exhaustion; freezing temperatures on northern mountain peaks cause roadway icing.
+    \item[-] Authoritative extreme weather advisories: Formal alerts issued by national meteorological authorities tracking tropical storms, convective squalls, and flash floods.
+\end{itemize}
+
+In the ingestion pipeline, raw weather condition codes from external providers are mapped to canonical states (e.g., \texttt{clear}, \texttt{cloudy}, \texttt{fog}, \texttt{rain}, and \texttt{thunderstorm}). Each normalized observation payload is tagged with an SHA-256 integrity checksum to support deduplication and cache validation.
+
+\subsection{Data Freshness Lifecycle and Fail-Safe Principles}
+
+Atmospheric phenomena are intrinsically non-stationary and decay rapidly in predictive reliability over time. To ensure that navigation decisions are never based on obsolete information, VietForecast establishes a three-tier Data Freshness Lifecycle (governed by decision RISK-006):
+\begin{itemize}
+    \item[-] Fresh: Telemetry age $\tau = t_{\text{current}} - t_{\text{observation}} \le 60\text{ minutes}$ for current observations and $\le 24\text{ hours}$ for numerical forecasts. Data is eligible for unconstrained risk computation.
+    \item[-] Aging: $60\text{ minutes} < \tau \le 180\text{ minutes}$. Data remains usable but is flagged with a client-visible confidence degradation indicator.
+    \item[-] Stale: $\tau > 180\text{ minutes}$ or communication with the observation station is lost.
+\end{itemize}
+
+The architecture strictly adheres to the Fail-Safe Principle: when telemetry enters the Stale state or is unavailable, heuristic speculation is rejected, and the checkpoint automatically transitions to an Unknown risk classification (score 0, neutral gray color \#9CA3AF). This ensures that missing data is never misinterpreted as safe, prioritizing commuter lives above all else.
+
+\subsection{Multi-Dimensional Risk Matrix and Corridor Aggregation}
+
+To translate heterogeneous physical observations into intuitive safety indicators, the platform structures a multi-criteria risk assessment matrix. The operational risk space is classified into four discrete states (decision RISK-001): Low (score 1, green), Caution (score 2, yellow), High (score 3, orange), and Unknown (score 0, gray).
+
+Each spatial checkpoint $p_i$ is evaluated across six independent risk dimensions (decision RISK-002): precipitation ($R_{\text{rain}}$), wind gust ($R_{\text{wind}}$), extreme temperature ($R_{\text{temp}}$), visibility attenuation ($R_{\text{vis}}$), convective storm activity ($R_{\text{storm}}$), and hydrological alerts ($R_{\text{alert}}$). Table~\ref{tab:risk_matrix_thresholds_en} specifies the operational risk thresholds configured within the platform.
+
+\begin{table}[H]
+\centering
+\caption{WMO-compliant meteorological risk threshold specifications in VietForecast.}
+\label{tab:risk_matrix_thresholds_en}
+\footnotesize
+\renewcommand{\arraystretch}{0.92}
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{4.2cm} *{3}{>{\centering\arraybackslash}X}}
+\toprule
+Meteorological Metric & Level 1 (Low) & Level 2 (Caution) & Level 3 (High) \\
+\midrule
+Precipitation rate ($I_{\text{rain}}$) & $< 5\text{ mm/h}$ & $5 - 20\text{ mm/h}$ & $> 20\text{ mm/h}$ \\
+Peak wind gust ($v_{\text{gust}}$) & $< 30\text{ km/h}$ & $30 - 50\text{ km/h}$ & $> 50\text{ km/h}$ \\
+Horizontal visibility ($V_{\text{vis}}$) & $> 2{,}000\text{ m}$ & $500 - 2{,}000\text{ m}$ & $< 500\text{ m}$ \\
+Air temperature ($T_{\text{air}}$) & $18 - 35^\circ$C & $10 - 18^\circ$C or $35 - 39^\circ$C & $< 10^\circ$C or $> 39^\circ$C \\
+Convective / storm activity & None & Local convective storm & Severe typhoon / flash flood warning \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+The composite risk score at checkpoint $p_i$ obeys the Max-Severity Rule (decision RISK-005):
+\begin{equation}
+\label{eq:point_risk_en}
+S(p_i) = \max \left( R_{\text{rain}}(p_i), R_{\text{wind}}(p_i), R_{\text{temp}}(p_i), R_{\text{vis}}(p_i), R_{\text{storm}}(p_i), R_{\text{alert}}(p_i) \right)
+\end{equation}
+
+The representative corridor risk score $S_{\text{route}}$ across all $K$ checkpoints is defined as:
+\begin{equation}
+\label{eq:route_risk_max_en}
+S_{\text{route}} = \max_{i=1,\dots,K} S(p_i)
+\end{equation}
+complemented by the distance-weighted cumulative risk index:
+\begin{equation}
+\label{eq:route_risk_avg_en}
+\bar{S}_{\text{route}} = \frac{\sum_{i=1}^{K-1} d(p_{i-1}, p_i) \cdot \frac{S(p_{i-1}) + S(p_i)}{2}}{\sum_{i=1}^{K-1} d(p_{i-1}, p_i)}
+\end{equation}
+If any corridor segment encounters a Level 3 severity event (such as deep roadway flooding or gale-force squalls), the entire trajectory escalates to High risk to prompt driver detour evaluations.
+
+\subsection{Vehicle Differentiation and Multi-Objective Route Optimization}
+
+Vietnam presents a unique transportation landscape with over 70 million registered motorcycles accounting for more than 85\% of personal trips. Motorcyclists lack protective cabins and are directly exposed to crosswinds, rain blinding, and tire hydroplaning. Consequently, the platform calibrates risk sensitivity thresholds based on vehicle classification (decision ROUTE-001):
+\begin{itemize}
+    \item[-] Motorcycle mode (\texttt{motorcycle}): Wind gust ($v_{\text{gust}}$) and visibility ($V_{\text{vis}}$) thresholds are tightened by 30\% relative to passenger cars. For example, gusts exceeding $35\text{ km/h}$ immediately trigger Caution severity for two-wheeled vehicles.
+    \item[-] Passenger car mode (\texttt{car}): Operates under standard WMO thresholds, benefiting from superior mechanical stability and an enclosed cabin.
+\end{itemize}
+
+During route planning, the system evaluates three distinct alternatives (decision ROUTE-003): Fastest, Shortest, and Weather-safer. A multi-objective scoring function balances travel safety against efficiency (decision ROUTE-004):
+\begin{equation}
+\label{eq:balanced_route_score_en}
+Score_{\text{balanced}} = w_{\text{risk}} \cdot \hat{S}_{\text{route}} + w_{\text{time}} \cdot \hat{T} + w_{\text{dist}} \cdot \hat{D}
+\end{equation}
+where $\hat{S}_{\text{route}}, \hat{T}, \hat{D} \in [0, 1]$ represent normalized values for weather risk, travel duration, and physical distance. The default weights calibrated via Directus are $w_{\text{risk}} = 0.5$, $w_{\text{time}} = 0.3$, and $w_{\text{dist}} = 0.2$, reflecting a safety-first transit objective.
+
+\section{Large Language Models and Grounded Function Calling}
+
+\subsection{Fundamental Limitations of Autoregressive LLMs in Travel Safety}
+
+Transformer-based Large Language Models (LLMs) \cite{vaswani2017attention} have established remarkable capabilities in conversational natural language generation. However, autoregressive text generation fundamentally models the next-token probability conditioned on static training data:
+\begin{equation}
+\label{eq:llm_prob_en}
+P(w_1, w_2, \dots, w_M) = \prod_{t=1}^{M} P(w_t \mid w_1, \dots, w_{t-1})
+\end{equation}
+
+Unaugmented language models inherently lack temporal situational awareness and direct access to spatial databases. When queried regarding real-time conditions (e.g., \textit{"Is Hai Van Pass experiencing dangerous fog right now?"}), an ungrounded model will generate a plausible-sounding narrative based on pretraining linguistic correlations rather than current radar or station telemetry. In navigational safety contexts, such confabulations (hallucinations) represent critical hazards capable of precipitating severe transit accidents.
+
+\subsection{Grounded Function Calling Architecture with Google Gemini 1.5 Flash}
+
+To decisively mitigate hallucination risks, VietForecast implements Grounded Function Calling utilizing Google Gemini 1.5 Flash \cite{gemini2024flash}. Rather than treating the language model as an ungrounded knowledge repository, Gemini is strictly constrained to two operational roles: Semantic Intent Parser and Tool Orchestrator.
+
+The platform registers five allowlisted tools via strict JSON Schema definitions:
+\begin{itemize}
+    \item[-] \texttt{search\_location}: Resolves geographic names and coordinates across Vietnamese administrative units.
+    \item[-] \texttt{get\_current\_weather}: Queries real-time surface station telemetry for a target location.
+    \item[-] \texttt{get\_forecast}: Fetches 24-hour to 72-hour numerical weather forecasts.
+    \item[-] \texttt{assess\_travel\_risk}: Computes multi-dimensional risk scores tailored to specified vehicle types.
+    \item[-] \texttt{evaluate\_route}: Evaluates geometry and weather corridor risks across three route alternatives.
+\end{itemize}
+
+The conversational pipeline executes in three synchronized phases:
+\begin{itemize}
+    \item[-] Intent Parsing: Gemini parses the user inquiry and emits a structured \texttt{FunctionCall} object containing the tool name and validated parameter bindings.
+    \item[-] Tool Execution: The Fastify backend validates incoming parameters, queries PostGIS and the internal risk engine, and retrieves verified empirical telemetry.
+    \item[-] Grounded Synthesis: Verified database telemetry is injected back into the conversational model context as a function response. Gemini synthesizes this empirical evidence into natural language advice, while the system automatically appends source citations and mandatory safety disclaimers (decision RISK-007).
+\end{itemize}
+
+\subsection{Deterministic Fallback Engine}
+
+To guarantee high availability during field deployments, the system incorporates a rule-based fallback adapter named \texttt{GroundedRuleEngineAdapter}. Under network partitions, API quota limits, or upstream Google outages, the system automatically routes inquiries to this local engine. The fallback adapter uses regex pattern matching to extract travel intents, invokes verified tools directly, and generates structured advisories, ensuring unbroken transit safety guidance.
+
+\section{Technology Stack and System Architecture Analysis}
+
+To achieve sub-second response times, ensure geospatial data consistency, and enforce defense-in-depth security, VietForecast adopts a modern layered technology stack with strict boundary enforcement.
+
+\subsection{Asynchronous API Gateway Tier with Fastify and TypeScript}
+
+The core gateway executes on Node.js 24 with TypeScript 5.5 and Fastify 5 \cite{fastify2024}. Fastify serves as the single API Gateway, handling user requests, enforcing session validation, and dispatching internal workloads. The choice of Fastify is substantiated by critical architectural advantages:
+\begin{itemize}
+    \item[-] High Asynchronous Throughput: Fastify's event-driven non-blocking I/O loop sustains tens of thousands of concurrent connections with minimal memory footprints and predictable sub-second latencies.
+    \item[-] Ahead-of-Time Schema Compilation: Leveraging Ajv, Fastify pre-compiles JSON Schemas for incoming payloads and outbound responses, delivering high-speed request validation and optimized JSON serialization.
+    \item[-] End-to-End Type Safety: Shared TypeScript contracts ensure spatial coordinates, meteorological metrics, and error structures are verified at compile time across all packages.
+\end{itemize}
+
+\subsection{Headless CMS and Identity Authority with Directus (ADR-004)}
+
+The architecture integrates open-source Directus 12 \cite{directus2024} operating as both an enterprise System of Record (SoR) and Identity Authority:
+\begin{itemize}
+    \item[-] Operational Flexibility: Directus manages primary business collections, operational risk thresholds, administrative boundary mappings for Vietnam's 63 provinces, and localized advisory content. The Directus Admin Studio offers a responsive interface allowing operations teams to calibrate risk parameters in real time without altering source code.
+    \item[-] Identity and Role-Based Access Control (RBAC): Directus orchestrates user registration, password hashing via the argon2 algorithm, email verification flows, and operational role entitlements (Admin, Staff, Traveler).
+    \item[-] Session Boundary Protection (ADR-004): Directus is strictly isolated behind the Fastify API Gateway to prevent exposing database schemas or authentication tokens to untrusted clients. The Fastify API functions as a Backend-for-Frontend (BFF): Directus access and refresh tokens are symmetrically encrypted via AES-256-GCM and stored securely on the server. The user's browser receives only an opaque random session handle encapsulated in hardened cookies (\texttt{HttpOnly}, \texttt{Secure}, \texttt{SameSite=Strict}), fully neutralizing Cross-Site Scripting (XSS) token exfiltration vectors.
+\end{itemize}
+
+\subsection{Autonomous Background Worker and Fault Tolerance (ADR-001)}
+
+External meteorological ingestion, bulk transformation, and API retries introduce extended runtimes. Coupling these tasks directly to Directus or the API gateway would risk thread starvation. Consequently, per architectural decision ADR-001, a dedicated Integration Worker is implemented in Node.js and TypeScript:
+\begin{itemize}
+    \item[-] Failure Domain Isolation: The worker operates as an independent OS process. External network anomalies or memory pressures on the worker do not degrade the API Gateway's ability to serve cached data to clients.
+    \item[-] Distributed Database Leasing: To support horizontal scaling across worker replicas without race conditions, the system deploys a database lease mechanism with periodic heartbeat renewals on the \texttt{worker\_leases} table.
+    \item[-] Circuit Breaker Pattern: The worker encapsulates external weather provider interactions (WeatherAPI) within an automated Circuit Breaker. When failure rates exceed configured thresholds, the circuit trips to protect upstream endpoints, recovering gradually via exponential backoff with randomized jitter.
+\end{itemize}
+
+\subsection{Storage and In-Memory Caching Architecture}
+
+Data persistence and caching rely on a specialized two-tier infrastructure:
+\begin{itemize}
+    \item[-] PostgreSQL 16 with PostGIS 3.4: Functions as the persistent spatial and relational data store, managing administrative boundaries, station telemetry archives, historical routing profiles, and rule set configurations.
+    \item[-] Redis 7 (ioredis client) \cite{redis2024}: Provides microsecond-level in-memory caching. Weather queries and route risk calculations are cached with explicit time-to-live (TTL) expiries aligned with station polling frequencies. Additionally, Redis facilitates Token Bucket Rate Limiting to prevent API resource exhaustion.
+\end{itemize}
+
+\subsection{User Interface and WebGL Map Visualization}
+
+The frontend is implemented as a performant Single Page Application (SPA):
+\begin{itemize}
+    \item[-] React 18: Provides declarative component state management and optimized DOM reconciliations across complex map controls and telemetry dashboards.
+    \item[-] MapLibre GL JS \cite{maplibre2024}: Open-source client-side vector map renderer powered by WebGL. MapLibre GL visualizes complex multi-segment polylines, animated radar raster overlays, and dynamic hazard markers at 60 FPS without UI jank.
+    \item[-] TanStack Query and Zustand: Automates client-side state management, intelligent cache invalidation, and background query refetching.
+    \item[-] Hybrid Internationalization (ADR-007): Combines i18next for static application UI keys with Directus-managed translated advisories for dynamic business content.
+\end{itemize}
+
+\subsection{Containerization and Network Segmentation}
+
+All platform services, including the Fastify API Gateway, Directus CMS, Integration Worker, PostgreSQL/PostGIS, Redis, and Mailpit, are containerized via Docker and orchestrated through Docker Compose.
+
+Network architecture enforces zero-trust segmentation between application runtimes and an isolated data network (\texttt{internal: true}). Database and cache listener ports remain unexposed to public networks, effectively shielding core telemetry records and user sessions from unauthorized ingress.
+
+\section{Technology Stack Evaluation and Architectural Comparison}
+
+Table~\ref{tab:tech_stack_summary_en} summarizes the core technology stack, corresponding architectural responsibilities, and key engineering trade-offs.
+
+\begin{table}[H]
+\centering
+\caption{Comprehensive summary of the VietForecast technology stack.}
+\label{tab:tech_stack_summary_en}
+\footnotesize
+\renewcommand{\arraystretch}{0.92}
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{2.6cm} >{\raggedright\arraybackslash}p{2.2cm} >{\raggedright\arraybackslash}p{4.2cm} >{\raggedright\arraybackslash}X}
+\toprule
+Layer & Technology & Operational Role & Primary Selection Rationale \\
+\midrule
+Primary Language & TypeScript 5.5 & API, worker, contracts, and frontend codebases & Strict static type checking, shared contract models across services. \\
+Backend Gateway & Fastify 5 & Core API gateway, routing, session proxy & Superior asynchronous throughput, native JSON Schema, sub-second latency. \\
+Headless CMS & Directus 12 & Identity authority, RBAC, System of Record & Turnkey Admin Studio, open source, native PostgreSQL integration. \\
+Data Worker & Node.js Worker & Automated telemetry ingestion and circuit breaking & Failure domain isolation, distributed leasing, resilient external retry queues. \\
+Database & PostgreSQL 16 PostGIS 3.4 & Relational storage and geodetic GIS analytics & De facto GIS standard, GiST indexing, true ellipsoidal spatial functions. \\
+Cache Store & Redis 7 (ioredis) & In-memory weather caching and rate limiting & Sub-millisecond latency, automatic key TTL eviction, atomic operations. \\
+Frontend Library & React 18 & High-performance single page application UI & Robust ecosystem, declarative component lifecycle, optimal reconciliation. \\
+Map Rendering & MapLibre GL 4 & Vector tile and raster weather overlay rendering & Fully open source, GPU hardware acceleration via WebGL at 60 FPS. \\
+AI Foundation & Google Gemini 1.5 Flash & Grounded conversational transit assistant & High-fidelity Function Calling, extensive context window, low inference latency. \\
+Containerization & Docker \& Compose & Multi-service container orchestration & Reproducible environments, simplified CI/CD, internal network isolation. \\
+\bottomrule
+\end{tabularx}
+\end{table}

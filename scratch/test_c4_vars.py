@@ -1,0 +1,99 @@
+import zlib
+import urllib.request
+import string
+import base64
+from PIL import Image
+
+def deflate_and_encode(plantuml_text):
+    zlibbed = zlib.compress(plantuml_text.encode('utf-8'))
+    compressed = zlibbed[2:-4]
+    plantuml_alphabet = string.digits + string.ascii_uppercase + string.ascii_lowercase + '-_'
+    b64_alphabet = string.ascii_uppercase + string.ascii_lowercase + string.digits + '+/'
+    b64 = base64.b64encode(compressed).decode('ascii')
+    return b64.translate(str.maketrans(b64_alphabet, plantuml_alphabet))
+
+puml = """@startuml
+!$TECHN_FONT_SIZE = 20
+!$STEREOTYPE_FONT_SIZE = 20
+
+!include <C4/C4_Container>
+
+skinparam dpi 100
+skinparam defaultFontName "Segoe UI, Arial, sans-serif"
+
+skinparam defaultFontSize 24
+skinparam rectangleFontSize 30
+skinparam rectangleStereotypeFontSize 22
+skinparam databaseFontSize 30
+skinparam databaseStereotypeFontSize 22
+skinparam personFontSize 30
+skinparam personStereotypeFontSize 22
+skinparam arrowFontSize 20
+skinparam legendFontSize 20
+
+skinparam wrapWidth 240
+skinparam maxMessageSize 140
+skinparam roundCorner 8
+skinparam shadowing false
+
+LAYOUT_LEFT_RIGHT()
+LAYOUT_WITH_LEGEND()
+
+Person(traveler, "Traveler / Commuter", "Motorcycle and car drivers navigating across Vietnam.")
+Person(admin, "System Administrator", "Platform managers operating via internal network/VPN.")
+
+System_Boundary(c1, "VietForecast Platform Infrastructure") {
+    
+    Container(edge, "Reverse Proxy / Ingress", "Nginx", "Terminates TLS, routes public traffic, enforces rate limits and security headers.")
+    
+    Boundary(app_net, "Application Network (Bridge)") {
+        Container(web, "Web Application", "React 18, Vite, MapLibre GL", "Provides responsive interactive GIS mapping and route visualization.")
+        Container(api, "API Gateway / BFF", "Fastify 5, TypeScript", "Enforces ADR-004 session boundary, route validation, rate limiting, and AI tool orchestration.")
+        Container(directus, "Headless CMS & Identity", "Directus 12.1.1, Node.js", "System of record for business rules, roles, users, locales, and administrative workflows.")
+        Container(worker, "Integration Worker", "Node.js, TypeScript", "Executes background ingestion, database lease locks, circuit breakers, and provider retries.")
+    }
+    
+    Boundary(data_net, "Data Network (internal: true)") {
+        ContainerDb(db, "Spatial Database", "PostgreSQL 16, PostGIS 3.4", "Stores administrative units, canonical locations, observations, forecasts, and spatial GiST indexes.")
+        ContainerDb(redis, "In-Memory Cache & Queue", "Redis 7 (AOF enabled)", "Caches weather responses (TTL 1800s), coordinates rate limit buckets, and buffers job coordination.")
+    }
+}
+
+System_Ext(weather_api, "WeatherAPI Service", "External provider supplying current conditions and 3-day forecast feeds.")
+System_Ext(geoapify, "Geoapify API", "External service providing geocoding, map tiles, and routing.")
+System_Ext(gemini, "Google Gemini 1.5 Flash", "Foundation LLM delivering grounded conversational reasoning via function calling.")
+
+' Interactions
+Rel(traveler, edge, "Accesses via HTTPS", "Port 443 / 80")
+Rel(admin, directus, "Admin Studio (VPN)", "Port 8055 / SSH")
+
+Rel(edge, web, "Forwards Web UI", "HTTP / 8080")
+Rel(edge, api, "Proxies /api/v1", "HTTP / 8080")
+
+Rel(web, api, "Invokes BFF API", "HTTPS / REST")
+Rel(web, geoapify, "Loads map vector tiles", "HTTPS")
+
+Rel(api, directus, "Auth and business rules", "HTTP / REST")
+Rel(api, db, "Sessions and corridor queries", "TCP / 5432")
+Rel(api, redis, "Rate limits and weather cache", "TCP / 6379")
+Rel(api, geoapify, "Route geometries", "HTTPS / REST")
+Rel(api, gemini, "AI tool orchestration", "HTTPS / JSON-RPC")
+
+Rel(directus, db, "Persists system state", "TCP / 5432")
+Rel(directus, redis, "Cache auto-purge", "TCP / 6379")
+
+Rel(worker, weather_api, "Polls weather feeds", "HTTPS / REST")
+Rel(worker, db, "Upserts observations", "TCP / 5432")
+Rel(worker, redis, "Job heartbeats", "TCP / 6379")
+
+@enduml"""
+
+encoded = deflate_and_encode(puml)
+url = f"http://www.plantuml.com/plantuml/png/{encoded}"
+req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0'})
+target_path = 'C:/Users/dangh/.gemini/antigravity/brain/5e77d8eb-76ce-4872-9290-ab447839f43e/scratch/opt_b_perfect.png'
+with urllib.request.urlopen(req) as resp, open(target_path, 'wb') as f:
+    f.write(resp.read())
+
+im = Image.open(target_path)
+print("Rendered image size:", im.size)

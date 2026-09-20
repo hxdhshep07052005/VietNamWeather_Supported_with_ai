@@ -127,7 +127,7 @@ $gate2Passed = (Test-Step "FRONT-002: Risk colors" {
 # FRONT-003: Landing page
 $gate2Passed = (Test-Step "FRONT-003: Landing page with pricing" {
     $content = Get-Content "$RootDir/apps/web/src/pages/LandingPage.tsx" -Raw
-    ($content -match "Miễn phí") -and ($content -match "Pro")
+    ($content -match "Miễn phí|planFree") -and ($content -match "Pro|planPro")
 }) -and $gate2Passed
 
 # FRONT-004: API client

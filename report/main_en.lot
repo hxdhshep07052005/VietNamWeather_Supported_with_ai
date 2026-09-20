@@ -1,0 +1,19 @@
+\acswitchoff 
+\addvspace {10\p@ }
+\contentsline {table}{\numberline {1.1}{\ignorespaces Feature comparison between existing solutions and VietForecast.}}{12}{table.caption.7}%
+\contentsline {table}{\numberline {1.2}{\ignorespaces Summary specification of VietForecast platform use cases.}}{17}{table.caption.11}%
+\addvspace {10\p@ }
+\contentsline {table}{\numberline {2.1}{\ignorespaces WMO-compliant meteorological risk threshold specifications in VietForecast.}}{27}{table.caption.21}%
+\contentsline {table}{\numberline {2.2}{\ignorespaces Comprehensive summary of the VietForecast technology stack.}}{32}{table.caption.22}%
+\addvspace {10\p@ }
+\contentsline {table}{\numberline {3.1}{\ignorespaces Vehicle-differentiated weather hazard activation matrix}}{49}{table.caption.32}%
+\addvspace {10\p@ }
+\contentsline {table}{\numberline {4.1}{\ignorespaces PostGIS corridor spatial query technical specifications}}{57}{table.caption.34}%
+\contentsline {table}{\numberline {4.2}{\ignorespaces Allowlisted Gemini Function Calling tool specifications}}{61}{table.caption.35}%
+\addvspace {10\p@ }
+\contentsline {table}{\numberline {5.1}{\ignorespaces Quantitative performance comparison of multi-alternative routing profiles}}{67}{table.caption.36}%
+\contentsline {table}{\numberline {5.2}{\ignorespaces PostGIS spatial corridor query latency benchmarks}}{71}{table.caption.40}%
+\contentsline {table}{\numberline {5.3}{\ignorespaces Quantitative evaluation of grounded AI assistant across complex query tiers}}{73}{table.caption.41}%
+\contentsline {table}{\numberline {5.4}{\ignorespaces System Usability Scale survey results across 10 standardized criteria}}{77}{table.caption.46}%
+\addvspace {10\p@ }
+\contentsline {table}{\numberline {6.1}{\ignorespaces System goal fulfillment and benchmarking matrix}}{86}{table.caption.55}%

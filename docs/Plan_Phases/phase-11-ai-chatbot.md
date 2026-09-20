@@ -1,7 +1,7 @@
-# Phase 11 — Optional AI Chatbot
+# Phase 11 — AI Chatbot
 
-**Status:** BLOCKED/OPTIONAL  
-**Phụ thuộc:** Phase 5–10 VERIFIED và security review cho AI  
+**Status:** VERIFIED  
+**Phụ thuộc:** Phase 5–10 VERIFIED; Decision Gate `AI-001..007` APPROVED; `validate-stage11.ps1` PASS  
 **Mục tiêu:** Cung cấp trợ lý hỏi đáp thời tiết du lịch có grounding, quota Pro và kiểm soát chi phí/hallucination.
 
 ## Điều kiện để được bắt đầu

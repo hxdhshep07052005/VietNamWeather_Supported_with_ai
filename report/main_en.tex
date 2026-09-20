@@ -1,0 +1,172 @@
+% main_en.tex — VietForecast Project Report (English Version - USTH)
+% Compile with: XeLaTeX (for fontspec / Vietnamese diacritics)
+
+% ── Document class ──────────────────────────────────────────────────────────
+\documentclass[a4paper,12pt]{report}
+
+\RequirePackage{iftex}
+\RequirePackage{fontspec}
+% ── Page geometry ───────────────────────────────────────────────────────────
+\usepackage[margin=1in]{geometry}
+
+% ── Fonts (XeLaTeX) ─────────────────────────────────────────────────────────
+\usepackage{unicode-math}
+\defaultfontfeatures{Scale=MatchLowercase}
+\setmainfont{Times New Roman}
+\setsansfont{Arial}
+\setmathfont{Latin Modern Math}
+\usepackage{amsmath}
+
+% ── Packages ────────────────────────────────────────────────────────────────
+\usepackage{tikz}
+\usetikzlibrary{calc,arrows.meta,positioning,shapes.geometric,fit,backgrounds}
+\usepackage{graphicx}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+\setlength{\headheight}{16pt}
+\usepackage{array,booktabs,multirow,longtable,tabularx}
+\usepackage{adjustbox}
+\usepackage{listings}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{makecell}
+\usepackage[table]{xcolor}
+\usepackage{placeins}
+\usepackage{float}
+\usepackage{tocloft}
+\usepackage{enumitem}
+\setlist[itemize]{label=--}
+\usepackage[colorlinks=true,linkcolor=black,citecolor=black,urlcolor=black]{hyperref}
+\usepackage{lipsum}
+\usepackage{cite}
+\usepackage{algorithm}
+\usepackage{algorithmicx}
+\usepackage{algpseudocode}
+
+% ── Page style ──────────────────────────────────────────────────────────────
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\itshape\nouppercase\leftmark}
+\fancyhead[R]{}
+\fancyfoot[C]{\thepage}
+\fancypagestyle{plain}{\fancyhf{}\fancyfoot[C]{\thepage}\renewcommand{\headrulewidth}{0pt}}
+
+% ── Code listing colours ────────────────────────────────────────────────────
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+\definecolor{background}{RGB}{250,250,250}
+\definecolor{keyword}{RGB}{170,0,255}
+\definecolor{importcolor}{RGB}{147,0,255}
+\definecolor{string}{RGB}{163,21,21}
+\definecolor{comment}{RGB}{0,128,0}
+\definecolor{numbercolor}{RGB}{0,0,255}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.5em}
+\setlength{\emergencystretch}{3em}
+
+% ── Code style ──────────────────────────────────────────────────────────────
+\lstdefinestyle{pythonstyle}{
+    backgroundcolor=\color{background},
+    basicstyle=\ttfamily\small,
+    frame=single,
+    numbers=none,
+    tabsize=4,
+    breaklines=true,
+    keywordstyle=\color{importcolor}\bfseries,
+    commentstyle=\color{comment},
+    stringstyle=\color{string},
+    emph={from,import,as,for,while,if,else,elif,return,def,class,print},
+    emphstyle=\color{keyword}\bfseries,
+    moredelim=[s][\color{string}]{'}{'},
+    moredelim=[s][\color{string}]{"}{"},
+}
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,
+    breaklines=true,
+    captionpos=b,
+    keepspaces=true,
+    numbers=left,
+    numbersep=5pt,
+    showlines=false,
+    showspaces=false,
+    showstringspaces=false,
+    showtabs=false,
+    tabsize=2,
+}
+\lstset{style=mystyle,showlines=false}
+
+% ── Glossary / Acronyms ─────────────────────────────────────────────────────
+\RequirePackage{acro}
+\acsetup{make-links=true,list/display=all}
+\input{en/acronyms.tex}
+
+\begin{document}
+
+% ═══════════════════════════════════════════════════════════════════════════
+% TITLE PAGE & SUPERVISOR CERTIFICATION (ENGLISH)
+% ═══════════════════════════════════════════════════════════════════════════
+\input{en/frontmatter/cover.tex}
+\input{en/frontmatter/supervisor.tex}
+
+% ═══════════════════════════════════════════════════════════════════════════
+% FRONT MATTER (ARABIC PAGE NUMBERING FROM 1)
+% ═══════════════════════════════════════════════════════════════════════════
+\pagenumbering{arabic}
+
+\tableofcontents
+\newpage
+
+\clearpage
+\phantomsection
+\addcontentsline{toc}{chapter}{\listtablename}
+\listoftables
+\newpage
+
+\clearpage
+\phantomsection
+\addcontentsline{toc}{chapter}{\listfigurename}
+\listoffigures
+\newpage
+
+\input{en/frontmatter/acknowledgments.tex}
+\newpage
+
+\clearpage
+\phantomsection
+\addcontentsline{toc}{chapter}{List of Abbreviations}
+\printacronyms[name=List of Abbreviations]
+\newpage
+
+\input{en/frontmatter/abstract.tex}
+\newpage
+
+% ═══════════════════════════════════════════════════════════════════════════
+% MAIN CHAPTERS
+% ═══════════════════════════════════════════════════════════════════════════
+\input{en/chapters/chapter1_intro.tex}
+\input{en/chapters/chapter2_theory.tex}
+\input{en/chapters/chapter3_architecture.tex}
+\input{en/chapters/chapter4_implementation.tex}
+\input{en/chapters/chapter5_evaluation.tex}
+\input{en/chapters/chapter6_conclusion.tex}
+
+% ═══════════════════════════════════════════════════════════════════════════
+% BIBLIOGRAPHY
+% ═══════════════════════════════════════════════════════════════════════════
+\clearpage
+\phantomsection
+\addcontentsline{toc}{chapter}{References}
+\nocite{*}
+\bibliographystyle{IEEEtran}
+\bibliography{references}
+
+\end{document}

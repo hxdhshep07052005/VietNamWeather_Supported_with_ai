@@ -48,8 +48,8 @@ describe("Route Constants", () => {
   });
 
   describe("Max Route Length (ROUTE-005)", () => {
-    it("should limit to 50km", () => {
-      assert.strictEqual(MAX_ROUTE_LENGTH_METERS, 50000);
+    it("should limit to 2000km", () => {
+      assert.strictEqual(MAX_ROUTE_LENGTH_METERS, 2000000);
     });
   });
 

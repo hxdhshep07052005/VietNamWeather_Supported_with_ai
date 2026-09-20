@@ -1,289 +1,490 @@
 /**
- * Map Page Styles — Phase 9 split-pane layout.
+ * Phase 9 Map Page Styles
+ * Full-height split pane: Real Map (left) + Search/Filter & Province List / Detail Panel (right)
  */
 
 .page {
   display: flex;
   flex-direction: column;
-  height: 100%;
-  padding: var(--space-4);
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: var(--space-4) var(--space-6) var(--space-8);
   gap: var(--space-4);
-  overflow: hidden;
+  width: 100%;
+  min-height: calc(100vh - 64px);
+  background-color: var(--color-background);
 }
 
-/* ─── Header ─────────────────────────────────────────────────────────────── */
+/* Header Bar */
 .header {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
   flex-wrap: wrap;
+  gap: var(--space-4);
+  padding-bottom: var(--space-3);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.titleArea {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.titleRow {
+  display: flex;
+  align-items: center;
   gap: var(--space-3);
-  flex-shrink: 0;
+  flex-wrap: wrap;
 }
 
 .title {
   font-size: var(--font-size-2xl);
-  font-weight: var(--font-weight-bold);
+  font-weight: 800;
   color: var(--color-text-primary);
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.subtitle {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
   margin: 0;
 }
 
-.controls {
+.proBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 10px;
+  border-radius: var(--radius-full);
+  background: linear-gradient(135deg, rgba(255, 205, 0, 0.2), rgba(251, 146, 60, 0.15));
+  border: 1px solid rgba(255, 205, 0, 0.5);
+  color: #FFCD00;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.freeBadgeGroup {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.freeBadge {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 8px;
+  background: rgba(148, 163, 184, 0.15);
+  border: 1px solid rgba(148, 163, 184, 0.3);
+  border-radius: var(--radius-full);
+  color: var(--color-text-secondary);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.upgradeLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 10px;
+  background: linear-gradient(135deg, #FFCD00, #F59E0B);
+  border-radius: var(--radius-full);
+  color: #0F172A;
+  font-size: 11px;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+/* Main Map Card: Rounded container matching other pages */
+.mapCard {
   display: flex;
-  gap: var(--space-3);
+  border-radius: var(--radius-2xl);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  height: 720px;
+  position: relative;
+}
+
+/* Left: Map Pane */
+.mapPane {
+  flex: 1;
+  height: 100%;
+  position: relative;
+  min-width: 0;
+  background-color: var(--color-background-alt);
+}
+
+/* Right: Sidebar Pane */
+.sidebarPane {
+  width: 430px;
+  height: 100%;
+  background: var(--color-surface);
+  border-left: 1px solid var(--color-border);
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  z-index: 15;
+  transition: transform var(--transition-normal);
+}
+
+/* Search & Filter Header in Sidebar */
+.sidebarHeader {
+  padding: 16px 18px 12px;
+  border-bottom: 1px solid var(--color-border);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background: var(--color-surface);
+  flex-shrink: 0;
+}
+
+.sidebarTitleRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.sidebarTitle {
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--color-text-primary);
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.countPill {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
+  background: var(--color-background-alt);
+  border: 1px solid var(--color-border);
+  color: var(--color-text-secondary);
+}
+
+/* Search Input Box */
+.searchBox {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.searchIcon {
+  position: absolute;
+  left: 12px;
+  color: var(--color-text-tertiary);
+  pointer-events: none;
 }
 
 .searchInput {
-  padding: var(--space-2) var(--space-4);
+  width: 100%;
+  padding: 8px 36px 8px 36px;
+  border-radius: var(--radius-lg);
   border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
-  font-size: var(--font-size-sm);
-  min-width: 200px;
-  background: var(--color-surface);
+  background: var(--color-background);
   color: var(--color-text-primary);
-  transition: border-color 0.2s, box-shadow 0.2s;
+  font-size: 13px;
+  outline: none;
+  transition: all var(--transition-fast);
 }
 
 .searchInput:focus {
-  outline: none;
   border-color: var(--color-primary);
-  box-shadow: 0 0 0 2px var(--color-primary-light);
+  box-shadow: 0 0 0 2px rgba(0, 102, 204, 0.15);
 }
 
-/* ─── Split pane ─────────────────────────────────────────────────────────── */
-.splitPane {
-  display: flex;
-  flex: 1;
-  gap: 0;
-  border-radius: var(--radius-lg);
-  overflow: hidden;
-  min-height: 0;
-}
-
-/* ─── Left map pane ──────────────────────────────────────────────────────── */
-.mapPane {
-  position: relative;
-  flex: 1;
-  min-width: 0;
-  background: #0d1b2a;
-  border-radius: var(--radius-lg);
-  overflow: hidden;
-}
-
-/* ─── Right info pane ────────────────────────────────────────────────────── */
-.infoPane {
-  width: 360px;
-  flex-shrink: 0;
-  border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
-  overflow: hidden;
-  animation: slideIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
-}
-
-@keyframes slideIn {
-  from {
-    transform: translateX(40px);
-    opacity: 0;
-  }
-  to {
-    transform: translateX(0);
-    opacity: 1;
-  }
-}
-
-/* ─── Layer Controls ─────────────────────────────────────────────────────── */
-.layerPanel {
+.clearBtn {
   position: absolute;
-  top: var(--space-3);
-  left: var(--space-3);
-  background: rgba(13, 27, 42, 0.9);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: var(--radius-lg);
-  padding: var(--space-3) var(--space-4);
-  min-width: 150px;
-  backdrop-filter: blur(8px);
-  z-index: 10;
-}
-
-.panelTitle {
-  font-size: var(--font-size-xs);
-  font-weight: var(--font-weight-semibold);
-  margin: 0 0 var(--space-2);
-  color: rgba(255, 255, 255, 0.6);
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-}
-
-.layerList {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-1);
-}
-
-.layerItem {
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
-  font-size: var(--font-size-sm);
+  right: 10px;
+  background: none;
+  border: none;
+  color: var(--color-text-tertiary);
   cursor: pointer;
-  color: rgba(255, 255, 255, 0.8);
-}
-
-.layerItem input[type="checkbox"] {
-  accent-color: #ffd700;
-  width: 14px;
-  height: 14px;
-  flex-shrink: 0;
-}
-
-/* ─── Legend ──────────────────────────────────────────────────────────────── */
-.legend {
-  position: absolute;
-  bottom: var(--space-3);
-  left: var(--space-3);
-  background: rgba(13, 27, 42, 0.9);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: var(--radius-lg);
-  padding: var(--space-3);
-  backdrop-filter: blur(8px);
-  z-index: 10;
-}
-
-.legendTitle {
-  font-size: var(--font-size-xs);
-  font-weight: var(--font-weight-semibold);
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: rgba(255, 255, 255, 0.5);
-  margin: 0 0 var(--space-2);
-}
-
-.legendItems {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-1);
-}
-
-.legendItem {
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
-  font-size: var(--font-size-xs);
-  color: rgba(255, 255, 255, 0.75);
-}
-
-.legendDot {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  flex-shrink: 0;
-}
-
-.riskLow     { background-color: #4CAF50; }
-.riskCaution { background-color: #FF9800; }
-.riskHigh    { background-color: #F44336; }
-.riskUnknown { background-color: #9E9E9E; }
-
-/* ─── GPS button ─────────────────────────────────────────────────────────── */
-.gpsButton {
-  position: absolute;
-  bottom: var(--space-3);
-  right: var(--space-3);
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  background: rgba(13, 27, 42, 0.9);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
-  cursor: pointer;
+  padding: 2px;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: rgba(255, 255, 255, 0.7);
-  transition: background 0.2s, color 0.2s, border-color 0.2s;
-  backdrop-filter: blur(8px);
-  z-index: 10;
 }
 
-.gpsButton:hover {
-  background: rgba(255, 215, 0, 0.15);
-  color: #ffd700;
-  border-color: rgba(255, 215, 0, 0.4);
-}
-
-.gpsButton:focus-visible {
-  outline: 2px solid var(--focus-ring-color);
-  outline-offset: 2px;
-}
-
-/* ─── Footer ─────────────────────────────────────────────────────────────── */
-.footer {
+/* Filter Chips */
+.filterRow {
   display: flex;
-  justify-content: flex-end;
+  gap: 6px;
+  overflow-x: auto;
+  padding-bottom: 2px;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  border-radius: var(--radius-full);
+  font-size: 11px;
+  font-weight: 600;
+  border: 1px solid var(--color-border);
+  background: var(--color-background);
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all var(--transition-fast);
+}
+
+.chip:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+.chipActive {
+  background: var(--color-primary);
+  color: #FFFFFF;
+  border-color: var(--color-primary);
+}
+
+/* Hourly Forecast Timeline Filter in Sidebar */
+.timelineFilterSection {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 8px 10px;
+  background: var(--color-background-alt);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+}
+
+.timelineLabelRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 11px;
+}
+
+.timelineLabel {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-weight: 700;
+  color: var(--color-text-secondary);
+}
+
+.timelineActiveBadge {
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--color-primary);
+  background: rgba(0, 102, 204, 0.12);
+  padding: 1px 7px;
+  border-radius: var(--radius-full);
+}
+
+.timelineChipRow {
+  display: flex;
+  gap: 4px;
+  overflow-x: auto;
+  padding-bottom: 2px;
+}
+
+.timeChip {
+  flex: 1;
+  min-width: 38px;
+  padding: 4px 6px;
+  border-radius: var(--radius-md);
+  font-size: 11px;
+  font-weight: 600;
+  text-align: center;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all var(--transition-fast);
+}
+
+.timeChip:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+.timeChipActive {
+  background: var(--color-primary);
+  color: #FFFFFF;
+  border-color: var(--color-primary);
+  font-weight: 700;
+}
+
+/* Sort & Meta Row */
+.sortRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 11px;
+  color: var(--color-text-secondary);
+}
+
+.sortSelect {
+  padding: 3px 8px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+  background: var(--color-background);
+  color: var(--color-text-primary);
+  font-size: 11px;
+  font-weight: 600;
+  outline: none;
+  cursor: pointer;
+}
+
+/* Province List */
+.provinceList {
+  flex: 1;
+  overflow-y: auto;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.emptyState {
+  padding: 40px 20px;
+  text-align: center;
+  color: var(--color-text-secondary);
+  font-size: 13px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Province List Item Card */
+.provinceCard {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 14px;
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.provinceCard:hover {
+  border-color: var(--color-primary);
+  background: var(--color-background-alt);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.provinceCardActive {
+  border-color: var(--color-primary);
+  background: rgba(0, 102, 204, 0.06);
+  box-shadow: 0 0 0 1.5px var(--color-primary);
+}
+
+.cardLeft {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.cardNameRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.cardName {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+
+.cardRegion {
+  font-size: 11px;
+  color: var(--color-text-secondary);
+}
+
+.cardWeatherRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 11px;
+  color: var(--color-text-secondary);
+}
+
+.cardRight {
+  display: flex;
+  align-items: center;
+  gap: 12px;
   flex-shrink: 0;
 }
 
-.lastUpdated {
-  font-size: var(--font-size-xs);
-  color: var(--color-text-tertiary);
+.tempBox {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
 }
 
-/* ─── Responsive ─────────────────────────────────────────────────────────── */
-@media (max-width: 900px) {
-  .splitPane {
+.tempVal {
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--color-text-primary);
+}
+
+.riskTag {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 999px;
+  border: 1px solid;
+}
+
+.bookmarkBtn {
+  background: none;
+  border: none;
+  color: var(--color-text-tertiary);
+  cursor: pointer;
+  padding: 4px;
+  border-radius: var(--radius-md);
+  transition: all var(--transition-fast);
+}
+
+.bookmarkBtn:hover {
+  color: #FFCD00;
+}
+
+.bookmarkBtnSaved {
+  color: #FFCD00;
+}
+
+/* Mobile & Tablet Responsive */
+@media (max-width: 1024px) {
+  .page {
+    padding: var(--space-3) var(--space-4) var(--space-6);
+    gap: var(--space-3);
+  }
+
+  .mapCard {
     flex-direction: column;
+    height: auto;
   }
 
   .mapPane {
-    min-height: 50vh;
-    flex: none;
-    height: 50vh;
+    height: 460px;
   }
 
-  .infoPane {
+  .sidebarPane {
     width: 100%;
-    flex: 1;
-    border-radius: 0 0 var(--radius-lg) var(--radius-lg);
-    animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
-  }
-
-  @keyframes slideUp {
-    from { transform: translateY(40px); opacity: 0; }
-    to   { transform: translateY(0);    opacity: 1; }
-  }
-
-  .layerPanel {
-    top: var(--space-2);
-    left: var(--space-2);
-  }
-
-  .legend {
-    bottom: var(--space-2);
-    left: var(--space-2);
-  }
-
-  .gpsButton {
-    bottom: var(--space-2);
-    right: var(--space-2);
-  }
-}
-
-@media (max-width: 640px) {
-  .page {
-    padding: var(--space-2);
-    gap: var(--space-2);
-  }
-
-  .header {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  .searchInput {
-    width: 100%;
-    min-width: unset;
-  }
-
-  .layerPanel {
-    display: none;
+    height: 520px;
+    border-left: none;
+    border-top: 1px solid var(--color-border);
   }
 }

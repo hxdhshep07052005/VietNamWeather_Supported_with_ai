@@ -12,3 +12,5 @@ export { RouteSampler, createRouteSampler, type RouteSamplerOptions } from "./ro
 export { RouteRiskEngine, createRouteRiskEngine, type RouteRiskEngineOptions } from "./route-risk-engine.js";
 
 export { RouteService, RouteServiceError, createRouteService, type RouteServiceOptions } from "./route-service.js";
+
+export { buildRouteRoutes, type RouteRoutesOptions } from "./routes.js";

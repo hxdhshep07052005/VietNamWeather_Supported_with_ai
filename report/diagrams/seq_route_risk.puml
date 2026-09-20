@@ -1,0 +1,80 @@
+@startuml
+skinparam dpi 200
+skinparam defaultFontName "Segoe UI, Arial, sans-serif"
+
+<style>
+sequenceDiagram {
+  participant {
+    Padding 25
+    Margin 15
+  }
+}
+</style>
+
+skinparam defaultFontSize 19
+skinparam sequenceGroupFontSize 19
+skinparam sequenceReferenceFontSize 18
+skinparam arrowFontSize 18
+skinparam noteFontSize 17
+skinparam participantFontSize 19
+skinparam actorFontSize 19
+
+skinparam maxMessageSize 380
+skinparam wrapWidth 380
+skinparam roundCorner 8
+skinparam shadowing false
+
+skinparam sequenceLifeLineBorderColor #2C3E50
+skinparam sequenceGroupBorderColor #2980B9
+skinparam sequenceGroupHeaderFontStyle bold
+
+autonumber
+
+actor "Client App\n[MapLibre GL 3D]" as C #EBF5FB
+participant "Fastify 5 BFF API\n[Route Risk Engine]" as API #E8F8F5
+participant "OSRM Routing Service\n[Road Topology]" as ROUTE #FEF9E7
+database "PostgreSQL / PostGIS\n[GiST Spatial Store]" as GIS #F2F4F4
+participant "Multi-Dimensional\nRisk Scoring Engine" as RISK #FDEDEC
+
+== Phase 1: Route Request & Spatial Corridor Generation ==
+
+C -> API: POST /api/v1/routes/plan\n(origin, destination, vehicle: "motorcycle")
+activate API
+
+API -> ROUTE: Request candidate itineraries (Fastest, Shortest, Alternative)
+activate ROUTE
+ROUTE --> API: Return 3 GeoJSON LineStrings with distances D & times T
+deactivate ROUTE
+
+== Phase 2: Spatiotemporal Sampling & Two-Tier Spatial Corridor Query ==
+
+loop For each candidate route option (Fastest, Shortest, Alternative)
+    API -> API: Discretize LineString into sample waypoints {p_i}\n(Spatial step ds <= 5 km, Temporal advance dt <= 15 min)
+    
+    API -> GIS: Query corridor observations within 15 km buffer\n(ST_DWithin on geography, accelerated by GiST BBOX filter)
+    activate GIS
+    GIS --> API: Return active weather station observations (tau <= 180 min)
+    deactivate GIS
+    
+    == Phase 3: Vehicle-Differentiated Hazard Evaluation & Multi-Objective Scoring ==
+    
+    API -> RISK: Evaluate 6-dimensional risk matrix for each point p_i\n(Stricter motorcycle thresholds: Rain, Wind, Temp, Vis, Storm, Alert)
+    activate RISK
+    RISK --> API: Return point severities S(p_i) and Max-Severity S_route
+    deactivate RISK
+    
+    API -> API: Compute balanced scalarization score:\nScore = w_risk * S_route + w_time * T_norm + w_dist * D_norm
+end
+
+API -> API: Rank candidate routes and designate Weather-Safer Recommended route
+
+API --> C: HTTP 200 OK (GeoJSON FeatureCollection with annotated risk segments)
+deactivate API
+
+== Phase 4: Dynamic 3D Geospatial Visualization ==
+
+C -> C: Render 3D dynamic route polyline with risk color coding\n(Green: Low, Amber: Caution, Crimson: High)
+activate C
+deactivate C
+
+@enduml

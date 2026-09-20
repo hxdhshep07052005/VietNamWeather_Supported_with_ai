@@ -1,0 +1,79 @@
+@startuml
+skinparam dpi 200
+skinparam defaultFontName "Segoe UI, Arial, sans-serif"
+
+<style>
+sequenceDiagram {
+  participant {
+    Padding 30
+    Margin 20
+  }
+}
+</style>
+
+skinparam defaultFontSize 20
+skinparam sequenceGroupFontSize 20
+skinparam sequenceReferenceFontSize 18
+skinparam arrowFontSize 18
+skinparam noteFontSize 17
+skinparam participantFontSize 20
+skinparam actorFontSize 20
+
+skinparam maxMessageSize 380
+skinparam wrapWidth 380
+skinparam roundCorner 8
+skinparam shadowing false
+
+skinparam sequenceLifeLineBorderColor #2C3E50
+skinparam sequenceGroupBorderColor #2980B9
+skinparam sequenceGroupHeaderFontStyle bold
+
+autonumber
+
+actor "Traveler / Browser\n[Client Web App]" as B #EBF5FB
+participant "Fastify 5 BFF API\n[Session Boundary]" as API #E8F8F5
+database "PostgreSQL Database\n[app_security schema]" as DB #FEF9E7
+participant "Directus 12.1.1\n[Identity Authority]" as DIR #F2F4F4
+
+== User Authentication and Credential Verification ==
+
+B -> API: Submit user credentials\n(POST /api/v1/auth/login)
+activate API
+
+API -> DIR: Forward authentication challenge\n(POST /auth/login)
+activate DIR
+DIR -> DIR: Verify password hash\nusing <b>Argon2id</b>
+DIR --> API: Return Directus Token Bundle\n{access_token, refresh_token, user_id, role}
+deactivate DIR
+
+== RBAC Assertion & Concurrency Advisory Lock ==
+
+API -> API: Assert user role conforms to <b>travelerRoleId</b>
+API -> DB: Acquire transaction-scoped\nadvisory lock on user_id
+activate DB
+DB --> API: Advisory lock acquired (serialized execution)
+API -> DB: Count active unrevoked sessions for user_id
+DB --> API: Return active_count (< concurrencyLimit)
+deactivate DB
+
+== Server-Side Encryption & Opaque Session Issuance ==
+
+API -> API: Instantiate session family (UUIDv4)\nand 32-byte CSPRNG handle
+API -> API: Encrypt tokens via <b>AES-256-GCM</b>\n(256-bit Key, 12-byte IV, 16-byte Tag)
+
+API -> DB: Persist encrypted session record\n(H = SHA-256(handle), ciphertexts, IV, tag)
+activate DB
+API -> DB: Append security audit event\n(action: login, success, hashed client metadata)
+DB --> API: Persisted successfully
+deactivate DB
+
+API --> B: HTTP 200 OK\nIssue hardened session cookie\n(__Host- prefix, HttpOnly, Secure, SameSite=Strict)
+deactivate API
+
+note over B, API #D4EFDF
+  <b>Strict Token Isolation Guarantee (ADR-004):</b>
+  • Browser NEVER receives or stores Directus JWTs (Immune to XSS token theft).
+  • Database NEVER stores plaintext handles (Protected against database leaks).
+end note
+
+@enduml

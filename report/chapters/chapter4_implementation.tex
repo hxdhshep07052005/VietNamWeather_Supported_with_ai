@@ -1,0 +1,35 @@
+\chapter{Hiện thực hóa hệ thống}
+\label{ch:implementation}
+
+\section{Hiện thực hóa gói dùng chung (Contracts \& Shared Types)}
+% TODO: Trình bày gói @vietnam-weather/contracts, Zod schema và các hằng số.
+
+\section{Hiện thực hóa các dịch vụ Backend API}
+\subsection{Dịch vụ xác thực và bảo mật (Auth \& CSRF Guard)}
+% TODO: Cài đặt session cookie, xoay vòng token và kiểm duyệt CSRF.
+
+\subsection{Dịch vụ định tuyến thời tiết (Route Service)}
+% TODO: Cài đặt POST /api/v1/route/calculate với cự ly tối đa 2.000 km.
+
+\subsection{Động cơ đánh giá rủi ro thời tiết (Risk Engine)}
+% TODO: Cài đặt logic đánh giá rủi ro 5 chiều và Maximum Severity Rule.
+
+\subsection{Trợ lý ảo AI có kiểm chứng (AI Grounding Chatbot)}
+% TODO: Cài đặt GeminiLlmAdapter với 5 công cụ Function Calling.
+
+\subsection{Hệ thống thanh toán và kiểm soát hạn ngạch (Billing \& Quota)}
+% TODO: Cài đặt QuotaService với Redis Lua Script và cổng VNPay / Stripe.
+
+\section{Hiện thực hóa ứng dụng Frontend Web}
+\subsection{Bản đồ số tương tác 63 tỉnh thành (MapLibre GL)}
+% TODO: Cài đặt bản đồ thời tiết với GeoJSON và WebGL.
+
+\subsection{Giao diện lập lộ trình thời tiết thông minh}
+% TODO: Dựng 3 tuyến đường phân màu và cảnh báo từng chặng.
+
+\subsection{Widget trợ lý AI trò chuyện thời gian thực}
+% TODO: Cài đặt FloatingChatWidget với trích dẫn thời tiết.
+
+\section{Đóng gói và Triển khai hạ tầng Production}
+% TODO: Cấu hình compose.prod.yaml và phân vùng mạng Docker.
+

@@ -7,10 +7,11 @@
   display: flex;
   flex-direction: column;
   min-height: 100%;
-  padding: var(--space-4) var(--space-6);
-  max-width: 1360px;
+  padding: var(--space-4) var(--space-6) var(--space-8);
+  max-width: 1440px;
   margin: 0 auto;
-  gap: var(--space-6);
+  gap: var(--space-5);
+  width: 100%;
 }
 
 /* Header & Plan Bar */
@@ -107,45 +108,85 @@
   box-shadow: 0 4px 12px rgba(245, 158, 11, 0.35);
 }
 
-/* Form Container */
+/* ==========================================================================
+   2-Column Split Layout
+   ========================================================================== */
+.splitLayout {
+  display: grid;
+  grid-template-columns: minmax(420px, 460px) 1fr;
+  gap: var(--space-6);
+  align-items: start;
+}
+
+/* ==========================================================================
+   Left Column: Sidebar (Form, Alternatives, Advisory, Checkpoints)
+   ========================================================================== */
+.leftSidebar {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  min-width: 0;
+}
+
+/* Form Container Card */
 .plannerFormCard {
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-2xl);
-  padding: var(--space-6);
+  padding: var(--space-5);
   box-shadow: var(--shadow-md);
   display: flex;
   flex-direction: column;
-  gap: var(--space-5);
-}
-
-.routeInputsGrid {
-  display: grid;
-  grid-template-columns: 1fr auto 1fr;
   gap: var(--space-4);
-  align-items: center;
 }
 
-@media (max-width: 768px) {
-  .routeInputsGrid {
-    grid-template-columns: 1fr;
-  }
+.routeInputsWrap {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
 }
 
 .inputGroup {
   display: flex;
   flex-direction: column;
-  gap: var(--space-2);
+  gap: 6px;
   position: relative;
 }
 
 .inputLabel {
-  font-size: var(--font-size-sm);
+  font-size: var(--font-size-xs);
   font-weight: 600;
-  color: var(--color-text-primary);
+  color: var(--color-text-secondary);
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+
+.inputLabelWithDot {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--color-text-primary);
+  font-weight: 700;
+  font-size: var(--font-size-sm);
+}
+
+.originDot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #0066CC;
+  display: inline-block;
+  box-shadow: 0 0 8px rgba(0, 102, 204, 0.5);
+}
+
+.destDot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #EF4444;
+  display: inline-block;
+  box-shadow: 0 0 8px rgba(239, 68, 68, 0.5);
 }
 
 .gpsBtn {
@@ -169,16 +210,16 @@
   display: flex;
   align-items: center;
   gap: var(--space-3);
-  padding: var(--space-3) var(--space-4);
+  padding: 10px 14px;
   background: var(--color-background);
   border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
+  border-radius: var(--radius-xl);
   transition: border-color 0.2s, box-shadow 0.2s;
 }
 
 .inputBox:focus-within {
   border-color: var(--color-primary);
-  box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.25);
+  box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.2);
 }
 
 .inputField {
@@ -186,7 +227,8 @@
   border: none;
   background: transparent;
   color: var(--color-text-primary);
-  font-size: var(--font-size-base);
+  font-size: var(--font-size-sm);
+  font-weight: 500;
   outline: none;
 }
 
@@ -194,10 +236,23 @@
   color: var(--color-text-muted);
 }
 
-/* Swap Icon */
+/* Swap Row */
+.swapRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin: 2px 0;
+}
+
+.swapLine {
+  flex: 1;
+  height: 1px;
+  background: var(--color-border);
+}
+
 .swapBtn {
-  width: 42px;
-  height: 42px;
+  width: 34px;
+  height: 34px;
   border-radius: 50%;
   border: 1px solid var(--color-border);
   background: var(--color-surface-raised);
@@ -206,9 +261,8 @@
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  align-self: center;
-  margin-top: 22px;
-  transition: all 0.2s;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
 }
 
 .swapBtn:hover {
@@ -218,44 +272,90 @@
   transform: rotate(180deg);
 }
 
-/* Vehicle & Departure Options */
-.optionsBar {
+/* Quick Presets */
+.presetsRow {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.presetLabel {
+  font-size: 11px;
+  color: var(--color-text-secondary);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.presetsList {
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-between;
-  align-items: center;
-  gap: var(--space-4);
-  padding-top: var(--space-4);
+  gap: 6px;
+}
+
+.presetChip {
+  background: var(--color-surface-raised);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-full);
+  padding: 4px 10px;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.presetChip:hover {
+  background: rgba(0, 102, 204, 0.1);
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+/* Vehicle & Departure Options Bar */
+.optionsBar {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding-top: var(--space-3);
   border-top: 1px solid var(--color-border);
 }
 
-.vehicleGroup {
+.optionsControlsRow {
   display: flex;
+  justify-content: space-between;
   align-items: center;
+  flex-wrap: wrap;
   gap: var(--space-3);
 }
 
+.vehicleGroup,
+.departureGroup {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
 .optionLabel {
-  font-size: var(--font-size-sm);
+  font-size: 12px;
   font-weight: 600;
   color: var(--color-text-secondary);
 }
 
 .vehicleButtons {
   display: flex;
-  gap: var(--space-2);
+  gap: 4px;
 }
 
 .vehicleBtn {
   display: inline-flex;
   align-items: center;
-  gap: var(--space-2);
-  padding: 8px 16px;
+  gap: 5px;
+  padding: 6px 12px;
   border-radius: var(--radius-lg);
   border: 1px solid var(--color-border);
   background: var(--color-surface-raised);
   color: var(--color-text-primary);
-  font-size: var(--font-size-sm);
+  font-size: 12px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s;
@@ -263,7 +363,7 @@
 }
 
 .vehicleBtnActive {
-  background: rgba(0, 102, 204, 0.15);
+  background: rgba(0, 102, 204, 0.12);
   border-color: var(--color-primary);
   color: var(--color-primary);
 }
@@ -271,42 +371,22 @@
 .proTag {
   background: #FFCD00;
   color: #0F172A;
-  font-size: 10px;
+  font-size: 9px;
   font-weight: 800;
-  padding: 2px 6px;
-  border-radius: 4px;
-  margin-left: 4px;
+  padding: 1px 4px;
+  border-radius: 3px;
+  margin-left: 2px;
 }
 
-/* Quick Presets */
-.presetsRow {
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
-  flex-wrap: wrap;
-}
-
-.presetLabel {
-  font-size: var(--font-size-xs);
-  color: var(--color-text-secondary);
-  font-weight: 600;
-}
-
-.presetChip {
-  background: var(--color-surface-raised);
+.departureSelect {
+  padding: 6px 10px;
+  border-radius: var(--radius-lg);
   border: 1px solid var(--color-border);
-  border-radius: var(--radius-full);
-  padding: 4px 12px;
-  font-size: var(--font-size-xs);
-  color: var(--color-text-secondary);
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.presetChip:hover {
-  background: rgba(0, 102, 204, 0.12);
-  border-color: var(--color-primary);
-  color: var(--color-primary);
+  background: var(--color-surface-raised);
+  color: var(--color-text-primary);
+  font-size: 12px;
+  font-weight: 500;
+  outline: none;
 }
 
 /* Plan Button */
@@ -314,106 +394,156 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: var(--space-3);
-  padding: var(--space-4) var(--space-8);
+  gap: 8px;
+  width: 100%;
+  padding: 12px 20px;
   background: linear-gradient(135deg, #0066CC, #0284C7);
   color: white;
   border: none;
   border-radius: var(--radius-xl);
-  font-size: var(--font-size-base);
+  font-size: var(--font-size-sm);
   font-weight: 700;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.2s ease;
   box-shadow: 0 4px 14px rgba(0, 102, 204, 0.35);
 }
 
 .planActionBtn:hover:not(:disabled) {
-  transform: translateY(-2px);
+  transform: translateY(-1px);
   box-shadow: 0 6px 20px rgba(0, 102, 204, 0.45);
 }
 
 .planActionBtn:disabled {
-  opacity: 0.6;
+  opacity: 0.65;
   cursor: not-allowed;
 }
 
-/* Comparison Results Section */
+/* ==========================================================================
+   Results Section (Alternatives, Advisory, Timeline)
+   ========================================================================== */
 .resultsSection {
   display: flex;
   flex-direction: column;
-  gap: var(--space-6);
+  gap: var(--space-4);
+}
+
+/* Alternatives Card */
+.alternativesCard {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-2xl);
+  padding: var(--space-4);
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
 }
 
 .resultsHeader {
   display: flex;
   justify-content: space-between;
-  align-items: baseline;
-  flex-wrap: wrap;
-  gap: var(--space-2);
+  align-items: center;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.resultsTitleRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
 }
 
 .resultsTitle {
-  font-size: var(--font-size-xl);
+  font-size: var(--font-size-base);
   font-weight: 800;
   color: var(--color-text-primary);
+  margin: 0;
 }
 
-/* 3-column Alternative Cards */
-.alternativesGrid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-  gap: var(--space-5);
+.resultsMetaText {
+  font-size: 11px;
+  color: var(--color-text-secondary);
+  font-weight: 600;
+  background: var(--color-surface-raised);
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--color-border);
+}
+
+.clearRouteBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 8px;
+  background: rgba(239, 68, 68, 0.08);
+  color: #EF4444;
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  border-radius: var(--radius-md);
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.clearRouteBtn:hover {
+  background: rgba(239, 68, 68, 0.16);
+  border-color: #EF4444;
+}
+
+/* Vertical Alternatives Stack */
+.alternativesStack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
 }
 
 .altCard {
-  background: var(--color-surface);
-  border: 2px solid var(--color-border);
-  border-radius: var(--radius-2xl);
-  padding: var(--space-5);
+  background: var(--color-background);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  padding: var(--space-3) var(--space-4);
   display: flex;
   flex-direction: column;
-  gap: var(--space-4);
+  gap: 10px;
   cursor: pointer;
-  transition: all 0.25s ease;
+  transition: all 0.2s ease;
   position: relative;
   overflow: hidden;
 }
 
 .altCard:hover {
-  transform: translateY(-4px);
-  box-shadow: var(--shadow-lg);
+  transform: translateY(-2px);
+  border-color: var(--color-primary);
+  box-shadow: var(--shadow-md);
 }
 
 .altCardSelected {
-  border-color: var(--color-primary);
+  border-color: var(--color-primary) !important;
   background: rgba(0, 102, 204, 0.04);
-  box-shadow: 0 8px 24px rgba(0, 102, 204, 0.2);
-}
-
-.altCardSafer {
-  border-color: #10B981;
+  box-shadow: 0 4px 16px rgba(0, 102, 204, 0.18);
 }
 
 .altCardSafer.altCardSelected {
-  border-color: #10B981;
+  border-color: #10B981 !important;
   background: rgba(16, 185, 129, 0.05);
-  box-shadow: 0 8px 24px rgba(16, 185, 129, 0.2);
+  box-shadow: 0 4px 16px rgba(16, 185, 129, 0.18);
 }
 
 .cardTop {
   display: flex;
   justify-content: space-between;
-  align-items: flex-start;
+  align-items: center;
 }
 
 .altBadge {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 4px 12px;
+  gap: 5px;
+  padding: 3px 10px;
   border-radius: var(--radius-full);
-  font-size: var(--font-size-xs);
-  font-weight: 800;
+  font-size: 11px;
+  font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
@@ -436,58 +566,71 @@
 .recommendedRibbon {
   background: linear-gradient(135deg, #10B981, #059669);
   color: white;
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 700;
-  padding: 4px 10px;
+  padding: 3px 8px;
   border-radius: var(--radius-md);
   display: inline-flex;
   align-items: center;
-  gap: 4px;
+  gap: 3px;
+}
+
+.activeSelectedPill {
+  background: rgba(14, 165, 233, 0.15);
+  color: #0284C7;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: var(--radius-md);
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  border: 1px solid rgba(14, 165, 233, 0.3);
+}
+
+.altCardSafer .activeSelectedPill {
+  background: rgba(16, 185, 129, 0.15);
+  color: #10B981;
+  border-color: rgba(16, 185, 129, 0.3);
 }
 
 /* Card Metrics */
 .cardMetrics {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: var(--space-3);
-  padding: var(--space-3) 0;
-  border-top: 1px solid var(--color-border);
-  border-bottom: 1px solid var(--color-border);
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  background: var(--color-surface);
+  padding: 8px 10px;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border);
 }
 
 .metricItem {
   display: flex;
   flex-direction: column;
+  gap: 2px;
 }
 
 .metricLabel {
-  font-size: var(--font-size-xs);
+  font-size: 10px;
   color: var(--color-text-secondary);
+  font-weight: 500;
 }
 
 .metricVal {
-  font-size: var(--font-size-lg);
-  font-weight: 800;
+  font-size: 12px;
+  font-weight: 700;
   color: var(--color-text-primary);
 }
 
-/* Weather & Risk summary in card */
-.cardWeatherSummary {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  font-size: var(--font-size-xs);
-  color: var(--color-text-secondary);
-}
-
 .riskScoreBadge {
-  padding: 4px 10px;
-  border-radius: var(--radius-full);
-  font-size: var(--font-size-xs);
-  font-weight: 700;
   display: inline-flex;
   align-items: center;
-  gap: 4px;
+  font-size: 11px;
+  font-weight: 800;
+  padding: 2px 6px;
+  border-radius: var(--radius-md);
+  width: fit-content;
 }
 
 .riskLow {
@@ -505,171 +648,71 @@
   color: #EF4444;
 }
 
-/* Locked Pro Card Preview */
+.cardWeatherSummary {
+  font-size: 11px;
+  color: var(--color-text-secondary);
+  line-height: 1.4;
+}
+
+/* Locked Card Overlay */
 .altCardLocked {
-  position: relative;
-  filter: grayscale(0.5);
-  cursor: default;
+  opacity: 0.85;
 }
 
 .lockedOverlay {
   position: absolute;
   inset: 0;
-  backdrop-filter: blur(5px);
-  background: rgba(15, 23, 42, 0.7);
+  background: rgba(15, 23, 42, 0.85);
+  backdrop-filter: blur(4px);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: var(--space-3);
-  padding: var(--space-4);
+  padding: var(--space-3);
   text-align: center;
+  gap: 6px;
   z-index: 10;
-  border-radius: var(--radius-2xl);
 }
 
 .lockIconWrap {
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  background: rgba(255, 205, 0, 0.2);
-  border: 1px solid rgba(255, 205, 0, 0.5);
   color: #FFCD00;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 
 .lockTitle {
-  font-size: var(--font-size-sm);
-  font-weight: 800;
-  color: #FFFFFF;
+  font-size: 12px;
+  font-weight: 700;
+  color: white;
 }
 
 .lockDesc {
-  font-size: var(--font-size-xs);
-  color: rgba(255, 255, 255, 0.75);
+  font-size: 10px;
+  color: #94A3B8;
+  margin: 0;
   max-width: 240px;
 }
 
 .unlockBtn {
-  padding: 8px 18px;
   background: linear-gradient(135deg, #FFCD00, #F59E0B);
   color: #0F172A;
-  font-size: var(--font-size-xs);
-  font-weight: 800;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 12px;
   border-radius: var(--radius-full);
   text-decoration: none;
   transition: transform 0.2s;
+  margin-top: 2px;
 }
 
 .unlockBtn:hover {
   transform: scale(1.05);
 }
 
-/* Checkpoints Timeline */
-.timelineCard {
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-2xl);
-  padding: var(--space-6);
-  box-shadow: var(--shadow-sm);
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-4);
-}
-
-.timelineTitle {
-  font-size: var(--font-size-lg);
-  font-weight: 800;
-  color: var(--color-text-primary);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.checkpointsList {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-4);
-  position: relative;
-  padding-left: var(--space-4);
-}
-
-.checkpointsList::before {
-  content: "";
-  position: absolute;
-  left: 19px;
-  top: 15px;
-  bottom: 25px;
-  width: 2px;
-  background: var(--color-border);
-}
-
-.checkpointItem {
-  display: flex;
-  align-items: center;
-  gap: var(--space-4);
-  position: relative;
-}
-
-.checkpointDot {
-  width: 14px;
-  height: 14px;
-  border-radius: 50%;
-  background: var(--color-primary);
-  border: 3px solid var(--color-surface);
-  z-index: 2;
-  flex-shrink: 0;
-}
-
-.checkpointContent {
-  flex: 1;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: var(--space-3);
-  padding: var(--space-3) var(--space-4);
-  background: var(--color-background);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-xl);
-}
-
-.checkpointName {
-  font-size: var(--font-size-sm);
-  font-weight: 700;
-  color: var(--color-text-primary);
-}
-
-.checkpointEta {
-  font-size: var(--font-size-xs);
-  color: var(--color-text-secondary);
-}
-
-.checkpointWeather {
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
-}
-
-.checkpointTemp {
-  font-size: var(--font-size-sm);
-  font-weight: 800;
-  color: #FF5722;
-}
-
-.checkpointCondition {
-  font-size: var(--font-size-xs);
-  color: var(--color-text-secondary);
-}
-
 /* Vehicle Advisory Banner */
 .advisoryBox {
   display: flex;
   align-items: flex-start;
-  gap: var(--space-4);
-  padding: var(--space-5);
+  gap: var(--space-3);
+  padding: var(--space-4);
   border-radius: var(--radius-xl);
   background: rgba(245, 158, 11, 0.08);
   border: 1px solid rgba(245, 158, 11, 0.3);
@@ -682,39 +725,113 @@
 }
 
 .advisoryTitle {
-  font-size: var(--font-size-sm);
+  font-size: 12px;
   font-weight: 700;
   color: #D97706;
-  margin-bottom: 4px;
+  margin-bottom: 2px;
 }
 
 .advisoryText {
-  font-size: var(--font-size-xs);
+  font-size: 11px;
   color: var(--color-text-primary);
-  line-height: 1.5;
+  line-height: 1.4;
 }
 
-/* Save Route Bar */
-.saveRouteBar {
+/* Checkpoints Timeline */
+.timelineCard {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-2xl);
+  padding: var(--space-4);
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.timelineTitle {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: var(--space-4) var(--space-6);
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+  color: var(--color-text-primary);
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--color-border);
+  gap: 8px;
+}
+
+.timelineTitleLeft {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.cancelAltBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 2px 8px;
+  background: rgba(239, 68, 68, 0.1);
+  color: #EF4444;
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  border-radius: var(--radius-full);
+  font-size: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.cancelAltBtn:hover {
+  background: rgba(239, 68, 68, 0.2);
+  border-color: #EF4444;
+}
+
+.clearCheckpointBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
   background: var(--color-surface-raised);
   border: 1px solid var(--color-border);
-  border-radius: var(--radius-xl);
+  border-radius: var(--radius-md);
+  color: var(--color-text-secondary);
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.clearCheckpointBtn:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+.timelineCardEmpty {
+  background: var(--color-surface);
+  border: 1px dashed var(--color-border);
+  border-radius: var(--radius-2xl);
+  padding: var(--space-5);
+  text-align: center;
+}
+
+.timelineEmptyContent {
+  font-size: 12px;
+  color: var(--color-text-secondary);
+  line-height: 1.5;
 }
 
 .saveBtn {
   display: inline-flex;
   align-items: center;
-  gap: var(--space-2);
-  padding: 8px 18px;
-  background: var(--color-surface);
+  gap: 4px;
+  padding: 4px 10px;
+  background: var(--color-surface-raised);
   border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
+  border-radius: var(--radius-md);
   color: var(--color-text-primary);
-  font-size: var(--font-size-sm);
+  font-size: 11px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s;
@@ -723,4 +840,388 @@
 .saveBtn:hover {
   border-color: var(--color-primary);
   color: var(--color-primary);
+}
+
+.checkpointsList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  position: relative;
+  max-height: 380px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.checkpointsList::-webkit-scrollbar {
+  width: 4px;
+}
+
+.checkpointsList::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: 4px;
+}
+
+.checkpointItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  position: relative;
+  cursor: pointer;
+}
+
+.checkpointDot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--color-primary);
+  border: 2px solid var(--color-surface);
+  z-index: 2;
+  flex-shrink: 0;
+}
+
+.checkpointContent {
+  flex: 1;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  background: var(--color-background);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  transition: all 0.2s ease;
+}
+
+.checkpointItemSelected .checkpointContent {
+  border-color: var(--color-primary) !important;
+  background: var(--color-surface-hover) !important;
+  box-shadow: 0 0 0 2px rgba(0, 102, 204, 0.25) !important;
+}
+
+.checkpointName {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+
+.checkpointEta {
+  font-size: 10px;
+  color: var(--color-text-secondary);
+}
+
+.checkpointWeather {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.checkpointTemp {
+  font-size: 12px;
+  font-weight: 800;
+  color: #FF5722;
+}
+
+.checkpointCondition {
+  font-size: 10px;
+  color: var(--color-text-secondary);
+}
+
+/* ==========================================================================
+   Right Column: Sticky Interactive Map
+   ========================================================================== */
+.rightMapPane {
+  position: sticky;
+  top: 16px;
+  height: calc(100vh - 120px);
+  min-height: 640px;
+  max-height: 920px;
+  display: flex;
+  flex-direction: column;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-2xl);
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+}
+
+.mapCardTopBar {
+  padding: 10px 16px;
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+  z-index: 2;
+}
+
+.mapCardInfo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.mapPinIcon {
+  color: var(--color-primary);
+  flex-shrink: 0;
+}
+
+.mapTitleMeta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.mapRouteCorridor {
+  font-size: var(--font-size-sm);
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+
+.mapRouteAltBadge {
+  font-size: 11px;
+  color: var(--color-text-secondary);
+  background: var(--color-surface-raised);
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--color-border);
+  font-weight: 600;
+}
+
+.mapCanvasHolder {
+  flex: 1;
+  min-height: 0;
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+/* ==========================================================================
+   Results View Tabs & Multi-Criteria Comparison Matrix
+   ========================================================================== */
+.viewTabsRow {
+  display: flex;
+  gap: 8px;
+  background: var(--color-surface);
+  padding: 4px;
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--color-border);
+}
+
+.viewTabBtn {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px 12px;
+  border-radius: var(--radius-lg);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--color-text-secondary);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.viewTabBtn:hover {
+  color: var(--color-text-primary);
+  background: var(--color-surface-hover);
+}
+
+.viewTabBtnActive {
+  color: #FFFFFF !important;
+  background: var(--color-primary) !important;
+  box-shadow: 0 2px 8px rgba(0, 102, 204, 0.35);
+}
+
+/* Comparison Matrix Card */
+.comparisonCard {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-2xl);
+  padding: var(--space-4);
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.comparisonHeader {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.comparisonTitleRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.comparisonTitle {
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--color-text-primary);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.paretoBadge {
+  font-size: 10px;
+  font-weight: 800;
+  color: #38BDF8;
+  background: rgba(56, 189, 248, 0.12);
+  border: 1px solid rgba(56, 189, 248, 0.3);
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
+}
+
+.comparisonSubtitle {
+  font-size: 11px;
+  color: var(--color-text-secondary);
+  line-height: 1.4;
+}
+
+.comparisonTableWrap {
+  overflow-x: auto;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border);
+}
+
+.comparisonTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 11px;
+  text-align: left;
+}
+
+.comparisonTable th,
+.comparisonTable td {
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--color-border);
+  vertical-align: middle;
+}
+
+.comparisonTable th {
+  background: var(--color-surface-raised);
+  color: var(--color-text-primary);
+  font-weight: 700;
+  font-size: 11px;
+}
+
+.comparisonCriteriaCell {
+  font-weight: 700;
+  color: var(--color-text-secondary);
+  white-space: nowrap;
+  background: var(--color-surface);
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  font-size: 10.5px;
+}
+
+.colSafer {
+  background: rgba(16, 185, 129, 0.04);
+}
+
+.colFastest {
+  background: rgba(14, 165, 233, 0.04);
+}
+
+.colShortest {
+  background: rgba(139, 92, 246, 0.04);
+}
+
+.colSelected {
+  background: rgba(0, 102, 204, 0.12) !important;
+}
+
+.colSelectedText {
+  color: #38BDF8;
+  font-weight: 800;
+}
+
+.tableApplyBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  font-size: 10px;
+  font-weight: 700;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface-raised);
+  color: var(--color-text-primary);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.tableApplyBtn:hover {
+  background: var(--color-primary);
+  color: #FFFFFF;
+  border-color: var(--color-primary);
+}
+
+.tableApplyBtnActive {
+  background: #10B981 !important;
+  color: #FFFFFF !important;
+  border-color: #10B981 !important;
+}
+
+/* Full-width Comprehensive Corridor Comparison Table */
+.fullWidthComparisonSection {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-2xl);
+  padding: var(--space-5);
+  box-shadow: var(--shadow-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  margin-top: var(--space-4);
+}
+
+/* ==========================================================================
+   Responsive Breakpoints
+   ========================================================================== */
+@media (max-width: 1024px) {
+  .splitLayout {
+    grid-template-columns: 1fr;
+    gap: var(--space-4);
+  }
+
+  .rightMapPane {
+    position: static;
+    height: 480px;
+    min-height: 420px;
+    max-height: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .page {
+    padding: var(--space-3) var(--space-3) var(--space-6);
+  }
+
+  .plannerFormCard {
+    padding: var(--space-4);
+  }
+
+  .rightMapPane {
+    height: 380px;
+    min-height: 340px;
+  }
+
+  .cardMetrics {
+    grid-template-columns: 1fr;
+    gap: 4px;
+  }
 }

@@ -31,12 +31,39 @@
   },
   "nav": {
     "home": "Home",
+    "weather": "Weather",
     "map": "Map",
     "route": "Route",
     "settings": "Settings",
     "upgrade": "Upgrade",
+    "pricing": "Pricing",
     "logout": "Logout",
     "admin": "Admin"
+  },
+  "weatherPage": {
+    "title": "Vietnam 63 Provinces Weather Directory",
+    "subtitle": "Real-time meteorological observations & multi-dimensional timeline forecast",
+    "searchPlaceholder": "Search province or city (Hanoi, Da Nang, HCMC...)",
+    "filterRegion": "Region",
+    "filterRisk": "Risk Level",
+    "filterCondition": "Condition",
+    "all": "All",
+    "safe": "Safe",
+    "caution": "Caution",
+    "highRisk": "High Risk",
+    "viewGrid": "Grid View",
+    "viewTable": "Table View",
+    "avgTemp": "Average Temp",
+    "hottest": "Hottest",
+    "coolest": "Coolest",
+    "safeCount": "Safe Provinces",
+    "warningCount": "Under Watch",
+    "dangerCount": "High Risk",
+    "viewOnMap": "View on Map",
+    "planRoute": "Plan Route",
+    "detail": "Details",
+    "hourlyForecast": "24-Hour Forecast",
+    "advisory": "Travel Advisory"
   },
   "landing": {
     "heroEyebrow": "Smart Weather-Aware Travel Assistant for Vietnam",
@@ -344,7 +371,7 @@
     "close": "Close info panel",
     "loading": "Loading data...",
     "lastUpdated": "Last updated: {{time}}",
-    "dangerAlert": "⚠ Dangerous weather alert",
+    "dangerAlert": "Dangerous weather alert",
     "riskLevel": "Risk Level",
     "risk": {
       "low": "Low Risk",
@@ -400,5 +427,23 @@
       "metric": "Value: {{value}}{{unit}} (threshold: {{threshold}}{{unit}})"
     },
     "attribution": "Data from WeatherAPI.com"
+  },
+  "route": {
+    "title": "Weather-Aware Route Planner",
+    "subtitle": "Real-time meteorological analysis at projected ETA checkpoints along national transport corridors",
+    "from": "Origin",
+    "to": "Destination",
+    "vehicle": "Vehicle Mode",
+    "car": "Car",
+    "motorcycle": "Motorbike",
+    "departure": "Departure time",
+    "departNow": "Depart now",
+    "planRoute": "Analyze Route",
+    "analyzing": "Analyzing weather along route..."
+  },
+  "footer": {
+    "allRightsReserved": "All rights reserved.",
+    "terms": "Terms of Service",
+    "privacy": "Privacy Policy"
   }
 }

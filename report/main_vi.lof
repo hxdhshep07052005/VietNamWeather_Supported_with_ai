@@ -1,0 +1,28 @@
+\acswitchoff 
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {1.1}{\ignorespaces Sơ đồ ca sử dụng tổng quan hệ thống VietForecast theo chuẩn UML 2.5.}}{17}{figure.caption.10}%
+\contentsline {figure}{\numberline {1.2}{\ignorespaces Sơ đồ ngữ cảnh hệ thống VietForecast theo mô hình C4 (C4 Context Diagram).}}{23}{figure.caption.20}%
+\addvspace {10\p@ }
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {3.1}{\ignorespaces Biểu đồ C4 Container (Level 2) của VietForecast}}{36}{figure.caption.23}%
+\contentsline {figure}{\numberline {3.2}{\ignorespaces Biểu đồ tuần tự vòng đời phiên (ADR-004) - Giai đoạn 1: Cấp phát khóa phiên}}{40}{figure.caption.25}%
+\contentsline {figure}{\numberline {3.2}{\ignorespaces Biểu đồ tuần tự vòng đời phiên (ADR-004) - Giai đoạn 2: Xoay vòng trượt ngầm}}{42}{figure.caption.27}%
+\contentsline {figure}{\numberline {3.2}{\ignorespaces Biểu đồ tuần tự vòng đời phiên (ADR-004) - Giai đoạn 3: Thu hồi đồng bộ}}{44}{figure.caption.29}%
+\contentsline {figure}{\numberline {3.3}{\ignorespaces Biểu đồ tuần tự đồng bộ dữ liệu thời tiết nền (ADR-001)}}{48}{figure.caption.30}%
+\contentsline {figure}{\numberline {3.4}{\ignorespaces Lược đồ Thực thể Quan hệ (ERD) VietForecast}}{51}{figure.caption.31}%
+\contentsline {figure}{\numberline {3.5}{\ignorespaces Biểu đồ tuần tự đánh giá rủi ro thời tiết lộ trình}}{54}{figure.caption.33}%
+\addvspace {10\p@ }
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {5.1}{\ignorespaces Giao diện lập lộ trình phương án An toàn Thời tiết nhất}}{74}{figure.caption.37}%
+\contentsline {figure}{\numberline {5.2}{\ignorespaces Minh họa đường vẽ hai phương án đối trọng trên bản đồ}}{74}{figure.caption.38}%
+\contentsline {figure}{\numberline {5.3}{\ignorespaces Bảng đối sánh đa tiêu chí 3 phương án di chuyển hành lang}}{75}{figure.caption.39}%
+\contentsline {figure}{\numberline {5.4}{\ignorespaces Giao diện Trợ lý Thời tiết AI đàm thoại xử lý câu hỏi lộ trình phức tạp}}{81}{figure.caption.45}%
+\contentsline {figure}{\numberline {5.5}{\ignorespaces Giao diện Trang chủ và Cổng thông tin Khí tượng VietForecast}}{84}{figure.caption.47}%
+\contentsline {figure}{\numberline {5.6}{\ignorespaces Giao diện Xác thực và Quản lý Danh tính Người dùng}}{85}{figure.caption.48}%
+\contentsline {figure}{\numberline {5.7}{\ignorespaces Giao diện Bản đồ Khí tượng Tương tác 63 tỉnh thành}}{85}{figure.caption.49}%
+\contentsline {figure}{\numberline {5.8}{\ignorespaces Giao diện Bản đồ Google Maps với Thanh trượt Dòng thời gian Đa mốc}}{86}{figure.caption.50}%
+\contentsline {figure}{\numberline {5.9}{\ignorespaces Giao diện tương tác chi tiết cấp tỉnh thành khi chọn TP. Đà Nẵng}}{86}{figure.caption.51}%
+\contentsline {figure}{\numberline {5.10}{\ignorespaces Giao diện Trang Danh mục Thời tiết 63 Tỉnh Thành Toàn quốc}}{87}{figure.caption.52}%
+\contentsline {figure}{\numberline {5.11}{\ignorespaces Giao diện Mô phỏng Dòng thời gian và Cửa sổ Chi tiết Cấp tỉnh}}{87}{figure.caption.53}%
+\contentsline {figure}{\numberline {5.12}{\ignorespaces Phân hệ Bảng giá dịch vụ và Cổng thanh toán trực tuyến}}{88}{figure.caption.54}%
+\addvspace {10\p@ }

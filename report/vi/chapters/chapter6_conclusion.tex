@@ -1,0 +1,125 @@
+\chapter{Kết luận và Hướng phát triển}
+\label{ch:conclusion}
+
+Chương này tổng kết toàn diện các kết quả nghiên cứu lý thuyết, đóng góp thuật toán và giá trị thực tiễn của đồ án tốt nghiệp thông qua việc xây dựng thành công nền tảng VietForecast --- Hệ thống hỗ trợ điều hướng và cảnh báo rủi ro giao thông thích ứng thời tiết đầu tiên tại Việt Nam. Trên cơ sở đối soát nghiêm ngặt với các mục tiêu đã đề ra tại Chương~\ref{ch:intro}, chương này phân tích khách quan những thành tựu kỹ thuật đã đạt được, thẳng thắn chỉ ra các hạn chế cố hữu của hệ thống trong môi trường vận hành thực tế, và đề xuất lộ trình nghiên cứu, phát triển trong tương lai nhằm nâng cao độ tin cậy và khả năng ứng dụng trên quy mô quốc gia.
+
+\section{Tổng kết các Kết quả Đạt được}
+\label{sec:summary_achievements}
+
+Đồ án đã giải quyết trọn vẹn bài toán tích hợp dữ liệu khí tượng đa chiều vào quy trình định tuyến giao thông thông minh, khắc phục triệt để các hạn chế của các hệ thống bản đồ số truyền thống vốn chỉ tối ưu hóa cự ly hoặc thời gian di chuyển mà bỏ qua yếu tố an toàn thời tiết. Các đóng góp chính của đề tài được thể hiện trên ba phương diện cốt lõi:
+
+\subsection{Đóng góp về Mặt Lý thuyết và Thuật toán}
+\begin{itemize}
+    \item[-] \textit{Mô hình định lượng rủi ro khí tượng 6 chiều thích ứng địa phương}: Đồ án đã xây dựng thành công hàm đánh giá rủi ro tổng hợp $R \in [0, 1]$ kết hợp phi tuyến sáu biến số vật lý môi trường: vận tốc gió giật tức thời ($v_{\text{wind}}$), cường độ mưa và tích lũy ngập úng ($I_{\text{rain}}$), suy giảm tầm nhìn ngang ($V_{\text{vis}}$), mật độ dông sét đối lưu ($D_{\text{lightning}}$), nguy cơ mưa đá ($H_{\text{hail}}$), và chỉ số cảnh báo sạt lở taluy ($S_{\text{landslide}}$). Mô hình đặc biệt phân hóa trọng số độ nhạy cảm giữa phương tiện ô tô con và xe máy hai bánh, phản ánh chính xác rủi ro khí động học và sự phơi nhiễm vật lý của người điều khiển xe máy tại Việt Nam.
+    \item[-] \textit{Giải thuật định tuyến Weather-Safer tối ưu hóa Pareto}: Đề xuất phương pháp tích hợp hàm phạt rủi ro thời tiết động vào đồ thị mạng lưới đường bộ OSRM. Kết quả thực nghiệm kiểm chứng trên ba hành lang giao thông huyết mạch quốc gia (Bắc Bộ, Miền Trung và Xuyên Việt) chứng minh thuật toán Weather-Safer giúp loại bỏ tới $87,2\%$ các điểm nguy hiểm cục bộ, trong khi chỉ đánh đổi mức gia tăng cự ly trung bình $4,7\%$ và thời gian hành trình $8,9\%$.
+    \item[-] \textit{Chiến lược lọc không gian hai giai đoạn (Two-Phase Spatial Query)}: Kết hợp bao đóng chữ nhật thô (\textit{Bounding Box} thông qua hàm \texttt{ST\_MakeEnvelope}) với bộ lọc bán kính cầu thực nghiệm (\texttt{ST\_DWithin}) trên chỉ mục không gian R-Tree GiST của PostGIS. Thiết kế này giúp giảm thiểu tới $84\%$ không gian quét dữ liệu và triệt tiêu tải tính toán lượng giác đắt đỏ khi xử lý các tuyến đường dài trên 1.700~km.
+\end{itemize}
+
+\subsection{Đóng góp về Kỹ thuật Hệ thống và Phần mềm}
+\begin{itemize}
+    \item[-] \textit{Kiến trúc vi dịch vụ module hóa (Clean Monorepo)}: Hiện thực hóa hệ thống phân tán hoàn chỉnh sử dụng TypeScript đồng nhất từ Backend (Fastify), Data Worker (Ingestion engine), đến Frontend (React/Vite). Toàn bộ hạ tầng được container hóa với Docker Compose, bảo đảm tính sẵn sàng cao, tính cô lập tài nguyên và khả năng triển khai tức thì trên máy chủ sản xuất.
+    \item[-] \textit{Đường ống thu nạp và làm sạch dữ liệu tự động}: Thiết lập Data Ingestion Worker độc lập hoạt động với chu kỳ quét 5 phút, chuẩn hóa hơn 80 mã hình thái thời tiết WMO ngoại vi về chuẩn cấu trúc dữ liệu nội bộ. Cơ chế chịu lỗi trang bị mẫu thiết kế Circuit Breaker và Exponential Backoff with Jitter, bảo đảm hệ thống vận hành liên tục 24/7 ngay cả khi các trạm quan trắc nguồn gặp sự cố ngắt kết nối.
+    \item[-] \textit{Tầng nhớ đệm phân cấp Redis hiệu năng cao}: Ứng dụng bộ đệm đa lớp với các khóa băm địa lý, đạt tỷ lệ trúng bộ đệm (\textit{Cache Hit Rate}) trên $91\%$, đưa độ trễ truy vấn tại phân vị 95 (p95) xuống dưới $22$~ms trong các kịch bản kiểm thử tải trọng cao (1.000 người dùng ảo đồng thời).
+    \item[-] \textit{Ranh giới bảo mật phiên trượt xoay (Sliding Session Rotation)}: Thiết kế cơ chế xác thực an toàn tuyệt đối, ngăn chặn tấn công giả mạo yêu cầu chéo trang (CSRF) và đánh cắp token bằng Cookie HttpOnly SameSite=Lax, kết hợp hệ thống giới hạn tần suất truy vấn nguyên tử bằng kịch bản Lua trên Redis.
+    \item[-] \textit{Trợ lý AI đàm thoại có cơ sở thực địa vững chắc (Grounding LLM)}: Tích hợp mô hình Gemini 1.5 kết hợp cơ chế Function Calling ràng buộc chặt chẽ vào API cơ sở dữ liệu thời tiết nội bộ. Trợ lý đạt độ chính xác kích hoạt công cụ $96,2\%$, trích dẫn nguồn trạm quan trắc địa phương tự động đạt $97,2\%$, và kiểm soát giảm thiểu mạnh mẽ tỷ lệ ảo giác thông tin xuống mức $1,8\%$ (so với mức trên $30\%$ của mô hình LLM thông thường).
+\end{itemize}
+
+\subsection{Đóng góp về Trải nghiệm Người dùng và Giá trị Thực tiễn}
+\begin{itemize}
+    \item[-] \textit{Hệ thống trực quan hóa bản đồ WebGL tương tác}: Xây dựng giao diện bản đồ số hiện đại hỗ trợ đầy đủ hai chủ đề Sáng (\textit{Light}) và Tối (\textit{Dark Mode}), trực quan hóa ranh giới hành chính 63 tỉnh thành chuẩn WGS84, phủ lớp dữ liệu radar mây dông và hiển thị đa tuyến đường phân biệt rõ ràng theo từng phương án di chuyển.
+    \item[-] \textit{Thanh trượt dòng thời gian 24 giờ linh hoạt (\textit{ForecastTimelineSlider})}: Cho phép người dùng kéo tua thời gian từ hiện tại ($+0\text{h}$) đến tương lai ($+24\text{h}$), cập nhật tức thời các chỉ số khí tượng và tự động ước lượng rủi ro tương ứng với thời điểm phương tiện lăn bánh qua từng cung đường.
+    \item[-] \textit{Trang chuyên mục giám sát vi khí hậu 63 tỉnh thành (\textit{/weather})}: Cung cấp góc nhìn toàn cảnh về 6 chỉ số môi trường cốt lõi, tích hợp bộ lọc vùng miền và modal phân tích chi tiết dữ liệu 24 giờ của từng địa phương.
+    \item[-] \textit{Hệ sinh thái thương mại hóa hoàn chỉnh}: Xây dựng bảng giá dịch vụ (\textit{/pricing}) và cổng thanh toán bảo mật hỗ trợ đa cổng (VNPay, Stripe quốc tế), sẵn sàng chuyển giao công nghệ và khai thác thương mại cho người dùng cá nhân lẫn doanh nghiệp logistics.
+    \item[-] \textit{Mức độ hài lòng của người dùng đạt chuẩn quốc tế}: Kiểm thử trải nghiệm người dùng trên 30 đối tượng tình nguyện viên theo thang đo chuẩn mực SUS (\textit{System Usability Scale}) đạt điểm số trung bình $84,6 / 100$ (xếp loại Xuất sắc -- Grade A).
+\end{itemize}
+
+\section{Ma trận Đối soát Mức độ Hoàn thành Mục tiêu}
+\label{sec:goal_fulfillment_matrix}
+
+Để khẳng định tính toàn diện và mức độ thành công của đề tài, Bảng~\ref{tab:goal_fulfillment_vi} tổng hợp việc đối soát chi tiết giữa các yêu cầu chức năng (FR), yêu cầu phi chức năng (NFR) đã xác lập tại Chương~\ref{ch:intro} với các kết quả định lượng cụ thể đạt được trong hệ thống thực tế.
+
+\begin{table}[htbp]
+\centering
+\caption[Ma trận đối soát mức độ hoàn thành mục tiêu đồ án]{Ma trận đối soát mức độ hoàn thành các yêu cầu mục tiêu đề tài VietForecast.}
+\label{tab:goal_fulfillment_vi}
+\begin{adjustbox}{width=\textwidth,center}
+\begin{tabular}{p{3.2cm}p{4.8cm}p{6.5cm}c}
+\toprule
+\textbf{Mã yêu cầu} & \textbf{Mục tiêu thiết kế ban đầu} & \textbf{Hiện thực hóa và Kết quả định lượng đạt được} & \textbf{Trạng thái} \\
+\midrule
+FR1: Thu thập dữ liệu & Thu nạp tự động, chuẩn hóa dữ liệu 63 tỉnh thành từ nguồn WMO. & Worker độc lập quét chu kỳ 5 phút, chuẩn hóa 80+ mã thời tiết, nạp PostGIS với chỉ mục GiST. & Hoàn thành \\
+\addlinespace[0.4em]
+FR2: Động cơ rủi ro & Đánh giá rủi ro 6 chiều, phân hóa trọng số ô tô và xe máy. & Hàm toán học $R \in [0, 1]$, phân hóa rủi ro gió ($0,10$ vs $0,35$) và mưa ngập ($0,25$ vs $0,40$). & Hoàn thành \\
+\addlinespace[0.4em]
+FR3: Định tuyến an toàn & Tính toán song song 3 phương án di chuyển, bù trừ rủi ro theo ETA. & Tích hợp OSRM, loại bỏ 87,2\% điểm nguy hiểm, độ lệch cự ly $+4,7\%$, thời gian $+8,9\%$. & Hoàn thành \\
+\addlinespace[0.4em]
+FR4: Trợ lý ảo AI & Hỏi đáp thời tiết tiếng Việt có căn cứ thực địa, hạn chế ảo giác. & Gemini 1.5 Function Calling, độ chính xác 96,2\%, tỷ lệ ảo giác 1,8\%, trích dẫn trạm quan trắc 97,2\%. & Hoàn thành \\
+\addlinespace[0.4em]
+FR5: Quản trị \& Gói cước & Quản lý người dùng, phân quyền RBAC, gói thuê bao và thanh toán. & Trang bảng giá (/pricing), thanh toán đa cổng VNPay/Stripe, lưu trữ lộ trình yêu thích. & Hoàn thành \\
+\midrule
+NFR1: Hiệu năng phản hồi & Độ trễ API Gateway dưới 1.000~ms; hỗ trợ tải đồng thời cao. & Độ trễ p95 đạt 21,8~ms (Redis cache) và 312~ms (OSRM tính toán); chịu tải 1.000 VUs. & Hoàn thành vượt mức \\
+\addlinespace[0.4em]
+NFR2: Tính tươi mới dữ liệu & Cập nhật trạm $< 60$ phút; dự báo số trị làm mới định kỳ 24h. & Dữ liệu quan trắc làm mới mỗi 5 phút; cơ chế phát hiện dữ liệu lỗi thời tự động. & Hoàn thành vượt mức \\
+\addlinespace[0.4em]
+NFR3: Bảo mật an toàn & Xác thực bảo mật, chống CSRF/XSS, kiểm soát hạn ngạch. & Ranh giới cookie HttpOnly SameSite=Lax, bảo mật phiên trượt xoay, giới hạn tần suất Redis. & Hoàn thành \\
+\addlinespace[0.4em]
+NFR4: Độ chịu lỗi tin cậy & Khả năng tự phục hồi khi trạm dữ liệu ngoại vi ngắt kết nối. & Áp dụng Circuit Breaker, Exponential Backoff có ngẫu ngẫu nhiên hóa (Jitter). & Hoàn thành \\
+\bottomrule
+\end{tabular}
+\end{adjustbox}
+\end{table}
+
+\section{Những Hạn chế Kỹ thuật Còn Tồn tại}
+\label{sec:limitations}
+
+Mặc dù hệ thống đã đạt được các mục tiêu kỹ thuật cốt lõi và vận hành ổn định trong các kịch bản kiểm thử, quá trình triển khai thực tế vẫn bộc lộ một số hạn chế mang tính khách quan và chủ quan cần được tiếp tục hoàn thiện:
+
+\subsection{Mật độ Phân bố Trạm Quan trắc Mặt đất tại Vùng Sâu, Vùng Xa}
+Mạng lưới trạm khí tượng tự động tại Việt Nam phân bố không đồng đều theo không gian địa lý. Trong khi các đô thị lớn tại vùng đồng bằng (Hà Nội, TP. Hồ Chí Minh, Đà Nẵng) có mật độ trạm tương đối dày, thì tại các khu vực núi cao hiểm trở thuộc vùng Tây Bắc (Điện Biên, Lai Châu), dải Trường Sơn và vùng hải đảo xa bờ, khoảng cách giữa các trạm quan trắc mặt đất có thể lên tới 50--100~km. 
+Để giải quyết bài toán này, hệ thống hiện đang dựa vào giải thuật nội suy không gian nghịch đảo khoảng cách (\textit{Inverse Distance Weighting -- IDW}) \cite{shepard1968} kết hợp dữ liệu mô hình số trị vệ tinh (NWP). Tuy nhiên, trong các tình huống thời tiết đối lưu cực đoan xuất hiện đột ngột theo địa hình lòng chảo hoặc thung lũng cục bộ (\textit{micro-climate phenomena}), sai số nội suy có thể làm giảm độ nhạy phát hiện sớm các ổ dông lốc nhỏ.
+
+\subsection{Tính Kịp thời của Dữ liệu Biến động Hạ tầng Giao thông Thực tế}
+Hệ thống định tuyến của VietForecast hiện đang sử dụng đồ thị mạng lưới đường bộ OpenStreetMap (OSM) \cite{haklay2008openstreetmap} kết hợp định tuyến OSRM \cite{luxen2011real, geisberger2008contraction}. Mặc dù OSM có độ chi tiết rất cao về mặt hình học, dữ liệu về các biến động hạ tầng thời gian thực --- như đường bị phong tỏa do sạt lở taluy tức thời, cầu cấm xe do nước lũ dâng cao, hoặc các đoạn đường đang thi công sửa chữa --- chưa được cập nhật hoàn toàn tự động theo thời gian thực từ cơ quan quản lý đường bộ (Cục Đường bộ Việt Nam). Điều này có thể dẫn tới trường hợp thuật toán đề xuất một tuyến đường an toàn về mặt khí tượng nhưng thực tế lòng đường đang bị cản trở bởi sự cố công trình.
+
+\subsection{Sự Phụ thuộc vào Hạ tầng Đám mây và Mô hình LLM Ngoại vi}
+Module Trợ lý AI du lịch thời tiết hiện phụ thuộc vào dịch vụ đám mây Google Gemini thông qua giao thức API trực tuyến. Sự phụ thuộc này mang lại một số thách thức vận hành:
+\begin{itemize}
+    \item[-] \textit{Độ trễ truyền thông}: Độ trễ phản hồi của LLM phụ thuộc vào chất lượng kết nối Internet quốc tế, dao động từ 1,2 đến 2,8 giây, cao hơn đáng kể so với độ trễ các API nghiệp vụ thuần túy ($< 50$~ms).
+    \item[-] \textit{Rào cản chi phí vận hành}: Việc xử lý khối lượng lớn yêu cầu hỏi đáp đồng thời trong các đợt thiên tai lớn có thể làm tăng chi phí sử dụng API tính theo token, đòi hỏi cơ chế quản lý hạn ngạch nghiêm ngặt hơn.
+\end{itemize}
+
+\subsection{Hạn chế về Dẫn đường Ngoại tuyến (Offline Navigation Gap)}
+Hiện tại, VietForecast được xây dựng dưới dạng ứng dụng web tiến bộ (PWA). Mặc dù ứng dụng hỗ trợ bộ đệm giao diện phía máy khách thông qua Service Worker, việc tính toán lộ trình động (\textit{Dynamic Re-routing}) và tra cứu rủi ro thời tiết vẫn đòi hỏi kết nối Internet liên tục để liên lạc với máy chủ API. Khi phương tiện di chuyển vào các cung đường đèo hiểm trở hoặc vùng rừng sâu bị mất hoàn toàn sóng viễn thông (vùng lõm vô tuyến), người dùng không thể thực hiện các yêu cầu định tuyến lại nếu có sự cố bất ngờ phát sinh.
+
+\section{Hướng Phát triển trong Tương lai}
+\label{sec:future_work}
+
+Dựa trên những kinh nghiệm đúc rút từ quá trình phát triển và các hạn chế kỹ thuật đã phân tích ở trên, đồ án vạch ra lộ trình nghiên cứu và mở rộng hệ thống theo ba giai đoạn chiến lược:
+
+\subsection{Lộ trình Ngắn hạn (3 -- 6 tháng tới)}
+\begin{itemize}
+    \item[-] \textit{Phát triển Ứng dụng Di động Bản địa (Native Mobile App)}: Xây dựng ứng dụng di động đa nền tảng sử dụng React Native hoặc Flutter, tích hợp định vị GPS độ chính xác cao và tính năng dẫn đường từng chặng bằng giọng nói tiếng Việt (\textit{Turn-by-turn Voice Navigation}).
+    \item[-] \textit{Hệ thống Thông báo Đẩy Chủ động theo Thời gian Thực}: Tích hợp dịch vụ Firebase Cloud Messaging (FCM) kết hợp tính năng hàng rào địa lý động (\textit{Dynamic Geofencing}). Khi phương tiện đang di chuyển và tiến gần tới khu vực có dông lốc, mưa đá hoặc gió giật mạnh trong bán kính 10~km, hệ thống sẽ tự động phát âm thanh cảnh báo khẩn cấp và gợi ý điểm dừng đỗ trú ẩn an toàn gần nhất.
+    \item[-] \textit{Cơ chế Báo cáo Sự cố Giao thông từ Cộng đồng (\textit{Crowdsourced Road Hazards})}: Cho phép người lái xe gửi thông tin phản ánh tức thời về các điểm ngập úng, sạt lở hoặc cây ngã đổ kèm hình ảnh chụp thực địa. Áp dụng giải thuật tính điểm uy tín người dùng (\textit{Reputation Scoring}) và phân cụm không gian--thời gian (DBSCAN) để tự động thẩm định tính xác thực của thông tin trước khi cập nhật lên bản đồ chung.
+\end{itemize}
+
+\subsection{Lộ trình Trung hạn (6 -- 12 tháng tới)}
+\begin{itemize}
+    \item[-] \textit{Ứng dụng Mô hình Ngôn ngữ Nhỏ trên Thiết bị (Edge AI / On-Device SLM)}: Triển khai các mô hình ngôn ngữ được tối ưu hóa cho thiết bị di động (như Gemma-2B hoặc Phi-3 Mini) lượng tử hóa 4-bit thông qua WebGPU/ONNX Runtime. Giải pháp này cho phép trợ lý ảo tiếp tục trả lời các câu hỏi chỉ dẫn khẩn cấp và phân tích dữ liệu rủi ro cục bộ ngay cả khi hoàn toàn mất kết nối mạng.
+    \item[-] \textit{Tích hợp Thị giác Máy tính Phân tích Camera Giao thông}: Xây dựng đường ống xử lý luồng dữ liệu video từ mạng lưới camera giao thông công cộng tại các đô thị (Hà Nội, TP. Hồ Chí Minh). Ứng dụng mô hình học sâu phân đoạn hình ảnh (như YOLOv8-Seg) để tự động ước lượng mực nước ngập trên lòng đường và đo đếm vận tốc dòng phương tiện trong mưa, cung cấp thêm nguồn dữ liệu kiểm chứng thực địa vô cùng giá trị.
+    \item[-] \textit{Lưu trữ Bản đồ Cục bộ Phục vụ Dẫn đường Ngoại tuyến}: Tích hợp engine định tuyến OSRM rút gọn trực tiếp vào bộ nhớ cục bộ thiết bị di động, cho phép tải trước dữ liệu bản đồ số và dự báo thời tiết 24 giờ của hành lang di chuyển, bảo đảm tính sẵn sàng 100\% khi xe vượt qua các vùng đèo hiểm trở mất sóng.
+\end{itemize}
+
+\subsection{Lộ trình Dài hạn (1 -- 2 năm tới)}
+\begin{itemize}
+    \item[-] \textit{Mô hình Định tuyến Đa Phương thức Thích ứng Khí hậu (\textit{Multimodal Weather-Adaptive Routing})}: Mở rộng thuật toán không chỉ cho đường bộ mà tích hợp liên thông với mạng lưới giao thông đường sắt Bắc -- Nam, đường thủy nội địa và các chuyến bay nội địa. Hệ thống sẽ tự động đề xuất chuyển đổi phương tiện (ví dụ: chuyển từ đi đường bộ sang tàu hỏa nếu cung đường qua đèo miền Trung bị ngập lụt cắt đứt).
+    \item[-] \textit{Kết nối Hệ thống Dữ liệu Khí tượng Thủy văn Quốc gia (NCHMF) và ITS}: Hướng tới việc chuẩn hóa kết nối API chính thống với Trung tâm Dự báo Khí tượng Thủy văn Quốc gia và Trung tâm Điều hành Giao thông Thông minh Quốc gia (ITS). Điều này sẽ cung cấp nguồn dữ liệu radar thời tiết băng C/S độ phân giải cao và dữ liệu đóng/mở đường chính thống của lực lượng chức năng.
+    \item[-] \textit{Mô hình Học sâu Dự báo Rủi ro Chuỗi Thời gian (Spatio-Temporal Deep Learning)}: Nghiên cứu ứng dụng mạng nơ-ron đồ thị không gian--thời gian (Graph Neural Networks -- GNN / ST-GCN) để học quy luật diễn biến của các hình thái thời tiết đối lưu phức tạp theo địa hình lòng chảo Việt Nam, nâng cao độ chính xác dự báo trước rủi ro tai nạn giao thông trong phạm vi 3--6 giờ lên mức tiệm cận thời gian thực.
+\end{itemize}
+
+\section{Lời Kết}
+\label{sec:closing_remarks}
+
+Biến đổi khí hậu toàn cầu đang khiến các hình thái thời tiết cực đoan tại Việt Nam gia tăng cả về tần suất lẫn mức độ khốc liệt, đe dọa trực tiếp tới an toàn tính mạng và tài sản của hàng triệu người tham gia giao thông mỗi ngày. Đồ án VietForecast đã chứng minh tính khả thi, tính đúng đắn và hiệu quả vượt trội của việc kết hợp khoa học dữ liệu không gian (Spatial GIS), thuật toán định tuyến tối ưu đa tiêu chí (MCDM / OSRM) và trí tuệ nhân tạo hiện đại (GenAI / Grounded LLM) trong việc giải quyết một bài toán xã hội mang tính cấp bách.
+
+Với kiến trúc phần mềm hướng dịch vụ bền vững, hiệu năng phản hồi mức mili-giây, giao diện trực quan hỗ trợ cả hai chế độ sáng/tối thân thiện và hệ sinh thái tính năng hoàn chỉnh từ miễn phí đến thương mại hóa, VietForecast sở hữu tiềm năng to lớn để tiếp tục được phát triển, chuyển giao công nghệ và ứng dụng rộng rãi vào thực tiễn, đóng góp thiết thực vào công cuộc xây dựng hệ thống Giao thông Thông minh (ITS) an toàn, văn minh và bền vững tại Việt Nam.

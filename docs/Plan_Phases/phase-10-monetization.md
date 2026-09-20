@@ -1,7 +1,7 @@
 # Phase 10 — Monetization, Subscription & Entitlements
 
-**Status:** BLOCKED  
-**Phụ thuộc:** Phase 3 VERIFIED; API contract của Phase 4–9 ổn định  
+**Status:** VERIFIED  
+**Phụ thuộc:** Phase 3–9 VERIFIED; API contract của Phase 4–9 ổn định; Decision Gate `MONET-001..008` APPROVED; `validate-stage10.ps1` PASS  
 **Mục tiêu:** Xây product billing và Pro gating an toàn, có thể vận hành từ Directus Admin Studio và không phụ thuộc vào kiểm tra ở frontend.
 
 ## Phạm vi công việc

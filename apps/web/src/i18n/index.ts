@@ -20,8 +20,8 @@ export const LANGUAGE_NAMES: Record<SupportedLanguage, string> = {
 };
 
 export const LANGUAGE_FLAGS: Record<SupportedLanguage, string> = {
-  vi: "🇻🇳",
-  en: "🇬🇧",
+  vi: "VN",
+  en: "EN",
 };
 
 i18n

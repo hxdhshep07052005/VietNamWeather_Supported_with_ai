@@ -1,0 +1,16 @@
+\chapter*{Abstract}
+\addcontentsline{toc}{chapter}{Abstract}
+
+Vietnam possesses a long and narrow geography characterized by complex tropical monsoon climates and frequent severe weather phenomena such as typhoons, torrential rains, dense fog, and thunderstorms. These meteorological factors pose critical travel safety risks, particularly for motorcyclists, who constitute the predominant proportion of commuters in the country.
+
+This graduation project presents the research, design, and implementation of the “Smart Vietnam Weather Information and Safe Travel Route Planning System with AI Grounding” (VietForecast). The system addresses core technical challenges through the following key contributions:
+\begin{enumerate}
+    \item Meteorological Ingestion and Spatial Normalization: Automated real-time harvesting across 63 Vietnamese provinces, persisted within a PostGIS spatial database with continuous validation of data authenticity, integrity, and temporal freshness.
+    \item Multi-Dimensional Weather Risk Evaluation Engine: A config-driven matrix evaluating hazards across precipitation intensity, wind gusts, surface visibility, extreme temperatures, and road surface conditions, customized by vehicle profile (motorcycles and automobiles).
+    \item Multi-Alternative Weather-Aware Route Optimization: Concurrent calculation of Fastest, Shortest, and Weather-Safer routes for inter-provincial corridors spanning up to 2,000~km.
+    \item Grounded AI Travel Assistant: Integration with Google Gemini LLM via function calling over internal tool declarations, ensuring responses are strictly grounded with verifiable spatial citations, drastically suppressing hallucinations.
+    \item Containerized Architecture and Quota Governance: Segmented Docker networking, atomic Redis quota counters aligned with Asia/Ho Chi Minh midnight resets, and integrated digital payments.
+\end{enumerate}
+
+\vspace{0.5cm}
+\noindent Keywords: Weather-Aware Routing, Travel Risk Assessment, PostGIS, LLM Grounding, Fastify, MapLibre GL, Vietnam Meteorological Systems.

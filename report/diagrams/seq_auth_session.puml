@@ -1,0 +1,77 @@
+@startuml
+skinparam dpi 100
+skinparam defaultFontName "Segoe UI, Arial, sans-serif"
+
+<style>
+sequenceDiagram {
+  participant {
+    Padding 35
+    Margin 25
+  }
+}
+</style>
+
+skinparam defaultFontSize 24
+skinparam sequenceGroupFontSize 24
+skinparam sequenceReferenceFontSize 22
+skinparam dividerFontSize 24
+skinparam arrowFontSize 22
+skinparam noteFontSize 20
+skinparam participantFontSize 24
+skinparam actorFontSize 24
+
+skinparam maxMessageSize 420
+skinparam wrapWidth 420
+skinparam roundCorner 8
+skinparam shadowing false
+
+skinparam sequenceLifeLineBorderColor #2C3E50
+skinparam sequenceGroupBorderColor #2980B9
+skinparam sequenceGroupHeaderFontStyle bold
+
+autonumber
+
+actor "Traveler / Browser\n[Client Application]" as B
+participant "Fastify 5 BFF API\n[Session Boundary (ADR-004)]" as API
+database "PostgreSQL Database\n[app_security.sessions]" as DB
+participant "Directus 12.1.1\n[Identity Authority]" as DIR
+
+== Phase 1: Authentication & Opaque Session Issuance ==
+
+B -> API: POST /api/v1/auth/login {email, password}
+API -> DIR: Authenticate credentials (Argon2id password verification)
+DIR --> API: Directus Token Bundle (JWT Access Token + Refresh Token)
+
+API -> API: Assert traveler role (RBAC) & acquire pg_advisory_xact_lock(user_id)
+API -> API: Generate session_family_id (UUIDv4) & opaque handle (32-byte CSPRNG)
+API -> API: AES-256-GCM encrypt JWTs (random 12-byte IV, 16-byte Auth Tag)
+API -> DB: INSERT into app_security.sessions (session_id_hash, session_family_id, ciphertexts, iv, tag, expires_at)
+API -> DB: INSERT into app_security.audit_events (auth.login, success, user_id, family_id)
+
+API --> B: 200 OK + Set-Cookie: __Host-vnwa_session=<handle> (HttpOnly; Secure; SameSite=Strict; Path=/)
+note over B, API
+  <b>ADR-004 Token Isolation:</b> Browser never receives Directus JWTs (XSS immunity).
+  Database stores SHA-256(handle) and AES-256-GCM encrypted tokens.
+end note
+
+== Phase 2: Authorized API Request & Silent Sliding Rotation ==
+
+B -> API: GET /api/v1/weather/current (with __Host-vnwa_session cookie)
+API -> DB: SELECT active session by SHA-256(handle) WHERE revoked_at IS NULL
+DB --> API: Return session record (ciphertexts, IV, tag, access_token_expires_at)
+
+opt Access Token Nearing Expiration (Silent Refresh & Rotation)
+    API -> API: Decrypt Directus Refresh Token via AES-256-GCM
+    API -> DIR: POST /auth/refresh (silent upstream token renewal)
+    DIR --> API: Return fresh Directus Access Token + Refresh Token
+    API -> API: Generate nextHandle (CSPRNG) & re-encrypt tokens with fresh IV
+    API -> DB: UPDATE sessions SET session_id_hash = hash(nextHandle), rotated_from_hash = currentHash, rotation_counter = counter + 1
+    API --> B: Updated Set-Cookie: __Host-vnwa_session=<nextHandle>
+end
+
+API -> API: Decrypt Directus Access Token & verify GCM Auth Tag
+API -> DIR: Forward authorized request with Bearer <Directus JWT>
+DIR --> API: Return authorized data payload
+API --> B: 200 OK (Sanitized DTO response)
+
+@enduml

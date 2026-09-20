@@ -1,0 +1,306 @@
+\chapter{System Implementation}
+\label{ch:implementation}
+
+This chapter provides a comprehensive technical account of the software engineering implementation of the VietForecast platform pursuant to the architectural blueprints established in Chapter~\ref{ch:architecture}. The entire codebase is organized within an enterprise-grade monorepo, enforcing strict static typing via TypeScript 5.5 and orchestrating containerized microservices across a three-tier network topology via Docker Compose. The discussion details the high-performance Fastify 5 backend service layer, the server-side session security boundary (ADR-004), two-tier spatial corridor queries optimized via PostGIS 3.4 GiST indexes, the self-healing integration worker with distributed database leasing (ADR-001), the vehicle-differentiated multi-objective route hazard evaluation engine, the grounded conversational AI assistant with deterministic fallback adapter, the WebGL 3D geospatial visualization frontend, and the automated quality assurance pipeline on CI/CD.
+
+\section{Development Environment and Deployment Stack}
+\label{sec:monorepo_deployment_stack}
+
+\subsection{Monorepo Architecture and Static Type Contracts}
+To maximize engineering velocity and eradicate interface divergence across distributed services, the VietForecast platform is structured as an integrated monorepo managed by \texttt{pnpm workspaces}. The platform enforces TypeScript 5.5 under absolute strict mode (\texttt{strict: true}, \texttt{noImplicitAny: true}, \texttt{exactOptionalPropertyTypes: true}) with the canonical \texttt{NodeNext} module resolution standard.
+
+The repository layout is systematically partitioned into two distinct workspaces:
+\begin{itemize}
+    \item[-] \textit{Application workspace (\texttt{apps/})}: Houses independently deployable processes, including the Fastify API / BFF gateway (\texttt{apps/api}), the background meteorological ingestion worker (\texttt{apps/worker}), the headless Directus 12.1.1 IAM and CMS service (\texttt{apps/directus}), and the React 18 single-page application (\texttt{apps/web}).
+    \item[-] \textit{Shared library workspace (\texttt{packages/})}: Houses reusable infrastructural modules, including \texttt{packages/contracts} (defining shared Data Transfer Objects (DTOs), Zod/Ajv schema validators, and canonical domain constants) and \texttt{packages/config} (standardizing TypeScript compiler configurations and ESLint 9 linting rules).
+\end{itemize}
+
+Centralizing contract definitions within \texttt{packages/contracts} ensures end-to-end type safety: any modification to meteorological payload structures, hazard classification codes, or route parameters is immediately validated by the TypeScript compiler across both frontend and backend boundaries, completely eliminating runtime serialization and type mismatch defects.
+
+\subsection{Three-Tier Network Partitioning and Containerization}
+The entire application ecosystem is packaged into standardized OCI containers orchestrated via \texttt{compose.yaml}. Production networking is partitioned into three isolated software-defined bridge networks enforcing least-privilege access at the transport layer:
+\begin{itemize}
+    \item[-] \textit{Edge and Reverse Proxy Tier (\texttt{vnwa\_edge\_net})}: Directly exposes ports 80 (HTTP) and 443 (HTTPS) to the public Internet through an Nginx reverse proxy. Nginx terminates TLS sessions, injects strict HTTP security headers (CSP, HSTS, X-Frame-Options), and routes ingress traffic to internal web and API ports.
+    \item[-] \textit{Application and Orchestration Tier} (\texttt{vnwa\_}\allowbreak\texttt{app\_}\allowbreak\texttt{net}): Hosts \texttt{apps/api}, \texttt{apps/worker}, and \texttt{apps/directus} containers. These services communicate with one another, query persistent datastores, and dispatch outbound requests to external weather telemetries and foundational AI endpoints.
+    \item[-] \textit{Isolated Datastore Tier (\texttt{vnwa\_data\_net})}: Houses PostgreSQL 16 (equipped with PostGIS 3.4) and the Redis 7 in-memory cache. Crucially, this network is flagged with \texttt{internal: true}, which severs the default Internet gateway. Consequently, datastore containers cannot be accessed directly from external networks, nor can compromised database processes transmit unauthorized outbound payloads across the Internet.
+\end{itemize}
+
+Each container implements automated healthcheck probes running at 10-second intervals using dedicated binaries such as \texttt{pg\_isready} for PostgreSQL, \texttt{redis-cli ping} for Redis, and lightweight HTTP probes on \texttt{/health} and \texttt{/ready} endpoints for API and Worker services, guaranteeing deterministic bootstrap sequencing.
+
+\section{Backend Service Layer and Session Security Boundary Implementation (ADR-004)}
+\label{sec:backend_fastify_impl}
+
+\subsection{Fastify 5 Request Lifecycle and Hook Pipeline}
+The backend service layer \texttt{apps/api} is engineered with Fastify 5, leveraging its event-driven asynchronous architecture and high-throughput JSON serializer (\texttt{fast-json-stringify}). To guarantee uniform security enforcement, every inbound HTTP request traverses a deterministic lifecycle hook sequence:
+\begin{itemize}
+    \item[-] \textit{Ingress stage (\texttt{onRequest})}: Invokes the Redis 7 distributed Token Bucket rate limiter. By inspecting the client IP address and hashed session handle, Fastify rejects traffic exceeding preconfigured burst thresholds with HTTP 429 (\textit{Too Many Requests}) and standard \texttt{Retry-After} headers without consuming downstream computational resources.
+    \item[-] \textit{Validation stage (\texttt{preValidation})}: Compiles incoming request bodies, route parameters, and query strings against shared JSON Schemas from \texttt{packages/contracts} via Ajv. Malformed or poisoned payloads are rejected with HTTP 400 (\textit{Bad Request}).
+    \item[-] \textit{Authentication stage (\texttt{preHandler})}: Extracts the opaque session handle from the secure \texttt{\_\_Host-vnwa\_session} cookie. The hook hashes the handle via SHA-256, verifies its validity against \texttt{app\_security.sessions}, executes silent sliding rotation when the underlying token approaches expiration, and injects authenticated user claims (\texttt{userId}, \texttt{roleId}) into the request context.
+    \item[-] \textit{Telemetry and audit stage (\texttt{onResponse})}: Records microsecond-level request durations for Prometheus metric scraping and synchronously dispatches security audit records to \texttt{app\_security.audit\_events} upon sensitive administrative mutations.
+\end{itemize}
+
+\subsection{Atmospheric Cryptographic Envelope and Timing-Safe Protections}
+All cryptographic routines are centralized in \texttt{apps/api/src/crypto.ts}, implemented directly on top of the native \texttt{node:crypto} runtime:
+\begin{itemize}
+    \item[-] \textit{AES-256-GCM authenticated envelope}: Upstream Directus access and refresh tokens are encrypted at rest using Galois/Counter Mode. Function \texttt{encryptSecret} extracts 96 bits (12 bytes) of cryptographic entropy via CSPRNG (\texttt{randomBytes(12)}) as the Initialization Vector (IV), encrypts the secret using the 256-bit key \texttt{API\_SESSION\_ENCRYPTION\_KEY}, and captures the 128-bit authentication tag (\texttt{authTag}). The payload is serialized as:
+    \begin{equation}
+    \label{eq:crypto_envelope_en}
+    \text{Envelope} = \text{"v1"} \,.\, \text{Base64URL}(\text{IV}) \,.\, \text{Base64URL}(\text{Tag}) \,.\, \text{Base64URL}(\text{Ciphertext})
+    \end{equation}
+    Function \texttt{decryptSecret} enforces the \texttt{v1} protocol version and validates the authentication tag; any bit-level tampering aborts execution immediately with an unhandled exception.
+    \item[-] \textit{CSPRNG opaque token generation and one-way hashing}: The client-facing handle is synthesized by \texttt{createOpaqueToken(32)}, drawing 32 bytes of entropy from CSPRNG and encoding it into a 43-character URL-safe string (\texttt{base64url}). Before persistence, the handle is digested via SHA-256 (\texttt{hashOpaqueToken}) and written to \texttt{session\_id\_hash}. This one-way transformation guarantees that database read compromises yield no usable bearer tokens.
+    \item[-] \textit{Timing-safe CSRF validation}: CSRF prevention relies on HMAC-SHA256 signatures (\texttt{signCsrfToken}). Signature verification in \texttt{verifyCsrfSignature} utilizes \texttt{timingSafeEqual}, ensuring execution time remains constant regardless of string prefix similarity, thus neutralizing timing side-channel cryptanalysis.
+\end{itemize}
+
+\subsection{Durable Session Store and Session Family Annihilation (ADR-004)}
+The \texttt{PostgresSessionStore} class in \texttt{apps/api/src/session-store.ts} implements the session security invariants established in ADR-004:
+\begin{itemize}
+    \item[-] \textit{Concurrency limits via transaction-level advisory locks}: To eliminate race conditions where parallel login challenges exceed the account concurrency ceiling $C_{\text{limit}}$, method \texttt{create} executes inside an explicit PostgreSQL transaction and acquires an exclusive advisory lock:
+    \begin{equation}
+    \label{eq:advisory_lock_en}
+    \text{SELECT pg\_advisory\_xact\_lock}(\text{hashtextextended}(u.\text{user\_id}, 0))
+    \end{equation}
+    This serializes concurrent logins for that specific user ID without blocking other platform tenants. Active sessions (\texttt{revoked\_at IS NULL} and \texttt{expires\_at > now()}) are tallied; if the count reaches $C_{\text{limit}}$, the transaction aborts with an \texttt{ApiError(409, "SESSION\_LIMIT\_REACHED")}.
+    \item[-] \textit{Atomic silent sliding rotation}: Rotation executes via a single atomic SQL \texttt{UPDATE} on \texttt{app\_security.sessions}, storing the prior token hash into \texttt{rotated\_from\_hash}, incrementing \texttt{rotation\_counter}, and advancing \texttt{expires\_at}. A 60-second grace window is granted to the retired hash, enabling concurrent in-flight browser requests across multiple tabs to complete cleanly.
+    \item[-] \textit{Token replay detection and session family annihilation ($\Psi_{\text{annihilate}}$)}: If an inbound request presents a token whose hash matches \texttt{rotated\_from\_hash} after the grace period has elapsed, the store identifies an active token hijacking attempt. Method \texttt{revokeFamily} executes instant cascade invalidation:
+    \begin{equation}
+    \label{eq:revoke_family_en}
+    \begin{aligned}
+    &\text{UPDATE app\_security.sessions} \\
+    &\quad \text{SET revoked\_at} = t_{\text{now}}, \, \text{revoke\_reason} = \text{"TOKEN\_REUSE\_DETECTED"} \\
+    &\quad \text{WHERE session\_family\_id} = \mathcal{F}_{\text{id}}
+    \end{aligned}
+    \end{equation}
+    All active sessions tied to the compromised family are invalidated simultaneously, ejecting the intruder and requiring legitimate users to re-authenticate.
+\end{itemize}
+
+\section{PostGIS Spatial Database and GiST Query Optimization}
+\label{sec:postgis_gist_impl}
+
+\subsection{Spatial Schema Architecture and GiST Index Declarations}
+The geospatial persistent store is deployed on PostgreSQL 16 equipped with the PostGIS 3.4 extension. The physical model defines two foundational spatial tables:
+\begin{itemize}
+    \item[-] \textit{Administrative catalog and stations (\texttt{locations})}: Encapsulates spatial coordinates \texttt{geom} typed as \texttt{GEOMETRY(Point, 4326)} representing Vietnam's 63 provinces and fixed weather stations, accompanied by polygonal boundaries \texttt{boundary} typed as \texttt{GEOMETRY(MultiPolygon, 4326)} under the WGS84 standard.
+    \item[-] \textit{Meteorological observations (\texttt{weather\_observations})}: Stores surface atmospheric observations, linked to \texttt{locations} via foreign key \texttt{location\_id}. Spatial column \texttt{geom} (\texttt{GEOMETRY(Point, 4326)}) is duplicated on this table to optimize spatial query locality during corridor scans.
+\end{itemize}
+
+To maintain high query performance as the table scales to millions of records, 2D Generalized Search Tree (GiST) indexes are established across both geometry columns:
+\begin{equation}
+\label{eq:gist_index_def_en}
+\text{CREATE INDEX idx\_weather\_obs\_geom ON weather\_observations USING GIST (geom)}
+\end{equation}
+\begin{equation}
+\label{eq:gist_loc_def_en}
+\text{CREATE INDEX idx\_locations\_geom ON locations USING GIST (geom)}
+\end{equation}
+
+The GiST index organizes spatial geometries into a balanced hierarchy of minimum bounding boxes (BBOX), enabling the query planner to navigate spatial candidates in logarithmic time $O(\log N)$ rather than executing expensive sequential table scans.
+
+\subsection{Two-Tier Spatial Corridor Query Specification}
+Extracting weather stations within safety corridor buffer $r_{\text{corridor}} = 15\text{ km}$ along a travel trajectory $\mathcal{L}$ spanning hundreds of kilometers requires balancing mathematical precision against CPU overhead. The platform implements a two-tier spatial filtering pipeline combined with temporal freshness validation.
+
+Table~\ref{tab:gist_query_spec_en} provides the formal technical specification of the corridor query parameters, predicates, and performance metrics.
+
+\begin{table}[H]
+\centering
+\small
+\caption[PostGIS corridor spatial query technical specifications]{Technical specifications and predicate filters for the PostGIS 3.4 spatial corridor query.}
+\label{tab:gist_query_spec_en}
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{2.6cm} >{\raggedright\arraybackslash}p{4.0cm} X}
+\toprule
+\textbf{Query Aspect} & \textbf{Technical Specification} & \textbf{Operational Function and Purpose} \\
+\midrule
+Input Geometry & Route Polyline $\mathcal{L}$ \newline Type: \texttt{LineString} WGS84 & Sequence of coordinates $(\phi_k, \lambda_k)$ representing the candidate travel corridor computed by OSRM. \\
+\addlinespace
+Corridor Radius & $r_{\text{corridor}} = 15,000\text{ meters}$ & Lateral meteorological influence perimeter flanking the travel polyline. \\
+\addlinespace
+Rough Pass \newline Predicate & $\text{BBOX}(o.\text{geom}) \cap \text{BBOX}(\mathcal{L}) \ne \emptyset$ \newline Complexity: $O(\log N)$ & Navigates the 2D GiST index tree to instantly prune stations whose bounding boxes do not intersect the trajectory; eliminates over 95\% of candidate search space. \\
+\addlinespace
+Exact Pass \newline Predicate & \texttt{ST\_DWithin}($o.\text{geom}::\text{geography}$, \newline $\mathcal{L}::\text{geography}, 15000)$ & Casts geometries to \texttt{geography} and evaluates true ellipsoidal geodesic distance on the WGS84 datum. \\
+\addlinespace
+Freshness Filter & $o.\text{observed\_at} \ge t_{\text{now}} - 180\text{ min}$ \newline ($\tau(o) \le 180\text{ min}$) & Discards outdated telemetry; admits exclusively \textit{Fresh} or \textit{Aging} observation records. \\
+\addlinespace
+Observed Latency & Latency: $< 15\text{ ms}$ \newline Plan: \textit{Bitmap Index Scan} & Leverages PostgreSQL shared memory page caching; satisfies real-time route computation deadlines. \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+By combining \texttt{ST\_DWithin} on \texttt{geography} with the GiST index, the PostgreSQL query planner executes a \textit{Bitmap Index Scan} followed by a \textit{Bitmap Heap Scan}. This guarantees exact geodesic distance calculations over the WGS84 ellipsoid while maintaining query response times strictly under 15 milliseconds across nationwide travel corridors.
+
+\section{Background Integration Worker and Resilience Engine Implementation (ADR-001)}
+\label{sec:worker_resilience_impl}
+
+\subsection{Distributed PostgreSQL Database Leasing Mechanism}
+The background ingestion process \texttt{apps/worker} operates as an autonomous Node.js service, decoupling high-frequency meteorological polling from client request threads. To prevent concurrent write races when running multiple worker replicas, the worker orchestrates execution via distributed leases stored in table \texttt{weather\_worker\_leases} pursuant to ADR-001.
+
+Leader leasing is coordinated through two specialized PostgreSQL stored functions:
+\begin{itemize}
+    \item[-] \textit{Run acquisition (\texttt{claim\_weather\_run})}: Workers execute an atomic \texttt{INSERT ... ON CONFLICT (provider\_id, target\_location\_id) DO UPDATE} statement using row-level locks (\texttt{FOR UPDATE SKIP LOCKED}). This skips rows actively locked by peer replicas without thread contention. Leases are granted with a fixed tenure of $T_{\text{lease}} = 120\text{ seconds}$.
+    \item[-] \textit{Heartbeat renewal (\texttt{heartbeat\_weather\_run})}: During long-running network fetches, workers transmit heartbeat signals at 30-second intervals to advance \texttt{lease\_expires\_at}. If an active worker crashes, its lease expires naturally after 120 seconds, allowing standby workers to recover pending workloads automatically without human intervention.
+\end{itemize}
+
+\subsection{Three-State Circuit Breaker and Exponential Backoff with Jitter}
+The durable runtime engine \texttt{WeatherDurableRuntime} in \texttt{apps/\allowbreak worker/\allowbreak src/\allowbreak runtime/\allowbreak runtime.ts} integrates two essential resilience patterns:
+\begin{itemize}
+    \item[-] \textit{Three-state Circuit Breaker}: Protects workers against upstream provider outages or quota exhaustion from WeatherAPI. The state machine transitions across three operational modes:
+    \begin{itemize}
+        \item[+] \textit{Closed}: Normal operation. Ingestion requests are dispatched directly to WeatherAPI. Recording $F \ge 3$ consecutive failures or quota depletion errors (\texttt{weather\_provider\_quota\_exhausted}) triggers an immediate transition to \textit{Open}.
+        \item[+] \textit{Open}: Circuit trips. Inbound poll attempts fail immediately in memory without network dispatch, preserving worker threads. The open state persists across cooldown interval $T_{\text{cooldown}} = 60\text{ seconds}$.
+        \item[+] \textit{Half-Open}: Upon cooldown expiration, the circuit permits a single canary probe request. If successful, the failure counter resets to zero and the circuit returns to \textit{Closed}; if the probe fails, the circuit re-opens and doubles the cooldown duration.
+    \end{itemize}
+    \item[-] \textit{Exponential Backoff with Stochastic Jitter}: Upon transient network interruptions, retry backoff delay $t_{\text{delay}}(k)$ for attempt $k$ is calculated pursuant to Equation~\eqref{eq:worker_backoff_jitter_impl_en}:
+    \begin{equation}
+    \label{eq:worker_backoff_jitter_impl_en}
+    \begin{aligned}
+    t_{\text{delay}}(k) = \max\Bigl(1, \min\Bigl(t_{\max}, \, \text{round}\Bigl(&\min(t_{\max}, t_{\text{base}} \cdot 2^{\min(k-1, 30)}) \\
+    &\cdot (1 - \rho + 2\rho \cdot U)\Bigr)\Bigr)\Bigr)
+    \end{aligned}
+    \end{equation}
+    where $t_{\text{base}} = 1,000\text{ ms}$, $t_{\max} = 60,000\text{ ms}$, jitter factor $\rho = 0.2$, and uniform random variable $U \in [0, 1)$. The $\pm 20\%$ randomization disperses retry attempts over time, eliminating the thundering herd phenomenon upon upstream recovery.
+\end{itemize}
+
+\subsection{WMO-No. 8 Normalization and SHA-256 Cryptographic Deduplication}
+Raw vendor telemetry is passed through the normalization pipeline \texttt{apps/\allowbreak worker/\allowbreak src/\allowbreak weather/\allowbreak normalize.ts} to conform to the World Meteorological Organization (WMO-No. 8) standard:
+\begin{itemize}
+    \item[-] Temperature conversion: $(^\circ\text{F} - 32) \times 5/9 \longrightarrow ^\circ\text{C}$.
+    \item[-] Wind speed and gust conversion: $\text{mph} \times 1.60934 \longrightarrow \text{km/h}$.
+    \item[-] Precipitation conversion: $\text{inches} \times 25.4 \longrightarrow \text{mm/h}$.
+    \item[-] Atmospheric pressure conversion: $\text{inHg} \times 33.8639 \longrightarrow \text{hPa}$.
+    \item[-] Horizontal visibility conversion: $\text{miles} \times 1609.34 \longrightarrow \text{meters}$.
+    \item[-] Mapping over 80 discrete provider condition codes to standardized WMO meteorological categories (clear, overcast, showers, convective thunderstorm, hail).
+\end{itemize}
+
+Before database insertion, module \texttt{checksum.ts} computes an immutable SHA-256 cryptographic digest over the normalized numerical fields:
+\begin{equation}
+\label{eq:checksum_hash_en}
+\mathcal{H}_{\text{obs}} = \text{SHA-256}(T \,\|\, r \,\|\, v \,\|\, w_{\text{gust}} \,\|\, V \,\|\, P \,\|\, \text{WMO\_code})
+\end{equation}
+Stored procedure \texttt{persist\_weather\_bundle} compares this checksum against the latest recorded record for that station. If identical (signifying static atmospheric conditions), the insert operation is bypassed. This optimization reduces database write I/O and Write-Ahead Log (WAL) generation by over 70\% during benign weather windows.
+
+\section{Route Hazard Evaluation and Multi-Alternative Planning Implementation}
+\label{sec:route_hazard_impl}
+
+\subsection{OSRM Routing Orchestration and Spatiotemporal Discretization}
+Route calculation is implemented within \texttt{apps/\allowbreak api/\allowbreak src/\allowbreak route/\allowbreak route-risk-engine.ts}. Upon receiving origin and destination coordinates, the service communicates asynchronously with a local OSRM routing daemon to evaluate three distinct corridors: \textit{Fastest Corridor}, \textit{Shortest Corridor}, and \textit{Alternative Corridor}. Each candidate trajectory is returned as a GeoJSON LineString accompanied by total distance $D$ (meters) and nominal duration $T$ (seconds).
+
+To correlate weather telemetry along the route, module \texttt{route-sampler.ts} discretizes the polyline into a sequence of inspection waypoints $p_i = (\phi_i, \lambda_i)$ with $i \in \{1, 2, \dots, K\}$. Waypoint extraction enforces two strict bounding constraints:
+\begin{itemize}
+    \item[-] \textit{Spatial step bound}: The geodesic distance between consecutive waypoints cannot exceed $\Delta s \le 5\text{ km}$:
+    \begin{equation}
+    \label{eq:spatial_step_bound_en}
+    d_{\text{geodetic}}(p_i, p_{i-1}) \le 5,000\text{ meters}
+    \end{equation}
+    \item[-] \textit{Temporal step bound}: Estimated arrival delta between consecutive waypoints cannot exceed $\Delta t \le 15\text{ minutes}$. Estimated arrival time $t_i$ at waypoint $p_i$ is dynamically extrapolated using average nominal speed $\bar{v} = D / T$:
+    \begin{equation}
+    \label{eq:eta_extrapolation_en}
+    t_i = t_0 + \sum_{k=1}^i \frac{d_{\text{geodetic}}(p_k, p_{k-1})}{\bar{v}}
+    \end{equation}
+\end{itemize}
+
+\subsection{Vehicle-Differentiated Risk Matrix Evaluation and Multi-Objective Scoring}
+At each waypoint $p_i$, the system executes an optimized PostGIS spatial query to harvest weather observations within a 15 km buffer. Risk engine \texttt{risk-engine.ts} evaluates observations against vehicle safety thresholds: Motorcycle (\texttt{motorcycle}) or Car (\texttt{car}). Aggregate hazard at waypoint $p_i$ follows the max-severity principle $S(p_i) = \max_{d \in \mathcal{D}} R_d(p_i, v)$.
+
+For motorcycles, hazard activation thresholds (rainfall intensity, wind gusts, reduced visibility) are configured 30\% stricter than for passenger cars, reflecting mechanical stability vulnerabilities, aquaplaning risks, and direct exposure to convective wind shear.
+
+Finally, the engine computes balanced multi-objective score $Score_{\text{balanced}}$ via Equation~\eqref{eq:route_balanced_score_en} established in Chapter~\ref{ch:architecture}:
+\begin{equation}
+Score_{\text{balanced}} = 0.5 \cdot \hat{S}_{\text{route}} + 0.3 \cdot \hat{T} + 0.2 \cdot \hat{D}
+\end{equation}
+where $\hat{S}_{\text{route}}$, $\hat{T}$, and $\hat{D}$ represent normalized hazard, duration, and distance. The lowest-scoring route is designated \textit{Weather-Safer Recommended} and returned as a GeoJSON FeatureCollection ready for client-side rendering.
+
+\section{Grounded Conversational Weather AI Assistant and Fallback Adapter}
+\label{sec:grounded_ai_impl}
+
+\subsection{Structured Tool Orchestration with Gemini 1.5 Flash}
+The conversational assistant is implemented within \texttt{apps/\allowbreak api/\allowbreak src/\allowbreak chat/\allowbreak gemini-}\allowbreak\texttt{adapter.ts}, utilizing the official Google Gen AI SDK paired with Gemini 1.5 Flash. The model is constrained by strict system instructions, functioning as a natural-language intent parser and tool dispatcher rather than an unconstrained generative model.
+
+To prevent hallucinations, the platform provides five allowlisted Function Calling tools. Table~\ref{tab:gemini_tool_schema_en} outlines the formal parameter specifications and validation contracts for each tool.
+
+\begin{table}[H]
+\centering
+\small
+\caption[Allowlisted Gemini Function Calling tool specifications]{Parameter declarations for allowlisted Function Calling tools registered with Gemini 1.5 Flash.}
+\label{tab:gemini_tool_schema_en}
+\begin{tabularx}{\textwidth}{l >{\raggedright\arraybackslash}p{3.4cm} >{\raggedright\arraybackslash}p{2.8cm} X}
+\toprule
+\textbf{Tool Identifier} & \textbf{Operational Function} & \textbf{Required Parameters} & \textbf{Parameter Definitions and Typing} \\
+\midrule
+\texttt{search\_location} & Resolves geographic coordinates, administrative codes, and provinces. & \texttt{query} (string) & Natural language location string (e.g., \textit{"Da Lat"}, \textit{"Hanoi"}). \\
+\addlinespace
+\texttt{get\_current\_weather} & Retrieves real-time surface atmospheric observations for a province. & \texttt{location} (string) & Canonical province name or administrative location identifier. \\
+\addlinespace
+\texttt{get\_forecast} & Queries 24-hour or 72-hour atmospheric projections. & \texttt{location} (string), \newline \texttt{hours} (integer) & Target location and forecast horizon (\texttt{hours} accepts 24 or 72). \\
+\addlinespace
+\texttt{assess\_travel\_risk} & Computes localized travel safety classifications per vehicle profile. & \texttt{location} (string), \newline \texttt{vehicle}\allowbreak\texttt{Type} (optional) & Target location and vehicle category (\texttt{car} or \texttt{motorcycle}). \\
+\addlinespace
+\texttt{evaluate\_route} & Evaluates multi-corridor weather hazard across three travel routes. & \texttt{origin} (string), \newline \texttt{desti}\allowbreak\texttt{nation} (string), \newline \texttt{vehicle}\allowbreak\texttt{Type} (optional) & Origin, destination, and vehicle profile (\texttt{car} or \texttt{motorcycle}). \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\subsection{Grounded Verification Pipeline and Citation Synthesis}
+When a user submits an inquiry (e.g., \textit{"Is it safe to ride a motorcycle from Hanoi to Ninh Binh tomorrow morning?"}), Gemini identifies user intent and emits a structured tool call for \texttt{evaluate\_route}. Fastify intercepts the call, invokes \texttt{ChatToolEngine} to run internal OSRM and PostGIS routines, validates data freshness $\tau \le 180\text{ min}$, and returns verified metrics to Gemini.
+
+Gemini synthesizes natural-language responses strictly from this telemetry payload, adhering to mandatory citation rules:
+\begin{itemize}
+    \item[-] \textit{Station identifier (\texttt{Station ID})}: Embeds source telemetry origin (e.g., Ninh Binh Observation Station - VN-NB01).
+    \item[-] \textit{Observation timestamp (\texttt{Timestamp})}: Cites the exact data capture time to inform travelers of freshness.
+    \item[-] \textit{Mandatory safety disclaimer}: Every route or severe weather recommendation includes the statutory warning: \textit{"Weather and route assessments are for informational purposes only. Always obey local traffic advisories and authorities."}
+\end{itemize}
+
+\subsection{Deterministic Fallback Adapter Implementation}
+To guarantee uninterrupted service when Gemini API endpoints experience upstream network failures, latency spikes, or quota exhaustion, Fastify incorporates \texttt{GroundedRuleEngineAdapter} in \texttt{apps/\allowbreak api/\allowbreak src/\allowbreak chat/\allowbreak llm-}\allowbreak\texttt{adapter.ts}.
+
+The fallback adapter operates completely independent of external AI services:
+\begin{itemize}
+    \item[-] \textit{Regex-based entity extraction}: Identifies travel keywords (e.g., \textit{"route"}, \textit{"from ... to ..."}), detects vehicle modes (\textit{"motorcycle"} $\to$ \texttt{motorcycle}, \textit{"car"} $\to$ \texttt{car}), and parses origin and destination names.
+    \item[-] \textit{Direct tool execution}: Dispatches extracted parameters directly to \texttt{toolEngine.}\allowbreak\texttt{executeTool}, triggering internal OSRM and PostGIS hazard pipelines.
+    \item[-] \textit{Markdown response formatting}: Assembles calculation results into a structured Markdown table presenting corridor distances, durations, weather risk classifications, recommended route selections, and mandatory safety advisories.
+\end{itemize}
+
+This fallback architecture ensures 100\% availability for traveler safety decisions regardless of third-party AI provider outages.
+
+\section{Web Frontend and 3D Geospatial Visualization Implementation}
+\label{sec:frontend_web_impl}
+
+\subsection{Frontend Architecture with React 18 and Tiered State Management}
+The user interface is engineered in \texttt{apps/web} using React 18 and Vite. To maintain fluid interactions under continuous map updates, the frontend applies tiered state management:
+\begin{itemize}
+    \item[-] \textit{Server state with TanStack Query}: Real-time weather observations, multi-day forecasts, and route evaluations are managed via TanStack Query (React Query). The library provides automated caching, request deduplication, and window refocus revalidation, minimizing API load.
+    \item[-] \textit{Client state with Zustand}: Ephemeral UI states such as map camera angles, active route selections, vehicle toggles (\texttt{motorcycle} or \texttt{car}), and conversational message histories reside in a lightweight Zustand store.
+    \item[-] \textit{Hybrid internationalization (i18n - ADR-007)}: Supports seamless runtime switching between Vietnamese (\texttt{vi}) and English (\texttt{en}) without page reloads, combining static client dictionaries with dynamic translations from Directus.
+\end{itemize}
+
+\subsection{WebGL 3D Geospatial Visualization with MapLibre GL}
+Geospatial visualization centers on \texttt{Real}\allowbreak\texttt{Interactive}\allowbreak\texttt{Map.tsx} and \texttt{Route}\allowbreak\texttt{Interactive}\allowbreak\texttt{Map.tsx}, utilizing MapLibre GL 4 with WebGL hardware acceleration:
+\begin{itemize}
+    \item[-] \textit{3D Digital Elevation Model (DEM) terrain}: Ingests raster-dem elevation tiles to render topological 3D terrain across Vietnam's mountainous passes (e.g., Hai Van Pass, Ngoan Muc Pass), providing travelers with intuitive elevation and weather-slope awareness.
+    \item[-] \textit{Dynamic risk polyline coloring}: GeoJSON routes are segmented and styled using data-driven color expressions matching traffic safety standards: green (\texttt{\#10b981}) for \texttt{Low}, amber (\texttt{\#f59e0b}) for \texttt{Caution}, and crimson (\texttt{\#ef4444}) for \texttt{High}. GPU rendering sustains a stable 60 frames per second (FPS) during camera tilts, rotations, and zooms.
+    \item[-] \textit{Interactive inspection markers and AI citations}: Marker pins denote weather hazard checkpoints along the path. Clicking an evidence badge in the AI chat drawer triggers a smooth camera flyTo animation directly to the cited weather station or route segment.
+\end{itemize}
+
+\section{Software Testing Strategy, Quality Assurance, and CI/CD Pipeline}
+\label{sec:testing_qa_strategy}
+
+\subsection{Four-Tier Testing Pyramid}
+To guarantee reliability, data integrity, and security across safety-critical workflows, VietForecast adopts a comprehensive four-tier testing strategy:
+\begin{itemize}
+    \item[-] \textit{Tier 1: Unit Testing}: Executed via Vitest across 19 specialized test suites covering cryptographic primitives (\texttt{crypto.}\allowbreak\texttt{test.ts}), session concurrency locks (\texttt{session-}\allowbreak\texttt{store.}\allowbreak\texttt{test.ts}), worker retry backoff math (\texttt{runtime.}\allowbreak\texttt{test.ts}), WMO unit conversions (\texttt{normalize.}\allowbreak\texttt{test.ts}), max-severity hazard aggregation (\texttt{risk-}\allowbreak\texttt{engine.}\allowbreak\texttt{test.ts}), and fallback adapter parsing (\texttt{llm-}\allowbreak\texttt{adapter.}\allowbreak\texttt{test.ts}).
+    \item[-] \textit{Tier 2: Integration Testing}: Uses Supertest against Fastify API endpoints with test databases, validating PostGIS spatial queries, Directus authentication lifecycles, and Redis Token Bucket rate limiting.
+    \item[-] \textit{Tier 3: Security and Penetration Verification}: Tests timing-safe CSRF signature checks, validates instant session family revocation $\Psi_{\text{annihilate}}$ upon token reuse detection, and verifies parameterized queries against SQL injection vulnerabilities.
+    \item[-] \textit{Tier 4: Performance Benchmarking}: Measures PostGIS GiST corridor query execution times under concurrent load, confirming response latencies remain strictly under 15 milliseconds.
+\end{itemize}
+
+\subsection{Automated Continuous Integration and Deployment Pipeline}
+Quality assurance is fully automated via GitHub Actions in \texttt{.github/workflows/ci.yml}. Every pull request and push to \texttt{main} triggers automated verification on Ubuntu 24.04:
+\begin{itemize}
+    \item[-] \textit{Linting}: Executes \texttt{pnpm run lint} using ESLint 9 to enforce code quality and stylistic standards.
+    \item[-] \textit{Static Type Checking}: Executes \texttt{pnpm run typecheck} across all packages and apps to ensure zero TypeScript compiler errors.
+    \item[-] \textit{Test Suite Execution}: Executes \texttt{pnpm run test}, requiring 100\% pass rates across all 19 test suites.
+    \item[-] \textit{Security Dependency Audit}: Executes \texttt{pnpm run audit:prod} to detect known vulnerabilities (CVEs) across production dependencies.
+    \item[-] \textit{Docker Compose Contract Validation (Smoke Test)}: Spins up ephemeral PostgreSQL, Redis, Directus, API, and Worker containers; generates random masked credentials via \texttt{openssl rand}, and validates container healthchecks for production deployment readiness.
+\end{itemize}
+
+\section{Chapter Summary}
+\label{sec:chapter4_summary}
+Chapter 4 presented the comprehensive software implementation of the VietForecast platform, translating the architectural designs of Chapter~\ref{ch:architecture} into robust engineering artifacts. The platform successfully realizes a secure three-tier monorepo architecture; a high-throughput Fastify 5 backend with AES-256-GCM session cryptography (ADR-004); two-tier PostGIS 3.4 GiST corridor queries executing under 15 ms; a self-healing integration worker with distributed leasing (ADR-001); a vehicle-differentiated route hazard evaluation engine; a grounded conversational AI assistant with deterministic fallback; a 60 FPS WebGL 3D map interface via MapLibre GL; and a rigorous four-tier automated CI/CD pipeline. Empirical performance evaluations, latency benchmarks, and validation results are examined in Chapter 5.

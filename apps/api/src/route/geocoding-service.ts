@@ -211,10 +211,17 @@ export class GeocodingService {
 // Factory
 // =============================================================================
 
-export function createGeocodingService(): GeocodingService {
+export function createGeocodingService(options?: Partial<GeocodingServiceOptions>): GeocodingService {
+  const apiKey =
+    options?.apiKey ||
+    process.env.GEOAPIFY_GEOCODING_API_KEY?.trim() ||
+    process.env.GEOAPIFY_SERVER_API_KEY?.trim() ||
+    process.env.GEOAPIFY_API_KEY?.trim() ||
+    "demo_geocoding_key";
+
   return new GeocodingService({
-    apiKey: requireEnvironmentValue(process.env, "GEOAPIFY_GEOCODING_API_KEY"),
-    baseUrl: "https://api.geoapify.com/v1/geocode",
-    timeoutMs: 10_000,
+    apiKey,
+    baseUrl: options?.baseUrl ?? "https://api.geoapify.com/v1/geocode",
+    timeoutMs: options?.timeoutMs ?? 10_000,
   });
 }

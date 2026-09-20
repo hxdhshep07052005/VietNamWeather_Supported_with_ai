@@ -25,6 +25,7 @@ import { LocationPage } from "./pages/LocationPage";
 import { RoutePlannerPage } from "./pages/RoutePlannerPage";
 import { SettingsPage } from "./pages/SettingsPage";
 import { UpgradePage } from "./pages/UpgradePage";
+import { WeatherPage } from "./pages/WeatherPage";
 
 // Route Guard Component using Outlet pattern
 function ProtectedRoute() {
@@ -62,6 +63,9 @@ function App() {
       {/* Public Routes */}
       <Route element={<PublicLayout />}>
         <Route path="/" element={<LandingPage />} />
+        <Route path="/weather" element={<WeatherPage />} />
+        <Route path="/cities" element={<Navigate to="/weather" replace />} />
+        <Route path="/pricing" element={<UpgradePage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/verify-otp" element={<OtpPage />} />
@@ -74,10 +78,13 @@ function App() {
       <Route element={<ProtectedLayout />}>
         <Route element={<ProtectedRoute />}>
           <Route path="/map" element={<MapPage />} />
+          <Route path="/weather" element={<WeatherPage />} />
+          <Route path="/cities" element={<Navigate to="/weather" replace />} />
           <Route path="/location/:id" element={<LocationPage />} />
           <Route path="/route" element={<RoutePlannerPage />} />
           <Route path="/settings" element={<SettingsPage />} />
           <Route path="/upgrade" element={<UpgradePage />} />
+          <Route path="/pricing" element={<UpgradePage />} />
         </Route>
       </Route>
 

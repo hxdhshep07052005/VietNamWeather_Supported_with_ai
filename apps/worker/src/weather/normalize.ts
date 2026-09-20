@@ -352,20 +352,15 @@ function normalizeDay(
   }
 
   const hourly = hourValues
-    .filter((hour) => {
-      if (!isRecord(hour)) return false;
-      const timeEpoch = hour.time_epoch;
-      if (typeof timeEpoch !== "number") return false;
-      const hourFrom = epochToIso(timeEpoch);
-      // Filter hours within the day's bounds (with small tolerance for API quirks)
-      return hourFrom >= validFrom && hourFrom < validTo;
-    })
     .map((hour) => {
       if (!isRecord(hour)) {
         throw weatherSchemaError();
       }
       return normalizeHour(hour, fetchedAt);
-    });
+    })
+    .filter((hour) => (
+      hour.validInterval.from >= validFrom && hour.validInterval.from < validTo
+    ));
   if (hourly.length < 1) {
     throw weatherSchemaError();
   }

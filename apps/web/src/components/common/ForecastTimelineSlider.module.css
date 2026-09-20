@@ -1,0 +1,282 @@
+/**
+ * ForecastTimelineSlider.module.css
+ * Seamless dark/light theme milestone track line and draggable scrubber
+ */
+
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 12px 14px;
+  border-radius: var(--radius-xl, 14px);
+  position: relative;
+  user-select: none;
+  transition: background 0.2s ease, border-color 0.2s ease;
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Header row with title & playback buttons */
+.headerRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.titleGroup {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #F8FAFC;
+}
+
+.clockIcon {
+  color: #38BDF8;
+}
+
+.activeBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 10px;
+  border-radius: var(--radius-full, 9999px);
+  background: rgba(14, 165, 233, 0.18);
+  border: 1px solid rgba(56, 189, 248, 0.4);
+  color: #38BDF8;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.2px;
+}
+
+.playbackControls {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.controlBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(30, 41, 59, 0.8);
+  color: #94A3B8;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.controlBtn:hover {
+  background: #0284C7;
+  color: #FFFFFF;
+  border-color: #0284C7;
+}
+
+.controlBtnActive {
+  background: #0284C7;
+  color: #FFFFFF;
+  border-color: #0284C7;
+}
+
+/* Timeline Track Container */
+.trackWrapper {
+  position: relative;
+  padding: 10px 8px 24px 8px;
+  margin-top: 4px;
+}
+
+.trackLineBackground {
+  position: absolute;
+  top: 17px;
+  left: 12px;
+  right: 12px;
+  height: 4px;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.trackLineFill {
+  position: absolute;
+  top: 17px;
+  left: 12px;
+  height: 4px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, #0EA5E9 0%, #0284C7 60%, #6366F1 100%);
+  box-shadow: 0 0 10px rgba(14, 165, 233, 0.6);
+  transition: width 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Milestone Dots */
+.milestonesContainer {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 5;
+}
+
+.milestonePoint {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  background: transparent;
+  border: none;
+  padding: 0;
+}
+
+.pointDot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #1E293B;
+  border: 2px solid #64748B;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.milestonePoint:hover .pointDot {
+  border-color: #38BDF8;
+  transform: scale(1.2);
+}
+
+.pointDotActive {
+  background: #0284C7;
+  border-color: #38BDF8;
+  box-shadow: 0 0 12px rgba(56, 189, 248, 0.9);
+  transform: scale(1.25);
+}
+
+.pointDotPassed {
+  background: #0EA5E9;
+  border-color: #0EA5E9;
+}
+
+.pointLabel {
+  position: absolute;
+  top: 20px;
+  font-size: 10px;
+  font-weight: 700;
+  color: #94A3B8;
+  white-space: nowrap;
+  transition: color 0.15s ease;
+}
+
+.pointLabelActive {
+  color: #38BDF8;
+  font-weight: 800;
+}
+
+.pointSubLabel {
+  font-size: 8.5px;
+  font-weight: 600;
+  color: #64748B;
+  display: block;
+}
+
+/* Hidden native range input for accessible dragging */
+.nativeRangeInput {
+  position: absolute;
+  top: 8px;
+  left: 4px;
+  right: 4px;
+  width: calc(100% - 8px);
+  height: 22px;
+  opacity: 0;
+  cursor: pointer;
+  z-index: 4;
+}
+
+/* Floating tooltip above active position */
+.tooltip {
+  position: absolute;
+  top: -12px;
+  transform: translateX(-50%);
+  background: #0F172A;
+  color: #FFFFFF;
+  border: 1px solid #0EA5E9;
+  padding: 2px 7px;
+  border-radius: 6px;
+  font-size: 10px;
+  font-weight: 800;
+  white-space: nowrap;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  pointer-events: none;
+  z-index: 6;
+}
+
+/* ==========================================================================
+   LIGHT THEME OVERRIDES ([data-theme="light"])
+   ========================================================================== */
+:global([data-theme="light"]) .container {
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+}
+
+:global([data-theme="light"]) .titleGroup {
+  color: #0F172A;
+}
+
+:global([data-theme="light"]) .clockIcon {
+  color: #0284C7;
+}
+
+:global([data-theme="light"]) .activeBadge {
+  background: rgba(2, 132, 199, 0.1);
+  border: 1px solid rgba(2, 132, 199, 0.3);
+  color: #0284C7;
+}
+
+:global([data-theme="light"]) .controlBtn {
+  background: #FFFFFF;
+  border: 1px solid #CBD5E1;
+  color: #475569;
+}
+
+:global([data-theme="light"]) .controlBtn:hover {
+  background: #0284C7;
+  color: #FFFFFF;
+  border-color: #0284C7;
+}
+
+:global([data-theme="light"]) .trackLineBackground {
+  background: #CBD5E1;
+}
+
+:global([data-theme="light"]) .pointDot {
+  background: #FFFFFF;
+  border: 2px solid #94A3B8;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+:global([data-theme="light"]) .pointLabel {
+  color: #475569;
+}
+
+:global([data-theme="light"]) .pointLabelActive {
+  color: #0284C7;
+}
+
+:global([data-theme="light"]) .pointSubLabel {
+  color: #64748B;
+}
+
+:global([data-theme="light"]) .tooltip {
+  background: #0F172A;
+  color: #FFFFFF;
+  border-color: #0284C7;
+}
+
+@media (max-width: 640px) {
+  .pointSubLabel {
+    display: none;
+  }
+}

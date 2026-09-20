@@ -271,10 +271,17 @@ export class RoutingService {
 // Factory
 // =============================================================================
 
-export function createRoutingService(): RoutingService {
+export function createRoutingService(options?: Partial<RoutingServiceOptions>): RoutingService {
+  const apiKey =
+    options?.apiKey ||
+    process.env.GEOAPIFY_ROUTING_API_KEY?.trim() ||
+    process.env.GEOAPIFY_SERVER_API_KEY?.trim() ||
+    process.env.GEOAPIFY_API_KEY?.trim() ||
+    "demo_routing_key";
+
   return new RoutingService({
-    apiKey: requireEnvironmentValue(process.env, "GEOAPIFY_ROUTING_API_KEY"),
-    baseUrl: "https://api.geoapify.com/v1/routing",
-    timeoutMs: 15_000,
+    apiKey,
+    baseUrl: options?.baseUrl ?? "https://api.geoapify.com/v1/routing",
+    timeoutMs: options?.timeoutMs ?? 15_000,
   });
 }

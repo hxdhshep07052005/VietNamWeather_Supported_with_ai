@@ -31,12 +31,39 @@
   },
   "nav": {
     "home": "Trang chủ",
+    "weather": "Thời tiết",
     "map": "Bản đồ",
     "route": "Lộ trình",
     "settings": "Cài đặt",
     "upgrade": "Nâng cấp",
+    "pricing": "Bảng giá",
     "logout": "Đăng xuất",
     "admin": "Quản trị"
+  },
+  "weatherPage": {
+    "title": "Thời tiết 63 Tỉnh Thành Toàn Quốc",
+    "subtitle": "Dữ liệu quan trắc khí tượng thời gian thực & mô phỏng dự báo đa chiều theo dòng thời gian",
+    "searchPlaceholder": "Tìm kiếm tỉnh thành (Hà Nội, Đà Nẵng, TP.HCM...)",
+    "filterRegion": "Vùng miền",
+    "filterRisk": "Mức rủi ro",
+    "filterCondition": "Thời tiết",
+    "all": "Tất cả",
+    "safe": "An toàn",
+    "caution": "Cần lưu ý",
+    "highRisk": "Nguy cơ cao",
+    "viewGrid": "Dạng lưới thẻ",
+    "viewTable": "Dạng bảng dữ liệu",
+    "avgTemp": "Nhiệt độ TB",
+    "hottest": "Nóng nhất",
+    "coolest": "Mát nhất",
+    "safeCount": "Vùng an toàn",
+    "warningCount": "Cần theo dõi",
+    "dangerCount": "Rủi ro cao",
+    "viewOnMap": "Xem bản đồ",
+    "planRoute": "Lập lộ trình",
+    "detail": "Xem chi tiết",
+    "hourlyForecast": "Dự báo chi tiết 24 giờ tới",
+    "advisory": "Khuyến cáo an toàn di chuyển"
   },
   "landing": {
     "heroEyebrow": "Trợ lý Du lịch Thời tiết Thông minh Việt Nam",
@@ -344,7 +371,7 @@
     "close": "Đóng bảng thông tin",
     "loading": "Đang tải dữ liệu...",
     "lastUpdated": "Cập nhật lần cuối: {{time}}",
-    "dangerAlert": "⚠ Cảnh báo thời tiết nguy hiểm",
+    "dangerAlert": "Cảnh báo thời tiết nguy hiểm",
     "riskLevel": "Mức rủi ro",
     "risk": {
       "low": "Rủi ro thấp",
@@ -400,5 +427,23 @@
       "metric": "Giá trị: {{value}}{{unit}} (ngưỡng: {{threshold}}{{unit}})"
     },
     "attribution": "Dữ liệu từ WeatherAPI.com"
+  },
+  "route": {
+    "title": "Lập Lộ Trình An Toàn Thời Tiết",
+    "subtitle": "Phân tích thời tiết theo thời gian thực tại các mốc ETA dọc tuyến di chuyển trên khắp Việt Nam",
+    "from": "Điểm xuất phát",
+    "to": "Điểm đến",
+    "vehicle": "Phương tiện di chuyển",
+    "car": "Ô tô",
+    "motorcycle": "Xe máy",
+    "departure": "Thời điểm khởi hành",
+    "departNow": "Khởi hành ngay",
+    "planRoute": "Phân Tích Tuyến Đường",
+    "analyzing": "Đang phân tích thời tiết tuyến đường..."
+  },
+  "footer": {
+    "allRightsReserved": "Mọi quyền được bảo lưu.",
+    "terms": "Điều khoản sử dụng",
+    "privacy": "Chính sách bảo mật"
   }
 }

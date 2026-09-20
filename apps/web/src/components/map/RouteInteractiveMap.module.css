@@ -1,0 +1,402 @@
+/**
+ * Route Interactive Map Styles
+ * Custom markers, polyline layer controls, floating toolbars & route legends
+ */
+
+.mapWrapper,
+.mapRootContainer {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 480px;
+  overflow: hidden;
+  background-color: var(--color-background-alt);
+}
+
+.mapContainer,
+.mapCanvas {
+  width: 100%;
+  height: 100%;
+  outline: none;
+}
+
+/* Floating Top Controls (Basemap Style Switcher) */
+.topControls,
+.topToolbar {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  z-index: 10;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  max-width: calc(100% - 28px);
+}
+
+.styleToggleGroup {
+  display: flex;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 3px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  backdrop-filter: blur(8px);
+}
+
+.styleBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 10px;
+  border-radius: var(--radius-md);
+  border: none;
+  background: none;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.styleBtnActive {
+  background: var(--color-primary);
+  color: #FFFFFF;
+}
+
+.routeTypeTag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  background: rgba(15, 23, 42, 0.9);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  color: #FFFFFF;
+  font-size: 12px;
+  font-weight: 700;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(8px);
+}
+
+.loadingRoadTag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  background: rgba(15, 23, 42, 0.9);
+  border: 1px solid rgba(56, 189, 248, 0.4);
+  border-radius: var(--radius-lg);
+  color: #38BDF8;
+  font-size: 11px;
+  font-weight: 600;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(8px);
+}
+
+.realRoadBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  background: rgba(15, 23, 42, 0.9);
+  border: 1px solid rgba(16, 185, 129, 0.4);
+  border-radius: var(--radius-lg);
+  color: #34D399;
+  font-size: 11px;
+  font-weight: 700;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(8px);
+}
+
+.riskToggleBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 12px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  color: var(--color-text-secondary);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  backdrop-filter: blur(8px);
+  transition: all var(--transition-fast);
+}
+
+.riskToggleBtn:hover {
+  border-color: var(--color-primary);
+  color: var(--color-text-primary);
+}
+
+.riskToggleBtnActive {
+  background: rgba(34, 197, 94, 0.15);
+  border-color: #22C55E;
+  color: #15803D;
+}
+
+/* Floating Navigation Controls (Bottom Right) */
+.navControls {
+  position: absolute;
+  right: 14px;
+  bottom: 20px;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+  border-radius: var(--radius-xl);
+}
+
+.navBtn {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  color: var(--color-text-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.navBtn:hover {
+  background: var(--color-primary-light);
+  color: var(--color-primary);
+  border-color: var(--color-primary);
+}
+
+/* Floating Route Risk Legend (Bottom Left) */
+.legendBar {
+  position: absolute;
+  left: 14px;
+  bottom: 20px;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 14px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  backdrop-filter: blur(8px);
+}
+
+.legendItem {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.legendLine {
+  width: 14px;
+  height: 4px;
+  border-radius: 2px;
+  display: inline-block;
+}
+
+/* Origin (Point A) Marker */
+:global(.origin-marker-pin) {
+  cursor: pointer;
+  transform: translate(-50%, -100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 50;
+  pointer-events: auto;
+}
+
+:global(.origin-marker-chip) {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  background: #0284C7;
+  border: 1.5px solid #FFFFFF;
+  border-radius: 999px;
+  color: #FFFFFF;
+  font-size: 11px;
+  font-weight: 800;
+  box-shadow: 0 4px 14px rgba(2, 132, 199, 0.5);
+  white-space: nowrap;
+}
+
+:global(.origin-marker-pointer) {
+  width: 0;
+  height: 0;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-top: 7px solid #0284C7;
+  margin-top: -1px;
+}
+
+:global(.origin-marker-dot) {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #0284C7;
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.8), 0 0 10px #0284C7;
+  margin-top: 2px;
+  animation: pulseOrigin 1.8s infinite;
+}
+
+@keyframes pulseOrigin {
+  0% {
+    transform: scale(0.9);
+    box-shadow: 0 0 0 0 rgba(2, 132, 199, 0.7);
+  }
+  70% {
+    transform: scale(1.15);
+    box-shadow: 0 0 0 8px rgba(0, 0, 0, 0);
+  }
+  100% {
+    transform: scale(0.9);
+    box-shadow: 0 0 0 0 rgba(0, 0, 0, 0);
+  }
+}
+
+/* Destination (Point B) Marker */
+:global(.destination-marker-pin) {
+  cursor: pointer;
+  transform: translate(-50%, -100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 50;
+  pointer-events: auto;
+}
+
+:global(.destination-marker-chip) {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  background: #DC2626;
+  border: 1.5px solid #FFFFFF;
+  border-radius: 999px;
+  color: #FFFFFF;
+  font-size: 11px;
+  font-weight: 800;
+  box-shadow: 0 4px 14px rgba(220, 38, 38, 0.5);
+  white-space: nowrap;
+}
+
+:global(.destination-marker-pointer) {
+  width: 0;
+  height: 0;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-top: 7px solid #DC2626;
+  margin-top: -1px;
+}
+
+:global(.destination-marker-dot) {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #DC2626;
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.8), 0 0 10px #DC2626;
+  margin-top: 2px;
+  animation: pulseDest 1.8s infinite;
+}
+
+@keyframes pulseDest {
+  0% {
+    transform: scale(0.9);
+    box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.7);
+  }
+  70% {
+    transform: scale(1.15);
+    box-shadow: 0 0 0 8px rgba(0, 0, 0, 0);
+  }
+  100% {
+    transform: scale(0.9);
+    box-shadow: 0 0 0 0 rgba(0, 0, 0, 0);
+  }
+}
+
+/* Intermediate Checkpoint Weather Marker */
+:global(.checkpoint-marker-pin) {
+  cursor: pointer;
+  transform: translate(-50%, -100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 40;
+  pointer-events: auto;
+  transition: transform 0.15s ease-out;
+}
+
+:global(.checkpoint-marker-pin:hover) {
+  transform: translate(-50%, -108%) scale(1.1);
+  z-index: 60;
+}
+
+:global(.checkpoint-marker-pin.checkpoint-marker-selected) {
+  transform: translate(-50%, -115%) scale(1.2);
+  z-index: 100;
+}
+
+:global(.checkpoint-marker-pin.checkpoint-marker-selected .checkpoint-marker-chip) {
+  background: #0284C7;
+  border-color: #FFFFFF;
+  box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.45), 0 8px 20px rgba(0, 0, 0, 0.6);
+}
+
+:global(.checkpoint-marker-chip) {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 8px;
+  background: rgba(15, 23, 42, 0.92);
+  border: 1.5px solid var(--cp-border-color, #0EA5E9);
+  border-radius: 999px;
+  color: #FFFFFF;
+  font-size: 10px;
+  font-weight: 700;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  white-space: nowrap;
+  backdrop-filter: blur(6px);
+}
+
+:global(.checkpoint-marker-temp) {
+  color: #FCD34D;
+  font-weight: 800;
+}
+
+:global(.checkpoint-marker-dot) {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--cp-border-color, #0EA5E9);
+  margin-top: 2px;
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.7);
+}
+
+@media (max-width: 768px) {
+  .topControls {
+    top: 8px;
+    left: 8px;
+  }
+
+  .navControls {
+    right: 8px;
+    bottom: 12px;
+  }
+
+  .legendBar {
+    left: 8px;
+    bottom: 12px;
+    font-size: 10px;
+    padding: 6px 10px;
+    gap: 8px;
+  }
+}

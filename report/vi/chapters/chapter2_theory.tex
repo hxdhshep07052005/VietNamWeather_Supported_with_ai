@@ -1,0 +1,276 @@
+\chapter{Cơ sở lý thuyết và Công nghệ nền tảng}
+\label{ch:theory}
+
+Chương này trình bày toàn diện các nền tảng lý thuyết khoa học, mô hình tính toán định lượng và kiến trúc công nghệ nền tảng được nghiên cứu và ứng dụng trong hệ sinh thái VietForecast. Nội dung trọng tâm đi từ nguyên lý biểu diễn và xử lý dữ liệu địa lý không gian trong GIS, quy chuẩn đo lường khí tượng bề mặt theo tiêu chuẩn của Tổ chức Khí tượng Thế giới (WMO), thuật toán rời rạc hóa và định lượng rủi ro đa chiều trên hành lang giao thông, cho đến kỹ thuật đối soát dữ liệu thực (Tool Grounding) loại trừ hiện tượng ảo tưởng của mô hình ngôn ngữ lớn và các phân tích chuyên sâu về ngăn xếp công nghệ phân tán được lựa chọn.
+
+\section{Dữ liệu không gian địa lý và Hệ thống thông tin địa lý (GIS)}
+
+Hệ thống thông tin địa lý (Geographic Information System -- GIS) đóng vai trò nền tảng trong toàn bộ chu trình xử lý của VietForecast, từ tiếp nhận tọa độ, chuyển đổi hệ quy chiếu, biểu diễn topo mạng lưới giao thông đường bộ đến thực thi các phép phân tích lân cận không gian giữa phương tiện di chuyển và các trạm quan trắc khí tượng bề mặt.
+
+\subsection{Hệ quy chiếu WGS84 và Đặc tả GeoJSON RFC 7946}
+
+Để định vị chính xác vị trí tuyệt đối của các đối tượng địa lý trên bề mặt Trái Đất, hệ thống sử dụng Hệ quy chiếu trắc địa thế giới năm 1984 (World Geodetic System 1984 -- WGS84), được chuẩn hóa quốc tế dưới mã nhận dạng EPSG:4326. Mô hình toán học của WGS84 xấp xỉ bề mặt geoid thực tế của Trái Đất thông qua một hình elipxoit xoay (oblate ellipsoid of revolution) được xác định bởi hai hằng số hình học cơ bản:
+\begin{itemize}
+    \item[-] Bán trục lớn xích đạo: $a = 6.378.137\text{ m}$.
+    \item[-] Độ dẹt hình học: $f = \frac{a - b}{a} = \frac{1}{298{,}257223563}$.
+\end{itemize}
+Từ hai tham số này, bán trục nhỏ cực $b$ được xác định xấp xỉ:
+\begin{equation}
+\label{eq:minor_axis_vi}
+b = a(1 - f) \approx 6.356.752{,}3142\text{ m}
+\end{equation}
+Vị trí của một thực thể địa lý bất kỳ $P$ trên mặt cầu elipxoit được định danh duy nhất bởi cặp tọa độ trắc địa $(\phi, \lambda)$, trong đó $\phi \in [-90^\circ, +90^\circ]$ biểu thị vĩ độ và $\lambda \in [-180^\circ, +180^\circ]$ biểu thị kinh độ.
+
+Trong tầng giao tiếp dịch vụ và truyền tải dữ liệu qua giao diện lập trình ứng dụng (API), định dạng GeoJSON theo đặc tả chuẩn RFC 7946 \cite{rfc7946} được áp dụng làm phương thức đóng gói tiêu chuẩn. GeoJSON sử dụng cấu trúc cú pháp JSON để mô tả các đối tượng không gian. Một điểm kỹ thuật tối quan trọng theo RFC 7946 là quy ước thứ tự tọa độ: kinh độ (easting) luôn được xếp trước vĩ độ (northing) theo cặp $[\lambda, \phi]$, hoàn toàn trái ngược với thói quen phát biểu thông thường $(latitude, longitude)$. Các kiểu hình học cơ bản được hệ thống khai thác bao gồm:
+\begin{itemize}
+    \item[-] Điểm (Point): Định danh vị trí trạm quan trắc khí tượng hoặc tọa độ tức thời của phương tiện giao thông, ví dụ $[105.8542, 21.0285]$ đại diện cho vị trí trạm đo tại khu vực Hà Nội.
+    \item[-] Đa tuyến (LineString): Chuỗi liên tục các điểm nút không gian kết nối với nhau, mô tả quỹ đạo hình học của các cung đường quốc lộ, cao tốc hoặc lộ trình đề xuất cho phương tiện.
+    \item[-] Vùng đa giác (Polygon và MultiPolygon): Xác định đường bao ranh giới hành chính của 63 tỉnh thành phố tại Việt Nam, cũng như diện bao phủ không gian của các vùng nhiễu động mây dông hoặc tâm áp thấp nhiệt đới.
+    \item[-] Tập hợp đối tượng (FeatureCollection): Cấu trúc mảng chứa danh sách các đối tượng hình học độc lập (Features), cho phép gắn kèm các thuộc tính phi không gian (properties) như hệ số trơn trượt mặt đường, tốc độ gió tức thời và chỉ số cảnh báo rủi ro.
+\end{itemize}
+
+\subsection{Hệ quản trị dữ liệu không gian PostGIS và Cơ chế chỉ mục GiST}
+
+Việc lưu trữ, quản lý và truy vấn hàng triệu đối tượng hình học với yêu cầu độ trễ dưới một giây đặt ra thách thức lớn đối với các hệ quản trị cơ sở dữ liệu quan hệ truyền thống. VietForecast triển khai PostGIS \cite{postgis2023} -- một module mở rộng không gian chạy trên nền tảng PostgreSQL 16. PostGIS bổ sung các kiểu dữ liệu không gian tuân thủ đặc tả Open Geospatial Consortium (OGC) bao gồm \texttt{geometry} (phép tính phẳng trong hệ tọa độ Descartes) và \texttt{geography} (phép tính cầu trắc địa trên mặt cong elipxoit thực tế).
+
+Khi kích thước tập dữ liệu không gian tăng lên, việc quét tuần tự toàn bộ bảng dữ liệu (sequential scan) dẫn tới độ phức tạp thời gian $O(N)$, gây tắc nghẽn tài nguyên CPU nghiêm trọng khi có nhiều người dùng đồng thời yêu cầu phân tích hành trình. Để giải quyết triệt để vấn đề này, PostGIS cung cấp cấu trúc chỉ mục cây tìm kiếm tổng quát GiST (Generalized Search Tree) kế thừa nguyên lý cấu trúc cây R-Tree \cite{guttman1984}.
+
+Chỉ mục GiST hoạt động bằng cách bao bọc mỗi đối tượng hình học phức tạp bằng một hộp chữ nhật bao tối thiểu (Bounding Box -- BBOX) có các cạnh song song với các trục tọa độ địa lý. Cây GiST được tổ chức theo cấu trúc phân cấp nhiều tầng: các nút lá lưu giữ BBOX của từng đối tượng riêng lẻ, còn các nút nhánh cha lưu giữ BBOX bao trùm toàn bộ các BBOX của các nút con trực thuộc. Khi tiếp nhận một câu truy vấn không gian, hệ thống kích hoạt quy trình lọc hai bước:
+\begin{itemize}
+    \item[-] Giai đoạn lọc thô (Rough Pass): Hộp BBOX của đối tượng truy vấn duyệt qua cây chỉ mục với độ phức tạp tiệm cận $O(\log N)$. Thuật toán loại bỏ lập tức đại đa số các đối tượng có hộp bao không giao cắt với vùng quan tâm mà không cần truy xuất tới dữ liệu hình học chi tiết.
+    \item[-] Giai đoạn tính toán chính xác (Exact Pass): Các phép toán hình học hình cầu chi tiết chỉ được áp dụng trên tập hợp rất nhỏ các đối tượng còn lại đã vượt qua giai đoạn lọc thô, giúp tiết kiệm tối đa tài nguyên xử lý.
+\end{itemize}
+
+Trong quá trình phân tích tương quan giữa lộ trình và thời tiết, hệ thống khai thác các hàm không gian cốt lõi của PostGIS:
+\begin{itemize}
+    \item[-] \texttt{ST\_DWithin(geom1, geom2, distance)}: Xác định các trạm quan trắc nằm trong bán kính ảnh hưởng của cung đường thông qua việc khai thác trực tiếp chỉ mục GiST mà không cần tính khoảng cách từng đôi một trên toàn bảng.
+    \item[-] \texttt{ST\_DistanceSphere(geom1, geom2)}: Tính khoảng cách cung tròn xấp xỉ giữa hai tọa độ địa lý trên mặt cầu chuẩn, giúp tối ưu hóa thời gian tính toán với sai số trắc địa không đáng kể ở quy mô khu vực.
+    \item[-] \texttt{ST\_LineInterpolatePoint(line, fraction)}: Trích xuất tọa độ điểm nội suy tại vị trí tỷ lệ xác định dọc theo tuyến đường, cung cấp cơ sở toán học để thực hiện việc rời rạc hóa tuyến đường theo khoảng cách.
+\end{itemize}
+
+\subsection{Giải thuật rời rạc hóa và lấy mẫu hành lang di chuyển}
+
+Một hành trình di chuyển liên tỉnh tại Việt Nam thường kéo dài từ hàng chục đến hàng trăm kilômét, đi qua nhiều địa hình phân hóa phức tạp như đồng bằng duyên hải, đèo dốc và cao nguyên. Dữ liệu khí tượng đo được tại điểm xuất phát vào thời điểm $t_0$ hoàn toàn không đại diện cho điều kiện thời tiết tại một con đèo cách xa 120~km mà phương tiện sẽ tiếp cận sau ba giờ lái xe. Do đó, hệ thống xây dựng giải thuật rời rạc hóa không gian kết hợp ước lượng thời gian tiếp cận thực tế dọc tuyến đường.
+
+Khoảng cách trắc địa cung tròn giữa hai điểm tọa độ kế tiếp $(\phi_1, \lambda_1)$ và $(\phi_2, \lambda_2)$ được tính toán thông qua công thức Haversine:
+\begin{equation}
+\label{eq:haversine_vi}
+d = 2R \cdot \arcsin \left( \sqrt{\sin^2\left(\frac{\Delta \phi}{2}\right) + \cos\phi_1 \cos\phi_2 \sin^2\left(\frac{\Delta \lambda}{2}\right)} \right)
+\end{equation}
+trong đó $R \approx 6.371\text{ km}$ là bán kính trung bình của Trái Đất, $\Delta \phi = \phi_2 - \phi_1$ và $\Delta \lambda = \lambda_2 - \lambda_1$ tính theo đơn vị radian.
+
+Gọi $L$ là tổng chiều dài hành trình và $T$ là tổng thời gian lưu thông dự kiến được cung cấp bởi động cơ định tuyến đường bộ, vận tốc di chuyển trung bình danh định dọc hành lang được xác định bởi $\bar{v} = L / T$. Thuật toán tiến hành rời rạc hóa đối tượng LineString của tuyến đường thành một tập hợp hữu hạn các điểm kiểm tra khí tượng $\mathcal{P}_{\text{samples}} = \{p_0, p_1, p_2, \dots, p_K\}$ thỏa hiệp đồng thời hai giới hạn trên:
+\begin{itemize}
+    \item[-] Bước không gian tối đa: Khoảng cách giữa hai điểm mẫu liên tiếp không được vượt quá $\Delta s_{\max} = 5\text{ km}$.
+    \item[-] Bước thời gian tối đa: Khoảng thời gian di chuyển dự kiến giữa hai điểm mẫu kế tiếp không được vượt quá $\Delta t_{\max} = 15\text{ phút}$.
+\end{itemize}
+
+Tại mỗi điểm kiểm tra $p_i$, mốc thời gian phương tiện dự kiến chạm mốc được ước lượng lũy kế:
+\begin{equation}
+\label{eq:arrival_time_vi}
+t_i = t_0 + \sum_{j=1}^{i} \frac{d(p_{j-1}, p_j)}{\bar{v}}
+\end{equation}
+Sau đó, hệ thống thiết lập một vùng đệm không gian (buffer corridor) có bán kính ảnh hưởng $r_{\text{corridor}} = 15\text{ km}$ xung quanh điểm $p_i$. Nhờ vùng đệm này, câu truy vấn không gian sẽ nhanh chóng xác định được trạm quan trắc gần nhất hoặc lấy giá trị trường thời tiết dự báo tương ứng với mốc thời gian $t_i$ để gán vào điểm kiểm tra.
+
+\section{Tiêu chuẩn khí tượng WMO và Mô hình định lượng rủi ro}
+
+\subsection{Quy chuẩn quan trắc bề mặt WMO-No. 8 và Chuẩn hóa dữ liệu}
+
+Dữ liệu khí tượng đầu vào của VietForecast được chuẩn hóa dựa trên tài liệu Hướng dẫn về Dụng cụ và Phương pháp Quan trắc số 8 (WMO-No. 8) do Tổ chức Khí tượng Thế giới ban hành \cite{wmo2021guidelines}. Năm đại lượng vật lý nòng cốt ảnh hưởng trực tiếp đến động lực học di chuyển, hệ số ma sát giữa lốp xe và mặt đường bao gồm:
+\begin{itemize}
+    \item[-] Cường độ lượng mưa tức thời ($I_{\text{rain}}$, tính bằng mm/h): Mưa lớn làm giảm ma sát tiếp xúc, tích tụ màng nước trên mặt đường dẫn đến hiện tượng trượt nước nguy hiểm (hydroplaning) làm phương tiện mất hoàn toàn lực phanh và lái.
+    \item[-] Tốc độ gió duy trì ($v_{\text{wind}}$) và tốc độ gió giật ($v_{\text{gust}}$, tính bằng km/h): Gió giật ngang với vận tốc lớn tạo ra mô-men lật khí động học, đặc biệt nguy hiểm đối với xe hai bánh khi di chuyển qua cầu vượt biển hoặc các cung đường đèo lộng gió.
+    \item[-] Tầm nhìn ngang mặt đất ($V_{\text{vis}}$, tính bằng mét): Sự suy giảm tầm nhìn do sương mù bức xạ, sương mù bình lưu hoặc mưa rào cường độ mạnh làm co hẹp cự ly quan sát an toàn và kéo dài thời gian phản ứng trước chướng ngại vật.
+    \item[-] Nhiệt độ không khí bề mặt ($T_{\text{air}}$, tính bằng $^\circ$C): Nắng nóng cực đoan trên $39^\circ$C làm tăng áp suất lốp, dễ gây nổ lốp và suy nhược thể lực người lái; nhiệt độ rét đậm dưới $10^\circ$C kết hợp sương muối ở vùng núi cao gây hiện tượng đóng băng mặt đường.
+    \item[-] Cảnh báo thiên tai cực đoan: Các bản tin chính thống về áp thấp nhiệt đới, bão biển Đông, lũ quét và sạt lở ta-luy đường bộ.
+\end{itemize}
+
+Trong tầng xử lý dữ liệu nền, các mã hiện tượng khí tượng từ nhà cung cấp ngoài được ánh xạ về một tập danh mục điều kiện chuẩn hóa nội bộ (gồm các trạng thái như \texttt{clear}, \texttt{cloudy}, \texttt{fog}, \texttt{rain} và \texttt{thunderstorm}). Mỗi gói dữ liệu chuẩn hóa đều được tính toán mã băm SHA-256 để đảm bảo tính toàn vẹn và hỗ trợ cơ chế lưu đệm khử trùng lặp dữ liệu.
+
+\subsection{Vòng đời độ tươi mới dữ liệu và Nguyên tắc vận hành an toàn (Fail-Safe)}
+
+Hiện tượng khí quyển luôn biến thiên liên tục và phi tuyến tính. Một số liệu quan trắc dù đạt độ chính xác cao tại thời điểm đo cũng sẽ suy giảm nhanh chóng giá trị thực tế sau một khoảng thời gian nhất định. Nhằm ngăn ngừa rủi ro đưa ra chỉ dẫn dẫn đường sai lệch do dữ liệu cũ, VietForecast thiết lập mô hình vòng đời kiểm soát độ tươi mới của dữ liệu (Data Freshness Lifecycle theo quyết định RISK-006) gồm ba trạng thái:
+\begin{itemize}
+    \item[-] Tươi mới (Fresh): Độ tuổi dữ liệu $\tau = t_{\text{hiện tại}} - t_{\text{quan trắc}} \le 60\text{ phút}$ đối với quan trắc tức thời và không quá 24 giờ đối với dữ liệu dự báo. Dữ liệu trong khoảng này được phép đưa thẳng vào thuật toán đánh giá rủi ro.
+    \item[-] Đang cũ (Aging): $60\text{ phút} < \tau \le 180\text{ phút}$. Dữ liệu vẫn được sử dụng nhưng hệ thống bắt buộc gắn kèm nhãn cảnh báo suy giảm độ tin cậy để người dùng tự nhận định.
+    \item[-] Hết hạn (Stale): $\tau > 180\text{ phút}$ hoặc mất tín hiệu kết nối từ trạm đo.
+\end{itemize}
+
+Hệ thống quán triệt nguyên tắc an toàn tuyệt đối (Fail-Safe Principle): khi dữ liệu rơi vào trạng thái Stale hoặc không có sẵn dữ liệu, hệ thống kiên quyết từ chối mọi phép suy diễn phỏng đoán và tự động đưa mức độ rủi ro tại vị trí đó về trạng thái Không xác định (Unknown -- mã điểm 0, hiển thị màu xám trung tính \#9CA3AF). Nguyên tắc này bảo đảm hệ sinh thái không bao giờ ngộ nhận một cung đường thiếu dữ liệu là an toàn, đặt sự an toàn sinh mạng của người tham gia giao thông lên hàng đầu.
+
+\subsection{Ma trận rủi ro đa chiều và Giải thuật tổng hợp rủi ro hành lang}
+
+Nhằm chuyển đổi các biến số vật lý rời rạc thành chỉ số cảnh báo trực quan phục vụ người dùng, hệ thống xây dựng mô hình ma trận đánh giá rủi ro đa chiều. Không gian trạng thái rủi ro được chia thành 4 cấp độ phân biệt (quyết định RISK-001): Thấp (Low -- điểm 1, màu xanh lá), Chú ý (Caution -- điểm 2, màu vàng), Nguy hiểm (High -- điểm 3, màu cam đậm) và Không xác định (Unknown -- điểm 0, màu xám).
+
+Mỗi điểm mẫu $p_i$ trên lộ trình được đánh giá độc lập trên 6 chiều rủi ro thành phần (quyết định RISK-002): mưa ($R_{\text{rain}}$), gió ($R_{\text{wind}}$), nhiệt độ ($R_{\text{temp}}$), tầm nhìn ($R_{\text{vis}}$), dông sét ($R_{\text{storm}}$) và cảnh báo thiên tai chính thức ($R_{\text{alert}}$). Bảng~\ref{tab:risk_matrix_thresholds_vi} chi tiết hóa các ngưỡng giá trị phân định rủi ro tiêu chuẩn được áp dụng trong hệ thống.
+
+\begin{table}[H]
+\centering
+\caption{Bảng ngưỡng phân định rủi ro khí tượng theo tiêu chuẩn WMO trong VietForecast.}
+\label{tab:risk_matrix_thresholds_vi}
+\footnotesize
+\renewcommand{\arraystretch}{0.92}
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{4.2cm} *{3}{>{\centering\arraybackslash}X}}
+\toprule
+Tham số khí tượng đo lường & Cấp 1 (Thấp) & Cấp 2 (Chú ý) & Cấp 3 (Nguy hiểm) \\
+\midrule
+Cường độ mưa ($I_{\text{rain}}$) & $< 5\text{ mm/h}$ & $5 - 20\text{ mm/h}$ & $> 20\text{ mm/h}$ \\
+Gió giật cực đại ($v_{\text{gust}}$) & $< 30\text{ km/h}$ & $30 - 50\text{ km/h}$ & $> 50\text{ km/h}$ \\
+Tầm nhìn xa ngang ($V_{\text{vis}}$) & $> 2.000\text{ m}$ & $500 - 2.000\text{ m}$ & $< 500\text{ m}$ \\
+Nhiệt độ cực đoan ($T_{\text{air}}$) & $18 - 35^\circ$C & $10 - 18^\circ$C hoặc $35 - 39^\circ$C & $< 10^\circ$C hoặc $> 39^\circ$C \\
+Hoạt động dông sét / lốc xoáy & Không xuất hiện & Mưa dông nhiệt cục bộ & Dông sét dữ dội / ngập lụt diện rộng \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+Cấp độ rủi ro tổng hợp tại mỗi điểm kiểm tra $p_i$ tuân thủ nguyên tắc bao trùm rủi ro nghiêm trọng nhất (Max-Severity Rule theo quyết định RISK-005):
+\begin{equation}
+\label{eq:point_risk}
+S(p_i) = \max \left( R_{\text{rain}}(p_i), R_{\text{wind}}(p_i), R_{\text{temp}}(p_i), R_{\text{vis}}(p_i), R_{\text{storm}}(p_i), R_{\text{alert}}(p_i) \right)
+\end{equation}
+
+Từ tập hợp các điểm mẫu, chỉ số rủi ro đại diện cho toàn bộ cung đường $S_{\text{route}}$ được xác định theo điểm số cao nhất xuất hiện trên lộ trình:
+\begin{equation}
+\label{eq:route_risk_max}
+S_{\text{route}} = \max_{i=1,\dots,K} S(p_i)
+\end{equation}
+Bên cạnh giá trị cực đại, hệ thống tính toán thêm điểm rủi ro trung bình có trọng số theo chiều dài phân đoạn:
+\begin{equation}
+\label{eq:route_risk_avg}
+\bar{S}_{\text{route}} = \frac{\sum_{i=1}^{K-1} d(p_{i-1}, p_i) \cdot \frac{S(p_{i-1}) + S(p_i)}{2}}{\sum_{i=1}^{K-1} d(p_{i-1}, p_i)}
+\end{equation}
+Nếu trên hành trình tồn tại bất kỳ phân đoạn nào đạt mức $S(p_i) = 3$ (chẳng hạn một đoạn đèo sạt lở hoặc ngập nước sâu), toàn bộ tuyến đường sẽ được gắn mác cảnh báo Nguy hiểm để người điều khiển phương tiện kịp thời đổi sang hướng tuyến khác.
+
+\subsection{Phân hóa đặc thù phương tiện và Hàm tối ưu lộ trình đa mục tiêu}
+
+Giao thông Việt Nam mang đặc thù rất riêng với hơn 70 triệu xe máy đang lưu hành, chiếm trên 85\% tổng phương tiện cá nhân. Người đi xe máy không có cabin che chắn cơ học, chịu tác động trực tiếp của gió tạt ngang, hạt mưa táp vào mặt làm mờ kính chắn gió và bề mặt lốp nhỏ dễ mất lực bám khi phanh gấp. Do đó, hệ thống tích hợp cơ chế hiệu chỉnh ngưỡng nhạy cảm rủi ro theo loại phương tiện (quyết định ROUTE-001):
+\begin{itemize}
+    \item[-] Đối với xe máy (\texttt{motorcycle}): Ngưỡng kích hoạt rủi ro của gió giật ($v_{\text{gust}}$) và tầm nhìn hạn chế ($V_{\text{vis}}$) được siết chặt hơn 30\% so với ô tô. Ví dụ, gió giật trên $35\text{ km/h}$ đã bị xếp vào cấp độ Chú ý đối với người đi xe máy.
+    \item[-] Đối với ô tô con (\texttt{car}): Áp dụng các ngưỡng tiêu chuẩn của WMO, tận dụng lợi thế ổn định trọng tâm xe và hệ thống gạt mưa kính chắn gió.
+\end{itemize}
+
+Khi người dùng tìm kiếm đường đi, hệ thống tính toán đồng thời 3 phương án lộ trình thay thế (quyết định ROUTE-003): phương án nhanh nhất (Fastest), ngắn nhất (Shortest) và an toàn thời tiết nhất (Weather-safer). Để hỗ trợ người dùng ra quyết định, hệ thống tổng hợp một hàm chấm điểm cân bằng đa mục tiêu (quyết định ROUTE-004):
+\begin{equation}
+\label{eq:balanced_route_score}
+Score_{\text{balanced}} = w_{\text{risk}} \cdot \hat{S}_{\text{route}} + w_{\text{time}} \cdot \hat{T} + w_{\text{dist}} \cdot \hat{D}
+\end{equation}
+trong đó $\hat{S}_{\text{route}}, \hat{T}, \hat{D} \in [0, 1]$ là các giá trị chuẩn hóa của chỉ số rủi ro thời tiết, thời gian lưu thông và quãng đường di chuyển. Bộ trọng số mặc định được hiệu chỉnh linh hoạt qua bảng cấu hình Directus với $w_{\text{risk}} = 0{,}5$, $w_{\text{time}} = 0{,}3$, $w_{\text{dist}} = 0{,}2$, thể hiện rõ định hướng ưu tiên an toàn thời tiết của nền tảng.
+
+\section{Mô hình ngôn ngữ lớn và Kỹ thuật Function Calling có kiểm chứng}
+
+\subsection{Hạn chế cố hữu của LLM tự hồi quy trong bài toán an toàn giao thông}
+
+Mô hình ngôn ngữ lớn (Large Language Models -- LLMs) xây dựng trên kiến trúc mạng Transformer \cite{vaswani2017attention} đã tạo nên bước đột phá trong việc hiểu và sinh văn bản hội thoại tự nhiên. Tuy nhiên, về mặt bản chất toán học, quá trình sinh văn bản của một mô hình tự hồi quy thuần túy chỉ là bài toán tìm chuỗi từ có xác suất có điều kiện cực đại dựa trên tri thức văn bản tĩnh trong tập dữ liệu huấn luyện:
+\begin{equation}
+\label{eq:llm_prob_vi}
+P(w_1, w_2, \dots, w_M) = \prod_{t=1}^{M} P(w_t \mid w_1, \dots, w_{t-1})
+\end{equation}
+
+Mô hình hoàn toàn không có nhận thức nội tại về trục thời gian thực tại cũng như không có khả năng tự động kết nối vào các cơ sở dữ liệu thời tiết biến đổi liên tục. Khi người dùng đặt câu hỏi: \textit{"Tuyến đường vượt đèo Cù Mông hiện tại có mưa bão hay sạt lở không?"}, mô hình LLM thông thường sẽ tự động suy diễn một văn bản mượt mà, hợp lý về mặt ngữ nghĩa nhưng dựa trên các khuôn mẫu từ ngữ quá khứ. Hiện tượng này được gọi là ảo tưởng thông tin (hallucination). Trong lĩnh vực hỗ trợ an toàn giao thông, một phát ngôn sai lệch khẳng định đường khô ráo khi thực tế đang có lũ cuốn có thể dẫn tới hậu quả thảm khốc cho sinh mạng người tham gia giao thông.
+
+\subsection{Kiến trúc đối soát dữ liệu thực (Grounded Function Calling) với Google Gemini 1.5 Flash}
+
+Để giảm thiểu tối đa nguy cơ ảo tưởng dữ liệu, VietForecast thiết kế kiến trúc đối soát dữ liệu thực tế thông qua kỹ thuật gọi hàm có kiểm chứng (Grounded Function Calling) dựa trên nền tảng Google Gemini 1.5 Flash \cite{gemini2024flash}. Trong kiến trúc này, Gemini không đóng vai trò một kho lưu trữ tri thức tĩnh tự do phát ngôn, mà được giới hạn nghiêm ngặt trong hai chức năng: Bộ giải mã ý định ngữ nghĩa (Semantic Intent Parser) và Bộ điều phối công cụ (Tool Orchestrator).
+
+Hệ thống định nghĩa một danh mục các công cụ được phép sử dụng (allowlisted tools) thông qua lược đồ chuẩn hóa JSON Schema:
+\begin{itemize}
+    \item[-] \texttt{search\_location}: Tra cứu thông tin tọa độ địa lý chuẩn của tỉnh thành, quận huyện tại Việt Nam.
+    \item[-] \texttt{get\_current\_weather}: Truy vấn dữ liệu trạm quan trắc khí quyển tức thời tại tọa độ xác định.
+    \item[-] \texttt{get\_forecast}: Lấy chuỗi dữ liệu dự báo thời tiết 24 giờ đến 72 giờ tiếp theo.
+    \item[-] \texttt{assess\_travel\_risk}: Tính toán điểm số ma trận rủi ro giao thông theo loại phương tiện được chỉ định.
+    \item[-] \texttt{evaluate\_route}: Phân tích hình học và mức độ an toàn thời tiết của 3 hành lang di chuyển giữa hai địa điểm.
+\end{itemize}
+
+Quy trình vận hành hội thoại diễn ra qua ba pha khép kín:
+\begin{itemize}
+    \item[-] Pha phân tích ý định: Khi người dùng gửi tin nhắn, Gemini phân tích ngữ cảnh và sinh ra một đối tượng gọi hàm có cấu trúc (\texttt{FunctionCall}) chỉ rõ tên công cụ và các tham số đầu vào đã được trích xuất.
+    \item[-] Pha thực thi đối soát: Máy chủ backend Fastify tiếp nhận lệnh gọi hàm, kiểm tra tính hợp lệ của tham số và trực tiếp thực thi truy vấn vào cơ sở dữ liệu PostGIS hoặc động cơ đánh giá rủi ro nội bộ để lấy số liệu đo đạc thực tế mới nhất.
+    \item[-] Pha tổng hợp có căn cứ: Dữ liệu thực nghiệm thu được từ cơ sở dữ liệu được đưa ngược trở lại ngữ cảnh hội thoại dưới dạng đối tượng phản hồi. Mô hình Gemini dựa trên 100\% số liệu đã được xác thực này để diễn giải thành câu trả lời văn phong tự nhiên, đồng thời hệ thống tự động chèn thông tin trích dẫn nguồn dữ liệu (Citations) và câu miễn trừ trách nhiệm an toàn bắt buộc (quyết định RISK-007).
+\end{itemize}
+
+\subsection{Cơ chế dự phòng tất định (Deterministic Fallback Engine)}
+
+Nhằm bảo đảm tính sẵn sàng cao của hệ thống khi hoạt động ngoài thực địa, hệ thống hiện thực hóa một bộ điều hợp dự phòng dựa trên luật tất định mang tên \texttt{GroundedRuleEngineAdapter}. Trong các tình huống khẩn cấp như mất kết nối Internet đến máy chủ Google, khóa API hết hạn ngạch hoặc mạng bị phân mảnh, hệ thống sẽ tự động chuyển mạch sang bộ điều hợp dự phòng này. Bộ điều phối dự phòng sử dụng các mẫu biểu thức chính quy để nhận diện ý định lộ trình hoặc dự báo, trực tiếp gọi các công cụ thực tế và sinh văn bản theo khuôn mẫu học thuật đã được kiểm duyệt nghiêm ngặt, đảm bảo người dùng luôn nhận được chỉ dẫn an toàn mà không bị gián đoạn dịch vụ.
+
+\section{Ngăn xếp công nghệ và Phân tích kiến trúc hệ thống}
+
+Nhằm hiện thực hóa một hệ sinh thái vừa bảo đảm độ trễ phản hồi tính bằng mili-giây, vừa duy trì tính nhất quán của dữ liệu không gian phức tạp và phân lập an ninh nhiều lớp, VietForecast áp dụng một ngăn xếp công nghệ phân tầng hiện đại với sự phân định ranh giới trách nhiệm rõ ràng giữa các thành phần.
+
+\subsection{API Gateway hiệu năng cao với Fastify và TypeScript}
+
+Lớp giao tiếp trung tâm của hệ thống được xây dựng trên môi trường Node.js phiên bản 24 kết hợp ngôn ngữ lập trình TypeScript 5.5 và framework Fastify 5 \cite{fastify2024}. Fastify đảm nhiệm vai trò API Gateway duy nhất tiếp nhận toàn bộ các yêu cầu từ phía người dùng, điều phối xác thực phiên và phân phối tải tới các dịch vụ nội bộ. Sự lựa chọn Fastify dựa trên các luận cứ kỹ thuật xác đáng:
+\begin{itemize}
+    \item[-] Mô hình I/O bất đồng bộ tối ưu: Kiến trúc hướng sự kiện không nghẽn luồng của Fastify cho phép xử lý hàng chục nghìn kết nối đồng thời với mức tiêu hao bộ nhớ RAM tối thiểu và độ trễ phản hồi sub-second.
+    \item[-] Biên dịch lược đồ trước (Ahead-of-Time Schema Compilation): Fastify tích hợp sẵn thư viện biên dịch JSON Schema Ajv, giúp kiểm tra tính hợp lệ của dữ liệu đầu vào và tuần tự hóa dữ liệu JSON đầu ra ở cấp độ mã máy, đem lại tốc độ xử lý nhanh gấp nhiều lần so với các thư viện truyền thống như Express.js.
+    \item[-] An toàn kiểu dữ liệu đầu cuối (End-to-End Type Safety): Việc đóng gói các cấu trúc dữ liệu không gian, mô hình thời tiết và mã lỗi vào một gói dùng chung (\texttt{contracts}) cho phép TypeScript kiểm tra tính tương thích dữ liệu ngay từ giai đoạn biên dịch trên toàn bộ các workspace API, Web và Worker.
+\end{itemize}
+
+\subsection{Quản trị danh tính và Ranh giới phiên bảo mật Directus (ADR-004)}
+
+Hệ thống tích hợp nền tảng mã nguồn mở Directus 12 \cite{directus2024} vận hành song hành ở hai vai trò: Hệ thống lưu trữ chuẩn nghiệp vụ (System of Record -- SoR) và Cơ quan quản lý định danh người dùng:
+\begin{itemize}
+    \item[-] Quản trị nghiệp vụ linh hoạt: Toàn bộ danh mục phân cấp 63 tỉnh thành, bảng cấu hình ngưỡng ma trận rủi ro và các bản tin khuyến cáo thời tiết đa ngôn ngữ được Directus quản lý tập trung. Bộ giao diện Directus Admin Studio cung cấp môi trường trực quan cho phép các kỹ sư vận hành có thể hiệu chỉnh ngưỡng rủi ro hoặc ban hành cảnh báo khẩn cấp theo thời gian thực mà không cần sửa đổi mã nguồn hay tái triển khai hệ thống.
+    \item[-] Quản lý định danh và phân quyền RBAC: Directus đảm nhiệm chu trình đăng ký người dùng, mã hóa mật khẩu an toàn bằng thuật toán argon2 và áp dụng chính sách phân quyền truy cập theo vai trò (Role-Based Access Control -- RBAC) chặt chẽ giữa Quản trị viên (Admin), Nhân viên kỹ thuật (Staff) và Người dùng di chuyển (Traveler).
+    \item[-] Bảo vệ ranh giới phiên bảo mật (Session Boundary theo quyết định ADR-004): Trình duyệt người dùng tuyệt đối không được phép kết nối trực tiếp với Directus để ngăn chặn nguy cơ làm lộ cấu trúc cơ sở dữ liệu và rò rỉ token quản trị. Máy chủ Fastify đóng vai trò cổng trung gian Backend-for-Frontend (BFF): các chuỗi mã thông báo truy cập JWT của Directus (access token và refresh token) được mã hóa đối xứng bằng thuật toán AES-256-GCM và lưu trữ an toàn trong kho dữ liệu máy chủ. Trình duyệt client chỉ nhận một định danh phiên ngẫu nhiên (opaque session handle) được bảo vệ bởi các cờ cookie nghiêm ngặt (\texttt{HttpOnly}, \texttt{Secure}, \texttt{SameSite=Strict}). Kiến trúc này triệt tiêu hoàn toàn nguy cơ bị đánh cắp quyền đăng nhập thông qua các lỗ hổng tấn công Cross-Site Scripting (XSS).
+\end{itemize}
+
+\subsection{Tiến trình xử lý dữ liệu nền Worker và Cơ chế tự phục hồi (ADR-001)}
+
+Việc thu thập dữ liệu khí tượng từ các nguồn quan trắc bên ngoài thường mất nhiều thời gian do độ trễ mạng và giới hạn tần suất yêu cầu (rate limits). Nếu đưa các tác vụ này vào chạy trực tiếp trong tiến trình API Gateway sẽ gây nghẽn luồng xử lý và làm chậm các yêu cầu của người dùng. Do đó, theo quyết định kiến trúc ADR-001, VietForecast xây dựng một tiến trình công nhân độc lập mang tên Integration Worker:
+\begin{itemize}
+    \item[-] Phân tách miền lỗi (Failure Domain Isolation): Tiến trình Worker vận hành hoàn toàn tách biệt với tiến trình API. Khi mạng ngoài bị lỗi hoặc tiến trình thu thập gặp sự cố bộ nhớ, API Gateway vẫn tiếp tục phục vụ người dùng bình thường từ dữ liệu đã lưu đệm mà không bị sụp đổ dây chuyền.
+    \item[-] Cơ chế chiếm khóa phân tán (Database Leasing): Để hỗ trợ khả năng mở rộng ngang (horizontal scaling) nhiều bản sao Worker cùng lúc mà không xảy ra tranh chấp cập nhật cùng một trạm đo, hệ thống triển khai cơ chế khóa phân tán dựa trên bảng \texttt{worker\_leases}. Mỗi trạm đo được một Worker chiếm quyền cập nhật trong một khoảng thời gian nhất định thông qua chu kỳ gia hạn nhịp tim (heartbeat interval).
+    \item[-] Bộ ngắt mạch Circuit Breaker: Nhằm bảo vệ hệ thống trước sự cố chập chờn từ nhà cung cấp thời tiết bên ngoài (WeatherAPI), Worker được trang bị bộ ngắt mạch tự động. Khi tỷ lệ lỗi vượt quá ngưỡng cho phép, Circuit Breaker sẽ chuyển sang trạng thái ngắt (Open) để ngừng gửi yêu cầu vô ích, sau đó tự động phục hồi dần (Half-Open) thông qua thuật toán thử lại có độ trễ hàm mũ ngẫu nhiên (exponential backoff with jitter).
+\end{itemize}
+
+\subsection{Hệ thống lưu trữ phân tầng: PostgreSQL/PostGIS và Bộ đệm Redis}
+
+Kiến trúc dữ liệu của VietForecast được tổ chức phân tầng rõ rệt giữa lớp lưu trữ bền vững và lớp lưu đệm tức thời:
+\begin{itemize}
+    \item[-] PostgreSQL 16 kết hợp PostGIS 3.4: Đóng vai trò cơ sở dữ liệu quan hệ và không gian bền vững duy nhất. Cơ sở dữ liệu chịu trách nhiệm lưu trữ bảng ranh giới địa chính, danh mục trạm quan trắc, lịch sử dữ liệu khí quyển, thông tin tài khoản người dùng và nhật ký kiểm toán hệ thống.
+    \item[-] Redis 7 kết hợp thư viện ioredis \cite{redis2024}: Đóng vai trò bộ đệm truy xuất trong bộ nhớ RAM (in-memory cache) với độ trễ micro-giây. Các kết quả phân tích rủi ro lộ trình và số liệu thời tiết tỉnh thành được lưu tạm với thời gian sống (TTL) tương ứng với chu kỳ thu thập dữ liệu mới. Ngoài ra, Redis còn là nền tảng để hiện thực hóa thuật toán giới hạn tần suất Token Bucket Rate Limiting, bảo vệ hệ thống trước các cuộc tấn công quét dữ liệu tự động hoặc từ chối dịch vụ.
+\end{itemize}
+
+\subsection{Giao diện người dùng thời gian thực và Trực quan hóa bản đồ WebGL}
+
+Phía người dùng cuối, VietForecast cung cấp giao diện ứng dụng đơn trang (Single Page Application -- SPA) hiện đại, tập trung vào khả năng tương tác trực quan:
+\begin{itemize}
+    \item[-] Thư viện React 18: Quản lý trạng thái giao diện theo mô hình thành phần hóa khai báo (declarative component model), tối ưu hóa tốc độ kết xuất thông qua cơ chế Virtual DOM và các React Hooks tùy biến.
+    \item[-] Thư viện bản đồ MapLibre GL JS \cite{maplibre2024}: Là thư viện bản đồ mã nguồn mở mạnh mẽ nhất hiện nay dựa trên công nghệ WebGL. MapLibre GL tận dụng trực tiếp năng lực tăng tốc phần cứng của GPU trên thiết bị người dùng để kết xuất mượt mà hàng nghìn đoạn đa tuyến lộ trình, các lớp phủ khí tượng dạng raster động và hệ thống điểm đánh dấu cảnh báo ở tốc độ khung hình 60 FPS mà không gây giật lag giao diện.
+    \item[-] Quản lý trạng thái với TanStack Query và Zustand: Tự động hóa chu trình nạp dữ liệu từ máy chủ, quản trị bộ đệm phía client, kích hoạt cơ chế đồng bộ nền và quản lý trạng thái phiên đăng nhập của người dùng.
+    \item[-] Cơ chế đa ngôn ngữ lai (Hybrid i18n theo quyết định ADR-007): Kết hợp thư viện i18next cho các chuỗi nhãn giao diện tĩnh và Directus cho các nội dung văn bản khuyến cáo nghiệp vụ động giữa tiếng Việt và tiếng Anh.
+\end{itemize}
+
+\subsection{Đóng gói container và Cô lập mạng nội bộ}
+
+Toàn bộ các dịch vụ của hệ thống (Fastify API, Directus CMS, Integration Worker, cơ sở dữ liệu PostgreSQL/PostGIS, bộ đệm Redis và máy chủ giả lập email Mailpit) đều được đóng gói độc lập trong các container Docker và điều phối thống nhất thông qua Docker Compose.
+
+Về mặt an toàn hạ tầng, hệ thống thiết lập chính sách phân vùng mạng nội bộ nghiêm ngặt: mạng ứng dụng phục vụ các cổng giao tiếp HTTP và mạng dữ liệu nội bộ được đánh dấu \texttt{internal: true}. Các cổng lắng nghe của cơ sở dữ liệu PostgreSQL (cổng 5432) và bộ đệm Redis (cổng 6379) hoàn toàn không được ánh xạ ra ngoài máy chủ vật lý, ngăn chặn triệt để nguy cơ xâm nhập trái phép từ môi trường mạng công cộng.
+
+\section{Tổng hợp và Đánh giá so sánh ngăn xếp công nghệ}
+
+Bảng~\ref{tab:tech_stack_summary_vi} tổng hợp toàn bộ các thành phần công nghệ được tuyển chọn, vai trò vận hành cụ thể và các đánh đổi kỹ thuật chính làm căn cứ quyết định lựa chọn trong hệ sinh thái VietForecast.
+
+\begin{table}[H]
+\centering
+\caption{Tổng hợp ngăn xếp công nghệ nền tảng sử dụng trong hệ thống VietForecast.}
+\label{tab:tech_stack_summary_vi}
+\footnotesize
+\renewcommand{\arraystretch}{0.92}
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{2.6cm} >{\raggedright\arraybackslash}p{2.2cm} >{\raggedright\arraybackslash}p{4.2cm} >{\raggedright\arraybackslash}X}
+\toprule
+Thành phần tầng & Công nghệ chọn & Vai trò kỹ thuật trong hệ thống & Đánh đổi và Lý do lựa chọn cốt lõi \\
+\midrule
+Ngôn ngữ chủ đạo & TypeScript 5.5 & Toàn bộ mã nguồn API Gateway, Worker, Contracts và Frontend & Kiểm soát kiểu tĩnh nghiêm ngặt, chia sẻ mô hình dữ liệu dùng chung loại trừ lỗi kiểu lúc chạy. \\
+API Gateway & Fastify 5 & Máy chủ API trung tâm, định tuyến, session proxy, rate limit & Mô hình I/O bất đồng bộ, biên dịch Ajv Schema trước, độ trễ phản hồi tính bằng mili-giây. \\
+Headless CMS & Directus 12 & Quản trị danh tính, xác thực RBAC và System of Record & Mã nguồn mở, giao diện Admin Studio trực quan cho phép chỉnh tham số thời gian thực. \\
+Data Worker & Node.js Worker & Thu thập dữ liệu khí tượng định kỳ và ngắt mạch & Cô lập miền lỗi với API Gateway, hỗ trợ cơ chế khóa phân tán database leasing. \\
+Cơ sở dữ liệu & PostgreSQL 16 PostGIS 3.4 & Lưu trữ quan hệ bền vững và tính toán hình học trắc địa & Chuẩn công nghiệp GIS, hỗ trợ chỉ mục GiST $O(\log N)$ và các hàm cầu trắc địa elipxoit thực tế. \\
+Bộ đệm RAM & Redis 7 (ioredis) & Lưu tạm kết quả thời tiết và Rate Limiting Token Bucket & Truy xuất dữ liệu dưới 1 mili-giây, cơ chế xóa tự động TTL theo chu kỳ làm mới trạm đo. \\
+Thư viện Frontend & React 18 & Giao diện ứng dụng đơn trang SPA tương tác thời gian thực & Hệ sinh thái phong phú, cập nhật giao diện tối ưu thông qua Virtual DOM và Hooks tùy biến. \\
+Bản đồ số WebGL & MapLibre GL 4 & Kết xuất vector map, lộ trình và lớp phủ thời tiết raster & Mã nguồn mở hoàn toàn, tận dụng tăng tốc GPU ở 60 FPS, không phụ thuộc chi phí bản quyền. \\
+Mô hình AI & Google Gemini 1.5 Flash & Trợ lý đàm thoại thông minh hỗ trợ lái xe an toàn & Khả năng Function Calling chuẩn xác, cửa sổ ngữ cảnh lớn, tốc độ sinh suy luận cao. \\
+Đóng gói hạ tầng & Docker \& Compose & Đóng gói container độc lập và phân vùng mạng bảo mật & Môi trường đồng nhất giữa phát triển và vận hành, cô lập cổng cơ sở dữ liệu nội bộ. \\
+\bottomrule
+\end{tabularx}
+\end{table}

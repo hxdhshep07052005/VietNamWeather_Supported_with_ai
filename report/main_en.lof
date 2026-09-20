@@ -1,0 +1,28 @@
+\acswitchoff 
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {1.1}{\ignorespaces Global use case diagram of the VietForecast platform (UML 2.5 compliant).}}{16}{figure.caption.10}%
+\contentsline {figure}{\numberline {1.2}{\ignorespaces System context diagram of the VietForecast platform (C4 Model Level 1).}}{22}{figure.caption.20}%
+\addvspace {10\p@ }
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {3.1}{\ignorespaces C4 Container Diagram (Level 2) of VietForecast}}{34}{figure.caption.23}%
+\contentsline {figure}{\numberline {3.2}{\ignorespaces Sequence diagram of session lifecycle (ADR-004) - Phase 1: Session Issuance}}{38}{figure.caption.25}%
+\contentsline {figure}{\numberline {3.2}{\ignorespaces Sequence diagram of session lifecycle (ADR-004) - Phase 2: Sliding Rotation}}{40}{figure.caption.27}%
+\contentsline {figure}{\numberline {3.2}{\ignorespaces Sequence diagram of session lifecycle (ADR-004) - Phase 3: Synchronized Revocation}}{42}{figure.caption.29}%
+\contentsline {figure}{\numberline {3.3}{\ignorespaces Sequence diagram of background meteorological ingestion (ADR-001)}}{45}{figure.caption.30}%
+\contentsline {figure}{\numberline {3.4}{\ignorespaces Entity-Relationship Diagram (ERD) of VietForecast}}{48}{figure.caption.31}%
+\contentsline {figure}{\numberline {3.5}{\ignorespaces Sequence diagram of multi-objective route hazard evaluation}}{50}{figure.caption.33}%
+\addvspace {10\p@ }
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {5.1}{\ignorespaces Production Route Risk Planner interface: Weather-Safer alternative}}{68}{figure.caption.37}%
+\contentsline {figure}{\numberline {5.2}{\ignorespaces Visual comparison of alternative route paths on the geospatial map}}{69}{figure.caption.38}%
+\contentsline {figure}{\numberline {5.3}{\ignorespaces Multi-criteria corridor comparison matrix across three routing profiles}}{70}{figure.caption.39}%
+\contentsline {figure}{\numberline {5.4}{\ignorespaces Conversational AI assistant interface handling complex routing inquiries}}{75}{figure.caption.45}%
+\contentsline {figure}{\numberline {5.5}{\ignorespaces VietForecast landing portal and nationwide meteorological gateway}}{78}{figure.caption.47}%
+\contentsline {figure}{\numberline {5.6}{\ignorespaces User Authentication and Identity Management Interface}}{79}{figure.caption.48}%
+\contentsline {figure}{\numberline {5.7}{\ignorespaces Interactive nationwide weather map across 63 provinces}}{79}{figure.caption.49}%
+\contentsline {figure}{\numberline {5.8}{\ignorespaces Google Maps Weather Interface with Interactive Multi-Milestone Timeline Slider}}{80}{figure.caption.50}%
+\contentsline {figure}{\numberline {5.9}{\ignorespaces Interactive provincial drill-down interface for Da Nang City}}{80}{figure.caption.51}%
+\contentsline {figure}{\numberline {5.10}{\ignorespaces Dedicated Nationwide Weather Directory (63 Provinces)}}{81}{figure.caption.52}%
+\contentsline {figure}{\numberline {5.11}{\ignorespaces Dedicated Weather Page Features and Provincial Drill-Down}}{81}{figure.caption.53}%
+\contentsline {figure}{\numberline {5.12}{\ignorespaces Service pricing tiering and online payment checkout subsystem}}{82}{figure.caption.54}%
+\addvspace {10\p@ }

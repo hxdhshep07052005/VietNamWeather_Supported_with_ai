@@ -5,7 +5,7 @@
 
 import { randomUUID } from "node:crypto";
 
-import type { FastifyInstance } from "fastify";
+import type { FastifyInstance, FastifyRequest } from "fastify";
 import type { Pool } from "pg";
 
 import {
@@ -342,11 +342,9 @@ export class RiskService {
    */
   registerRiskRoutes(
     app: FastifyInstance,
-    options: { readonly correlationIdFn: (request: { id: string }) => string }
+    options?: { readonly correlationIdFn?: (request: { id: string }) => string }
   ): void {
-    const { correlationIdFn } = options;
-
-    app.get("/api/v1/risk/capabilities", async (request) => ({
+    app.get("/api/v1/risk/capabilities", async () => ({
       data: await this.getCapabilities()
     }));
 
@@ -363,6 +361,7 @@ export class RiskService {
           error: {
             code: "VALIDATION_FAILED",
             message: "Invalid risk assessment request",
+            correlationId: options?.correlationIdFn?.(request) ?? (request as FastifyRequest).id,
             retryable: false
           }
         };

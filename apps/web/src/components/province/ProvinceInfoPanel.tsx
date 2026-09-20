@@ -10,6 +10,7 @@ import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import type { TFunction } from "i18next";
 import { gsap } from "gsap";
+import { Bookmark, Navigation, ExternalLink } from "lucide-react";
 
 import { useAuthStore } from "../../hooks/useAuthStore";
 import { useProvinceWeather } from "../../hooks/useProvinceWeather";
@@ -348,7 +349,8 @@ export function ProvinceInfoPanel({ weatherTarget, locationTarget, provinceName,
           onClick={handleToggleSave}
           className={`${styles.actionBtn} ${isSaved ? styles.actionBtnSaved : ""}`}
         >
-          <span>{isSaved ? "★ Đã lưu" : "☆ Lưu địa điểm"}</span>
+          <Bookmark size={14} fill={isSaved ? "currentColor" : "none"} />
+          <span>{isSaved ? "Đã lưu" : "Lưu địa điểm"}</span>
         </button>
 
         <button
@@ -356,7 +358,8 @@ export function ProvinceInfoPanel({ weatherTarget, locationTarget, provinceName,
           onClick={handlePlanRoute}
           className={styles.actionBtn}
         >
-          <span>🚗 Lên lộ trình đến đây</span>
+          <Navigation size={14} />
+          <span>Lên lộ trình đến đây</span>
         </button>
 
         <button
@@ -364,7 +367,8 @@ export function ProvinceInfoPanel({ weatherTarget, locationTarget, provinceName,
           onClick={handleViewLocationDetail}
           className={styles.actionBtn}
         >
-          <span>🔍 Xem chi tiết</span>
+          <ExternalLink size={14} />
+          <span>Xem chi tiết</span>
         </button>
       </div>
 

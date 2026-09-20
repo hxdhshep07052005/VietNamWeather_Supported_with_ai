@@ -43,7 +43,9 @@ interface AuthActions {
 // STORE
 // =============================================================================
 
-export const useAuthStore = create<AuthState & AuthActions>()(
+export type AuthStore = AuthState & AuthActions;
+
+export const useAuthStore = create<AuthStore>()(
   persist(
     (set, get) => ({
       // State
@@ -58,37 +60,38 @@ export const useAuthStore = create<AuthState & AuthActions>()(
         set({ isLoading: true, error: null });
 
         try {
-          // Attempt real API if available
-          try {
-            const response = await authApi.login({ email, password });
+          const response = await authApi.login({ email, password });
+          if (response?.access_token) {
             localStorage.setItem("access_token", response.access_token);
+          }
+          if (response?.refresh_token) {
             localStorage.setItem("refresh_token", response.refresh_token);
-          } catch (apiErr) {
-            // In dev mode, allow fallback login if user was registered locally
-            console.warn("API Login unavailable, checking local dev auth...", apiErr);
           }
 
-          const mockUser: User = {
-            id: "user-" + Date.now(),
+          const responseUser = (response as unknown as { user?: Partial<User> })?.user;
+          const authenticatedUser: User = {
+            id: responseUser?.id || "user-" + Date.now(),
             email,
-            name: email.split("@")[0],
-            role: "user",
-            plan: "free",
+            name: responseUser?.name || email.split("@")[0],
+            role: responseUser?.role || "user",
+            plan: responseUser?.plan || "free",
             isVerified: true,
           };
 
           set({
-            user: mockUser,
+            user: authenticatedUser,
             isAuthenticated: true,
-            isVerified: mockUser.isVerified,
+            isVerified: true,
             isLoading: false,
           });
         } catch (error) {
           const errorMessage = error instanceof Error
             ? error.message
-            : "Đăng nhập thất bại. Vui lòng thử lại.";
+            : "Đăng nhập thất bại. Vui lòng kiểm tra lại email hoặc mật khẩu.";
 
           set({
+            user: null,
+            isAuthenticated: false,
             error: errorMessage,
             isLoading: false,
           });
@@ -114,11 +117,10 @@ export const useAuthStore = create<AuthState & AuthActions>()(
             throw new Error(data.message || "Không thể gửi mã OTP tới email.");
           }
 
-          // Store pending verification data
+          // Store pending verification data (NEVER store raw passwords in plain text localStorage)
           const tempToken = "otp-token-" + Date.now();
           localStorage.setItem("pending_verification_email", email);
           localStorage.setItem("pending_verification_token", tempToken);
-          localStorage.setItem("pending_user_password", password);
           if (name) localStorage.setItem("pending_user_name", name);
 
           set({ isLoading: false });
@@ -169,7 +171,7 @@ export const useAuthStore = create<AuthState & AuthActions>()(
             throw new Error(data.message || "Mã OTP không chính xác hoặc đã hết hạn.");
           }
 
-          console.log("✅ Xác thực OTP thành công cho:", email);
+          console.log("[Auth] Xác thực OTP thành công cho:", email);
 
           const savedName = localStorage.getItem("pending_user_name") || email.split("@")[0];
           const verifiedUser: User = {
@@ -217,7 +219,7 @@ export const useAuthStore = create<AuthState & AuthActions>()(
             throw new Error(data.message || "Gửi lại mã thất bại.");
           }
 
-          console.log("📧 Đã gửi lại mã OTP thành công cho:", email);
+          console.log("[Auth] Đã gửi lại mã OTP thành công cho:", email);
           set({ isLoading: false });
         } catch (error) {
           const errorMessage = error instanceof Error
@@ -250,7 +252,7 @@ export const useAuthStore = create<AuthState & AuthActions>()(
           }
 
           localStorage.setItem("pending_verification_email", email);
-          console.log("🔑 Đã gửi mã OTP đặt lại mật khẩu cho:", email);
+          console.log("[Auth] Đã gửi mã OTP đặt lại mật khẩu cho:", email);
           set({ isLoading: false });
         } catch (error) {
           const errorMessage = error instanceof Error
@@ -282,7 +284,7 @@ export const useAuthStore = create<AuthState & AuthActions>()(
             throw new Error(data.message || "Đặt lại mật khẩu thất bại.");
           }
 
-          console.log("🔒 Đã đặt lại mật khẩu thành công cho:", email);
+          console.log("[Auth] Đã đặt lại mật khẩu thành công cho:", email);
           set({ isLoading: false });
         } catch (error) {
           const errorMessage = error instanceof Error

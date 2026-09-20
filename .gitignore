@@ -21,3 +21,7 @@ coverage/
 infra/volumes/
 apps/directus/uploads/
 secrets/decrypted/
+
+# Scratch and ad-hoc test scripts
+apps/worker/test-*.mjs
+apps/worker/test-*.js

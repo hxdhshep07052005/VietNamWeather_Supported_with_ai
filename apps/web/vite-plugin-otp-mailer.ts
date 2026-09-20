@@ -1,4 +1,5 @@
 import type { Plugin } from "vite";
+import type { IncomingMessage } from "node:http";
 import net from "node:net";
 
 interface OtpEntry {
@@ -159,7 +160,7 @@ function sendSmtpEmail({
   });
 }
 
-function parseJsonBody(req: import("http").IncomingMessage): Promise<Record<string, unknown>> {
+function parseJsonBody(req: IncomingMessage): Promise<Record<string, unknown>> {
   return new Promise((resolve) => {
     let data = "";
     req.on("data", (chunk) => {

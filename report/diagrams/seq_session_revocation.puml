@@ -1,0 +1,86 @@
+@startuml
+skinparam dpi 200
+skinparam defaultFontName "Segoe UI, Arial, sans-serif"
+
+<style>
+sequenceDiagram {
+  participant {
+    Padding 30
+    Margin 20
+  }
+}
+</style>
+
+skinparam defaultFontSize 20
+skinparam sequenceGroupFontSize 20
+skinparam sequenceReferenceFontSize 18
+skinparam arrowFontSize 18
+skinparam noteFontSize 17
+skinparam participantFontSize 20
+skinparam actorFontSize 20
+
+skinparam maxMessageSize 400
+skinparam wrapWidth 400
+skinparam roundCorner 8
+skinparam shadowing false
+
+skinparam sequenceLifeLineBorderColor #2C3E50
+skinparam sequenceGroupBorderColor #C0392B
+skinparam sequenceGroupHeaderFontStyle bold
+
+autonumber
+
+actor "Traveler / Adversary\n[Client Browser]" as B #EBF5FB
+participant "Fastify 5 BFF API\n[Session Boundary]" as API #E8F8F5
+database "PostgreSQL Database\n[app_security schema]" as DB #FEF9E7
+participant "Directus Studio / Admin\n[Identity Security Admin]" as ADM #FADBD8
+
+== Scenario 1: Event-Driven Revocation via Database Trigger ==
+
+ADM -> DB: Identity mutation event\n(Suspend account / reset password / reconfigure MFA)
+activate DB
+
+note over DB #FADBD8
+  <b>PostgreSQL Database Trigger Fires:</b>
+  Trigger detects mutation on user identity table.
+  Synchronously revokes all active sessions belonging to affected user:
+  revoked_at <- CURRENT_TIMESTAMP, revoke_reason <- event_code
+  (Executed atomically within same database transaction).
+end note
+DB --> ADM: Transaction committed (All active sessions invalidated)
+deactivate DB
+
+B -> API: Request with previously issued cookie
+activate API
+API -> DB: Lookup active session by SHA-256(handle)
+activate DB
+DB --> API: Record found but session is flagged as revoked
+deactivate DB
+API --> B: HTTP 401 Unauthorized\n(Evict client session cookie: Max-Age=0)
+deactivate API
+
+== Scenario 2: Token Reuse Anomaly & Entire Family Annihilation ==
+
+B -> API: Adversary replays old rotated handle\n(Replay Attack)
+activate API
+API -> DB: Query session state by SHA-256(handle)
+activate DB
+DB --> API: Handle matches rotated ancestor (Token Reuse Anomaly!)
+deactivate DB
+
+API -> DB: Annihilate entire session family lineage\n(Revoke all sessions sharing session_family_id)
+activate DB
+API -> DB: Record security violation in audit log\n(auth.session_revalidation, denied)
+DB --> API: Entire session genealogical tree terminated
+deactivate DB
+
+API --> B: HTTP 401 Unauthorized (Adversary locked out, cookie evicted)
+deactivate API
+
+note over B, API #FCF3CF
+  <b>Defense-in-Depth Guarantee:</b>
+  Replay of a previously rotated token indicates credential theft.
+  The system annihilates the entire session lineage, preventing unauthorized access.
+end note
+
+@enduml

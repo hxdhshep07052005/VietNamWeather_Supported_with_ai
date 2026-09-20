@@ -4,14 +4,19 @@
  */
 
 import type {
-  ForecastRequest,
-  ForecastSeries,
   RiskAssessmentRequest,
   RiskAssessmentResponse,
   RiskCapabilitiesResponse,
   RouteRequest,
   RouteResponse,
 } from "@/types/api";
+import type {
+  ChatMessageDto,
+  PlanDto,
+  EntitlementStatusDto,
+  UserQuotaStatusDto,
+  CheckoutSessionResponse,
+} from "@vietnam-weather/contracts";
 
 // =============================================================================
 // API Client Configuration
@@ -27,6 +32,7 @@ export interface ApiError {
   code: string;
   message: string;
   correlation_id?: string;
+  status?: number;
 }
 
 class ApiClient {
@@ -48,6 +54,12 @@ class ApiClient {
       headers.Authorization = `Bearer ${token}`;
     }
 
+    // Add CSRF token if available
+    const csrfToken = localStorage.getItem("csrf_token");
+    if (csrfToken) {
+      (headers as Record<string, string>)["x-csrf-token"] = csrfToken;
+    }
+
     return headers;
   }
 
@@ -67,12 +79,21 @@ class ApiClient {
     });
 
     if (!response.ok) {
-      const error: ApiError = await response.json().catch(() => ({
-        code: "UNKNOWN_ERROR",
-        message: "An unexpected error occurred",
-      }));
+      const errorData = await response.json().catch(() => ({}));
+      const errPayload =
+        errorData && typeof errorData === "object" && "error" in errorData
+          ? (errorData as { error: ApiError }).error
+          : (errorData as ApiError);
 
-      throw new Error(error.message);
+      const err = Object.assign(
+        new Error(errPayload?.message || "An unexpected error occurred"),
+        {
+          code: errPayload?.code || "UNKNOWN_ERROR",
+          status: response.status,
+          correlation_id: errPayload?.correlation_id,
+        }
+      );
+      throw err;
     }
 
     // Handle 204 No Content
@@ -125,19 +146,24 @@ export const weatherApi = {
    * Get capabilities (available datasets)
    */
   getCapabilities: () =>
-    apiClient.get<{ datasets: string[] }>("/weather/capabilities"),
+    apiClient.get<{ data: { datasets: string[] } }>("/weather/capabilities").then(r => r.data),
 
   /**
-   * Get current weather
+   * Get live observation for coordinates or locationId
    */
-  getCurrentWeather: (params: { location_id: string }) =>
-    apiClient.get<unknown>(`/weather/current?location_id=${params.location_id}`),
+  getObservation: (params: { locationId?: string; latitude?: number; longitude?: number }) => {
+    const query = new URLSearchParams();
+    if (params.locationId) query.set("locationId", params.locationId);
+    if (params.latitude !== undefined) query.set("latitude", String(params.latitude));
+    if (params.longitude !== undefined) query.set("longitude", String(params.longitude));
+    return apiClient.get<{ data: unknown }>(`/weather/observation?${query.toString()}`).then(r => r.data);
+  },
 
   /**
-   * Get forecast series
+   * Post complex weather query (current, hourly, daily)
    */
-  getForecast: (params: ForecastRequest) =>
-    apiClient.post<ForecastSeries>("/weather/forecast", params),
+  query: (params: unknown) =>
+    apiClient.post<{ data: unknown }>("/weather/query", params).then(r => r.data),
 };
 
 // =============================================================================
@@ -149,13 +175,13 @@ export const riskApi = {
    * Get risk capabilities
    */
   getCapabilities: () =>
-    apiClient.get<RiskCapabilitiesResponse>("/risk/capabilities"),
+    apiClient.get<{ data: RiskCapabilitiesResponse }>("/risk/capabilities").then(r => r.data || r),
 
   /**
    * Get risk assessment
    */
   getAssessment: (params: RiskAssessmentRequest) =>
-    apiClient.post<RiskAssessmentResponse>("/risk/assessment", params),
+    apiClient.post<{ data: RiskAssessmentResponse }>("/risk/assessment", params).then(r => r.data || r),
 };
 
 // =============================================================================
@@ -167,7 +193,61 @@ export const routeApi = {
    * Calculate weather-aware routes
    */
   calculateRoutes: (params: RouteRequest) =>
-    apiClient.post<RouteResponse>("/route/calculate", params),
+    apiClient.post<{ data: RouteResponse }>("/route/calculate", params).then(r => r.data || (r as unknown as RouteResponse)),
+};
+
+// =============================================================================
+// Chat API
+// =============================================================================
+
+export const chatApi = {
+  /**
+   * Send chat prompt with automatic grounding
+   */
+  sendMessage: (params: { message: string; locale?: string; conversationId?: string }) =>
+    apiClient
+      .post<{ data: { message: ChatMessageDto; remainingQuota: number } }>("/chat/message", params)
+      .then(r => r.data),
+
+  /**
+   * Get conversation history
+   */
+  getHistory: (params?: { conversationId?: string }) => {
+    const q = params?.conversationId ? `?conversationId=${encodeURIComponent(params.conversationId)}` : "";
+    return apiClient.get<{ data: ChatMessageDto[] }>(`/chat/history${q}`).then(r => r.data);
+  },
+
+  /**
+   * Clear conversation history
+   */
+  clearHistory: (params?: { conversationId?: string }) => {
+    const q = params?.conversationId ? `?conversationId=${encodeURIComponent(params.conversationId)}` : "";
+    return apiClient.delete<{ data: { status: string } }>(`/chat/history${q}`).then(r => r.data);
+  },
+
+  /**
+   * Get user chat quota status
+   */
+  getQuota: () =>
+    apiClient.get<{ data: { used: number; limit: number; remaining: number; resetAt: string; plan: string } }>("/chat/quota").then(r => r.data),
+};
+
+// =============================================================================
+// Billing API
+// =============================================================================
+
+export const billingApi = {
+  getPlans: (locale?: string) =>
+    apiClient.get<{ data: { plans: PlanDto[] } }>(`/billing/plans${locale ? `?locale=${locale}` : ""}`).then(r => r.data),
+
+  getEntitlements: () =>
+    apiClient.get<{ data: EntitlementStatusDto }>("/billing/entitlements").then(r => r.data),
+
+  getQuotas: () =>
+    apiClient.get<{ data: UserQuotaStatusDto }>("/billing/quotas").then(r => r.data),
+
+  createCheckoutSession: (params: { plan: string; interval: string; provider: string; successUrl?: string; cancelUrl?: string }) =>
+    apiClient.post<{ data: CheckoutSessionResponse }>("/billing/checkout", params).then(r => r.data),
 };
 
 // =============================================================================

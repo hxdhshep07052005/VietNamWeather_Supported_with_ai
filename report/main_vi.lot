@@ -1,0 +1,19 @@
+\acswitchoff 
+\addvspace {10\p@ }
+\contentsline {table}{\numberline {1.1}{\ignorespaces So sánh tính năng giữa các giải pháp hiện có và hệ thống VietForecast.}}{13}{table.caption.7}%
+\contentsline {table}{\numberline {1.2}{\ignorespaces Bảng tổng hợp đặc tả các ca sử dụng của hệ thống VietForecast.}}{18}{table.caption.11}%
+\addvspace {10\p@ }
+\contentsline {table}{\numberline {2.1}{\ignorespaces Bảng ngưỡng phân định rủi ro khí tượng theo tiêu chuẩn WMO trong VietForecast.}}{28}{table.caption.21}%
+\contentsline {table}{\numberline {2.2}{\ignorespaces Tổng hợp ngăn xếp công nghệ nền tảng sử dụng trong hệ thống VietForecast.}}{34}{table.caption.22}%
+\addvspace {10\p@ }
+\contentsline {table}{\numberline {3.1}{\ignorespaces Ma trận ngưỡng rủi ro phân hóa theo loại phương tiện}}{53}{table.caption.32}%
+\addvspace {10\p@ }
+\contentsline {table}{\numberline {4.1}{\ignorespaces Đặc tả thông số truy vấn không gian hành lang đệm PostGIS}}{62}{table.caption.34}%
+\contentsline {table}{\numberline {4.2}{\ignorespaces Đặc tả các công cụ gọi hàm của Trợ lý AI VietForecast}}{66}{table.caption.35}%
+\addvspace {10\p@ }
+\contentsline {table}{\numberline {5.1}{\ignorespaces So sánh hiệu quả định lượng giữa các phương án di chuyển}}{72}{table.caption.36}%
+\contentsline {table}{\numberline {5.2}{\ignorespaces So sánh hiệu năng truy vấn không gian PostGIS}}{76}{table.caption.40}%
+\contentsline {table}{\numberline {5.3}{\ignorespaces Đánh giá định lượng Trợ lý AI theo các cấp độ câu hỏi phức tạp}}{79}{table.caption.41}%
+\contentsline {table}{\numberline {5.4}{\ignorespaces Kết quả khảo sát khả năng sử dụng hệ thống theo thang đo SUS}}{82}{table.caption.46}%
+\addvspace {10\p@ }
+\contentsline {table}{\numberline {6.1}{\ignorespaces Ma trận đối soát mức độ hoàn thành mục tiêu đồ án}}{91}{table.caption.55}%

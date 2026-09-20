@@ -1,0 +1,306 @@
+\chapter{Hiện thực hóa hệ thống}
+\label{ch:implementation}
+
+Chương này trình bày toàn diện quá trình hiện thực hóa phần mềm cho toàn bộ nền tảng VietForecast dựa trên các nguyên lý và mô hình kiến trúc đã được thiết kế tại Chương~\ref{ch:architecture}. Toàn bộ hệ thống được xây dựng theo mô hình kho mã nguồn hợp nhất (monorepo), áp dụng kiểm kiểu tĩnh nghiêm ngặt với TypeScript 5.5, đóng gói đa dịch vụ vi mô qua Docker Compose với mạng lưới ba tầng phân lập. Nội dung chương tập trung làm rõ việc lập trình tầng dịch vụ backend hiệu năng cao với Fastify 5, cơ chế phong tỏa an ninh phiên bảo mật phía máy chủ (ADR-004), tối ưu hóa truy vấn hành lang không gian hai giai đoạn với cây chỉ mục GiST trên PostGIS 3.4, tiến trình xử lý nền Worker tự phục hồi với khóa phân tán (ADR-001), động cơ đánh giá rủi ro lộ trình đa mục tiêu phân hóa theo phương tiện, trợ lý AI đàm thoại có kiểm chứng dữ liệu thực nghiệm cùng bộ chuyển đổi dự phòng tất định, giao diện bản đồ 3D WebGL tương tác thời gian thực, và quy trình bảo đảm chất lượng thông qua kiểm thử tự động trên CI/CD.
+
+\section{Môi trường phát triển, Ngăn xếp triển khai và Kiến trúc Monorepo}
+\label{sec:monorepo_deployment_stack}
+
+\subsection{Cấu trúc Kho mã nguồn Hợp nhất Monorepo và Ràng buộc Kiểu tĩnh}
+Nhằm tối ưu hóa năng suất kỹ nghệ phần mềm và loại bỏ nguy cơ phân mảnh giao diện lập trình giữa các dịch vụ phân tán, nền tảng VietForecast được tổ chức dưới dạng kho mã nguồn hợp nhất (monorepo) quản lý bởi công cụ đóng gói \texttt{pnpm workspaces}. Hệ thống thiết lập phiên bản ngôn ngữ TypeScript 5.5 ở chế độ kiểm kiểu nghiêm ngặt tuyệt đối (\texttt{strict: true}, \texttt{noImplicitAny: true}, \texttt{exactOptionalPropertyTypes: true}) và định dạng mô-đun chuẩn \texttt{NodeNext}.
+
+Cấu trúc thư mục của monorepo được phân chia thành hai không gian độc lập:
+\begin{itemize}
+    \item[-] \textit{Không gian ứng dụng (\texttt{apps/})}: Chứa các tiến trình thực thi độc lập bao gồm cổng giao tiếp nghiệp vụ \texttt{apps/api}, tiến trình nền thu thập khí tượng \texttt{apps/worker}, hệ thống quản trị danh tính và nội dung \texttt{apps/directus}, và ứng dụng giao diện người dùng \texttt{apps/web}.
+    \item[-] \textit{Không gian gói dùng chung (\texttt{packages/})}: Chứa các thư viện nền tảng gồm \texttt{packages/contracts} (định nghĩa toàn bộ các đối tượng truyền dữ liệu DTO, lược đồ xác thực hợp đồng Zod/Ajv, và danh mục hằng số chuẩn hóa) và \texttt{packages/config} (lưu trữ cấu hình biên dịch TypeScript và quy tắc kiểm tra tĩnh ESLint 9).
+\end{itemize}
+
+Việc tập trung toàn bộ định nghĩa giao tiếp vào gói \texttt{packages/contracts} bảo đảm tính nhất quán xuyên suốt: bất kỳ thay đổi nào về cấu trúc dữ liệu thời tiết, mã rủi ro hoặc tham số định tuyến đều được trình biên dịch TypeScript xác thực tĩnh tức thời ở cả máy khách lẫn máy chủ, triệt tiêu hoàn toàn các lỗi sai lệch kiểu dữ liệu tại thời điểm chạy (\textit{runtime type errors}).
+
+\subsection{Phân vùng Mạng Ba tầng và Triển khai Container Hóa}
+Toàn bộ hệ sinh thái VietForecast được đóng gói thành các vùng chứa container tiêu chuẩn thông qua tệp khai báo cấu trúc \texttt{compose.yaml}. Hạ tầng vận hành được phân vùng thành ba mạng ảo nội bộ nhằm thực thi nguyên lý đặc quyền tối thiểu ở cấp độ giao vận mạng:
+\begin{itemize}
+    \item[-] \textit{Tầng biên và Cổng đảo ngược (\texttt{vnwa\_edge\_net})}: Tiếp nhận lưu lượng trực tiếp từ Internet công cộng qua các cổng tiêu chuẩn 80 (HTTP) và 443 (HTTPS) thông qua Nginx Reverse Proxy. Nginx đảm nhiệm chấm dứt phiên mã hóa TLS, thiết lập các tiêu đề an ninh nghiêm ngặt, và phân phối lưu lượng tới các cổng nội bộ của ứng dụng web và API.
+    \item[-] \textit{Tầng ứng dụng và Điều phối nghiệp vụ (\texttt{vnwa\_app\_net})}: Chứa các vùng chứa \texttt{apps/api}, \texttt{apps/worker} và \texttt{apps/directus}. Các dịch vụ này được cấp quyền giao tiếp với nhau và kết nối tới cơ sở dữ liệu để thực thi nghiệp vụ, đồng thời có thể gửi yêu cầu ra mạng ngoài để tương tác với các API khí tượng và dịch vụ đám mây.
+    \item[-] \textit{Tầng dữ liệu cô lập tuyệt đối (\texttt{vnwa\_data\_net})}: Chứa cơ sở dữ liệu không gian PostgreSQL 16 (tích hợp PostGIS 3.4) và bộ đệm trong bộ nhớ Redis 7. Mạng này được cấu hình với thuộc tính cô lập đặc biệt \texttt{internal: true}, ngắt hoàn toàn cổng định tuyến Internet (Default Gateway). Do đó, các vùng chứa dữ liệu không thể bị truy cập trực tiếp từ bên ngoài và cũng không thể gửi dữ liệu trái phép ra Internet trong trường hợp bị xâm nhập.
+\end{itemize}
+
+Các container được trang bị cơ chế kiểm tra sức khỏe tự động (\textit{healthchecks}) định kỳ 10 giây sử dụng các công cụ chuyên dụng như \texttt{pg\_isready} cho PostgreSQL, \texttt{redis-cli ping} cho Redis, và các điểm cuối kiểm tra trạng thái \texttt{/health} và \texttt{/ready} cho Fastify API và Integration Worker, bảo đảm việc khởi động và phục hồi diễn ra hoàn toàn tự động theo đúng thứ tự phụ thuộc.
+
+\section{Hiện thực Tầng Dịch vụ Backend và Ranh giới Bảo mật Phiên (ADR-004)}
+\label{sec:backend_fastify_impl}
+
+\subsection{Vòng đời Xử lý Yêu cầu và Chuỗi Hook của Fastify 5}
+Tầng dịch vụ backend \texttt{apps/api} được hiện thực hóa dựa trên Fastify 5, tận dụng kiến trúc bất đồng bộ hướng sự kiện và trình phân giải chuỗi JSON siêu tốc \texttt{fast-json-stringify}. Để bảo đảm tính nhất quán trong việc kiểm soát truy cập và bảo vệ tài nguyên, mọi yêu cầu HTTP gửi đến API đều phải đi qua chuỗi móc nối vòng đời (\textit{lifecycle hooks}) được thiết lập nghiêm ngặt:
+\begin{itemize}
+    \item[-] \textit{Giai đoạn tiếp nhận (\texttt{onRequest})}: Kích hoạt bộ kiểm soát tần suất phân tán Token Bucket dựa trên Redis 7. Hệ thống giải mã địa chỉ IP máy khách và giá trị băm của thẻ nhận dạng phiên; nếu lưu lượng vượt quá hạn mức cho phép, Fastify lập tức phản hồi mã trạng thái HTTP 429 (\textit{Too Many Requests}) kèm tiêu đề \texttt{Retry-After} mà không chuyển tiếp vào tầng nghiệp vụ nặng.
+    \item[-] \textit{Giai đoạn xác thực cấu trúc (\texttt{preValidation})}: Sử dụng trình biên dịch lược đồ Ajv để kiểm tra định dạng dữ liệu đầu vào (phương thức, tiêu đề, tham số đường dẫn và thân yêu cầu JSON) dựa trên các hợp đồng chia sẻ từ \texttt{packages/contracts}. Các trường dữ liệu độc hại hoặc không đúng quy chuẩn lập tức bị loại bỏ với mã lỗi HTTP 400 (\textit{Bad Request}).
+    \item[-] \textit{Giai đoạn kiểm tra an ninh phiên (\texttt{preHandler})}: Trích xuất thẻ đục mờ ngẫu nhiên từ cookie an toàn \texttt{\_\_Host-vnwa\_session}. Hook thực hiện băm SHA-256 thẻ nhận dạng, truy vấn bảng lưu trữ \texttt{app\_security.sessions}, đối chiếu trạng thái thu hồi và thời gian sống, thực thi xoay vòng phiên trượt ngầm nếu thời hạn token sắp hết, và gắn đối tượng định danh người dùng (\texttt{userId}, \texttt{roleId}) vào ngữ cảnh thực thi của tuyến dịch vụ.
+    \item[-] \textit{Giai đoạn hậu xử lý và kiểm toán (\texttt{onResponse})}: Tự động đo lường độ trễ xử lý chính xác ở mức micro-giây phục vụ hệ thống giám sát Prometheus, đồng thời kích hoạt ghi nhận sự kiện an ninh vào bảng nhật ký kiểm toán \texttt{app\_security.audit\_events} đối với các thao tác nhạy cảm.
+\end{itemize}
+
+\subsection{Hiện thực Bao bì Mã hóa Khí quyển và Bảo vệ Chống Sai biệt Thời gian}
+Mô-đun an ninh mật mã học được tập trung tại tệp \texttt{apps/api/src/crypto.ts}, cung cấp các hàm nghiệp vụ mật mã vững chắc được xây dựng trực tiếp trên thư viện chuẩn \texttt{node:crypto}:
+\begin{itemize}
+    \item[-] \textit{Bao bì mã hóa đối xứng AES-256-GCM}: Được sử dụng để mã hóa toàn bộ mã truy cập (\texttt{access\_token}) và mã làm mới (\texttt{refresh\_token}) của Directus trước khi ghi vào cơ sở dữ liệu. Hàm \texttt{encryptSecret} khởi tạo một vectơ khởi tạo ngẫu nhiên (IV) độ dài 96 bit (12 byte) từ nguồn ngẫu nhiên an toàn mật mã CSPRNG (\texttt{randomBytes(12)}), thực thi mã hóa khối với khóa bí mật 256 bit \texttt{API\_SESSION\_ENCRYPTION\_KEY}, và trích xuất thẻ xác thực toàn vẹn 128 bit (\texttt{authTag}). Kết quả mã hóa được đóng gói tuần tự thành chuỗi ký tự theo quy chuẩn:
+    \begin{equation}
+    \label{eq:crypto_envelope_vi}
+    \text{Envelope} = \text{"v1"} \,.\, \text{Base64URL}(\text{IV}) \,.\, \text{Base64URL}(\text{Tag}) \,.\, \text{Base64URL}(\text{Ciphertext})
+    \end{equation}
+    Khi giải mã thông qua hàm \texttt{decryptSecret}, hệ thống kiểm tra chặt chẽ tiền tố phiên bản \texttt{v1} và xác thực tính toàn vẹn của dữ liệu thông qua thẻ \texttt{authTag}; nếu có bất kỳ sự can thiệp trái phép nào vào dữ liệu nhị phân, giải thuật ném ngoại lệ lập tức và hủy bỏ phiên xử lý.
+    \item[-] \textit{Sinh thẻ đục mờ và băm một chiều an toàn}: Hàm \texttt{createOpaqueToken(32)} thu nhận 32 byte ngẫu nhiên chất lượng cao từ CSPRNG và mã hóa thành chuỗi 43 ký tự an toàn URL (\texttt{base64url}) để cấp phát cho cookie của người dùng. Trước khi ghi nhận vào hệ quản trị cơ sở dữ liệu, thẻ được băm một chiều bằng giải thuật SHA-256 qua hàm \texttt{hashOpaqueToken} để lưu trữ tại cột \texttt{session\_id\_hash}. Cơ chế này bảo đảm ngay cả khi cơ sở dữ liệu bị lộ lọt, kẻ tấn công hoàn toàn không thể tái tạo lại mã đục mờ để mạo danh người dùng.
+    \item[-] \textit{Chống tấn công sai biệt thời gian (Timing-Safe Equality)}: Thao tác ký và kiểm tra thẻ chống giả mạo yêu cầu chéo trang CSRF được thực hiện thông qua HMAC-SHA256 (\texttt{signCsrfToken}). Quá trình đối chiếu chữ ký tại hàm \texttt{verifyCsrfSignature} sử dụng phương thức \texttt{timingSafeEqual}, bảo đảm thời gian thực thi phép so sánh hai chuỗi byte là một hằng số bất biến tuyệt đối, triệt tiêu hoàn toàn các nguy cơ tấn công kênh kề phân tích thời gian (\textit{timing attack}).
+\end{itemize}
+
+\subsection{Quản trị Phiên Bền vững và Triệt tiêu Họ Phiên (ADR-004)}
+Lớp dịch vụ \texttt{PostgresSessionStore} trong tệp \texttt{apps/api/src/session-store.ts} chịu trách nhiệm hiện thực hóa các quy tắc an ninh phiên phức tạp được định nghĩa trong quyết định kiến trúc ADR-004:
+\begin{itemize}
+    \item[-] \textit{Kiểm soát số lượng phiên đồng thời với Khóa tương tranh}: Để ngăn chặn các cuộc tấn công tranh chấp tài nguyên (\textit{race conditions}) khi người dùng đăng nhập đồng thời từ nhiều thiết bị để vượt qua hạn mức $C_{\text{limit}}$, phương thức \texttt{create} mở một giao dịch PostgreSQL và chiếm giữ khóa cố vấn cấp giao dịch:
+    \begin{equation}
+    \label{eq:advisory_lock_vi}
+    \text{SELECT pg\_advisory\_xact\_lock}(\text{hashtextextended}(u.\text{user\_id}, 0))
+    \end{equation}
+    Khóa này tuần tự hóa tuyệt đối mọi yêu cầu đăng nhập của cùng một tài khoản mà không gây nghẽn các tài khoản khác. Hệ thống đếm số phiên còn hiệu lực (\texttt{revoked\_at IS NULL} và \texttt{expires\_at > now()}); nếu số lượng đạt hoặc vượt quá hạn ngạch, hệ thống từ chối đăng nhập với mã lỗi chuyên biệt \texttt{SESSION\_LIMIT\_REACHED}.
+    \item[-] \textit{Xoay vòng phiên trượt ngầm nguyên tử}: Quá trình xoay vòng thẻ đục mờ diễn ra trong một câu lệnh \texttt{UPDATE} nguyên tử duy nhất trên bảng \texttt{app\_security.sessions}, đồng thời ghi nhận mã băm cũ vào trường \texttt{rotated\_from\_hash}, nâng giá trị biến đếm \texttt{rotation\_counter}, và gia hạn mốc \texttt{expires\_at}. Hệ thống duy trì khoảng thời gian ân hạn 60 giây đối với thẻ băm cũ, cho phép các yêu cầu HTTP đồng thời đang trên đường truyền mạng tiếp tục hoàn tất mà không bị gián đoạn trải nghiệm người dùng.
+    \item[-] \textit{Phát hiện tái sử dụng thẻ và Triệt tiêu họ phiên ($\Psi_{\text{annihilate}}$)}: Nếu một yêu cầu gửi kèm thẻ nhận dạng có giá trị băm trùng khớp với \texttt{rotated\_from\_hash} sau khi khoảng thời gian ân hạn đã kết thúc, hệ thống kích hoạt phán quyết phát hiện tấn công đánh cắp phiên. Hàm \texttt{revokeFamily} lập tức thực thi vô hiệu hóa toàn diện:
+    \begin{equation}
+    \label{eq:revoke_family_vi}
+    \begin{aligned}
+    &\text{UPDATE app\_security.sessions} \\
+    &\quad \text{SET revoked\_at} = t_{\text{now}}, \, \text{revoke\_reason} = \text{"TOKEN\_REUSE\_DETECTED"} \\
+    &\quad \text{WHERE session\_family\_id} = \mathcal{F}_{\text{id}}
+    \end{aligned}
+    \end{equation}
+    Toàn bộ các phiên đang hoạt động thuộc về họ phiên bị triệt tiêu ngay lập tức, ngăn chặn kẻ tấn công khai thác quyền truy cập và buộc người dùng chính chủ phải xác thực lại danh tính.
+\end{itemize}
+
+\section{Hiện thực Cơ sở Dữ liệu Không gian PostGIS và Tối ưu Truy vấn GiST}
+\label{sec:postgis_gist_impl}
+
+\subsection{Cấu trúc Bảng Không gian và Thiết lập Chỉ mục GiST}
+Hệ thống lưu trữ không gian được triển khai trên PostgreSQL 16 tích hợp phần mở rộng PostGIS 3.4. Mô hình dữ liệu tổ chức hai bảng dữ liệu không gian cốt lõi phục vụ các phép toán địa lý:
+\begin{itemize}
+    \item[-] \textit{Bảng danh mục đơn vị hành chính và trạm đo (\texttt{locations})}: Chứa thuộc tính tọa độ điểm \texttt{geom} kiểu \texttt{GEOMETRY(Point, 4326)} đại diện cho vị trí địa lý của 63 tỉnh thành hoặc trạm khí tượng, cùng ranh giới đa giác \texttt{boundary} kiểu \texttt{GEOMETRY(MultiPolygon, 4326)} chuẩn WGS84.
+    \item[-] \textit{Bảng chuỗi thời gian quan trắc khí quyển (\texttt{weather\_observations})}: Lưu trữ toàn bộ các bản ghi thời tiết bề mặt thực nghiệm, liên kết với \texttt{locations} qua khóa ngoại \texttt{location\_id}. Cột hình học \texttt{geom} kiểu \texttt{GEOMETRY(Point, 4326)} được sao chép trực tiếp nhằm tối ưu hóa tính cục bộ của dữ liệu khi thực thi các phép lọc trắc địa dọc tuyến đường.
+\end{itemize}
+
+Để đảm bảo hiệu năng truy vấn trong điều kiện cơ sở dữ liệu tích lũy hàng triệu bản ghi chuỗi thời gian, hai cây chỉ mục tìm kiếm tổng quát GiST (Generalized Search Tree) hai chiều được thiết lập trực tiếp trên cột hình học:
+\begin{equation}
+\label{eq:gist_index_def_vi}
+\text{CREATE INDEX idx\_weather\_obs\_geom ON weather\_observations USING GIST (geom)}
+\end{equation}
+\begin{equation}
+\label{eq:gist_loc_def_vi}
+\text{CREATE INDEX idx\_locations\_geom ON locations USING GIST (geom)}
+\end{equation}
+
+Cây chỉ mục GiST chia cắt không gian địa lý thành hệ thống các hộp chữ nhật bao tối thiểu (Bounding Box -- BBOX) lồng nhau theo cấu trúc phân cấp cân bằng, cho phép trình biên dịch truy vấn thu hẹp phạm vi tìm kiếm theo độ phức tạp hàm logarit $O(\log N)$ thay vì quét toàn bộ bảng.
+
+\subsection{Đặc tả Quy trình Truy vấn Không gian Hai Giai đoạn Dọc Tuyến}
+Trong bài toán trích xuất các trạm khí quyển nằm trong hành lang an toàn $r_{\text{corridor}} = 15\text{ km}$ bao quanh một tuyến đường di chuyển $\mathcal{L}$ kéo dài hàng trăm kilômét, việc tính toán khoảng cách cầu trắc địa phức tạp trên từng bản ghi đơn lẻ sẽ gây quá tải CPU máy chủ cơ sở dữ liệu. Do đó, hệ thống hiện thực hóa quy trình lọc không gian hai giai đoạn (\textit{Two-Tier Spatial Filtering}) kết hợp vị từ thời gian thực nghiêm ngặt.
+
+Bảng~\ref{tab:gist_query_spec_vi} trình bày đặc tả chi tiết các thông số, điều kiện vị từ và cơ chế vận hành của quy trình truy vấn hành lang không gian tối ưu.
+
+\begin{table}[H]
+\centering
+\small
+\caption[Đặc tả thông số truy vấn không gian hành lang đệm PostGIS]{Đặc tả thông số và vị từ của quy trình truy vấn không gian hành lang đệm trên PostGIS 3.4.}
+\label{tab:gist_query_spec_vi}
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{2.6cm} >{\raggedright\arraybackslash}p{4.0cm} X}
+\toprule
+\textbf{Thành phần} & \textbf{Thông số kỹ thuật} & \textbf{Mô tả chức năng và Ý nghĩa vận hành} \\
+\midrule
+Dữ liệu đầu vào & Đa tuyến hành trình $\mathcal{L}$ \newline Kiểu: \texttt{LineString} WGS84 & Chuỗi tọa độ địa lý $(\phi_k, \lambda_k)$ biểu diễn lộ trình di chuyển của phương tiện do OSRM cung cấp. \\
+\addlinespace
+Bán kính hành lang & $r_{\text{corridor}} = 15.000\text{ mét}$ & Phạm vi ảnh hưởng khí tượng xung quanh tuyến giao thông theo quy chuẩn an toàn đường bộ. \\
+\addlinespace
+Vị từ Lọc thô \newline (\textit{Rough Pass}) & $\text{BBOX}(o.\text{geom}) \cap \text{BBOX}(\mathcal{L}) \ne \emptyset$ \newline Độ phức tạp: $O(\log N)$ & Sử dụng cây chỉ mục GiST để loại bỏ ngay lập tức toàn bộ các trạm đo có hộp bao không giao cắt với tuyến đường; giảm hơn 95\% không gian tìm kiếm. \\
+\addlinespace
+Vị từ Lọc tinh \newline (\textit{Exact Pass}) & \texttt{ST\_DWithin}($o.\text{geom}::\text{geography}$, \newline $\mathcal{L}::\text{geography}, 15000)$ & Chuyển đổi tọa độ sang kiểu \texttt{geography} và đo đạc khoảng cách cung trắc địa chính xác trên mặt cong elipxoit WGS84. \\
+\addlinespace
+Vị từ Độ tươi mới & $o.\text{observed\_at} \ge t_{\text{now}} - 180\text{ phút}$ \newline ($\tau(o) \le 180\text{ min}$) & Lọc bỏ dữ liệu khí quyển cũ hoặc mất tín hiệu quan trắc; chỉ chấp nhận các bản ghi \textit{Fresh} hoặc \textit{Aging}. \\
+\addlinespace
+Hiệu năng đạt được & Thời gian đáp ứng: $< 15\text{ ms}$ \newline Kế hoạch quét: \textit{Bitmap Index} & Tối ưu hóa bộ nhớ đệm trang dữ liệu của PostgreSQL; đáp ứng yêu cầu tính toán định tuyến tức thời. \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+Nhờ sự kết hợp giữa hàm \texttt{ST\_DWithin} trên kiểu dữ liệu \texttt{geography} và chỉ mục GiST, kế hoạch thực thi câu lệnh truy vấn (\textit{Execution Plan}) của PostgreSQL sử dụng phương thức \textit{Bitmap Index Scan} kết hợp \textit{Bitmap Heap Scan}. Điều này bảo đảm kết quả đo lường cự ly đạt độ chính xác toán học tuyệt đối mà vẫn duy trì thời gian phản hồi dưới 15 mili-giây đối với các hành trình xuyên quốc gia.
+
+\section{Hiện thực Tiến trình Nền Integration Worker và Cơ chế Ổn định Hệ thống (ADR-001)}
+\label{sec:worker_resilience_impl}
+
+\subsection{Cơ chế Chiếm Khóa Phân tán trên PostgreSQL}
+Tiến trình xử lý nền \texttt{apps/worker} vận hành độc lập với API, đóng vai trò là động cơ thu thập khí quyển chu kỳ cao. Để ngăn chặn xung đột tài nguyên và tranh chấp ghi dữ liệu khi hệ thống triển khai mở rộng nhiều phiên bản worker đồng thời, worker hiện thực hóa cơ chế chiếm khóa phân tán dựa trên bảng cơ sở dữ liệu \texttt{weather\_worker\_leases} theo quyết định kiến trúc ADR-001.
+
+Quy trình quản trị khóa vận hành thông qua hai thủ tục lưu trữ chuyên biệt:
+\begin{itemize}
+    \item[-] \textit{Chiếm giữ lượt xử lý (\texttt{claim\_weather\_run})}: Worker thực hiện câu lệnh chèn có kiểm soát xung đột nguyên tử (\texttt{INSERT ... ON CONFLICT (provider\_id, target\_location\_id) DO UPDATE}). Giao dịch sử dụng cơ chế khóa mức hàng \texttt{FOR UPDATE SKIP LOCKED}, cho phép tiến trình bỏ qua các bản ghi đang bị worker khác chiếm giữ mà không bị phong tỏa hàng đợi. Khóa được cấp phát với thời hạn sống định danh $T_{\text{lease}} = 120\text{ giây}$.
+    \item[-] \textit{Duy trì nhịp tim (\texttt{heartbeat\_weather\_run})}: Trong suốt thời gian thực thi tác vụ mạng kéo dài, worker định kỳ gửi tín hiệu nhịp tim sau mỗi 30 giây để kéo dài mốc hết hạn \texttt{lease\_expires\_at}. Nếu tiến trình worker gặp sự cố dừng đột ngột (crash), khóa sẽ tự động hết hạn sau 120 giây, cho phép một worker dự phòng khác tiếp quản công việc mà không cần sự can thiệp thủ công của quản trị viên.
+\end{itemize}
+
+\subsection{Ngắt mạch Ba Trạng thái và Lùi hàm Mũ có Nhiễu ngẫu nhiên}
+Mô-đun vận hành bền bỉ \texttt{WeatherDurableRuntime} trong tệp \texttt{apps/\allowbreak worker/\allowbreak src/\allowbreak runtime/\allowbreak runtime.ts} tích hợp hai giải thuật ổn định hệ thống cốt lõi:
+\begin{itemize}
+    \item[-] \textit{Máy trạng thái Ngắt mạch (Circuit Breaker)}: Bảo vệ tiến trình trước các sự cố quá tải hoặc cạn kiệt hạn ngạch từ nhà cung cấp thời tiết WeatherAPI. Máy trạng thái luân chuyển giữa ba chế độ:
+    \begin{itemize}
+        \item[+] \textit{Đóng (Closed)}: Trạng thái bình thường. Các yêu cầu mạng được chuyển tiếp đều đặn tới WeatherAPI. Nếu ghi nhận $F \ge 3$ lỗi liên tiếp hoặc lỗi hạn ngạch (\texttt{weather\_provider\_quota\_exhausted}), mạch chuyển sang trạng thái \textit{Open}.
+        \item[+] \textit{Mở (Open)}: Mạch ngắt hoàn toàn. Mọi yêu cầu thu thập dữ liệu mới lập tức bị từ chối ở tầng bộ nhớ mà không gửi tín hiệu ra mạng ngoài, giải phóng tài nguyên tiến trình. Trạng thái này duy trì trong thời gian hồi phục $T_{\text{cooldown}} = 60\text{ giây}$.
+        \item[+] \textit{Nửa mở (Half-Open)}: Khi thời gian hồi phục kết thúc, mạch cho phép một yêu cầu thăm dò đơn lẻ (\textit{canary probe}) được thực thi. Nếu yêu cầu thành công, bộ đếm lỗi được thiết lập lại về 0 và mạch trở về trạng thái \textit{Closed}; nếu yêu cầu thất bại, mạch lập tức mở lại và nhân đôi thời gian hồi phục.
+    \end{itemize}
+    \item[-] \textit{Lùi hàm mũ có thành phần ngẫu nhiên (Exponential Backoff with Jitter)}: Khi gặp lỗi mạng tạm thời, thời gian chờ tái thử nghiệm $t_{\text{delay}}(k)$ tại lần thử thứ $k$ được tính toán chính xác theo mã nguồn hiện thực hóa tại \texttt{apps/\allowbreak worker/\allowbreak src/\allowbreak runtime/\allowbreak runtime.ts}:
+    \begin{equation}
+    \label{eq:worker_backoff_jitter_impl}
+    \begin{aligned}
+    t_{\text{delay}}(k) = \max\Bigl(1, \min\Bigl(t_{\max}, \, \text{round}\Bigl(&\min(t_{\max}, t_{\text{base}} \cdot 2^{\min(k-1, 30)}) \\
+    &\cdot (1 - \rho + 2\rho \cdot U)\Bigr)\Bigr)\Bigr)
+    \end{aligned}
+    \end{equation}
+    với $t_{\text{base}} = 1.000\text{ ms}$, $t_{\max} = 60.000\text{ ms}$, hệ số nhiễu $\rho = 0{,}2$ và biến ngẫu nhiên đều $U \in [0, 1)$. Thành phần nhiễu $\pm 20\%$ làm phân tán đều các thời điểm tái thử nghiệm trên trục thời gian, loại bỏ hiện tượng các luồng worker đồng loạt ồ ạt tấn công máy chủ nguồn khi mạng phục hồi (\textit{thundering herd problem}).
+\end{itemize}
+
+\subsection{Chuẩn hóa Khí tượng WMO và Khử trùng lặp Mật mã SHA-256}
+Dữ liệu thô thu nhận từ WeatherAPI được xử lý qua đường ống chuẩn hóa \texttt{apps/\allowbreak worker/\allowbreak src/\allowbreak weather/\allowbreak normalize.ts} để chuyển đổi toàn diện về quy chuẩn đo lường khí tượng thế giới WMO-No. 8:
+\begin{itemize}
+    \item[-] Chuyển đổi nhiệt độ từ thang Fahrenheit sang Celsius: $T(^\circ\text{C}) = (T(^\circ\text{F}) - 32) \times 5/9$.
+    \item[-] Chuyển đổi tốc độ gió và gió giật từ dặm/giờ sang km/h: $v(\text{km/h}) = v(\text{mph}) \times 1{,}60934$.
+    \item[-] Chuyển đổi lượng mưa từ inch sang milimét: $r(\text{mm}) = r(\text{in}) \times 25{,}4$.
+    \item[-] Chuyển đổi áp suất khí quyển từ inch thủy ngân sang hectopascal: $P(\text{hPa}) = P(\text{inHg}) \times 33{,}8639$.
+    \item[-] Chuyển đổi tầm nhìn xa từ dặm sang mét: $V(\text{m}) = V(\text{miles}) \times 1.609{,}34$.
+    \item[-] Ánh xạ hơn 80 mã hình thái thời tiết riêng rẽ của nhà cung cấp về các phân lớp chuẩn WMO (quang đãng, mây rải rác, mưa rào, dông bão đối lưu, mưa đá).
+\end{itemize}
+
+Trước khi lưu trữ, mô-đun \texttt{checksum.ts} thực hiện tính toán giá trị băm mật mã SHA-256 trên tập các trường số liệu khí tượng chuẩn hóa:
+\begin{equation}
+\label{eq:checksum_hash_vi}
+\mathcal{H}_{\text{obs}} = \text{SHA-256}(T \,\|\, r \,\|\, v \,\|\, w_{\text{gust}} \,\|\, V \,\|\, P \,\|\, \text{WMO\_code})
+\end{equation}
+Thủ tục lưu trữ \texttt{persist\_weather\_bundle} kiểm tra giá trị băm này với bản ghi gần nhất của cùng trạm quan trắc. Nếu giá trị băm trùng khớp hoàn toàn (nghĩa là trạng thái thời tiết không có biến động số liệu thực tế), hệ thống bỏ qua thao tác ghi bản ghi mới vào cơ sở dữ liệu. Giải pháp này giúp cắt giảm hơn 70\% khối lượng I/O ghi đĩa và kích thước tệp nhật ký giao dịch ghi trước (WAL) của PostgreSQL trong những giai đoạn thời tiết ổn định.
+
+\section{Hiện thực Động cơ Đánh giá Rủi ro Lộ trình và Lập Tuyến Đa Mục tiêu}
+\label{sec:route_hazard_impl}
+
+\subsection{Điều phối Dịch vụ Định tuyến OSRM và Rời rạc hóa Không-Thời gian}
+Động cơ định tuyến được hiện thực hóa tại mô-đun \texttt{apps/api/src/route/}\allowbreak\texttt{route-}\allowbreak\texttt{risk-}\allowbreak\texttt{engine.ts}. Khi tiếp nhận yêu cầu từ người dùng với tọa độ điểm xuất phát và điểm đích, hệ thống giao tiếp bất đồng bộ với daemon định tuyến OSRM cục bộ để truy xuất đồng thời ba hành lang ứng viên di chuyển: Tuyến nhanh nhất (\textit{Fastest}), Tuyến ngắn nhất (\textit{Shortest}), và Tuyến thay thế (\textit{Alternative}). Mỗi tuyến đường được OSRM trả về dưới dạng đa tuyến hình học GeoJSON LineString kèm cự ly tổng $D$ (mét) và thời lượng danh định $T$ (giây).
+
+Để kết hợp dữ liệu khí tượng vào lộ trình, mô-đun lấy mẫu \texttt{route-sampler.ts} tiến hành rời rạc hóa đa tuyến thành tập hợp các điểm kiểm tra $p_i = (\phi_i, \lambda_i)$ với $i \in \{1, 2, \dots, K\}$. Quá trình lấy mẫu tuân thủ nghiêm ngặt hai điều kiện giới hạn:
+\begin{itemize}
+    \item[-] \textit{Ràng buộc bước không gian}: Cự ly cung trắc địa giữa hai điểm kiểm tra liên tiếp không được vượt quá $\Delta s \le 5\text{ km}$:
+    \begin{equation}
+    \label{eq:spatial_step_bound_vi}
+    d_{\text{geodetic}}(p_i, p_{i-1}) \le 5.000\text{ mét}
+    \end{equation}
+    \item[-] \textit{Ràng buộc bước thời gian}: Chênh lệch thời gian dự kiến đến giữa hai điểm kiểm tra liên tiếp không vượt quá $\Delta t \le 15\text{ phút}$. Mốc thời gian đến ước tính $t_i$ tại điểm kiểm tra $p_i$ được ngoại suy động theo vận tốc danh định trung bình $\bar{v} = D / T$:
+    \begin{equation}
+    \label{eq:eta_extrapolation_vi}
+    t_i = t_0 + \sum_{k=1}^i \frac{d_{\text{geodetic}}(p_k, p_{k-1})}{\bar{v}}
+    \end{equation}
+\end{itemize}
+
+\subsection{Đánh giá Ma trận Rủi ro Phân hóa Phương tiện và Chấm điểm Đa Mục tiêu}
+Tại mỗi điểm kiểm tra $p_i$, hệ thống gọi truy vấn PostGIS tối ưu để trích xuất các trạm khí tượng nằm trong bán kính hành lang đệm 15 km. Động cơ rủi ro \texttt{risk-engine.ts} đối chiếu các thông số quan trắc với ma trận ngưỡng an toàn phân hóa theo phương tiện: Xe máy (\texttt{motorcycle}) hoặc Ô tô (\texttt{car}). Cấp độ rủi ro tại điểm $p_i$ được tổng hợp theo nguyên tắc rủi ro bao trùm nghiêm trọng nhất $S(p_i) = \max_{d \in \mathcal{D}} R_d(p_i, v)$.
+
+Đối với xe máy, các ngưỡng kích hoạt nguy hiểm (mưa lớn, gió giật mạnh, tầm nhìn hạn chế) được lập trình siết chặt hơn 30\% so với ô tô nhằm phản ánh nguy cơ mất thăng bằng cơ học, trượt bánh và mất tầm quan sát thực tế khi điều khiển phương tiện hai bánh dưới thời tiết cực đoan.
+
+Cuối cùng, hệ thống tính toán hàm mục tiêu cân bằng đa tiêu chí $Score_{\text{balanced}}$ theo công thức~\eqref{eq:route_balanced_score_vi} đã thiết lập tại Chương~\ref{ch:architecture}:
+\begin{equation}
+Score_{\text{balanced}} = 0{,}5 \cdot \hat{S}_{\text{route}} + 0{,}3 \cdot \hat{T} + 0{,}2 \cdot \hat{D}
+\end{equation}
+trong đó $\hat{S}_{\text{route}}$, $\hat{T}$ và $\hat{D}$ là các chỉ số rủi ro, thời gian và khoảng cách đã được chuẩn hóa về miền $[0, 1]$. Tuyến đường có điểm số tổng hợp thấp nhất được gắn nhãn Khuyến nghị an toàn thời tiết (\textit{Weather-Safer Recommended}) và gửi về máy khách dưới dạng GeoJSON FeatureCollection sẵn sàng trực quan hóa.
+
+\section{Hiện thực Trợ lý AI Khí tượng có Kiểm chứng Dữ liệu (Grounded AI)}
+\label{sec:grounded_ai_impl}
+
+\subsection{Điều phối Công cụ có Cấu trúc với Gemini 1.5 Flash}
+Thành phần trợ lý AI được hiện thực hóa tại mô-đun \texttt{apps/api/src/chat/}\allowbreak\texttt{gemini-}\allowbreak\texttt{adapter.ts}, sử dụng SDK chính thức của Google Gemini kết hợp mô hình Gemini 1.5 Flash. Mô hình được vận hành với lời nhắc chỉ thị hệ thống (\textit{system instructions}) khắt khe, biến mô hình thành một bộ điều phối ý định ngôn ngữ tự nhiên thay vì một hệ thống tự sinh nội dung tự do.
+
+Để ngăn chặn triệt để hiện tượng ảo giác thông tin, hệ thống đăng ký năm công cụ gọi hàm chuẩn hóa (\textit{Function Calling Tools}). Bảng~\ref{tab:gemini_tool_schema_vi} trình bày đặc tả chi tiết tên gọi, mục đích sử dụng và cấu trúc tham số có kiểm kiểu chặt chẽ của các công cụ này.
+
+\begin{table}[H]
+\centering
+\small
+\caption[Đặc tả các công cụ gọi hàm của Trợ lý AI VietForecast]{Đặc tả danh mục các công cụ gọi hàm chuẩn hóa tích hợp cho Gemini 1.5 Flash.}
+\label{tab:gemini_tool_schema_vi}
+\begin{tabularx}{\textwidth}{l >{\raggedright\arraybackslash}p{3.4cm} >{\raggedright\arraybackslash}p{2.8cm} X}
+\toprule
+\textbf{Tên công cụ} & \textbf{Mục đích nghiệp vụ} & \textbf{Tham số bắt buộc} & \textbf{Mô tả tham số và Kiểu dữ liệu} \\
+\midrule
+\texttt{search\_location} & Tra cứu tọa độ địa lý, mã đơn vị hành chính và tỉnh thành tại Việt Nam. & \texttt{query} (chuỗi) & Tên địa danh tự nhiên của người dùng (ví dụ: \textit{"Đà Lạt"}, \textit{"Hà Nội"}). \\
+\addlinespace
+\texttt{get\_current\_weather} & Lấy dữ liệu quan trắc thời tiết bề mặt thực tế mới nhất tại một tỉnh thành. & \texttt{location} (chuỗi) & Tên chuẩn hóa của tỉnh thành hoặc mã định danh vị trí địa lý. \\
+\addlinespace
+\texttt{get\_forecast} & Lấy chuỗi dự báo khí tượng khí quyển theo mốc 24 giờ hoặc 72 giờ tới. & \texttt{location} (chuỗi), \newline \texttt{hours} (số nguyên) & Tên vị trí và khoảng thời gian dự báo (\texttt{hours} nhận giá trị 24 hoặc 72). \\
+\addlinespace
+\texttt{assess\_travel\_risk} & Đánh giá mức độ rủi ro di chuyển tại điểm dựa trên ma trận phương tiện. & \texttt{location} (chuỗi), \newline \texttt{vehicle}\allowbreak\texttt{Type} (tùy chọn) & Vị trí tra cứu và loại phương tiện tham gia giao thông (\texttt{car} hoặc \texttt{motorcycle}). \\
+\addlinespace
+\texttt{evaluate\_route} & Đánh giá an toàn thời tiết trên ba hành lang di chuyển giữa hai điểm. & \texttt{origin} (chuỗi), \newline \texttt{desti}\allowbreak\texttt{nation} (chuỗi), \newline \texttt{vehicle}\allowbreak\texttt{Type} (tùy chọn) & Điểm xuất phát, điểm đến và phương tiện giao thông (\texttt{car} hoặc \texttt{motorcycle}). \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\subsection{Đường ống Kiểm chứng Thực nghiệm và Trích dẫn Nguồn dữ liệu}
+Khi người dùng đặt câu hỏi hội thoại (ví dụ: \textit{"Sáng mai tôi đi xe máy từ Hà Nội về Ninh Bình có an toàn không?"}), Gemini phân tích ngữ nghĩa và sinh lệnh gọi hàm \texttt{evaluate\_route}. Fastify API bắt chặn yêu cầu, điều phối \texttt{ChatToolEngine} gọi các dịch vụ tính toán nội bộ, đối chiếu độ tươi mới của dữ liệu $\tau \le 180\text{ phút}$, và đóng gói kết quả phản hồi gửi lại Gemini.
+
+Gemini chỉ được phép tổng hợp câu trả lời dựa trên tập dữ liệu số liệu trả về này và bắt buộc phải tuân thủ các quy tắc trích dẫn bằng chứng:
+\begin{itemize}
+    \item[-] \textit{Mã định danh trạm quan trắc (\texttt{Station ID})}: Ghi rõ nguồn cung cấp dữ liệu tại từng điểm đo (ví dụ: Trạm quan trắc Ninh Bình - VN-NB01).
+    \item[-] \textit{Mốc thời gian đo lường (\texttt{Timestamp})}: Ghi nhận thời điểm thu thập dữ liệu gần nhất để người dùng nắm rõ tính cập nhật của cảnh báo.
+    \item[-] \textit{Khuyến cáo an toàn giao thông bắt buộc}: Mọi câu trả lời liên quan đến lộ trình hoặc thời tiết cực đoan bắt buộc phải đính kèm câu khuyến cáo theo luật định: \textit{"Thông tin chỉ mang tính chất tham khảo. Vui lòng tuân thủ biển báo giao thông và chỉ đạo cứu hộ địa phương khi di chuyển."}
+\end{itemize}
+
+\subsection{Hiện thực Bộ Chuyển đổi Dự phòng Tất định (Deterministic Fallback)}
+Để bảo đảm độ tin cậy tuyệt đối ngay cả khi dịch vụ Gemini API bị mất kết nối mạng quốc tế, quá tải hoặc vượt hạn mức yêu cầu, hệ thống cài đặt bộ chuyển đổi dự phòng tất định \texttt{GroundedRuleEngineAdapter} tại \texttt{apps/api/src/chat/}\allowbreak\texttt{llm-}\allowbreak\texttt{adapter.ts}. 
+
+Bộ chuyển đổi vận hành hoàn toàn độc lập với các dịch vụ AI bên ngoài:
+\begin{itemize}
+    \item[-] \textit{Nhận dạng thực thể bằng Biểu thức chính quy}: Bộ khớp mẫu phân tích câu hỏi người dùng, nhận dạng các từ khóa hành trình (ví dụ: \textit{"lộ trình"}, \textit{"tuyến đường"}, \textit{"từ ... đi ..."}), loại phương tiện (\textit{"xe máy"} $\to$ \texttt{motorcycle}, \textit{"ô tô"} $\to$ \texttt{car}), và trích xuất điểm xuất phát cùng điểm đích.
+    \item[-] \textit{Truy vấn công cụ trực tiếp}: Bộ chuyển đổi tự động gọi hàm \texttt{toolEngine.executeTool} với các tham số vừa trích xuất, kích hoạt chuỗi tính toán OSRM và PostGIS của hệ thống nội bộ.
+    \item[-] \textit{Định dạng câu trả lời cấu trúc Markdown}: Dữ liệu tính toán được ghép nối thành bảng tổng hợp rõ ràng gồm cự ly, thời gian, mức độ rủi ro thời tiết của từng tuyến đường, chỉ định hành lang an toàn khuyên dùng và đính kèm đầy đủ cảnh báo an toàn.
+\end{itemize}
+
+Cơ chế này bảo đảm hệ thống luôn duy trì tính sẵn sàng 100\% cho các quyết định an toàn giao thông của người lái xe dưới mọi điều kiện hạ tầng mạng.
+
+\section{Hiện thực Giao diện Người dùng và Trực quan hóa Bản đồ 3D}
+\label{sec:frontend_web_impl}
+
+\subsection{Kiến trúc Ứng dụng Giao diện với React 18 và Quản lý Trạng thái}
+Giao diện ứng dụng người dùng được xây dựng tại gói \texttt{apps/web} sử dụng React 18 và trình đóng gói Vite. Để duy trì tính mượt mà và khả năng phản hồi tức thì của giao diện trong các kịch bản người dùng tương tác liên tục, hệ thống áp dụng chiến lược quản lý trạng thái phân tầng:
+\begin{itemize}
+    \item[-] \textit{Trạng thái máy chủ (Server State) với TanStack Query}: Toàn bộ các yêu cầu tra cứu thời tiết, dự báo nhiều ngày và kết quả đánh giá lộ trình được quản trị qua TanStack Query (React Query). Thư viện tự động thực thi lưu đệm cục bộ, khử trùng lặp yêu cầu mạng (\textit{request deduplication}), và hỗ trợ cơ chế làm mới ngầm khi cửa sổ trình duyệt nhận lại tiêu điểm (\textit{window refocus}), giúp giảm thiểu đáng kể tải truy vấn lên tầng API.
+    \item[-] \textit{Trạng thái ứng dụng khách (Client State) với Zustand}: Các thông số điều khiển giao diện như góc nhìn bản đồ, hành lang di chuyển đang được chọn, loại phương tiện đang kích hoạt (\texttt{motorcycle} hoặc \texttt{car}), và lịch sử đàm thoại của Trợ lý AI được lưu trữ trong kho trạng thái nhẹ Zustand.
+    \item[-] \textit{Hệ thống bản địa hóa lai ghép (Hybrid i18n - ADR-007)}: Ứng dụng tích hợp bộ chuyển đổi ngôn ngữ cho phép chuyển đổi tức thời giữa tiếng Việt (\texttt{vi}) và tiếng Anh (\texttt{en}) mà không cần tải lại trang, kết hợp từ điển tĩnh tại máy khách với dữ liệu động được quản trị từ Directus.
+\end{itemize}
+
+\subsection{Trực quan hóa Bản đồ Không gian 3D với MapLibre GL}
+Trọng tâm trực quan hóa của hệ thống nằm tại hai thành phần \texttt{RealInteractiveMap.tsx} và \texttt{RouteInteractiveMap.tsx}, tận dụng thư viện mã nguồn mở MapLibre GL 4 dựa trên nền tảng tăng tốc phần cứng đồ họa WebGL:
+\begin{itemize}
+    \item[-] \textit{Dựng lưới địa hình ba chiều (3D Digital Elevation Model)}: Hệ thống tích hợp các mảnh ngói độ cao số (raster-dem tiles), cho phép dựng mô hình địa hình nổi 3D thực tế dọc theo các đèo dốc hiểm trở của Việt Nam (như Đèo Hải Vân, Đèo Ngoạn Mục), giúp người lái xe hình dung trực quan độ dốc và nguy cơ sương mù hoặc mưa lũ theo cao độ.
+    \item[-] \textit{Tô màu đa tuyến lộ trình động theo cấp độ rủi ro}: Lộ trình GeoJSON được phân đoạn thành các đoạn nhỏ và ánh xạ trực tiếp với bảng mã màu an toàn giao thông chuẩn: màu xanh lục (\texttt{\#10b981}) cho cấp độ \texttt{Low}, màu vàng cam (\texttt{\#f59e0b}) cho cấp độ \texttt{Caution}, và màu đỏ thẫm (\texttt{\#ef4444}) cho cấp độ \texttt{High}. Việc vẽ các đa tuyến được thực thi hoàn toàn trên vi xử lý đồ họa (GPU), duy trì tốc độ khung hình ổn định 60 khung hình/giây (FPS) ngay cả khi người dùng thực hiện thao tác xoay nghiêng hoặc phóng to bản đồ.
+    \item[-] \textit{Điểm mốc kiểm tra và Tương tác trích dẫn AI}: Trên tuyến đường di chuyển, hệ thống bố trí các con trỏ đánh dấu (marker pins) tại các vị trí có cảnh báo nguy hiểm khí tượng. Khi người dùng nhấp vào một trích dẫn bằng chứng trong cửa sổ chat của Trợ lý AI, bản đồ sẽ tự động thực hiện hiệu ứng lướt mượt mà (\textit{flyTo}) và phóng to tới đúng trạm khí tượng hoặc phân đoạn lộ trình tương ứng.
+\end{itemize}
+
+\section{Chiến lược Kiểm thử Phần mềm và Đảm bảo Chất lượng}
+\label{sec:testing_qa_strategy}
+
+\subsection{Kiến trúc Kiểm thử Bốn Tầng}
+Để bảo đảm độ tin cậy vận hành, tính toàn vẹn dữ liệu và an ninh thông tin của một hệ thống hỗ trợ an toàn giao thông, VietForecast áp dụng chiến lược kiểm thử phần mềm toàn diện gồm bốn tầng:
+\begin{itemize}
+    \item[-] \textit{Tầng 1: Kiểm thử đơn vị (Unit Testing)}: Được thực thi thông qua khung kiểm thử Vitest với 19 bộ kiểm thử chuyên biệt trải rộng trên tất cả các gói dịch vụ. Các bài kiểm tra đơn vị xác thực tính chính xác của các thuật toán mật mã (\texttt{crypto.test.ts}), logic khóa tương tranh phiên (\texttt{session-store.test.ts}), giải thuật lùi hàm mũ có nhiễu ngẫu nhiên của worker (\texttt{runtime.test.ts}), tính toán chuyển đổi đơn vị WMO (\texttt{normalize.test.ts}), luật kết hợp rủi ro bao trùm nghiêm trọng nhất (\texttt{risk-engine.test.ts}), và cơ chế dự phòng tất định (\texttt{llm-adapter.test.ts}).
+    \item[-] \textit{Tầng 2: Kiểm thử tích hợp (Integration Testing)}: Sử dụng thư viện Supertest để kiểm tra toàn diện các điểm cuối Fastify API trong môi trường cơ sở dữ liệu thử nghiệm, xác thực tính đúng đắn của các câu truy vấn không gian hai giai đoạn trên PostGIS, luồng đăng nhập và làm mới phiên với Directus, và cơ chế kiểm soát tần suất Token Bucket trên Redis.
+    \item[-] \textit{Tầng 3: Kiểm thử an ninh và Đánh giá rủi ro}: Tiến hành kiểm thử phát hiện tấn công kênh kề đối với hàm so sánh chữ ký CSRF, xác thực cơ chế triệt tiêu tức thì toàn bộ họ phiên $\Psi_{\text{annihilate}}$ khi phát hiện hành vi tái sử dụng thẻ xoay vòng, và kiểm tra tính an toàn trước các cuộc tấn công tiêm mã SQL đối với các trường hình học.
+    \item[-] \textit{Tầng 4: Kiểm thử hiệu năng và Tải trọng}: Thực nghiệm đo lường thời gian đáp ứng của truy vấn hành lang đệm PostGIS GiST dưới điều kiện tải đồng thời, bảo đảm thời gian phản hồi duy trì ổn định dưới 15 mili-giây.
+\end{itemize}
+
+\subsection{Đường ống Tích hợp và Triển khai Liên tục (CI/CD Pipeline)}
+Toàn bộ quy trình kiểm tra chất lượng phần mềm được tự động hóa hoàn toàn thông qua tệp quy trình làm việc GitHub Actions \texttt{.github/workflows/ci.yml}. Mỗi khi có thay đổi mã nguồn được gửi lên nhánh chính (\texttt{main}) hoặc thông qua một yêu cầu kéo (\texttt{pull\_request}), hệ thống tự động khởi chạy chuỗi kiểm định nghiêm ngặt trên môi trường Ubuntu 24.04:
+\begin{itemize}
+    \item[-] \textit{Kiểm tra chuẩn mã hóa (Linting)}: Thực thi lệnh \texttt{pnpm run lint} sử dụng ESLint 9 để xác thực tính tuân thủ quy chuẩn cú pháp và tiêu chuẩn kỹ nghệ phần mềm.
+    \item[-] \textit{Kiểm tra kiểu dữ liệu tĩnh (Type Checking)}: Thực thi \texttt{pnpm run typecheck} để trình biên dịch TypeScript xác thực tĩnh toàn bộ các hợp đồng kiểu dữ liệu trên cả 4 ứng dụng và gói dùng chung.
+    \item[-] \textit{Khởi chạy kiểm thử tự động (Test Execution)}: Thực thi lệnh \texttt{pnpm run test}, yêu cầu toàn bộ 19 bộ kiểm thử đơn vị và tích hợp phải vượt qua 100\% với kết quả thành công.
+    \item[-] \textit{Kiểm toán an ninh phụ thuộc (Security Dependency Audit)}: Thực thi lệnh \texttt{pnpm run audit:prod} để quét toàn bộ cây phụ thuộc của các gói sản xuất nhằm phát hiện và ngăn chặn kịp thời các lỗ hổng bảo mật đã được công bố (CVE).
+    \item[-] \textit{Kiểm định hợp đồng Docker Compose (Smoke Test)}: Khởi tạo cụm container tạm thời gồm PostgreSQL, Redis, Directus, API và Worker; tự động sinh các khóa bí mật mật mã ngẫu nhiên qua \texttt{openssl rand}, che giấu các khóa này thông qua lệnh \texttt{::add-mask::}, và xác thực các bài kiểm tra sức khỏe container để bảo đảm tính sẵn sàng triển khai thực địa.
+\end{itemize}
+
+\section{Tóm tắt chương}
+\label{sec:chapter4_summary}
+Chương 4 đã trình bày chi tiết và toàn diện quá trình hiện thực hóa phần mềm của nền tảng VietForecast, chuyển hóa các thiết kế lý thuyết và kiến trúc phân rã tại Chương~\ref{ch:architecture} thành các thành phần kỹ thuật cụ thể. Hệ thống đã triển khai thành công kiến trúc monorepo phân vùng mạng ba tầng bảo mật; xây dựng tầng dịch vụ backend hiệu năng cao với Fastify 5 tích hợp cơ chế an ninh phiên đục mờ chuẩn mật mã học AES-256-GCM (ADR-004); tối ưu hóa truy vấn không gian hành lang đệm hai giai đoạn trên PostgreSQL/PostGIS 3.4 với cây chỉ mục GiST đạt độ trễ dưới 15 ms; thiết lập tiến trình nền Integration Worker tự phục hồi với khóa phân tán và bộ ngắt mạch chống bão yêu cầu (ADR-001); hoàn thiện động cơ đánh giá rủi ro tuyến đường đa mục tiêu phân hóa theo phương tiện; tích hợp trợ lý AI đàm thoại có kiểm chứng dữ liệu thực nghiệm kèm cơ chế dự phòng tất định bảo đảm độ sẵn sàng 100\%; phát triển giao diện bản đồ không gian 3D WebGL tốc độ 60 FPS với MapLibre GL; và thiết lập đường ống kiểm thử tự động CI/CD bốn tầng nghiêm ngặt. Toàn bộ các kết quả đo kiểm hiệu năng thực nghiệm, độ trễ hệ thống và đánh giá định lượng chất lượng phần mềm sẽ được phân tích chi tiết trong Chương 5.

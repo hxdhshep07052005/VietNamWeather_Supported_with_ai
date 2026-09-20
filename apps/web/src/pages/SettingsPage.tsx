@@ -6,6 +6,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { Crown, Zap, Sparkles, MapPin, Navigation, ExternalLink, Trash2 } from "lucide-react";
 import { useAuthStore } from "@/hooks/useAuthStore";
 import { useLanguage, useSetLanguage } from "../hooks/useLanguageStore";
 import { SUPPORTED_LANGUAGES, LANGUAGE_NAMES } from "../i18n";
@@ -51,11 +52,20 @@ export function SettingsPage() {
               <div style={{ fontSize: "16px", fontWeight: 700, color: "var(--color-text-primary)" }}>
                 {user?.name || "Người dùng"} ({user?.email})
               </div>
-              <div style={{ fontSize: "13px", color: "var(--color-text-secondary)", marginTop: "4px" }}>
-                Gói hiện tại:{" "}
-                <strong style={{ color: isPro ? "#FFCD00" : "#0066CC" }}>
-                  {isPro ? "👑 PRO CAO CẤP (Không giới hạn)" : "⚡ GÓI MIỄN PHÍ"}
-                </strong>
+              <div style={{ fontSize: "13px", color: "var(--color-text-secondary)", marginTop: "4px", display: "flex", alignItems: "center", gap: "6px" }}>
+                <span>Gói hiện tại:</span>
+                <span
+                  style={{
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: "4px",
+                    fontWeight: 800,
+                    color: isPro ? "#FFCD00" : "#0066CC",
+                  }}
+                >
+                  {isPro ? <Crown size={14} /> : <Zap size={14} />}
+                  <span>{isPro ? "PRO CAO CẤP (Không giới hạn)" : "GÓI MIỄN PHÍ"}</span>
+                </span>
               </div>
               <div style={{ fontSize: "12px", color: "var(--color-text-secondary)", marginTop: "2px" }}>
                 Lượt tìm lộ trình hôm nay: <strong>{dailyUsed}</strong> / {dailyQuotaMax} lượt
@@ -65,6 +75,9 @@ export function SettingsPage() {
             <Link
               to="/upgrade"
               style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "6px",
                 padding: "8px 18px",
                 borderRadius: "8px",
                 background: isPro ? "var(--color-surface-raised)" : "linear-gradient(135deg, #FFCD00, #F59E0B)",
@@ -75,7 +88,17 @@ export function SettingsPage() {
                 textDecoration: "none",
               }}
             >
-              {isPro ? "Xem quyền lợi gói PRO ↗" : "⭐ Nâng cấp PRO ngay"}
+              {isPro ? (
+                <>
+                  <span>Xem quyền lợi gói PRO</span>
+                  <ExternalLink size={14} />
+                </>
+              ) : (
+                <>
+                  <Sparkles size={14} />
+                  <span>Nâng cấp PRO ngay</span>
+                </>
+              )}
             </Link>
           </div>
         </section>
@@ -93,18 +116,19 @@ export function SettingsPage() {
 
           {savedLocations.length === 0 ? (
             <div className={styles.emptyTip}>
-              Bạn chưa lưu địa điểm nào. Khi bấm chọn một tỉnh thành trên Bản đồ, hãy chọn "☆ Lưu địa điểm" để xem lại
+              Bạn chưa lưu địa điểm nào. Khi bấm chọn một tỉnh thành trên Bản đồ, hãy chọn "Lưu địa điểm" để xem lại
               nhanh tại đây.
             </div>
           ) : (
             <div className={styles.itemsList}>
               {savedLocations.map((loc) => (
                 <div key={loc.id} className={styles.savedItemRow}>
-                  <div>
+                  <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                    <MapPin size={16} color="var(--color-primary)" />
                     <span style={{ fontSize: "14px", fontWeight: 700, color: "var(--color-text-primary)" }}>
-                      📍 {loc.name}
+                      {loc.name}
                     </span>
-                    <span style={{ fontSize: "12px", color: "var(--color-text-secondary)", marginLeft: "10px" }}>
+                    <span style={{ fontSize: "12px", color: "var(--color-text-secondary)", marginLeft: "6px" }}>
                       Lưu lúc: {new Date(loc.savedAt).toLocaleDateString("vi-VN")}
                     </span>
                   </div>
@@ -114,22 +138,39 @@ export function SettingsPage() {
                       type="button"
                       onClick={() => navigate(`/location/${encodeURIComponent(loc.name)}`)}
                       style={{
+                        display: "inline-flex",
+                        alignItems: "center",
+                        gap: "4px",
                         padding: "4px 10px",
                         fontSize: "12px",
                         borderRadius: "6px",
                         border: "1px solid var(--color-border)",
                         background: "var(--color-surface)",
+                        color: "var(--color-text-primary)",
                         cursor: "pointer",
                       }}
                     >
-                      Xem chi tiết
+                      <ExternalLink size={12} />
+                      <span>Xem chi tiết</span>
                     </button>
                     <button
                       type="button"
                       onClick={() => removeSavedLocation(loc.id)}
-                      className={styles.deleteItemBtn}
+                      style={{
+                        display: "inline-flex",
+                        alignItems: "center",
+                        gap: "4px",
+                        padding: "4px 10px",
+                        fontSize: "12px",
+                        borderRadius: "6px",
+                        border: "1px solid rgba(239, 68, 68, 0.3)",
+                        background: "rgba(239, 68, 68, 0.08)",
+                        color: "#EF4444",
+                        cursor: "pointer",
+                      }}
                     >
-                      Xóa
+                      <Trash2 size={12} />
+                      <span>Xóa</span>
                     </button>
                   </div>
                 </div>
@@ -151,18 +192,19 @@ export function SettingsPage() {
 
           {savedRoutes.length === 0 ? (
             <div className={styles.emptyTip}>
-              Bạn chưa lưu lộ trình nào. Khi tìm kiếm đường đi tại trang "Lộ trình thông minh", bấm "💾 Lưu lộ trình này"
+              Bạn chưa lưu lộ trình nào. Khi tìm kiếm đường đi tại trang "Lộ trình thông minh", bấm "Lưu lộ trình này"
               để theo dõi nhanh.
             </div>
           ) : (
             <div className={styles.itemsList}>
               {savedRoutes.map((r) => (
                 <div key={r.id} className={styles.savedItemRow}>
-                  <div>
+                  <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                    <Navigation size={16} color="var(--color-primary)" />
                     <span style={{ fontSize: "14px", fontWeight: 700, color: "var(--color-text-primary)" }}>
-                      🚗 {r.fromName} ➔ {r.toName}
+                      {r.fromName} → {r.toName}
                     </span>
-                    <span style={{ fontSize: "12px", color: "var(--color-text-secondary)", marginLeft: "10px" }}>
+                    <span style={{ fontSize: "12px", color: "var(--color-text-secondary)", marginLeft: "6px" }}>
                       ({r.distanceKm} km • {Math.round(r.durationMinutes)} phút • {r.vehicle === "car" ? "Ô tô" : "Xe máy"})
                     </span>
                   </div>
@@ -172,24 +214,39 @@ export function SettingsPage() {
                       type="button"
                       onClick={() => navigate(`/route?to=${encodeURIComponent(r.toName)}`)}
                       style={{
+                        display: "inline-flex",
+                        alignItems: "center",
+                        gap: "4px",
                         padding: "4px 10px",
                         fontSize: "12px",
                         borderRadius: "6px",
                         border: "1px solid var(--color-primary)",
                         background: "rgba(0, 102, 204, 0.1)",
                         color: "var(--color-primary)",
-                        fontWeight: 600,
                         cursor: "pointer",
                       }}
                     >
-                      Mở lộ trình
+                      <Navigation size={12} />
+                      <span>Mở lộ trình</span>
                     </button>
                     <button
                       type="button"
                       onClick={() => removeSavedRoute(r.id)}
-                      className={styles.deleteItemBtn}
+                      style={{
+                        display: "inline-flex",
+                        alignItems: "center",
+                        gap: "4px",
+                        padding: "4px 10px",
+                        fontSize: "12px",
+                        borderRadius: "6px",
+                        border: "1px solid rgba(239, 68, 68, 0.3)",
+                        background: "rgba(239, 68, 68, 0.08)",
+                        color: "#EF4444",
+                        cursor: "pointer",
+                      }}
                     >
-                      Xóa
+                      <Trash2 size={12} />
+                      <span>Xóa</span>
                     </button>
                   </div>
                 </div>
@@ -208,7 +265,7 @@ export function SettingsPage() {
                 className={`${styles.languageOption} ${currentLang === lang ? styles.languageOptionActive : ""}`}
                 onClick={() => setLanguage(lang)}
               >
-                <span className={styles.languageFlag}>{lang === "vi" ? "🇻🇳" : "🇬🇧"}</span>
+                <span className={styles.languageFlag}>{lang.toUpperCase()}</span>
                 <span className={styles.languageName}>{LANGUAGE_NAMES[lang]}</span>
                 {currentLang === lang && (
                   <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className={styles.checkIcon}>

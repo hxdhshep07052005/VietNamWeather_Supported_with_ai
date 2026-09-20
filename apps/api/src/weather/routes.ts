@@ -16,7 +16,7 @@ import {
 import { ApiError } from "../errors.js";
 import type { WeatherService } from "../weather-service.js";
 import type { WeatherCache } from "../weather-cache.js";
-import { WeatherStore } from "../weather-store.js";
+import type { WeatherStore } from "../weather-store.js";
 import type { WeatherScheduler } from "./scheduler.js";
 import {
   DEFAULT_FRESHNESS

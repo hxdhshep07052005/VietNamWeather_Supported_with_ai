@@ -1,0 +1,50 @@
+@startuml
+skinparam dpi 180
+skinparam defaultFontName "Segoe UI, Arial, sans-serif"
+skinparam maxMessageSize 140
+skinparam roundCorner 8
+skinparam shadowing false
+autonumber
+
+participant "Client\n(Web App)" as C
+participant "Fastify API\n(Backend Gateway)" as API
+participant "Redis 7\n(Session Cache)" as R
+participant "PostgreSQL\n(Directus Store)" as DB
+
+== Phase 1: Authentication & Opaque Handle Issuance ==
+C -> API: POST /auth/login (email, password)
+API -> API: Rate limit check (Leaky Bucket: 5 req/min)
+API -> DB: Query user record & verify Argon2id hash
+API -> DB: Enforce concurrency limit (N_active <= C_limit = 5)
+alt Active sessions >= C_limit
+    API -> DB: Invalidate oldest active session record
+end
+API -> API: Generate raw session ID S, derive H = HMAC-SHA256(S, K_sign)\nEncrypt payload E = AES-256-GCM(S, P, K_enc)
+API -> DB: INSERT directus_sessions (id, payload, lineage_id, expires_at)
+API -> R: SET cache:session:{H} (payload, TTL = 900s)
+API --> C: 200 OK + Set-Cookie: directus_session_token=H\n(HttpOnly, Secure, SameSite=Strict)
+
+== Phase 2: Authorized Request & Silent Sliding Rotation ==
+C -> API: GET /api/v1/routes/risk (Cookie: directus_session_token=H_curr)
+API -> R: GET cache:session:{H_curr}
+alt Cache Miss
+    API -> DB: SELECT encrypted session & decrypt via AES-256-GCM
+    API -> R: Populate cache:session:{H_curr} (TTL = 900s)
+end
+API -> API: Evaluate elapsed duration: delta_t = t_req - t_issue
+alt delta_t >= T_rotate (Sliding Rotation Triggered, e.g. 15 min)
+    API -> API: Generate new handle H_new; map lineage parent H_curr\n(Set grace period TTL_grace = 60s)
+    API -> DB: UPDATE directus_sessions SET handle = H_new, last_used = NOW()
+    API -> R: SET cache:session:{H_new} & SET grace:{H_curr} -> H_new
+    API --> C: 200 OK (Data payload) + Set-Cookie: H_new
+else delta_t < T_rotate
+    API --> C: 200 OK (Data payload)
+end
+
+== Phase 3: Synchronized Revocation & Lineage Annihilation ==
+C -> API: POST /auth/logout (Cookie: H_curr)
+API -> R: Query session lineage & active handle tree
+API -> R: DEL cache:session:{H_curr}, DEL grace:{H_curr}, DEL related lineage keys
+API -> DB: UPDATE directus_sessions SET status = 'revoked' (or DELETE)
+API --> C: 200 OK + Clear-Cookie directus_session_token (Max-Age=0)
+@enduml

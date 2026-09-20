@@ -1,0 +1,90 @@
+@startuml
+skinparam dpi 200
+skinparam defaultFontName "Segoe UI, Arial, sans-serif"
+
+<style>
+sequenceDiagram {
+  participant {
+    Padding 25
+    Margin 15
+  }
+}
+</style>
+
+skinparam defaultFontSize 19
+skinparam sequenceGroupFontSize 19
+skinparam sequenceReferenceFontSize 18
+skinparam arrowFontSize 18
+skinparam noteFontSize 17
+skinparam participantFontSize 19
+skinparam actorFontSize 19
+
+skinparam maxMessageSize 380
+skinparam wrapWidth 380
+skinparam roundCorner 8
+skinparam shadowing false
+
+skinparam sequenceLifeLineBorderColor #2C3E50
+skinparam sequenceGroupBorderColor #2980B9
+skinparam sequenceGroupHeaderFontStyle bold
+
+autonumber
+
+participant "Integration Worker\n[Background Daemon]" as W #EBF5FB
+database "PostgreSQL 16\n[PostGIS 3.4 Store]" as DB #F2F4F4
+participant "Redis 7\n[In-Memory Cache]" as R #FDEDEC
+participant "External WeatherAPI\n[REST Data Provider]" as EXT #FEF9E7
+
+== Phase 1: Distributed Database Leasing & Heartbeat Management ==
+loop Periodic Synchronization Cycle (Poll Interval = 60s)
+    W -> DB: Atomic lease acquisition: INSERT ... ON CONFLICT DO UPDATE (TTL = 120s)
+    activate DB
+    alt Lease Acquired Successfully (Worker ID Registered)
+        DB --> W: Lease granted (Token confirmed, lease_expires_at = NOW() + 120s)
+        W -> W: Spawn Heartbeat background timer (Interval = 30s)
+    else Active Lease Held by Another Worker Instance
+        DB --> W: Lease acquisition denied (Existing lease still valid)
+        deactivate DB
+        W -> W: Abort synchronization cycle and enter sleep state (60s)
+    end
+end
+
+== Phase 2: Fault-Tolerant Provider Ingestion & Circuit Breaker Protection ==
+group Circuit Breaker & Resilient Ingestion Boundary
+    W -> W: Inspect Circuit Breaker State (CLOSED / HALF-OPEN / OPEN)
+    alt Circuit Breaker State is OPEN
+        W -> W: Short-circuit external call; log incident and alert monitoring; skip cycle
+    else Circuit Breaker State is CLOSED or HALF-OPEN (Canary Probe)
+        W -> EXT: GET /v1/forecast.json?q={province_coords}&days=3
+        activate EXT
+        alt Ingestion Succeeded (HTTP 200 OK)
+            EXT --> W: Raw JSON telemetry and 3-day forecast
+            W -> W: Reset consecutive failure counter (Circuit State: CLOSED)
+        else Transient Failure / Rate Exceeded (HTTP 5xx / 429 / Timeout > 8s)
+            EXT --> W: Network error, gateway timeout, or quota rejection
+            deactivate EXT
+            W -> W: Exponential Backoff with Jitter: t_delay(k) = min(60s, 5s * 2^(k-1)) * (1 + 0.2 * U(-1,1))
+            note right of W: If consecutive failures >= 3,\ntrip Circuit Breaker to OPEN for 60s
+        end
+    end
+end
+
+== Phase 3: WMO Normalization, SHA-256 Checksum & ACID Invalidation ==
+W -> W: Standardize measurements to WMO-No. 8 units & compute SHA-256 hash
+W -> DB: BEGIN TRANSACTION
+activate DB
+W -> DB: UPSERT weather_observations (metrics, geom Point 4326, payload_hash)
+W -> DB: UPSERT weather_forecasts (intervals [valid_from, valid_to])
+W -> DB: COMMIT TRANSACTION
+deactivate DB
+
+W -> R: Invalidate and hydrate station cache keys (TTL = 1800s)
+activate R
+R --> W: Cache synchronized
+deactivate R
+
+W -> DB: Update worker lease heartbeat (lease_expires_at = NOW() + 120s)
+activate DB
+DB --> W: Heartbeat acknowledged
+deactivate DB
+@enduml

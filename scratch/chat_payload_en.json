@@ -1,0 +1,35 @@
+{
+  "question": "I am driving a car from Hanoi to Sa Pa at 14:00 today, stopping for 1.5h dinner in Phu Tho, then climbing Yen Bai — Lao Cai pass at 19:30. Which corridor is safest to avoid Doan Hung squall lines and night fog?",
+  "response": {
+    "data": {
+      "message": {
+        "id": "msg-ai-complex-101",
+        "role": "assistant",
+        "content": "Based on multi-leg corridor synthesis and real-time AWS telemetry:\n\n1. Leg 1 (14:00 – 15:20 | Hanoi → Phu Tho):\n• CT05 Expressway: Clear sky, 29°C, wind 12 km/h. Safe transit conditions (R = 0.12).\n\n2. Convective Squall Alert (Doan Hung Cluster):\n• Radar detects convective storms from 16:30 – 18:30. Your 1.5h dinner stop in Phu Tho safely bypasses this convective window.\n\n3. Leg 2 (19:30 – 22:30 | Phu Tho → Sa Pa):\n• Recommendation: CT05 Expressway (Weather-Safer). Yen Bai reports light drizzle (24°C), visibility > 10 km.\n• Mountain Pass Caution: Past 21:30 through Bao Ha, dense valley fog limits visibility < 300m. Engage fog lights, maintain speed < 50 km/h.\n• Estimated arrival in Sa Pa at 22:35 safely.",
+        "timestamp": "2026-09-14T14:02:00Z",
+        "citations": [
+          {
+            "source": "Lang Synoptic Station (Hanoi)",
+            "stationName": "Lang AWS (Hanoi)",
+            "dataset": "surface_synop",
+            "timestamp": "13:55 14/09/2026"
+          },
+          {
+            "source": "Yen Bai City Station",
+            "stationName": "Yen Bai AWS",
+            "dataset": "surface_synop",
+            "timestamp": "13:50 14/09/2026"
+          },
+          {
+            "source": "Sa Pa Mountain Observatory",
+            "stationName": "Sa Pa AWS",
+            "dataset": "mountain_station",
+            "timestamp": "13:52 14/09/2026"
+          }
+        ],
+        "disclaimer": "Data certified by automated ground telemetry stations along corridor, refreshed every 5 minutes."
+      },
+      "remainingQuota": 29
+    }
+  }
+}

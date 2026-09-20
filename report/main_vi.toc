@@ -1,0 +1,160 @@
+\acswitchoff 
+\contentsline {chapter}{Danh mục bảng biểu}{5}{section*.1}%
+\contentsline {chapter}{Danh mục hình vẽ}{6}{section*.2}%
+\contentsline {chapter}{Lời cảm ơn}{7}{chapter*.3}%
+\contentsline {chapter}{Danh mục từ viết tắt}{8}{section*.4}%
+\contentsline {chapter}{Tóm tắt đồ án}{11}{chapter*.6}%
+\contentsline {chapter}{\numberline {1}Tổng quan và Phát biểu bài toán}{12}{chapter.1}%
+\contentsline {section}{\numberline {1.1}Bối cảnh thực tiễn và Tính cấp thiết của đề tài}{12}{section.1.1}%
+\contentsline {section}{\numberline {1.2}Khảo sát các giải pháp hiện có và hạn chế}{12}{section.1.2}%
+\contentsline {subsection}{\numberline {1.2.1}Các nền tảng dẫn đường thương mại}{13}{subsection.1.2.1}%
+\contentsline {subsection}{\numberline {1.2.2}Các ứng dụng dự báo thời tiết chuyên biệt}{13}{subsection.1.2.2}%
+\contentsline {subsection}{\numberline {1.2.3}Hạn chế của các mô hình ngôn ngữ lớn tổng quát}{13}{subsection.1.2.3}%
+\contentsline {subsection}{\numberline {1.2.4}Bảng so sánh tổng hợp}{13}{subsection.1.2.4}%
+\contentsline {section}{\numberline {1.3}Phát biểu bài toán và Câu hỏi nghiên cứu}{14}{section.1.3}%
+\contentsline {subsection}{\numberline {1.3.1}Phát biểu bài toán}{14}{subsection.1.3.1}%
+\contentsline {subsection}{\numberline {1.3.2}Câu hỏi nghiên cứu}{14}{subsection.1.3.2}%
+\contentsline {section}{\numberline {1.4}Mục tiêu và Đóng góp của đề tài}{14}{section.1.4}%
+\contentsline {subsection}{\numberline {1.4.1}Mục tiêu cụ thể}{14}{subsection.1.4.1}%
+\contentsline {subsection}{\numberline {1.4.2}Đóng góp của đồ án}{15}{subsection.1.4.2}%
+\contentsline {section}{\numberline {1.5}Phạm vi nghiên cứu và Đối tượng sử dụng}{15}{section.1.5}%
+\contentsline {subsection}{\numberline {1.5.1}Phạm vi không gian và nguồn dữ liệu}{15}{subsection.1.5.1}%
+\contentsline {subsection}{\numberline {1.5.2}Đối tượng thụ hưởng}{15}{subsection.1.5.2}%
+\contentsline {section}{\numberline {1.6}Phân tích yêu cầu và Mô hình ca sử dụng}{16}{section.1.6}%
+\contentsline {subsection}{\numberline {1.6.1}Phân tích yêu cầu hệ thống}{16}{subsection.1.6.1}%
+\contentsline {subsubsection}{Yêu cầu chức năng}{16}{subsubsection*.8}%
+\contentsline {subsubsection}{Yêu cầu phi chức năng}{16}{subsubsection*.9}%
+\contentsline {subsection}{\numberline {1.6.2}Phân tích tác nhân và Mô hình ca sử dụng tổng quan}{17}{subsection.1.6.2}%
+\contentsline {subsection}{\numberline {1.6.3}Bảng tổng hợp đặc tả các ca sử dụng}{18}{subsection.1.6.3}%
+\contentsline {subsection}{\numberline {1.6.4}Đặc tả chi tiết các ca sử dụng cốt lõi}{18}{subsection.1.6.4}%
+\contentsline {subsubsection}{Ca sử dụng UC1: Tra cứu bản đồ thời tiết thời gian thực}{18}{subsubsection*.12}%
+\contentsline {subsubsection}{Ca sử dụng UC2: Tính toán lộ trình an toàn thời tiết}{19}{subsubsection*.13}%
+\contentsline {subsubsection}{Ca sử dụng UC3: Trợ lý đàm thoại AI có kiểm chứng}{19}{subsubsection*.14}%
+\contentsline {subsubsection}{Ca sử dụng UC4: Quản lý lộ trình và địa điểm ưa thích}{20}{subsubsection*.15}%
+\contentsline {subsubsection}{Ca sử dụng UC5: Thiết lập cấu hình phương tiện và ngưỡng nhạy cảm rủi ro}{21}{subsubsection*.16}%
+\contentsline {subsubsection}{Ca sử dụng UC6: Quản lý người dùng và phân quyền RBAC}{21}{subsubsection*.17}%
+\contentsline {subsubsection}{Ca sử dụng UC7: Giám sát đường ống thu thập dữ liệu}{21}{subsubsection*.18}%
+\contentsline {subsubsection}{Ca sử dụng UC8: Phát hành bản tin cảnh báo thời tiết khẩn cấp}{22}{subsubsection*.19}%
+\contentsline {section}{\numberline {1.7}Kiến trúc hệ thống mức khái niệm}{22}{section.1.7}%
+\contentsline {chapter}{\numberline {2}Cơ sở lý thuyết và Công nghệ nền tảng}{24}{chapter.2}%
+\contentsline {section}{\numberline {2.1}Dữ liệu không gian địa lý và Hệ thống thông tin địa lý (GIS)}{24}{section.2.1}%
+\contentsline {subsection}{\numberline {2.1.1}Hệ quy chiếu WGS84 và Đặc tả GeoJSON RFC 7946}{24}{subsection.2.1.1}%
+\contentsline {subsection}{\numberline {2.1.2}Hệ quản trị dữ liệu không gian PostGIS và Cơ chế chỉ mục GiST}{25}{subsection.2.1.2}%
+\contentsline {subsection}{\numberline {2.1.3}Giải thuật rời rạc hóa và lấy mẫu hành lang di chuyển}{26}{subsection.2.1.3}%
+\contentsline {section}{\numberline {2.2}Tiêu chuẩn khí tượng WMO và Mô hình định lượng rủi ro}{27}{section.2.2}%
+\contentsline {subsection}{\numberline {2.2.1}Quy chuẩn quan trắc bề mặt WMO-No. 8 và Chuẩn hóa dữ liệu}{27}{subsection.2.2.1}%
+\contentsline {subsection}{\numberline {2.2.2}Vòng đời độ tươi mới dữ liệu và Nguyên tắc vận hành an toàn (Fail-Safe)}{27}{subsection.2.2.2}%
+\contentsline {subsection}{\numberline {2.2.3}Ma trận rủi ro đa chiều và Giải thuật tổng hợp rủi ro hành lang}{28}{subsection.2.2.3}%
+\contentsline {subsection}{\numberline {2.2.4}Phân hóa đặc thù phương tiện và Hàm tối ưu lộ trình đa mục tiêu}{29}{subsection.2.2.4}%
+\contentsline {section}{\numberline {2.3}Mô hình ngôn ngữ lớn và Kỹ thuật Function Calling có kiểm chứng}{29}{section.2.3}%
+\contentsline {subsection}{\numberline {2.3.1}Hạn chế cố hữu của LLM tự hồi quy trong bài toán an toàn giao thông}{29}{subsection.2.3.1}%
+\contentsline {subsection}{\numberline {2.3.2}Kiến trúc đối soát dữ liệu thực (Grounded Function Calling) với Google Gemini 1.5 Flash}{30}{subsection.2.3.2}%
+\contentsline {subsection}{\numberline {2.3.3}Cơ chế dự phòng tất định (Deterministic Fallback Engine)}{31}{subsection.2.3.3}%
+\contentsline {section}{\numberline {2.4}Ngăn xếp công nghệ và Phân tích kiến trúc hệ thống}{31}{section.2.4}%
+\contentsline {subsection}{\numberline {2.4.1}API Gateway hiệu năng cao với Fastify và TypeScript}{31}{subsection.2.4.1}%
+\contentsline {subsection}{\numberline {2.4.2}Quản trị danh tính và Ranh giới phiên bảo mật Directus (ADR-004)}{32}{subsection.2.4.2}%
+\contentsline {subsection}{\numberline {2.4.3}Tiến trình xử lý dữ liệu nền Worker và Cơ chế tự phục hồi (ADR-001)}{32}{subsection.2.4.3}%
+\contentsline {subsection}{\numberline {2.4.4}Hệ thống lưu trữ phân tầng: PostgreSQL/PostGIS và Bộ đệm Redis}{33}{subsection.2.4.4}%
+\contentsline {subsection}{\numberline {2.4.5}Giao diện người dùng thời gian thực và Trực quan hóa bản đồ WebGL}{33}{subsection.2.4.5}%
+\contentsline {subsection}{\numberline {2.4.6}Đóng gói container và Cô lập mạng nội bộ}{33}{subsection.2.4.6}%
+\contentsline {section}{\numberline {2.5}Tổng hợp và Đánh giá so sánh ngăn xếp công nghệ}{34}{section.2.5}%
+\contentsline {chapter}{\numberline {3}Thiết kế kiến trúc hệ thống và Thiết kế chi tiết}{35}{chapter.3}%
+\contentsline {section}{\numberline {3.1}Tổng quan kiến trúc hệ thống và Mô hình C4 Container}{35}{section.3.1}%
+\contentsline {subsection}{\numberline {3.1.1}Kiến trúc Microservices và Phân rã Trách nhiệm Thành phần}{35}{subsection.3.1.1}%
+\contentsline {subsection}{\numberline {3.1.2}Chính sách Phân vùng Mạng và An ninh Mạng Nội bộ (Docker Network Segmentation)}{37}{subsection.3.1.2}%
+\contentsline {section}{\numberline {3.2}Thiết kế Ranh giới Phiên Bảo mật và An ninh Danh tính (ADR-004)}{38}{section.3.2}%
+\contentsline {subsection}{\numberline {3.2.1}Phân tích Nguy cơ Đánh cắp Token và Kiến trúc Ranh giới Phiên BFF}{38}{subsection.3.2.1}%
+\contentsline {subsection}{\numberline {3.2.2}Cơ chế Phong bì Mã hóa AES-256-GCM và Khóa Phiên Đục mờ}{38}{subsection.3.2.2}%
+\contentsline {subsection}{\numberline {3.2.3}Vòng đời Phiên Toàn diện: Cấp phát, Xoay vòng Trượt và Thu hồi Đồng bộ}{39}{subsection.3.2.3}%
+\contentsline {subsubsection}{Giai đoạn 1: Xác thực danh tính và cấp phát khóa phiên đục mờ}{39}{subsubsection*.24}%
+\contentsline {subsubsection}{Giai đoạn 2: Xử lý yêu cầu ủy quyền và xoay vòng phiên trượt trơn tru}{41}{subsubsection*.26}%
+\contentsline {subsubsection}{Giai đoạn 3: Thu hồi phiên đồng bộ và tiêu hủy phả hệ phiên}{43}{subsubsection*.28}%
+\contentsline {section}{\numberline {3.3}Thiết kế Tiến trình Xử lý Nền Worker và Cơ chế Ổn định Hệ thống (ADR-001)}{45}{section.3.3}%
+\contentsline {subsection}{\numberline {3.3.1}Phân tách Miền Lỗi Giữa Tác vụ Nền và Giao diện Lập trình Ứng dụng}{45}{subsection.3.3.1}%
+\contentsline {subsection}{\numberline {3.3.2}Cơ chế Chiếm Khóa Phân tán trên Cơ sở Dữ liệu (Distributed Database Leasing)}{45}{subsection.3.3.2}%
+\contentsline {subsection}{\numberline {3.3.3}Cơ chế Ngắt mạch (Circuit Breaker) và Thử lại Thích ứng}{46}{subsection.3.3.3}%
+\contentsline {subsection}{\numberline {3.3.4}Kiểm soát Vòng đời Độ tươi mới Dữ liệu Khí tượng và Trạng thái An toàn}{47}{subsection.3.3.4}%
+\contentsline {section}{\numberline {3.4}Mô hình Cơ sở Dữ liệu Không gian PostGIS và Lược đồ Thực thể (ERD)}{49}{section.3.4}%
+\contentsline {subsection}{\numberline {3.4.1}Cấu trúc Lược đồ Cơ sở Dữ liệu Phân tầng}{49}{subsection.3.4.1}%
+\contentsline {subsection}{\numberline {3.4.2}Tối ưu hóa Truy vấn Không gian với Cây Chỉ mục GiST}{50}{subsection.3.4.2}%
+\contentsline {subsection}{\numberline {3.4.3}Lược đồ Thực thể Quan hệ Chuẩn hóa (ERD) và Cơ chế Quản trị Dữ liệu}{51}{subsection.3.4.3}%
+\contentsline {section}{\numberline {3.5}Thiết kế Động cơ Đánh giá Rủi ro và Lập Lộ trình Cân bằng Đa Mục tiêu}{52}{section.3.5}%
+\contentsline {subsection}{\numberline {3.5.1}Mô hình Không-Thời gian và Rời rạc hóa Hành lang Di chuyển}{52}{subsection.3.5.1}%
+\contentsline {subsection}{\numberline {3.5.2}Ma trận Ngưỡng Rủi ro Phân hóa Phương tiện}{52}{subsection.3.5.2}%
+\contentsline {subsection}{\numberline {3.5.3}Hàm Mục tiêu Tối ưu hóa Cân bằng Tuyến đường}{53}{subsection.3.5.3}%
+\contentsline {subsection}{\numberline {3.5.4}Quy trình Đánh giá Rủi ro Lộ trình và Biểu đồ Tuần tự}{53}{subsection.3.5.4}%
+\contentsline {section}{\numberline {3.6}Thiết kế Trợ lý AI Khí tượng Đàm thoại có Kiểm chứng Dữ liệu}{55}{section.3.6}%
+\contentsline {subsection}{\numberline {3.6.1}Kiến trúc Điều phối Công cụ Đàm thoại (Tool Orchestration)}{55}{subsection.3.6.1}%
+\contentsline {subsection}{\numberline {3.6.2}Cơ chế Kiểm chứng Dữ liệu và Trích dẫn Thực nghiệm (Grounded Evidence Pipeline)}{56}{subsection.3.6.2}%
+\contentsline {section}{\numberline {3.7}Tóm tắt chương}{56}{section.3.7}%
+\contentsline {chapter}{\numberline {4}Hiện thực hóa hệ thống}{57}{chapter.4}%
+\contentsline {section}{\numberline {4.1}Môi trường phát triển, Ngăn xếp triển khai và Kiến trúc Monorepo}{57}{section.4.1}%
+\contentsline {subsection}{\numberline {4.1.1}Cấu trúc Kho mã nguồn Hợp nhất Monorepo và Ràng buộc Kiểu tĩnh}{57}{subsection.4.1.1}%
+\contentsline {subsection}{\numberline {4.1.2}Phân vùng Mạng Ba tầng và Triển khai Container Hóa}{58}{subsection.4.1.2}%
+\contentsline {section}{\numberline {4.2}Hiện thực Tầng Dịch vụ Backend và Ranh giới Bảo mật Phiên (ADR-004)}{58}{section.4.2}%
+\contentsline {subsection}{\numberline {4.2.1}Vòng đời Xử lý Yêu cầu và Chuỗi Hook của Fastify 5}{58}{subsection.4.2.1}%
+\contentsline {subsection}{\numberline {4.2.2}Hiện thực Bao bì Mã hóa Khí quyển và Bảo vệ Chống Sai biệt Thời gian}{59}{subsection.4.2.2}%
+\contentsline {subsection}{\numberline {4.2.3}Quản trị Phiên Bền vững và Triệt tiêu Họ Phiên (ADR-004)}{60}{subsection.4.2.3}%
+\contentsline {section}{\numberline {4.3}Hiện thực Cơ sở Dữ liệu Không gian PostGIS và Tối ưu Truy vấn GiST}{60}{section.4.3}%
+\contentsline {subsection}{\numberline {4.3.1}Cấu trúc Bảng Không gian và Thiết lập Chỉ mục GiST}{60}{subsection.4.3.1}%
+\contentsline {subsection}{\numberline {4.3.2}Đặc tả Quy trình Truy vấn Không gian Hai Giai đoạn Dọc Tuyến}{61}{subsection.4.3.2}%
+\contentsline {section}{\numberline {4.4}Hiện thực Tiến trình Nền Integration Worker và Cơ chế Ổn định Hệ thống (ADR-001)}{62}{section.4.4}%
+\contentsline {subsection}{\numberline {4.4.1}Cơ chế Chiếm Khóa Phân tán trên PostgreSQL}{62}{subsection.4.4.1}%
+\contentsline {subsection}{\numberline {4.4.2}Ngắt mạch Ba Trạng thái và Lùi hàm Mũ có Nhiễu ngẫu nhiên}{63}{subsection.4.4.2}%
+\contentsline {subsection}{\numberline {4.4.3}Chuẩn hóa Khí tượng WMO và Khử trùng lặp Mật mã SHA-256}{63}{subsection.4.4.3}%
+\contentsline {section}{\numberline {4.5}Hiện thực Động cơ Đánh giá Rủi ro Lộ trình và Lập Tuyến Đa Mục tiêu}{64}{section.4.5}%
+\contentsline {subsection}{\numberline {4.5.1}Điều phối Dịch vụ Định tuyến OSRM và Rời rạc hóa Không-Thời gian}{64}{subsection.4.5.1}%
+\contentsline {subsection}{\numberline {4.5.2}Đánh giá Ma trận Rủi ro Phân hóa Phương tiện và Chấm điểm Đa Mục tiêu}{65}{subsection.4.5.2}%
+\contentsline {section}{\numberline {4.6}Hiện thực Trợ lý AI Khí tượng có Kiểm chứng Dữ liệu (Grounded AI)}{65}{section.4.6}%
+\contentsline {subsection}{\numberline {4.6.1}Điều phối Công cụ có Cấu trúc với Gemini 1.5 Flash}{65}{subsection.4.6.1}%
+\contentsline {subsection}{\numberline {4.6.2}Đường ống Kiểm chứng Thực nghiệm và Trích dẫn Nguồn dữ liệu}{66}{subsection.4.6.2}%
+\contentsline {subsection}{\numberline {4.6.3}Hiện thực Bộ Chuyển đổi Dự phòng Tất định (Deterministic Fallback)}{67}{subsection.4.6.3}%
+\contentsline {section}{\numberline {4.7}Hiện thực Giao diện Người dùng và Trực quan hóa Bản đồ 3D}{67}{section.4.7}%
+\contentsline {subsection}{\numberline {4.7.1}Kiến trúc Ứng dụng Giao diện với React 18 và Quản lý Trạng thái}{67}{subsection.4.7.1}%
+\contentsline {subsection}{\numberline {4.7.2}Trực quan hóa Bản đồ Không gian 3D với MapLibre GL}{68}{subsection.4.7.2}%
+\contentsline {section}{\numberline {4.8}Chiến lược Kiểm thử Phần mềm và Đảm bảo Chất lượng}{68}{section.4.8}%
+\contentsline {subsection}{\numberline {4.8.1}Kiến trúc Kiểm thử Bốn Tầng}{68}{subsection.4.8.1}%
+\contentsline {subsection}{\numberline {4.8.2}Đường ống Tích hợp và Triển khai Liên tục (CI/CD Pipeline)}{69}{subsection.4.8.2}%
+\contentsline {section}{\numberline {4.9}Tóm tắt chương}{69}{section.4.9}%
+\contentsline {chapter}{\numberline {5}Đánh giá thực nghiệm và Kết quả}{70}{chapter.5}%
+\contentsline {section}{\numberline {5.1}Thiết lập Môi trường Thực nghiệm và Kịch bản Kiểm thử Hành lang}{70}{section.5.1}%
+\contentsline {subsection}{\numberline {5.1.1}Cấu hình Hạ tầng Phần cứng và Phần mềm Thử nghiệm}{70}{subsection.5.1.1}%
+\contentsline {subsection}{\numberline {5.1.2}Ba Hành lang Giao thông Trọng điểm Quốc gia}{71}{subsection.5.1.2}%
+\contentsline {subsection}{\numberline {5.1.3}Kịch bản Kiểm thử Khí tượng Cực đoan và Tiêu chí Định lượng}{71}{subsection.5.1.3}%
+\contentsline {section}{\numberline {5.2}Đánh giá Hiệu quả Thuật toán Giảm thiểu Rủi ro Tuyến đường}{72}{section.5.2}%
+\contentsline {subsection}{\numberline {5.2.1}So sánh Định lượng Đa Phương án Lộ trình}{72}{subsection.5.2.1}%
+\contentsline {subsection}{\numberline {5.2.2}Phân hóa Rủi ro theo Phương tiện Di chuyển}{73}{subsection.5.2.2}%
+\contentsline {subsection}{\numberline {5.2.3}Minh họa Giao diện Lập Lộ trình Thông minh và Đối sánh Đa Tiêu chí}{73}{subsection.5.2.3}%
+\contentsline {section}{\numberline {5.3}Đánh giá Hiệu năng Hệ thống và Tốc độ Đáp ứng Không gian}{76}{section.5.3}%
+\contentsline {subsection}{\numberline {5.3.1}Hiệu năng Truy vấn Không gian Hai giai đoạn với PostGIS GiST}{76}{subsection.5.3.1}%
+\contentsline {subsection}{\numberline {5.3.2}Thông lượng và Độ trễ Tầng Dịch vụ Fastify API}{76}{subsection.5.3.2}%
+\contentsline {subsection}{\numberline {5.3.3}Hiệu quả Tầng Đệm Redis Cache-Aside}{77}{subsection.5.3.3}%
+\contentsline {subsection}{\numberline {5.3.4}Khả năng Tự phục hồi và Khóa Ngắt mạch (Circuit Breaker -- ADR-001)}{77}{subsection.5.3.4}%
+\contentsline {section}{\numberline {5.4}Đánh giá Độ chính xác và Tính Kiểm chứng của Trợ lý AI (Grounded AI)}{78}{section.5.4}%
+\contentsline {subsection}{\numberline {5.4.1}Phương pháp luận và Phân loại Độ phức tạp Bộ Dữ liệu Kiểm chứng}{78}{subsection.5.4.1}%
+\contentsline {subsubsection}{Phân tích đối chứng và Nguyên nhân phát sinh sai lệch (Error \& Hallucination Analysis)}{78}{subsubsection*.42}%
+\contentsline {subsection}{\numberline {5.4.2}Phân tích Thực nghiệm qua các Nghiên cứu Tình huống Điển hình}{79}{subsection.5.4.2}%
+\contentsline {subsubsection}{Trường hợp 1: Tối ưu hóa Lộ trình Đa chặng Hà Nội -- Phú Thọ -- Sa Pa và Cửa sổ Di chuyển Ban đêm}{80}{subsubsection*.43}%
+\contentsline {subsubsection}{Trường hợp 2: Trọng tài Rủi ro Đa Phương tiện qua Đèo Hải Vân trong Điều kiện Gió tạt Ven biển}{80}{subsubsection*.44}%
+\contentsline {subsection}{\numberline {5.4.3}Minh họa Giao diện Trợ lý Thời tiết AI Đàm thoại với Bằng chứng Thực địa}{81}{subsection.5.4.3}%
+\contentsline {section}{\numberline {5.5}Đánh giá Khả năng Tương tác Giao diện và Trải nghiệm Người dùng}{82}{section.5.5}%
+\contentsline {subsection}{\numberline {5.5.1}Khảo sát Trải nghiệm Người dùng theo Thang đo SUS}{82}{subsection.5.5.1}%
+\contentsline {subsection}{\numberline {5.5.2}Trình diễn Toàn diện Các Phân hệ Giao diện Người dùng}{83}{subsection.5.5.2}%
+\contentsline {section}{\numberline {5.6}Tóm tắt chương}{84}{section.5.6}%
+\contentsline {chapter}{\numberline {6}Kết luận và Hướng phát triển}{89}{chapter.6}%
+\contentsline {section}{\numberline {6.1}Tổng kết các Kết quả Đạt được}{89}{section.6.1}%
+\contentsline {subsection}{\numberline {6.1.1}Đóng góp về Mặt Lý thuyết và Thuật toán}{89}{subsection.6.1.1}%
+\contentsline {subsection}{\numberline {6.1.2}Đóng góp về Kỹ thuật Hệ thống và Phần mềm}{90}{subsection.6.1.2}%
+\contentsline {subsection}{\numberline {6.1.3}Đóng góp về Trải nghiệm Người dùng và Giá trị Thực tiễn}{90}{subsection.6.1.3}%
+\contentsline {section}{\numberline {6.2}Ma trận Đối soát Mức độ Hoàn thành Mục tiêu}{91}{section.6.2}%
+\contentsline {section}{\numberline {6.3}Những Hạn chế Kỹ thuật Còn Tồn tại}{92}{section.6.3}%
+\contentsline {subsection}{\numberline {6.3.1}Mật độ Phân bố Trạm Quan trắc Mặt đất tại Vùng Sâu, Vùng Xa}{92}{subsection.6.3.1}%
+\contentsline {subsection}{\numberline {6.3.2}Tính Kịp thời của Dữ liệu Biến động Hạ tầng Giao thông Thực tế}{92}{subsection.6.3.2}%
+\contentsline {subsection}{\numberline {6.3.3}Sự Phụ thuộc vào Hạ tầng Đám mây và Mô hình LLM Ngoại vi}{92}{subsection.6.3.3}%
+\contentsline {subsection}{\numberline {6.3.4}Hạn chế về Dẫn đường Ngoại tuyến (Offline Navigation Gap)}{92}{subsection.6.3.4}%
+\contentsline {section}{\numberline {6.4}Hướng Phát triển trong Tương lai}{93}{section.6.4}%
+\contentsline {subsection}{\numberline {6.4.1}Lộ trình Ngắn hạn (3 -- 6 tháng tới)}{93}{subsection.6.4.1}%
+\contentsline {subsection}{\numberline {6.4.2}Lộ trình Trung hạn (6 -- 12 tháng tới)}{93}{subsection.6.4.2}%
+\contentsline {subsection}{\numberline {6.4.3}Lộ trình Dài hạn (1 -- 2 năm tới)}{94}{subsection.6.4.3}%
+\contentsline {section}{\numberline {6.5}Lời Kết}{94}{section.6.5}%
+\contentsline {chapter}{Tài liệu tham khảo}{95}{section*.56}%

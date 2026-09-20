@@ -5,6 +5,7 @@
  */
 
 import { useState, useRef, useEffect } from "react";
+import { Globe } from "lucide-react";
 import {
   useLanguage,
   useSetLanguage,
@@ -64,7 +65,7 @@ export function LanguageSwitcher() {
         aria-haspopup="listbox"
         aria-label={`Current language: ${LANGUAGE_NAMES[currentLang]}`}
       >
-        <span className={styles.flag}>{LANGUAGE_FLAGS[currentLang]}</span>
+        <Globe size={15} className={styles.globeIcon} />
         <span className={styles.label}>{LANGUAGE_NAMES[currentLang]}</span>
         <svg
           className={`${styles.chevron} ${isOpen ? styles.chevronOpen : ""}`}

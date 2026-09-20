@@ -1,0 +1,16 @@
+\chapter*{Tóm tắt đồ án}
+\addcontentsline{toc}{chapter}{Tóm tắt đồ án}
+
+Việt Nam là quốc gia có địa hình hẹp dài, khí hậu nhiệt đới gió mùa phân hóa phức tạp và thường xuyên chịu ảnh hưởng bởi các hình thái thời tiết cực đoan như bão lũ, mưa lớn, sương mù dày đặc và dông sét. Các yếu tố này gây ra nguy cơ mất an toàn giao thông nghiêm trọng cho người điều khiển phương tiện, đặc biệt là người đi xe máy -- phương tiện di chuyển phổ biến nhất tại Việt Nam.
+
+Đồ án này nghiên cứu, thiết kế và hiện thực hóa “Hệ thống thông tin thời tiết thông minh và tư vấn lộ trình di chuyển tại Việt Nam tích hợp AI” (VietForecast). Hệ thống giải quyết trọn vẹn các thách thức cốt lõi thông qua 5 đóng góp chính:
+\begin{enumerate}
+    \item Thu thập và chuẩn hóa dữ liệu khí tượng: Tự động hóa tiến trình thu thập dữ liệu thời tiết 63 tỉnh thành thời gian thực, lưu trữ trên cơ sở dữ liệu không gian PostGIS cùng cơ chế kiểm soát nghiêm ngặt tính xác thực, độ tin cậy và độ tươi mới của dữ liệu.
+    \item Động cơ đánh giá rủi ro thời tiết đa chiều: Xây dựng ma trận phân tích rủi ro dựa trên 5 khía cạnh: cường độ mưa, gió giật, tầm nhìn, nhiệt độ cực đoan và độ trơn trượt đường sá, cá nhân hóa theo từng loại phương tiện di chuyển (ô tô và xe máy).
+    \item Thuật toán lập lộ trình cân bằng đa mục tiêu: Tích hợp dữ liệu thời tiết vào dịch vụ định tuyến địa lý để đề xuất đồng thời 3 hành lang di chuyển: Nhanh nhất, Ngắn nhất và An toàn thời tiết nhất, hỗ trợ khoảng cách liên tỉnh lên tới 2.000~km.
+    \item Trợ lý ảo AI có kiểm chứng dữ liệu (AI Grounding): Ứng dụng mô hình ngôn ngữ lớn (Google Gemini) kết hợp cơ chế Function Calling nội bộ nhằm đảm bảo câu trả lời luôn được trích dẫn dữ liệu quan trắc thật, giảm thiểu tối đa hiện tượng ảo tưởng thông tin.
+    \item Kiến trúc phân tán an toàn và kiểm soát hạn ngạch: Hệ thống được triển khai trên nền tảng Docker với mô hình phân vùng mạng an toàn, kiểm soát hạn ngạch nguyên tử trên Redis theo múi giờ Việt Nam và tích hợp cổng thanh toán trực tuyến.
+\end{enumerate}
+
+\vspace{0.5cm}
+\noindent Từ khóa: Khí tượng giao thông, Định tuyến thời tiết, PostGIS, Đánh giá rủi ro, Mô hình ngôn ngữ lớn, AI Grounding, Fastify, MapLibre GL.

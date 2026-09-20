@@ -1,0 +1,87 @@
+@startuml VietForecast_UseCase_Diagram
+skinparam packageStyle rectangle
+skinparam shadowing false
+skinparam monochrome false
+
+skinparam usecase {
+    BackgroundColor #F4F8FB
+    BorderColor #1E56A0
+    BorderThickness 1.5
+    FontName "Times New Roman"
+    FontSize 12
+    FontColor #111111
+}
+
+skinparam actor {
+    BackgroundColor #E8F1F5
+    BorderColor #003366
+    BorderThickness 1.5
+    FontName "Times New Roman"
+    FontSize 12
+    FontColor #002244
+}
+
+skinparam rectangle {
+    BorderColor #666666
+    BorderThickness 1.2
+    BackgroundColor #FAFAFA
+    FontName "Times New Roman"
+    FontSize 13
+    FontColor #333333
+}
+
+skinparam arrow {
+    Color #444444
+    Thickness 1.2
+    FontColor #005588
+    FontName "Times New Roman"
+    FontSize 11
+}
+
+left to right direction
+
+' --- Left Actors ---
+actor "Guest User\n(Unauthenticated)" as Guest
+actor "Registered User\n(Authenticated)" as User
+
+' --- Right Actor ---
+actor "System Administrator\n(Directus Studio)" as Admin
+
+Guest <|-- User
+
+rectangle "VietForecast System (Boundary)" {
+    usecase "UC1: View Real-Time Weather Map\n(63 provinces & GPS coordinates)" as UC1
+    usecase "UC2: Calculate Weather-Safe Routes\n(Multi-path hazard assessment)" as UC2
+    usecase "UC3: Consult Grounded AI Assistant\n(Grounded observational advisory)" as UC3
+    
+    usecase "Calculate Route\nHazard Scores" as UC_Risk
+    usecase "Execute Grounded\nTool Calling" as UC_Ground
+
+    usecase "UC4: Manage Saved Routes & Favorites\n(Persisted trip history)" as UC4
+    usecase "UC5: Configure Vehicle & Risk Profile\n(Motorcycle / Car thresholds)" as UC5
+    
+    usecase "UC6: Manage Users & RBAC Roles\n(Access control & token lease)" as UC6
+    usecase "UC7: Monitor Ingestion Pipeline Health\n(Worker telemetry & circuit breakers)" as UC7
+    usecase "UC8: Publish Severe Weather Alerts\n(Emergency localized advisories)" as UC8
+}
+
+' --- Left-side associations ---
+Guest -- UC1
+Guest -- UC2
+Guest -- UC3
+
+User -- UC4
+User -- UC5
+
+' --- Includes ---
+UC2 ..> UC_Risk : <<include>>
+UC3 ..> UC_Ground : <<include>>
+
+' --- Right-side associations ---
+UC6 --- Admin
+UC7 --- Admin
+UC8 --- Admin
+
+UC7 -[hidden]left- Admin
+
+@enduml

@@ -18,12 +18,12 @@
 | 6. Risk Engine | VERIFIED | Phase 5 VERIFIED; CI run `f801c28` | [`PHASE_6_EVIDENCE.md`](PHASE_6_EVIDENCE.md), [`PHASE_6_DECISIONS.md`](PHASE_6_DECISIONS.md), `RISK-001..007` |
 | 7. Forecast & Trends | VERIFIED | Phase 5 & 6 VERIFIED; CI run `6feeb3c` | [`PHASE_7_DECISIONS.md`](PHASE_7_DECISIONS.md), [`PHASE_7_EVIDENCE.md`](PHASE_7_EVIDENCE.md), `FCAST-001..006` |
 | 8. Route Planner | VERIFIED | Phase 6 & 7 VERIFIED; CI run `f102bc2` | [`PHASE_8_DECISIONS.md`](PHASE_8_DECISIONS.md), [`PHASE_8_EVIDENCE.md`](PHASE_8_EVIDENCE.md), `ROUTE-001..008` |
-| 9. Frontend | IN_PROGRESS | Phase 4–8 API contracts stable; Decision Gate `FRONT-001..008` | [`PHASE_9_DECISIONS.md`](PHASE_9_DECISIONS.md) |
-| 10. Monetization | BLOCKED | Phase 3–9 contracts stable | Chưa có |
-| 11. AI Chatbot | BLOCKED/OPTIONAL | Core product + monetization VERIFIED | Chưa có |
-| 12. Quality & Hardening | BLOCKED | Core feature complete | Chưa có |
-| 13. Deployment & Operations | BLOCKED | Phase 12 VERIFIED | Chưa có |
-| 14. Business Handover | BLOCKED | Phase 13 RELEASED | Chưa có |
+| 9. Frontend | VERIFIED | Phase 4–8 API contracts stable; Decision Gate `FRONT-001..008`; `validate-stage9.ps1` PASS | [`PHASE_9_DECISIONS.md`](PHASE_9_DECISIONS.md), [`PHASE_9_EVIDENCE.md`](PHASE_9_EVIDENCE.md) |
+| 10. Monetization | VERIFIED | Phase 3–9 contracts stable; Decision Gate `MONET-001..008`; `validate-stage10.ps1` PASS | [`PHASE_10_DECISIONS.md`](PHASE_10_DECISIONS.md) |
+| 11. AI Chatbot | VERIFIED | Core product + monetization VERIFIED; Decision Gate `AI-001..007`; `validate-stage11.ps1` PASS | [`PHASE_11_DECISIONS.md`](PHASE_11_DECISIONS.md) |
+| 12. Quality & Hardening | VERIFIED | Core features + AI VERIFIED; Decision Gate `QUAL-001..008`; `validate-stage12.ps1` PASS | [`PHASE_12_DECISIONS.md`](PHASE_12_DECISIONS.md), 207/207 tests PASS |
+| 13. Deployment & Operations | VERIFIED | Phase 12 VERIFIED; Decision Gate `OPS-008..015`; `validate-stage13.ps1` PASS | [`PHASE_13_DECISIONS.md`](PHASE_13_DECISIONS.md), compose.prod.yaml & runbooks |
+| 14. Business Handover | READY | Phase 13 VERIFIED | Chưa có |
 
 ## Cách cập nhật trạng thái
 

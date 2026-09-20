@@ -37,9 +37,9 @@ export type RouteAlternativeType = (typeof ROUTE_ALTERNATIVES)[keyof typeof ROUT
 
 /**
  * Maximum route length in meters
- * Per ROUTE-005: 50 km
+ * Per ROUTE-005: 2,000 km (enables interprovincial travel across Vietnam)
  */
-export const MAX_ROUTE_LENGTH_METERS = 50_000;
+export const MAX_ROUTE_LENGTH_METERS = 2_000_000;
 
 /**
  * Maximum ETA for risk scoring in hours

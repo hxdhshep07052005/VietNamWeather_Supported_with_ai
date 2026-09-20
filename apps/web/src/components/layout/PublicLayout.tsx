@@ -4,31 +4,19 @@
  */
 
 import { useState, useEffect } from "react";
-import { Outlet, Link, useLocation } from "react-router-dom";
+import { Outlet, Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { LanguageSwitcher } from "../common/LanguageSwitcher";
+import { useTheme, useToggleTheme } from "@/hooks/useThemeStore";
 import styles from "./PublicLayout.module.css";
 
 export function PublicLayout() {
   const { t } = useTranslation();
-  const location = useLocation();
-  const isAuthPage = ["/login", "/register", "/verify-otp", "/forgot-password"].includes(location.pathname);
+  const theme = useTheme();
+  const toggleTheme = useToggleTheme();
 
-  const [theme, setTheme] = useState<"light" | "dark">("light");
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-
-  // Load theme from localStorage on mount
-  useEffect(() => {
-    const savedTheme = localStorage.getItem("vietnam-weather-theme") as "light" | "dark" | null;
-    if (savedTheme) {
-      setTheme(savedTheme);
-      document.documentElement.setAttribute("data-theme", savedTheme);
-    } else if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
-      setTheme("dark");
-      document.documentElement.setAttribute("data-theme", "dark");
-    }
-  }, []);
 
   // Handle scroll
   useEffect(() => {
@@ -39,41 +27,21 @@ export function PublicLayout() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Toggle theme
-  const toggleTheme = () => {
-    const newTheme = theme === "light" ? "dark" : "light";
-    setTheme(newTheme);
-    document.documentElement.setAttribute("data-theme", newTheme);
-    localStorage.setItem("vietnam-weather-theme", newTheme);
-  };
-
   return (
     <div className={styles.layout}>
       {/* Header */}
       <header className={`${styles.header} ${isScrolled ? styles.scrolled : ""}`}>
         <div className={styles.container}>
-          {/* Logo - non-clickable on auth pages to prevent leaving auth flow */}
-          {isAuthPage ? (
-            <div className={styles.logo} style={{ cursor: "default" }}>
-              <div className={styles.logoIcon}>
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                  <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41" stroke="white" strokeWidth="2" strokeLinecap="round" />
-                  <circle cx="12" cy="12" r="4" fill="white" />
-                </svg>
-              </div>
-              <span className={styles.logoText}>VietnamWeather AI</span>
+          {/* Logo - Always click to return to home */}
+          <Link to="/" className={styles.logo} title="Về trang chủ VietnamWeather AI">
+            <div className={styles.logoIcon}>
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41" stroke="white" strokeWidth="2" strokeLinecap="round" />
+                <circle cx="12" cy="12" r="4" fill="white" />
+              </svg>
             </div>
-          ) : (
-            <Link to="/" className={styles.logo}>
-              <div className={styles.logoIcon}>
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                  <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41" stroke="white" strokeWidth="2" strokeLinecap="round" />
-                  <circle cx="12" cy="12" r="4" fill="white" />
-                </svg>
-              </div>
-              <span className={styles.logoText}>VietnamWeather AI</span>
-            </Link>
-          )}
+            <span className={styles.logoText}>VietnamWeather AI</span>
+          </Link>
 
           <div className={styles.headerRight}>
             {/* Language Switcher */}
@@ -108,6 +76,15 @@ export function PublicLayout() {
 
             {/* Navigation */}
             <nav className={styles.nav}>
+              <Link to="/" className={styles.navLink}>
+                {t("nav.home") || "Trang chủ"}
+              </Link>
+              <Link to="/weather" className={styles.navLink}>
+                {t("nav.weather") || "Thời tiết"}
+              </Link>
+              <Link to="/pricing" className={styles.navLink}>
+                {t("nav.pricing") || "Bảng giá"}
+              </Link>
               <Link to="/login" className={styles.navLink}>
                 {t("auth.login")}
               </Link>
@@ -142,25 +119,15 @@ export function PublicLayout() {
           onClick={(e) => e.stopPropagation()}
         >
           <div className={styles.mobileMenuHeader}>
-            {isAuthPage ? (
-              <div className={styles.logo} style={{ cursor: "default" }}>
-                <div className={styles.logoIcon}>
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                    <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41" stroke="white" strokeWidth="2" strokeLinecap="round" />
-                    <circle cx="12" cy="12" r="4" fill="white" />
-                  </svg>
-                </div>
+            <Link to="/" className={styles.logo} onClick={() => setIsMobileMenuOpen(false)} title="Về trang chủ VietnamWeather AI">
+              <div className={styles.logoIcon}>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                  <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41" stroke="white" strokeWidth="2" strokeLinecap="round" />
+                  <circle cx="12" cy="12" r="4" fill="white" />
+                </svg>
               </div>
-            ) : (
-              <Link to="/" className={styles.logo} onClick={() => setIsMobileMenuOpen(false)}>
-                <div className={styles.logoIcon}>
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                    <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41" stroke="white" strokeWidth="2" strokeLinecap="round" />
-                    <circle cx="12" cy="12" r="4" fill="white" />
-                  </svg>
-                </div>
-              </Link>
-            )}
+              <span className={styles.logoText}>VietnamWeather AI</span>
+            </Link>
             <button
               className={styles.mobileMenuClose}
               onClick={() => setIsMobileMenuOpen(false)}
@@ -174,6 +141,27 @@ export function PublicLayout() {
           </div>
 
           <div className={styles.mobileNavLinks}>
+            <Link
+              to="/"
+              className={styles.mobileNavLink}
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
+              {t("nav.home") || "Trang chủ"}
+            </Link>
+            <Link
+              to="/weather"
+              className={styles.mobileNavLink}
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
+              {t("nav.weather") || "Thời tiết"}
+            </Link>
+            <Link
+              to="/pricing"
+              className={styles.mobileNavLink}
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
+              {t("nav.pricing") || "Bảng giá"}
+            </Link>
             <Link
               to="/login"
               className={styles.mobileNavLink}

@@ -110,7 +110,7 @@ $gate2Passed = (Test-Step "ROUTE-003: WEATHER_SAFER alternative" {
 # ROUTE-005: Max route length 50km
 $gate2Passed = (Test-Step "ROUTE-005: MAX_ROUTE_LENGTH_METERS = 50000" {
     $content = Get-Content "$RootDir/packages/contracts/src/route-v1.ts" -Raw
-    $content -match "MAX_ROUTE_LENGTH_METERS\s*=\s*50000"
+    $content -match "MAX_ROUTE_LENGTH_METERS\s*=\s*50_?000"
 }) -and $gate2Passed
 
 # ROUTE-008: Deviation threshold

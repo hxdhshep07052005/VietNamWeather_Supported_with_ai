@@ -1,0 +1,86 @@
+@startuml
+skinparam dpi 200
+skinparam defaultFontName "Segoe UI, Arial, sans-serif"
+
+<style>
+sequenceDiagram {
+  participant {
+    Padding 30
+    Margin 20
+  }
+}
+</style>
+
+skinparam defaultFontSize 20
+skinparam sequenceGroupFontSize 20
+skinparam sequenceReferenceFontSize 18
+skinparam arrowFontSize 18
+skinparam noteFontSize 17
+skinparam participantFontSize 20
+skinparam actorFontSize 20
+
+skinparam maxMessageSize 380
+skinparam wrapWidth 380
+skinparam roundCorner 8
+skinparam shadowing false
+
+skinparam sequenceLifeLineBorderColor #2C3E50
+skinparam sequenceGroupBorderColor #2980B9
+skinparam sequenceGroupHeaderFontStyle bold
+
+autonumber
+
+actor "Traveler / Browser\n[Client Web App]" as B #EBF5FB
+participant "Fastify 5 BFF API\n[Session Boundary]" as API #E8F8F5
+database "PostgreSQL Database\n[app_security schema]" as DB #FEF9E7
+participant "Directus 12.1.1\n[Identity Authority]" as DIR #F2F4F4
+
+== Authorized API Request & Session Validation ==
+
+B -> API: Request protected business resource\n(transmitting secure session cookie)
+activate API
+
+API -> API: Compute cryptographic digest\n<b>H = SHA-256(handle)</b>
+API -> DB: Lookup active session record by digest H
+activate DB
+DB --> API: Return session record\n(ciphertexts, IV, tag, token expiration timestamp)
+deactivate DB
+
+== Silent Sliding Refresh & Atomic Session Rotation ==
+
+opt Access Token Nearing Expiration (t_exp - t_current <= delta_skew)
+    API -> API: Decrypt Refresh Token via <b>AES-256-GCM</b>
+    API -> DIR: Request token renewal (POST /auth/refresh)
+    activate DIR
+    DIR --> API: Return fresh Directus tokens {access_token, refresh_token}
+    deactivate DIR
+    
+    API -> API: Generate nextHandle (32-byte CSPRNG) & new random IV
+    API -> API: Re-encrypt fresh tokens with <b>AES-256-GCM</b>
+    
+    API -> DB: Execute atomic session rotation update\n(Set nextHandle digest, retain parent digest H,\nincrement rotation counter)
+    activate DB
+    DB --> API: Session rotated atomically
+    deactivate DB
+    
+    API -> API: Attach refreshed secure session cookie
+end
+
+== Upstream Request Fulfillment & Seamless Response ==
+
+API -> API: Decrypt Access Token via <b>AES-256-GCM</b> & verify Tag
+API -> DIR: Forward authorized query to upstream service\n(Internal Bearer token)
+activate DIR
+DIR --> API: Return authorized weather dataset
+deactivate DIR
+
+API --> B: HTTP 200 OK (Weather DTO)\n[+ Refreshed session cookie if rotated]
+deactivate API
+
+note over B, API #E8F8F5
+  <b>Seamless User Experience:</b>
+  Sliding refresh occurs transparently in background. The client is never logged out
+  due to short-lived JWT expiration, and token rotation enforces forward secrecy.
+end note
+
+@enduml
