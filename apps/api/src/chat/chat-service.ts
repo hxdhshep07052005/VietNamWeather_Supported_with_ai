@@ -33,7 +33,7 @@ export class ChatService {
   private readonly toolEngine: ChatToolEngine;
   private readonly llmAdapter: LlmAdapter;
 
-  // Key: conversationId (or userId) -> Array of ChatMessageDto
+  // Scope client-selected conversation IDs to the authenticated caller.
   private readonly historyStore = new Map<string, ChatMessageDto[]>();
 
   constructor(options?: ChatServiceOptions) {
@@ -84,7 +84,7 @@ export class ChatService {
   ): Promise<ChatResponseDto> {
     const cleanMessage = this.sanitizeInput(request.message);
     const locale = request.locale === "en" ? "en" : "vi";
-    const conversationKey = request.conversationId || `conv_${userId}`;
+    const conversationKey = JSON.stringify([userId, request.conversationId || `conv_${userId}`]);
 
     // 1. Quota check & atomic consumption (Per AI-002, MONET-004)
     const quotaResult = await this.quotaService.consume(userId, "chatMessage", plan, 1);
@@ -144,8 +144,8 @@ export class ChatService {
    * Retrieves conversation history for current session
    * Per AI-004
    */
-  getHistory(conversationId: string): ChatHistoryDto {
-    const messages = this.historyStore.get(conversationId) ?? [];
+  getHistory(userId: string, conversationId = `conv_${userId}`): ChatHistoryDto {
+    const messages = this.historyStore.get(JSON.stringify([userId, conversationId])) ?? [];
     return {
       conversationId,
       messages,
@@ -157,8 +157,8 @@ export class ChatService {
    * Clears conversation history for current session
    * Per AI-004, PRIVACY-001
    */
-  clearHistory(conversationId: string): void {
-    this.historyStore.delete(conversationId);
+  clearHistory(userId: string, conversationId = `conv_${userId}`): void {
+    this.historyStore.delete(JSON.stringify([userId, conversationId]));
   }
 
   /**

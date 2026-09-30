@@ -42,9 +42,9 @@ class ApiClient {
     this.baseUrl = baseUrl;
   }
 
-  private getHeaders(): HeadersInit {
+  private getHeaders(hasBody: boolean): HeadersInit {
     const headers: HeadersInit = {
-      "Content-Type": "application/json",
+      ...(hasBody ? { "Content-Type": "application/json" } : {}),
       Accept: "application/json",
     };
 
@@ -73,7 +73,7 @@ class ApiClient {
       ...options,
       credentials: "include", // Include cookies for session auth
       headers: {
-        ...this.getHeaders(),
+        ...this.getHeaders(options?.body != null),
         ...options?.headers,
       },
     });
@@ -90,6 +90,12 @@ class ApiClient {
         {
           code: errPayload?.code || "UNKNOWN_ERROR",
           status: response.status,
+          retryAfterSeconds: (() => {
+            const header = response.headers.get("retry-after");
+            if (!header) return undefined;
+            const seconds = Number(header);
+            return Number.isFinite(seconds) ? Math.max(1, seconds) : Math.max(1, (Date.parse(header) - Date.now()) / 1000);
+          })(),
           correlation_id: errPayload?.correlation_id,
         }
       );
@@ -105,8 +111,8 @@ class ApiClient {
   }
 
   // GET request
-  async get<T>(endpoint: string): Promise<T> {
-    return this.request<T>(endpoint, { method: "GET" });
+  async get<T>(endpoint: string, options?: Pick<RequestInit, "signal">): Promise<T> {
+    return this.request<T>(endpoint, { method: "GET", ...options });
   }
 
   // POST request
@@ -222,7 +228,7 @@ export const chatApi = {
    */
   clearHistory: (params?: { conversationId?: string }) => {
     const q = params?.conversationId ? `?conversationId=${encodeURIComponent(params.conversationId)}` : "";
-    return apiClient.delete<{ data: { status: string } }>(`/chat/history${q}`).then(r => r.data);
+    return apiClient.delete<void>(`/chat/history${q}`);
   },
 
   /**

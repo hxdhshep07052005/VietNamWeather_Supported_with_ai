@@ -68,7 +68,7 @@ export function buildChatRoutes(app: FastifyInstance, options: ChatRoutesOptions
 
       const query = request.query as { conversationId?: string } | undefined;
       const conversationId = query?.conversationId || `conv_${userId}`;
-      const history = chatService.getHistory(conversationId);
+      const history = chatService.getHistory(userId, conversationId);
 
       return { data: history };
     }
@@ -94,7 +94,7 @@ export function buildChatRoutes(app: FastifyInstance, options: ChatRoutesOptions
 
       const query = request.query as { conversationId?: string } | undefined;
       const conversationId = query?.conversationId || `conv_${userId}`;
-      chatService.clearHistory(conversationId);
+      chatService.clearHistory(userId, conversationId);
 
       reply.code(204).send();
     }

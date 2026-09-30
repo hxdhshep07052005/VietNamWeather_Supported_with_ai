@@ -165,7 +165,7 @@ describe("Phase 11 AI Chatbot Service & Tools", () => {
         message: "Thời tiết Hà Nội hôm nay thế nào?",
       });
 
-      const history = chatService.getHistory(convId);
+      const history = chatService.getHistory("u_hist", convId);
       assert.strictEqual(history.count, 2); // 1 user + 1 assistant
       assert.strictEqual(history.messages[0].role, "user");
       assert.strictEqual(history.messages[1].role, "assistant");
@@ -179,8 +179,8 @@ describe("Phase 11 AI Chatbot Service & Tools", () => {
         message: "Thời tiết Sài Gòn?",
       });
 
-      chatService.clearHistory(convId);
-      const history = chatService.getHistory(convId);
+      chatService.clearHistory("u_clear", convId);
+      const history = chatService.getHistory("u_clear", convId);
       assert.strictEqual(history.count, 0);
       assert.strictEqual(history.messages.length, 0);
     });
