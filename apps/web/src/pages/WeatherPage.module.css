@@ -1224,6 +1224,75 @@
   padding-bottom: 8px;
 }
 
+.lockedHourlyBox {
+  cursor: pointer;
+  padding: 26px 18px;
+  text-align: center;
+  border-radius: 14px;
+  background: rgba(30, 41, 59, 0.6);
+  border: 1px dashed rgba(148, 163, 184, 0.3);
+  backdrop-filter: blur(6px);
+  transition: all 0.2s ease;
+}
+
+.lockedHourlyBox:hover {
+  background: rgba(30, 41, 59, 0.8);
+  border-color: rgba(56, 189, 248, 0.5);
+  transform: translateY(-1px);
+}
+
+:global([data-theme="light"]) .lockedHourlyBox {
+  background: #f8fafc;
+  border: 1px dashed #cbd5e1;
+}
+
+:global([data-theme="light"]) .lockedHourlyBox:hover {
+  background: #f1f5f9;
+  border-color: #0066cc;
+}
+
+.lockedHourlyTitle {
+  font-size: 14px;
+  font-weight: 700;
+  color: #f1f5f9;
+  margin-bottom: 4px;
+}
+
+:global([data-theme="light"]) .lockedHourlyTitle {
+  color: #0f172a;
+}
+
+.lockedHourlySubtitle {
+  font-size: 12.5px;
+  color: #94a3b8;
+  margin-bottom: 12px;
+}
+
+:global([data-theme="light"]) .lockedHourlySubtitle {
+  color: #475569;
+}
+
+.lockedHourlyBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 16px;
+  background-color: var(--color-primary, #0066cc);
+  color: #ffffff !important;
+  font-size: 12.5px;
+  font-weight: 600;
+  border-radius: 7px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 10px rgba(0, 102, 204, 0.3);
+}
+
+.lockedHourlyBtn:hover {
+  background-color: var(--color-primary-hover, #0052a3);
+  transform: translateY(-1px);
+}
+
 .hourlyCard {
   min-width: 72px;
   background: rgba(255, 255, 255, 0.03);
@@ -1298,9 +1367,11 @@
 }
 
 .advisoryContent {
+  flex: 1;
+  min-width: 0;
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: var(--space-3);
 }
 
 .advisoryTitle {

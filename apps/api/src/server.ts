@@ -443,7 +443,9 @@ export async function createApiServer(dependencies: ApiServerDependencies): Prom
 
     // Register route planning service and routes (Phase 8)
     const { RouteService, buildRouteRoutes } = await import("./route/index.js");
-    routeService = new RouteService({ dbPool: pool });
+    const { RestStopService } = await import("./route/rest-stop-service.js");
+    const { RouteWeatherRefresh } = await import("./route/route-weather-refresh.js");
+    routeService = new RouteService({ dbPool: pool, restStopService: new RestStopService(), weatherRefresh: new RouteWeatherRefresh(store) });
     buildRouteRoutes(app, {
       routeService,
       defaultRateLimitMax: config.defaultRateLimitMax,

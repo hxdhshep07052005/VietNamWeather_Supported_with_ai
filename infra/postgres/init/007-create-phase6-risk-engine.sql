@@ -93,7 +93,6 @@ CREATE OR REPLACE FUNCTION app_risk.evaluate_rules(
 )
 LANGUAGE plpgsql
 STABLE
-READS SQL DATA
 SECURITY DEFINER
 SET search_path = app_risk, pg_temp
 AS $$
@@ -109,11 +108,11 @@ DECLARE
 BEGIN
     -- Iterate through rules for the given rule set
     FOR v_rules IN
-        SELECT id, external_key, dimension, field_path, operator,
+        SELECT id, external_key, input_key AS dimension, input_key AS field_path, operator,
                threshold_value, threshold_upper_value, severity, weight
           FROM risk_rules
          WHERE rule_set_id = p_rule_set_id
-           AND (p_dimension IS NULL OR dimension = p_dimension)
+           AND (p_dimension IS NULL OR input_key = p_dimension)
     LOOP
         -- Extract field value from weather JSON using JSON path
         BEGIN
@@ -173,7 +172,6 @@ CREATE OR REPLACE FUNCTION app_risk.assess_weather_risk(
 RETURNS app_risk.severity_level
 LANGUAGE plpgsql
 STABLE
-READS SQL DATA
 SECURITY DEFINER
 SET search_path = app_risk, pg_temp
 AS $$
@@ -236,7 +234,6 @@ CREATE OR REPLACE FUNCTION app_risk.get_triggered_rules(
 )
 LANGUAGE plpgsql
 STABLE
-READS SQL DATA
 SECURITY DEFINER
 SET search_path = app_risk, pg_temp
 AS $$
@@ -277,7 +274,6 @@ CREATE OR REPLACE FUNCTION app_risk.get_active_rule_set()
 RETURNS uuid
 LANGUAGE plpgsql
 STABLE
-READS SQL DATA
 SECURITY DEFINER
 SET search_path = app_risk, pg_temp
 AS $$
@@ -307,7 +303,7 @@ GRANT EXECUTE ON FUNCTION app_risk.get_active_rule_set TO app_risk_api;
 
 -- Index for evaluating rules by dimension
 CREATE INDEX IF NOT EXISTS risk_rules_dimension_idx
-    ON risk_rules (rule_set_id, dimension);
+    ON risk_rules (rule_set_id, input_key);
 
 -- Index for finding published rule sets
 CREATE INDEX IF NOT EXISTS risk_rule_sets_published_idx
@@ -322,7 +318,9 @@ CREATE INDEX IF NOT EXISTS risk_rule_sets_published_idx
 GRANT USAGE ON SCHEMA app_risk TO app_risk_api;
 GRANT SELECT ON risk_rule_sets TO app_risk_api;
 GRANT SELECT ON risk_rules TO app_risk_api;
-GRANT SELECT ON risk_rule_translations TO app_risk_api;
+GRANT USAGE ON SCHEMA app_risk TO vnwa_api;
+GRANT SELECT ON risk_rule_sets TO vnwa_api;
+GRANT SELECT ON risk_rules TO vnwa_api;
 
 -- Grant membership to app_risk_api
 DO $do$

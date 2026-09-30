@@ -1,6 +1,7 @@
 import { render, screen, fireEvent } from "@testing-library/react";
 import { describe, it, expect, vi } from "vitest";
 import { VietnamMap } from "./VietnamMap";
+import { getAllProvincesData } from "../../data/vietnamGeoJsonWGS84";
 
 // Mock react-i18next
 vi.mock("react-i18next", () => ({
@@ -65,14 +66,44 @@ describe("VietnamMap Component", () => {
 
   it("displays on-demand info card when hovering over a province", () => {
     const { container } = render(<VietnamMap showcaseMode={true} />);
-    // Before hover: no on-demand card
-    expect(screen.queryByText(/common\.updatedAt/)).not.toBeInTheDocument();
+    expect(screen.queryByRole("tooltip")).not.toBeInTheDocument();
 
     const firstProvince = container.querySelector("path");
     if (firstProvince) {
       fireEvent.mouseEnter(firstProvince);
-      // After hover: on-demand card appears with live standard time
-      expect(screen.getByText(/common\.updatedAt/)).toBeInTheDocument();
+      expect(screen.getByRole("tooltip")).toBeInTheDocument();
+      expect(screen.getByText("Chưa có dữ liệu thời tiết")).toBeInTheDocument();
+      expect(screen.queryByText(/common\.updatedAt/)).not.toBeInTheDocument();
+    }
+  });
+
+  it("clears the previous temperature for a missing province and distinguishes loading and error states", () => {
+    const provinces = getAllProvincesData().map(province => ({ ...province, temp: 24.2, dataState: "ready" as const }));
+    const { rerender } = render(<VietnamMap provinceWeather={provinces} selectedProvinceId="vn-hg" />);
+    expect(screen.getByText("24.2°C")).toBeInTheDocument();
+    for (const dataState of ["loading", "ready", "error"] as const) {
+      const next = provinces.map(province => province.id === "vn-337" ? { ...province, temp: NaN, dataState } : province);
+      rerender(<VietnamMap provinceWeather={next} selectedProvinceId="vn-337" />);
+      expect(screen.getByText("Hậu Giang")).toBeInTheDocument();
+      expect(screen.queryByText("24.2°C")).not.toBeInTheDocument();
+      expect(screen.getByText("—")).toBeInTheDocument();
+      const status = { loading: "common.loading", ready: "Chưa có dữ liệu thời tiết", error: "Không tải được thời tiết" }[dataState];
+      expect(screen.getByText(status)).toBeInTheDocument();
+      expect(screen.queryByText(/common\.updatedAt/)).not.toBeInTheDocument();
+    }
+  });
+
+  it("marks older temperatures and uses measured low, caution, high and unknown colors in risk mode", () => {
+    const provinces = getAllProvincesData().map((province, index) => ({
+      ...province, temp: 0, dataState: "ready" as const, freshnessState: "stale" as const,
+      riskLevel: (["low", "caution", "high", "unknown"] as const)[index % 4] ?? "unknown",
+    }));
+    const { container } = render(<VietnamMap provinceWeather={provinces} selectedProvinceId="vn-hg" viewMode="risk" />);
+    expect(screen.getByText("0°C")).toBeInTheDocument();
+    expect(screen.getByText("Dữ liệu cũ")).toBeInTheDocument();
+    expect(screen.getByText("Chưa có thời điểm cập nhật")).toBeInTheDocument();
+    for (const color of ["#10B981", "#F59E0B", "#EF4444", "#64748B"]) {
+      expect(container.querySelector(`path[fill="${color}"]`)).toBeInTheDocument();
     }
   });
 });

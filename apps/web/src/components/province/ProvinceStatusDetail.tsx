@@ -22,11 +22,17 @@ import {
   Zap,
   Radio,
   Clock,
+  Lock,
+  LogIn,
 } from "lucide-react";
 import { ProvinceGeoFeatureProperties } from "@/data/vietnamGeoJsonWGS84";
 import { VIETNAM_REGIONS } from "@/data/provinces";
-import { useProvinceWeather } from "@/hooks/useProvinceWeather";
+import { forecastHours, useProvinceWeather, weatherStateText } from "@/hooks/useProvinceWeather";
+import { useAuthStore } from "@/hooks/useAuthStore";
+import { useRequireLoginModal } from "@/hooks/useRequireLoginModal";
+import { RiskEvidenceWarnings } from "@/components/common/RiskEvidenceWarnings";
 import styles from "./ProvinceStatusDetail.module.css";
+import { riskReasonText, weatherConditionText, generalRiskNote, formatEvidenceValue, rainEvidenceLabel, evidenceMissingText, formatMeasurement as measurement } from "@/utils/reportRisk";
 
 export interface ProvinceStatusDetailProps {
   province: ProvinceGeoFeatureProperties;
@@ -44,155 +50,65 @@ export function ProvinceStatusDetail({
   const navigate = useNavigate();
   const { i18n } = useTranslation();
   const isEn = i18n?.language === "en" || (typeof window !== "undefined" && localStorage.getItem("vietnam-weather-language") === "en");
+  const { isAuthenticated } = useAuthStore();
+  const { openModal } = useRequireLoginModal();
 
   // Query live weather with forecast for the selected province
-  const { data: weatherQuery, isLoading: isWeatherLoading } = useProvinceWeather({
+  const weather = useProvinceWeather({
     latitude: province.latitude,
     longitude: province.longitude,
-    includeForecast: true,
+    includeForecast: isAuthenticated,
   });
 
-  const weatherData = weatherQuery?.data?.data;
-  const current = weatherData?.current?.value ?? null;
-  const hourlyValues = weatherData?.hourly?.values ?? [];
+  const { hourly: hourlyValues } = weather;
+  const selectedTime = province.weatherTargetTime ? Date.parse(province.weatherTargetTime) : Date.now();
 
-  const rainVal = current?.precipitationMillimetres ?? 0;
-  const windKmh = current?.windSpeedMetresPerSecond != null ? Math.round(current.windSpeedMetresPerSecond * 3.6) : 12;
-  const windGustKmh = current?.windGustMetresPerSecond != null ? Math.round(current.windGustMetresPerSecond * 3.6) : windKmh + 6;
-  const tempVal = current?.temperatureCelsius != null ? Math.round(current.temperatureCelsius) : 26;
-  const feelsLikeVal = current?.apparentTemperatureCelsius != null ? Math.round(current.apparentTemperatureCelsius) : tempVal + 1;
-  const visKm = current?.visibilityMetres != null ? current.visibilityMetres / 1000 : 10;
-  const isStorm = current?.conditionCode === "thunderstorm";
-
-  // Generate 6-dimensional evaluation consistent with backend RISK-002
-  const dimensions = useMemo(() => {
-    return [
-      {
-        id: "precipitation",
-        name: isEn ? "Precipitation" : "Lượng mưa",
-        icon: CloudRain,
-        value: `${rainVal} mm/h`,
-        status: isEn
-          ? (rainVal > 25 ? "Flooding" : rainVal > 5 ? "Moderate Rain" : "Dry")
-          : (rainVal > 25 ? "Ngập lụt" : rainVal > 5 ? "Mưa vừa" : "Khô ráo"),
-        color: rainVal > 25 ? "#EF4444" : rainVal > 5 ? "#EAB308" : "#22C55E",
-      },
-      {
-        id: "wind",
-        name: isEn ? "Wind & Gusts" : "Gió & Gió giật",
-        icon: Wind,
-        value: `${windKmh} - ${windGustKmh} km/h`,
-        status: isEn
-          ? (windKmh > 50 ? "Strong Gusts" : windKmh > 25 ? "Light Breeze" : "Calm")
-          : (windKmh > 50 ? "Gió giật mạnh" : windKmh > 25 ? "Gió tạt nhẹ" : "Gió êm"),
-        color: windKmh > 50 ? "#EF4444" : windKmh > 25 ? "#EAB308" : "#22C55E",
-      },
-      {
-        id: "temperature",
-        name: isEn ? "Temperature" : "Nhiệt độ",
-        icon: Thermometer,
-        value: isEn ? `${tempVal}°C (Feels like ${feelsLikeVal}°C)` : `${tempVal}°C (Cảm giác ${feelsLikeVal}°C)`,
-        status: isEn
-          ? (tempVal > 35 ? "Hot" : tempVal < 15 ? "Cold" : "Pleasant")
-          : (tempVal > 35 ? "Nắng nóng" : tempVal < 15 ? "Rét" : "Dịu mát"),
-        color: tempVal > 35 || tempVal < 15 ? "#EAB308" : "#22C55E",
-      },
-      {
-        id: "visibility",
-        name: isEn ? "Visibility" : "Tầm nhìn",
-        icon: Eye,
-        value: `${visKm.toFixed(1)} km`,
-        status: isEn
-          ? (visKm < 5 ? "Limited" : "Clear")
-          : (visKm < 5 ? "Hạn chế" : "Thông thoáng"),
-        color: visKm < 5 ? "#EF4444" : "#22C55E",
-      },
-      {
-        id: "storm",
-        name: isEn ? "Thunder & Lightning" : "Dông sét",
-        icon: Zap,
-        value: isEn ? (isStorm ? "High Risk" : "Low") : (isStorm ? "Nguy cơ cao" : "Thấp"),
-        status: isEn ? (isStorm ? "Lightning Warning" : "Normal") : (isStorm ? "Cảnh báo sét" : "Bình thường"),
-        color: isStorm ? "#EF4444" : "#22C55E",
-      },
-      {
-        id: "alert",
-        name: isEn ? "Flood Advisory" : "Cảnh báo ngập úng",
-        icon: Radio,
-        value: isEn ? (rainVal > 25 ? "Flood Alert" : "Stable") : (rainVal > 25 ? "Báo động ngập" : "Ổn định"),
-        status: isEn ? (rainVal > 25 ? "Tier 1" : "Safe") : (rainVal > 25 ? "Cấp 1" : "An toàn"),
-        color: rainVal > 25 ? "#EF4444" : "#22C55E",
-      },
-    ];
-  }, [rainVal, windKmh, windGustKmh, tempVal, feelsLikeVal, visKm, isStorm, isEn]);
+  const windGustKmh = measurement(province.windGustKmh);
+  const tempVal = measurement(province.temp);
+  const feelsLikeVal = measurement(province.feelsLike);
+  const dimensionMeta = [
+    { id: "rain", name: isEn ? "Rain (mm/h)" : "Mưa (mm/h)", icon: CloudRain },
+    { id: "wind", name: isEn ? "Gust (km/h)" : "Gió giật (km/h)", icon: Wind },
+    { id: "temperature", name: isEn ? "Temperature (°C)" : "Nhiệt độ (°C)", icon: Thermometer },
+    { id: "visibility", name: isEn ? "Visibility (m)" : "Tầm nhìn (m)", icon: Eye },
+    { id: "storm", name: isEn ? "Storm" : "Dông", icon: Zap },
+    { id: "alert", name: isEn ? "Official alert" : "Cảnh báo chính thức", icon: Radio },
+  ];
+  const dimensions = dimensionMeta.map(meta => {
+    const evidence = province.assessment?.evidence.find(e => e.dimension === meta.id);
+    const severity = evidence?.severity ?? 0;
+    const unclassifiedStorm = meta.id === "storm" && severity === 0 && province.conditionCode === "thunderstorm";
+    return { ...meta,
+      name: meta.id === "rain" ? rainEvidenceLabel(evidence, isEn) : meta.name,
+      value: unclassifiedStorm ? weatherConditionText(province.conditionCode, isEn) : formatEvidenceValue(evidence, isEn),
+      missingText: unclassifiedStorm ? (isEn ? "Storm type not available; the weather condition does not establish storm severity." : "Chưa có phân loại dông; trạng thái thời tiết không xác định mức độ dông.") : severity === 0 ? evidenceMissingText(meta.id, province.assessment, isEn) : null, color: ["#64748B", "#22C55E", "#EAB308", "#EF4444"][severity],
+      status: (isEn ? ["Not assessed", "Low", "Caution", "High"] : ["Chưa đánh giá", "Thấp", "Chú ý", "Cao"])[severity] };
+  });
 
   // Real hourly forecast points for the next 12 hours from backend
   const hourlyForecast = useMemo(() => {
     if (hourlyValues.length > 0) {
-      return hourlyValues.slice(0, 12).map((item, i) => {
-        const date = item.validInterval?.from ? new Date(item.validInterval.from) : null;
+      return forecastHours(hourlyValues, 12, selectedTime).map(item => {
+        const date = new Date(item.validInterval.from);
         return {
-          time: date ? date.toLocaleTimeString(isEn ? "en-US" : "vi-VN", { hour: "2-digit", minute: "2-digit" }) : `${i}:00`,
-          temp: item.temperatureCelsius != null ? Math.round(item.temperatureCelsius) : 26,
-          rainProb: item.precipitationProbabilityPercent ?? 0,
+          time: date.toLocaleTimeString(isEn ? "en-US" : "vi-VN", { timeZone: "Asia/Ho_Chi_Minh", hour: "2-digit", minute: "2-digit" }),
+          temp: item.temperatureCelsius != null ? Math.round(item.temperatureCelsius) : "—",
+          rainProb: item.precipitationProbabilityPercent != null && Number.isFinite(item.precipitationProbabilityPercent) ? `${measurement(item.precipitationProbabilityPercent)}%` : "—",
         };
       });
     }
     return [];
-  }, [hourlyValues, isEn]);
+  }, [hourlyValues, isEn, selectedTime]);
 
-  // Advisories triggered dynamically based on real conditions
-  const advisories = useMemo(() => {
-    const list: string[] = [];
-    if (rainVal > 25) {
-      list.push(
-        isEn
-          ? "Heavy widespread precipitation may cause ponding in low-lying roads; reduce vehicle speed."
-          : "Mưa lớn diện rộng có thể gây ngập úng cục bộ các tuyến đường trũng; chú ý giảm tốc độ."
-      );
-    }
-    if (windKmh > 40) {
-      list.push(
-        isEn
-          ? "Strong crosswinds dangerous for two-wheelers and light vehicles across elevated bridges."
-          : "Gió tạt mạnh nguy hiểm cho xe máy và phương tiện trọng tải nhẹ khi qua cầu."
-      );
-    }
-    if (isStorm) {
-      list.push(
-        isEn
-          ? "Beware of lightning strikes and fallen branches during localized convective storms."
-          : "Đề phòng sấm sét và cây cối gãy đổ trong các cơn dông cục bộ."
-      );
-    }
-    if (visKm < 5) {
-      list.push(
-        isEn
-          ? "Reduced visibility on mountain passes; maintain safe following distance of at least 35m."
-          : "Tầm nhìn giảm tại các đoạn đường dốc và đèo; giữ khoảng cách an toàn tối thiểu 35m."
-      );
-    }
-    if (list.length === 0) {
-      list.push(
-        isEn
-          ? "Favorable weather conditions for road travel and outdoor transit."
-          : "Điều kiện thời tiết rất thuận lợi cho mọi hoạt động tham quan và di chuyển đường bộ."
-      );
-      list.push(
-        isEn
-          ? "Dry road pavements with high visibility across major corridors."
-          : "Đường khô ráo, tầm nhìn quang đãng trên toàn bộ các trục giao thông."
-      );
-    }
-    return list;
-  }, [rainVal, windKmh, isStorm, visKm, isEn]);
+  const advisories = province.assessment?.reasons.map(reason => riskReasonText(reason, isEn)) ?? [];
+  if (!advisories.length && !province.assessment?.evidence.some(item => item.severity >= 2)) {
+    advisories.push(isEn ? "No travel advisory is available." : "Chưa có khuyến cáo di chuyển.");
+  }
 
-  const displayCondition = isEn
-    ? (province.conditionCode === "rain" ? "Rain" : province.conditionCode === "heavy_rain" ? "Heavy Rain" : province.conditionCode === "thunderstorm" ? "Thunderstorm" : province.conditionCode === "clear" ? "Clear" : province.conditionCode === "partly_cloudy" ? "Partly Cloudy" : province.conditionCode === "cloudy" ? "Cloudy" : "Stable Weather")
-    : province.conditionText;
+  const displayCondition = weatherConditionText(province.conditionCode, isEn);
   const displayRiskTier = isEn
-    ? (province.riskLevel === "high" ? "HIGH RISK" : province.riskLevel === "caution" ? "CAUTION" : "SAFE")
-    : province.riskText.toUpperCase();
+    ? (province.riskLevel === "high" ? "HIGH RISK" : province.riskLevel === "caution" ? "CAUTION" : province.riskLevel === "low" ? "LOW" : "UNKNOWN")
+    : province.riskLevel === "unknown" ? "CHƯA ĐỦ DỮ LIỆU" : province.riskText.toUpperCase();
 
   return (
     <div className={styles.container}>
@@ -220,7 +136,7 @@ export function ProvinceStatusDetail({
             <span>•</span>
             <span style={{ display: "inline-flex", alignItems: "center", gap: "4px" }}>
               <Clock size={12} />
-              <span>{isEn ? "Updated: Just now" : "Cập nhật: Vừa xong"}</span>
+              <span>{province.weatherTargetTime ? new Date(province.weatherTargetTime).toLocaleString(isEn ? "en-US" : "vi-VN", { timeZone: "Asia/Ho_Chi_Minh" }) : "—"}</span>
             </span>
           </div>
         </div>
@@ -262,19 +178,21 @@ export function ProvinceStatusDetail({
               <ShieldAlert size={18} />
             ) : province.riskLevel === "caution" ? (
               <AlertTriangle size={18} />
+            ) : province.riskLevel === "unknown" ? (
+              <AlertTriangle size={18} />
             ) : (
               <ShieldCheck size={18} />
             )}
             <span className={styles.riskLevelText}>{isEn ? `TIER: ${displayRiskTier}` : `CẤP ĐỘ: ${displayRiskTier}`}</span>
           </div>
           <span className={styles.riskScoreSub}>
-            {isEn ? "Risk Index:" : "Chỉ số rủi ro:"} <strong>{province.riskScore}/100</strong> • {displayCondition}
+            {isEn ? "Risk Index:" : "Chỉ số rủi ro:"} <strong>{province.riskScore == null ? (isEn ? "Insufficient data" : "Chưa đủ dữ liệu") : `${province.riskScore}/100`}</strong> • {displayCondition}
           </span>
         </div>
 
         <div className={styles.confidenceBadge}>
-          <span>{isEn ? "Confidence:" : "Độ tin cậy:"} <strong>{province.confidencePercent}%</strong></span>
-          <span style={{ fontSize: "10px", color: "var(--color-text-secondary)" }}>{isEn ? "Fresh telemetry" : "Dữ liệu tươi mới"}</span>
+          <span>{province.freshnessState}</span>
+          <span style={{ fontSize: "10px", color: "var(--color-text-secondary)" }}>{isEn ? "General weather" : "Thời tiết tổng quát"}</span>
         </div>
       </div>
 
@@ -283,11 +201,12 @@ export function ProvinceStatusDetail({
         <div className={styles.sectionHeader}>
           <h3 className={styles.sectionTitle}>
             <ShieldCheck size={16} color="var(--color-primary)" />
-            <span>{isEn ? "6-Dimensional Risk Evaluation (Risk Engine)" : "Đánh Giá Rủi Ro 6 Chiều (Risk Engine)"}</span>
+            <span>{isEn ? "General Weather Risk" : "Rủi Ro Thời Tiết Tổng Quát"}</span>
           </h3>
-          <span style={{ fontSize: "11px", color: "var(--color-text-secondary)" }}>{isEn ? "RISK-002 Standard" : "Chuẩn RISK-002"}</span>
+          <span style={{ fontSize: "11px", color: "var(--color-text-secondary)" }}>{isEn ? "General weather assessment" : "Đánh giá thời tiết tổng quát"}</span>
         </div>
 
+        <p>{generalRiskNote(province.assessment, isEn)}</p>
         <div className={styles.riskGrid}>
           {dimensions.map((dim) => {
             const Icon = dim.icon;
@@ -307,6 +226,7 @@ export function ProvinceStatusDetail({
                 >
                   {dim.status}
                 </span>
+                {dim.missingText && <p className={styles.paramSub}>{dim.missingText}</p>}
               </div>
             );
           })}
@@ -318,22 +238,23 @@ export function ProvinceStatusDetail({
         <div className={styles.sectionHeader}>
           <h3 className={styles.sectionTitle}>
             <Thermometer size={16} color="var(--color-primary)" />
-            <span>{isEn ? "Real-time Meteorological Telemetry" : "Thông Số Khí Tượng Thời Gian Thực"}</span>
+            <span>{isEn ? "Weather at Selected Time" : "Thời Tiết Tại Thời Điểm Đã Chọn"}</span>
           </h3>
           <span style={{ fontSize: "11px", color: "var(--color-text-secondary)" }}>weather-v1</span>
         </div>
 
+        {province.dataState !== "ready" && <p role="status">{weatherStateText(province.dataState === "error" ? "error" : "loading", isEn)}</p>}
         <div className={styles.weatherGrid}>
           <div className={styles.weatherParamBox}>
             <span className={styles.paramLabel}>{isEn ? "Temperature" : "Nhiệt độ"}</span>
-            <span className={styles.paramValue}>{isWeatherLoading ? "..." : `${tempVal}°C`}</span>
+            <span className={styles.paramValue}>{`${tempVal}°C`}</span>
             <span className={styles.paramSub}>{isEn ? `Feels like ${feelsLikeVal}°C` : `Cảm giác ${feelsLikeVal}°C`}</span>
           </div>
 
           <div className={styles.weatherParamBox}>
             <span className={styles.paramLabel}>{isEn ? "Humidity" : "Độ ẩm"}</span>
             <span className={styles.paramValue}>
-              {current?.relativeHumidityPercent != null ? `${current.relativeHumidityPercent}%` : "—"}
+              {`${measurement(province.humidity)}%`}
             </span>
             <span className={styles.paramSub}>{isEn ? "Relative" : "Tương đối"}</span>
           </div>
@@ -347,17 +268,17 @@ export function ProvinceStatusDetail({
           <div className={styles.weatherParamBox}>
             <span className={styles.paramLabel}>{isEn ? "UV Index" : "Chỉ số UV"}</span>
             <span className={styles.paramValue}>
-              {current?.uvIndex != null ? current.uvIndex : "—"}
+              {measurement(province.uvIndex)}
             </span>
             <span className={styles.paramSub}>
-              {current?.uvIndex != null && current.uvIndex > 6 ? (isEn ? "High Hazard" : "Nguy hại cao") : (isEn ? "Normal" : "Bình thường")}
+              {!Number.isFinite(province.uvIndex) ? (isEn ? "Unavailable" : "Chưa có dữ liệu") : (isEn ? "UV index at selected time" : "Chỉ số UV tại thời điểm đã chọn")}
             </span>
           </div>
 
           <div className={styles.weatherParamBox}>
             <span className={styles.paramLabel}>{isEn ? "Cloud Cover" : "Độ che phủ mây"}</span>
             <span className={styles.paramValue}>
-              {current?.cloudCoverPercent != null ? `${current.cloudCoverPercent}%` : "—"}
+              {`${measurement(province.cloudCoverPercent)}%`}
             </span>
             <span className={styles.paramSub}>{isEn ? "Sky" : "Bầu trời"}</span>
           </div>
@@ -365,7 +286,7 @@ export function ProvinceStatusDetail({
           <div className={styles.weatherParamBox}>
             <span className={styles.paramLabel}>{isEn ? "Pressure" : "Áp suất"}</span>
             <span className={styles.paramValue}>
-              {current?.pressureHectopascals != null ? `${current.pressureHectopascals}` : "1012"}
+              {measurement(province.pressureHpa)}
             </span>
             <span className={styles.paramSub}>hPa</span>
           </div>
@@ -381,20 +302,45 @@ export function ProvinceStatusDetail({
           </h3>
         </div>
 
-        {hourlyForecast.length > 0 ? (
+        {!isAuthenticated ? (
+          <div
+            className={styles.lockedHourlyBox}
+            onClick={() =>
+              openModal(
+                isEn ? "Hourly Forecast (Next 12 Hours)" : "Dự báo hàng giờ (12 giờ tới)",
+                isEn
+                  ? "Guests can only view current real-time weather. Please sign in to view detailed hourly forecast trends."
+                  : "Chế độ khách chỉ xem được thời tiết hiện tại. Vui lòng đăng nhập để xem chi tiết dự báo 12 giờ tới!"
+              )
+            }
+          >
+            <Lock size={18} style={{ margin: "0 auto 6px auto", color: "var(--color-primary, #0066cc)" }} />
+            <div className={styles.lockedHourlyTitle}>
+              {isEn ? "Hourly Forecast Locked for Guests" : "Dự báo 12 giờ tới yêu cầu đăng nhập"}
+            </div>
+            <div className={styles.lockedHourlySubtitle}>
+              {isEn ? "Click here or sign in to view hourly temperatures and precipitation." : "Bấm vào đây hoặc Đăng nhập để mở khóa nhiệt độ và xác suất mưa theo giờ."}
+            </div>
+            <span className={styles.lockedHourlyBtn}>
+              <LogIn size={13} />
+              <span>{isEn ? "Sign In to View" : "Đăng nhập để xem"}</span>
+            </span>
+          </div>
+        ) : hourlyForecast.length > 0 ? (
           <div className={styles.hourlyScroll}>
             {hourlyForecast.map((h, i) => (
               <div key={i} className={styles.hourlyCard}>
                 <span className={styles.hourlyTime}>{h.time}</span>
                 <CloudRain size={16} color="#0EA5E9" />
                 <span className={styles.hourlyTemp}>{h.temp}°</span>
-                <span className={styles.hourlyRain}>{h.rainProb}%</span>
+                <span className={styles.hourlyRain}>{h.rainProb}</span>
               </div>
             ))}
           </div>
         ) : (
           <div style={{ padding: "16px", textAlign: "center", fontSize: "12px", color: "var(--color-text-secondary)" }}>
-            {isWeatherLoading ? (isEn ? "Loading forecast series telemetry..." : "Đang tải dữ liệu chuỗi dự báo từ trạm quan trắc...") : (isEn ? "Hourly forecast syncing..." : "Dữ liệu dự báo theo giờ đang đồng bộ.")}
+            <p role="status">{weatherStateText(weather.hourlyState === "ready" ? "unavailable" : weather.hourlyState, isEn)}</p>
+            <button type="button" disabled={weather.isFetching} onClick={() => void weather.refetch()}>{isEn ? "Retry" : "Thử lại"}</button>
           </div>
         )}
       </div>
@@ -409,6 +355,7 @@ export function ProvinceStatusDetail({
         </div>
 
         <div className={styles.advisoriesList}>
+          <RiskEvidenceWarnings evidence={province.assessment?.evidence} isEn={isEn} />
           {advisories.map((adv, idx) => (
             <div key={idx} className={styles.advisoryItem}>
               <span style={{ color: "var(--color-primary)", fontWeight: 800 }}>•</span>
@@ -426,7 +373,7 @@ export function ProvinceStatusDetail({
         style={{ width: "100%", padding: "12px", justifyContent: "center" }}
       >
         <ExternalLink size={14} />
-        <span>{isEn ? "View 14-Day In-depth Meteorological Analytics" : "Xem Báo Cáo Phân Tích Chuyên Sâu 14 Ngày"}</span>
+        <span>{isEn ? "View Weather Details & Available Forecasts" : "Xem Chi Tiết Thời Tiết & Dự Báo Hiện Có"}</span>
       </button>
     </div>
   );

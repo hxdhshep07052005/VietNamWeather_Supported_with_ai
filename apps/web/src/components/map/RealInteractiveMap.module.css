@@ -138,8 +138,8 @@
   z-index: 10;
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 8px 14px;
+  gap: 8px;
+  padding: 6px 12px;
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-xl);
@@ -148,6 +148,60 @@
   font-weight: 600;
   color: var(--color-text-primary);
   backdrop-filter: blur(8px);
+}
+
+.legendBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: transparent;
+  border: 1px solid transparent;
+  padding: 3px 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  color: var(--color-text-primary);
+  font-size: 11px;
+  font-weight: 600;
+  transition: all 0.15s ease;
+}
+
+.legendBtn:hover {
+  background: var(--color-background-alt, #f1f5f9);
+  border-color: var(--color-border);
+}
+
+.legendBtnActive {
+  background: rgba(0, 102, 204, 0.12) !important;
+  border-color: var(--color-primary, #0066cc) !important;
+  color: var(--color-primary, #0066cc) !important;
+  box-shadow: 0 0 0 1px var(--color-primary, #0066cc);
+}
+
+:global([data-theme="dark"]) .legendBtnActive {
+  background: rgba(56, 189, 248, 0.18) !important;
+  border-color: #38bdf8 !important;
+  color: #38bdf8 !important;
+}
+
+.legendResetBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 2px 7px;
+  font-size: 10px;
+  font-weight: 700;
+  background: var(--color-background-alt, #f1f5f9);
+  border: 1px solid var(--color-border, #cbd5e1);
+  border-radius: 5px;
+  cursor: pointer;
+  color: var(--color-text-secondary, #64748b);
+  transition: all 0.15s ease;
+  margin-left: 2px;
+}
+
+.legendResetBtn:hover {
+  color: var(--color-primary, #0066cc);
+  border-color: var(--color-primary);
 }
 
 .legendItem {

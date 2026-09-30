@@ -1,0 +1,180 @@
+.restStops {
+  padding: var(--space-4);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-2xl);
+  background: var(--color-surface);
+  color: var(--color-text-primary);
+}
+
+.restStops, .points {
+  --journey-focus: var(--color-primary);
+  min-inline-size: 0;
+  container-type: inline-size;
+}
+
+:global([data-theme="dark"]) .restStops,
+:global([data-theme="dark"]) .points {
+  --journey-focus: #60a5fa;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-block-end: var(--space-3);
+}
+
+.header h3 {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+}
+
+.header p, .footnote, .meta, .empty {
+  margin: 0;
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-normal);
+}
+
+.empty {
+  padding: var(--space-3);
+  border-radius: var(--radius-lg);
+  background: var(--color-background-alt);
+}
+
+.stopsList, .weatherList {
+  display: grid;
+  gap: var(--space-2);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.stopLink, .pointButton {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  inline-size: 100%;
+  min-block-size: 44px;
+  padding: var(--space-3);
+  color: var(--color-text-primary);
+  text-align: start;
+  text-decoration: none;
+  border-radius: var(--radius-lg);
+  transition: background-color var(--transition-fast);
+}
+
+.stopLink { background: var(--color-background-alt); }
+.stopLink svg { flex-shrink: 0; }
+.stopLink:hover, .pointButton:hover { background: var(--color-background-alt); }
+.stopLink:hover strong { text-decoration: underline; }
+.stopLink:hover { color: var(--color-text-primary); }
+
+.location {
+  display: grid;
+  gap: var(--space-1);
+  min-inline-size: 0;
+  overflow-wrap: anywhere;
+}
+
+.location strong {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-normal);
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--space-1);
+  font-variant-numeric: tabular-nums;
+}
+
+.meta > span { white-space: nowrap; }
+.footnote { margin-block-start: var(--space-3); }
+.weatherList { max-block-size: 24rem; overflow-y: auto; padding: var(--space-1); }
+
+.weatherPoint {
+  min-inline-size: 0;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+}
+
+.weatherPoint[data-selected="true"] { border-color: var(--journey-focus); }
+.weatherPoint[data-selected="true"] .pointButton { background: var(--color-background-alt); }
+.pointButton { border: 0; background: transparent; cursor: pointer; }
+
+.weatherSummary {
+  display: grid;
+  justify-items: end;
+  gap: var(--space-1);
+  flex-shrink: 0;
+}
+
+.temperature {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.risk {
+  --risk-accent: var(--color-border);
+  --risk-text: var(--color-text-secondary);
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-md);
+  color: var(--risk-text);
+  background: color-mix(in srgb, var(--risk-accent) 12%, var(--color-surface));
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--line-height-normal);
+}
+
+.risk[data-risk="low"] { --risk-accent: #22c55e; --risk-text: #15803d; }
+.risk[data-risk="caution"] { --risk-accent: #eab308; --risk-text: #a16207; }
+.risk[data-risk="high"] { --risk-accent: #ef4444; --risk-text: #b91c1c; }
+:global([data-theme="dark"]) .risk[data-risk="low"] { --risk-text: #86efac; }
+:global([data-theme="dark"]) .risk[data-risk="caution"] { --risk-text: #fbbf24; }
+:global([data-theme="dark"]) .risk[data-risk="high"] { --risk-text: #fca5a5; }
+
+.weatherDetails, .moreStops {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+}
+
+.weatherDetails summary, .moreStops summary {
+  min-block-size: 44px;
+  padding: var(--space-3);
+  cursor: pointer;
+  line-height: var(--line-height-normal);
+  border-radius: var(--radius-md);
+}
+
+.weatherDetails summary:hover, .moreStops summary:hover { color: var(--color-text-primary); }
+.weatherDetails[open] { border-block-start: 1px solid var(--color-border); }
+
+.stopLink:focus-visible, .pointButton:focus-visible,
+.weatherDetails summary:focus-visible, .moreStops summary:focus-visible {
+  outline: var(--focus-ring-width) solid var(--journey-focus);
+  outline-offset: var(--focus-ring-offset);
+}
+
+.detailBody { padding: 0 var(--space-3) var(--space-3); overflow-wrap: anywhere; }
+.detailBody p { margin: 0 0 var(--space-2); line-height: var(--line-height-normal); }
+.measurements { margin: var(--space-2) 0; }
+.measurements > div { display: flex; flex-wrap: wrap; justify-content: space-between; gap: var(--space-1) var(--space-3); padding-block: var(--space-1); }
+.measurements dd { margin: 0; color: var(--color-text-primary); font-variant-numeric: tabular-nums; }
+.sourceNote { padding-block-start: var(--space-2); border-block-start: 1px solid var(--color-border); }
+
+@container (max-width: 25rem) {
+  .pointButton { align-items: stretch; flex-direction: column; gap: var(--space-2); }
+  .weatherSummary { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: var(--space-2); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stopLink, .pointButton { transition: none; }
+}

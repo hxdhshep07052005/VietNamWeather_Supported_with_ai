@@ -16,6 +16,7 @@ import { useAuthStore } from "@/hooks/useAuthStore";
 import { useTheme, useToggleTheme } from "@/hooks/useThemeStore";
 import { LanguageSwitcher } from "../common/LanguageSwitcher";
 import { FloatingChatWidget } from "../chat/FloatingChatWidget";
+import { RequireLoginModal } from "../common/RequireLoginModal";
 import styles from "./ProtectedLayout.module.css";
 
 export function ProtectedLayout() {
@@ -261,6 +262,7 @@ export function ProtectedLayout() {
 
       {/* Phase 11 AI Travel Chatbot Widget */}
       <FloatingChatWidget />
+      <RequireLoginModal />
     </div>
   );
 }

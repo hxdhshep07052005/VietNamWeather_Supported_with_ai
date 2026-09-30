@@ -18,6 +18,7 @@ import {
   Cloud,
   CloudRain,
   CloudLightning,
+  Haze,
   Wind,
   Thermometer,
   Droplets,
@@ -37,11 +38,17 @@ import {
   Info,
   Clock,
   RefreshCw,
+  Lock,
 } from "lucide-react";
-import { getAllProvincesData, type ProvinceGeoFeatureProperties } from "@/data/vietnamGeoJsonWGS84";
+import { type ProvinceGeoFeatureProperties } from "@/data/vietnamGeoJsonWGS84";
 import { VIETNAM_REGIONS } from "@/data/provinces";
-import { getEnrichedProvinceWeather } from "@/utils/weatherSimulation";
+import { useReportProvinceWeather } from "@/hooks/useReportProvinceWeather";
+import { forecastHours, useProvinceWeather, weatherStateText } from "@/hooks/useProvinceWeather";
+import { formatMeasurement as measurement, riskReasonText, weatherConditionText, generalRiskNote } from "@/utils/reportRisk";
 import { ForecastTimelineSlider } from "@/components/common/ForecastTimelineSlider";
+import { RiskEvidenceWarnings } from "@/components/common/RiskEvidenceWarnings";
+import { useAuthStore } from "@/hooks/useAuthStore";
+import { useRequireLoginModal } from "@/hooks/useRequireLoginModal";
 import styles from "./WeatherPage.module.css";
 
 // Helper for Weather Condition Icon
@@ -51,55 +58,40 @@ function renderWeatherIcon(conditionCode: string, size = 20) {
       return <Sun size={size} color="#f59e0b" />;
     case "partly_cloudy":
       return <CloudSun size={size} color="#60a5fa" />;
+    case "haze":
+    case "smoke":
+    case "smog":
+      return <Haze size={size} color="#94a3b8" />;
+    case "dust":
+    case "dust_storm":
+    case "sandstorm":
+      return <Wind size={size} color="#d97706" />;
+    case "fog":
+    case "snow":
+    case "hail":
     case "cloudy":
       return <Cloud size={size} color="#94a3b8" />;
+    case "drizzle":
+    case "sleet":
     case "rain":
       return <CloudRain size={size} color="#38bdf8" />;
     case "heavy_rain":
     case "thunderstorm":
       return <CloudLightning size={size} color="#818cf8" />;
     default:
-      return <Sun size={size} color="#f59e0b" />;
+      return <Info size={size} />;
   }
 }
 
-// Helper to compute realistic rain probability (%)
-function getRainProb(p: ProvinceGeoFeatureProperties): number {
-  if (p.conditionCode === "thunderstorm") return 85;
-  if (p.conditionCode === "heavy_rain") return 90;
-  if (p.conditionCode === "rain") return 70;
-  if (p.conditionCode === "partly_cloudy") return 25;
-  if (p.conditionCode === "cloudy") return 35;
-  return 10;
-}
-
-// Helper to generate 24h trend slots
-function generate24hTrend(baseTemp: number, conditionCode: string, isEn = false) {
-  const currentHour = new Date().getHours();
-  return Array.from({ length: 8 }, (_, i) => {
-    const h = (currentHour + i * 3) % 24;
-    const timeLabel = `${h.toString().padStart(2, "0")}:00`;
-    const tempDelta = Math.sin((h - 8) * (Math.PI / 12)) * 3;
-    const slotTemp = Math.round(baseTemp + tempDelta);
-    const rainProb =
-      conditionCode === "thunderstorm"
-        ? Math.min(95, 60 + (i % 4) * 10)
-        : conditionCode === "rain" || conditionCode === "heavy_rain"
-        ? Math.min(85, 40 + (i % 3) * 15)
-        : Math.max(5, (i % 3) * 10);
-
-    return {
-      time: i === 0 ? (isEn ? "Now" : "Bây giờ") : timeLabel,
-      temp: slotTemp,
-      conditionCode,
-      rainProb,
-    };
-  });
+function rainChance(value: number | null | undefined): string {
+  return value != null && Number.isFinite(value) ? `${measurement(value)}%` : "—";
 }
 
 export function WeatherPage() {
   const { t, i18n } = useTranslation();
   const isEn = i18n?.language === "en" || (typeof window !== "undefined" && localStorage.getItem("vietnam-weather-language") === "en");
+  const { isAuthenticated } = useAuthStore();
+  const { openModal } = useRequireLoginModal();
 
   // Timeline offset state (0 = current, 1..72h)
   const [timelineOffsetHours, setTimelineOffsetHours] = useState(0);
@@ -113,38 +105,44 @@ export function WeatherPage() {
   const [viewMode, setViewMode] = useState<"grid" | "table">("grid");
 
   // Selected province for detail modal
-  const [selectedProvince, setSelectedProvince] = useState<ProvinceGeoFeatureProperties | null>(null);
+  const [selectedProvinceId, setSelectedProvinceId] = useState<string | null>(null);
 
-  // Load raw provinces and enrich with timeline simulation
-  const rawProvinces = useMemo(() => getAllProvincesData(), []);
-  const allProvinces = useMemo(() => {
-    return rawProvinces.map((p) => getEnrichedProvinceWeather(p, timelineOffsetHours));
-  }, [rawProvinces, timelineOffsetHours]);
+  const allProvinces = useReportProvinceWeather(timelineOffsetHours);
+  const selectedProvince = allProvinces.find(p => p.id === selectedProvinceId) ?? null;
+  const forecast = useProvinceWeather({
+    latitude: selectedProvince?.latitude,
+    longitude: selectedProvince?.longitude,
+    includeForecast: true,
+    enabled: Boolean(selectedProvince) && isAuthenticated,
+  });
+  const hourlyForecast = forecastHours(forecast.hourly, 24, selectedProvince?.weatherTargetTime ? Date.parse(selectedProvince.weatherTargetTime) : Date.now() + timelineOffsetHours * 3600000);
+  const unknownRiskText = isEn ? "Unknown — insufficient evidence" : "Chưa đủ bằng chứng đánh giá";
 
   // National weather statistics
   const stats = useMemo(() => {
     if (allProvinces.length === 0) {
-      return { avgTemp: 0, hottest: null, coolest: null, lowCount: 0, cautionCount: 0, highCount: 0 };
+      return { avgTemp: NaN, hottest: null, coolest: null, lowCount: 0, cautionCount: 0, highCount: 0 };
     }
 
+    const measured = allProvinces.filter(p => Number.isFinite(p.temp));
     let totalTemp = 0;
-    let hottest: ProvinceGeoFeatureProperties = allProvinces[0]!;
-    let coolest: ProvinceGeoFeatureProperties = allProvinces[0]!;
+    let hottest: ProvinceGeoFeatureProperties | null = measured[0] ?? null;
+    let coolest: ProvinceGeoFeatureProperties | null = measured[0] ?? null;
     let lowCount = 0;
     let cautionCount = 0;
     let highCount = 0;
 
     for (const p of allProvinces) {
-      totalTemp += p.temp;
-      if (p.temp > hottest.temp) hottest = p;
-      if (p.temp < coolest.temp) coolest = p;
+      if (Number.isFinite(p.temp)) totalTemp += p.temp;
+      if (hottest && p.temp > hottest.temp) hottest = p;
+      if (coolest && p.temp < coolest.temp) coolest = p;
       if (p.riskLevel === "low") lowCount++;
       else if (p.riskLevel === "caution") cautionCount++;
       else if (p.riskLevel === "high") highCount++;
     }
 
     return {
-      avgTemp: Math.round((totalTemp / allProvinces.length) * 10) / 10,
+      avgTemp: measured.length ? Math.round((totalTemp / measured.length) * 10) / 10 : NaN,
       hottest,
       coolest,
       lowCount,
@@ -221,9 +219,9 @@ export function WeatherPage() {
           case "temp_asc":
             return a.temp - b.temp;
           case "risk_desc":
-            return b.riskScore - a.riskScore;
+            return (b.riskScore ?? -1) - (a.riskScore ?? -1);
           case "rain_desc":
-            return getRainProb(b) - getRainProb(a);
+            return (Number.isFinite(b.rainProbabilityPercent) ? b.rainProbabilityPercent! : -1) - (Number.isFinite(a.rainProbabilityPercent) ? a.rainProbabilityPercent! : -1);
           case "wind_desc":
             return b.windSpeedKmh - a.windSpeedKmh;
           default:
@@ -263,9 +261,8 @@ export function WeatherPage() {
               <h1 className={styles.heroTitle}>{isEn ? "Vietnam 63 Provinces Weather Directory" : (t("weatherPage.title") || "Thời tiết 63 Tỉnh Thành Toàn Quốc")}</h1>
               <p className={styles.heroSubtitle}>
                 {isEn
-                  ? "Real-time meteorological telemetry & multi-dimensional simulation along an interactive timeline"
-                  : (t("weatherPage.subtitle") ||
-                    "Dữ liệu quan trắc khí tượng thời gian thực & mô phỏng dự báo đa chiều theo dòng thời gian tương tác")}
+                  ? "Weather observations and available forecasts along an interactive timeline"
+                  : "Dữ liệu quan trắc và dự báo hiện có theo dòng thời gian tương tác"}
               </p>
             </div>
 
@@ -288,8 +285,8 @@ export function WeatherPage() {
                 <Thermometer size={16} />
                 <span>{isEn ? "Average Temp" : "Nhiệt độ trung bình"}</span>
               </div>
-              <div className={styles.statValue}>{stats.avgTemp}°C</div>
-              <div className={styles.statSubtext}>{isEn ? "All 63 provinces" : "Toàn bộ 63 tỉnh thành"}</div>
+              <div className={styles.statValue}>{measurement(stats.avgTemp)}°C</div>
+              <div className={styles.statSubtext}>{isEn ? "Provinces with available measurements" : "Các tỉnh có số liệu hiện có"}</div>
             </div>
 
             <div className={styles.statCard}>
@@ -317,12 +314,12 @@ export function WeatherPage() {
             <div className={styles.statCard}>
               <div className={styles.statHeader}>
                 <ShieldCheck size={16} color="#22c55e" />
-                <span>{isEn ? "Safe Zone" : "Vùng an toàn"}</span>
+                <span>{isEn ? "Low risk" : "Rủi ro thấp"}</span>
               </div>
               <div className={styles.statValue} style={{ color: "#4ade80" }}>
                 {stats.lowCount}
               </div>
-              <div className={styles.statSubtext}>{isEn ? "Favorable travel conditions" : "Thời tiết thuận lợi di chuyển"}</div>
+              <div className={styles.statSubtext}>{isEn ? "Completed low-risk assessments" : "Đánh giá đủ dữ liệu ở mức thấp"}</div>
             </div>
 
             <div className={styles.statCard}>
@@ -333,7 +330,7 @@ export function WeatherPage() {
               <div className={styles.statValue} style={{ color: "#fbbf24" }}>
                 {stats.cautionCount}
               </div>
-              <div className={styles.statSubtext}>{isEn ? "Scattered rain or breeze" : "Mưa rải rác hoặc gió nhẹ"}</div>
+              <div className={styles.statSubtext}>{isEn ? "Completed caution assessments" : "Đánh giá đủ dữ liệu cần chú ý"}</div>
             </div>
 
             <div className={styles.statCard}>
@@ -344,7 +341,7 @@ export function WeatherPage() {
               <div className={styles.statValue} style={{ color: "#f87171" }}>
                 {stats.highCount}
               </div>
-              <div className={styles.statSubtext}>{isEn ? "Severe convective cells" : "Dông lốc, mưa to cục bộ"}</div>
+              <div className={styles.statSubtext}>{isEn ? "Completed high-risk assessments" : "Đánh giá đủ dữ liệu ở mức cao"}</div>
             </div>
           </div>
 
@@ -472,7 +469,7 @@ export function WeatherPage() {
                   onClick={() => setRiskFilter("low")}
                 >
                   <ShieldCheck size={13} />
-                  <span>{isEn ? `Safe (${stats.lowCount})` : `An toàn (${stats.lowCount})`}</span>
+                  <span>{isEn ? `Low (${stats.lowCount})` : `Thấp (${stats.lowCount})`}</span>
                 </button>
                 <button
                   type="button"
@@ -534,7 +531,8 @@ export function WeatherPage() {
         <div className={styles.resultsBar}>
           <div>
             {isEn ? `Showing ${filteredProvinces.length} of 63 provinces` : `Hiển thị ${filteredProvinces.length} trên tổng số 63 tỉnh thành`}
-            {timelineOffsetHours > 0 && (isEn ? ` • Forecast simulation +${timelineOffsetHours}h` : ` • Dự báo +${timelineOffsetHours}h tới`)}
+            {timelineOffsetHours > 0 && (isEn ? ` • Forecast +${timelineOffsetHours}h` : ` • Dự báo +${timelineOffsetHours}h tới`)}
+            <p role="status">{allProvinces.some(p => p.dataState === "loading") ? (isEn ? "Loading weather…" : "Đang tải thời tiết…") : allProvinces.some(p => p.dataState === "error") ? (isEn ? "Some weather requests failed. Reload to retry." : "Một số truy vấn thời tiết thất bại. Tải lại để thử lại.") : (isEn ? "Incomplete assessments remain Unknown. Known evidence warnings are shown separately." : "Đánh giá thiếu bằng chứng vẫn là Chưa đủ dữ liệu. Cảnh báo từ bằng chứng đã biết được hiển thị riêng.")}</p>
           </div>
         </div>
 
@@ -544,10 +542,10 @@ export function WeatherPage() {
         {viewMode === "grid" ? (
           <div className={styles.provinceGrid}>
             {filteredProvinces.map((p) => {
-              const riskTier = p.riskLevel || "low";
+              const riskTier = p.riskLevel || "unknown";
               const riskColor =
-                riskTier === "high" ? "#ef4444" : riskTier === "caution" ? "#f59e0b" : "#22c55e";
-              const rainProb = getRainProb(p);
+                p.riskColor;
+              const rainProb = rainChance(p.rainProbabilityPercent);
 
               return (
                 <div key={p.code || p.name} className={styles.provinceCard}>
@@ -569,7 +567,7 @@ export function WeatherPage() {
                           ? styles.riskBadgeHigh
                           : riskTier === "caution"
                           ? styles.riskBadgeCaution
-                          : styles.riskBadgeLow
+                          : riskTier === "low" ? styles.riskBadgeLow : ""
                       }`}
                     >
                       {riskTier === "high" ? (
@@ -577,10 +575,10 @@ export function WeatherPage() {
                       ) : riskTier === "caution" ? (
                         <AlertTriangle size={12} />
                       ) : (
-                        <ShieldCheck size={12} />
+                        <Info size={12} />
                       )}
                       <span>
-                        {riskTier === "high" ? (isEn ? "High Risk" : "Nguy cơ cao") : riskTier === "caution" ? (isEn ? "Caution" : "Cần chú ý") : (isEn ? "Safe" : "An toàn")}
+                        {riskTier === "high" ? (isEn ? "High Risk" : "Nguy cơ cao") : riskTier === "caution" ? (isEn ? "Caution" : "Cần chú ý") : riskTier === "low" ? (isEn ? "Low" : "Thấp") : unknownRiskText}
                       </span>
                     </div>
                   </div>
@@ -592,15 +590,13 @@ export function WeatherPage() {
                         {renderWeatherIcon(p.conditionCode, 24)}
                       </div>
                       <span className={styles.conditionText}>
-                        {isEn
-                          ? (p.conditionCode === "rain" ? "Rain" : p.conditionCode === "heavy_rain" ? "Heavy Rain" : p.conditionCode === "thunderstorm" ? "Thunderstorm" : p.conditionCode === "clear" ? "Clear" : p.conditionCode === "partly_cloudy" ? "Partly Cloudy" : p.conditionCode === "cloudy" ? "Cloudy" : "Stable Weather")
-                          : p.conditionText}
+                        {weatherConditionText(p.conditionCode, isEn)}
                       </span>
                     </div>
 
                     <div className={styles.tempRight}>
-                      <div className={styles.temperature}>{p.temp}°C</div>
-                      <div className={styles.feelsLike}>{isEn ? `Feels like ${p.feelsLike}°C` : `Cảm nhận ${p.feelsLike}°C`}</div>
+                      <div className={styles.temperature}>{measurement(p.temp)}°C</div>
+                      <div className={styles.feelsLike}>{isEn ? `Feels like ${measurement(p.feelsLike)}°C` : `Cảm nhận ${measurement(p.feelsLike)}°C`}</div>
                     </div>
                   </div>
 
@@ -609,42 +605,44 @@ export function WeatherPage() {
                     <div className={styles.metricItem}>
                       <Droplets size={14} className={styles.metricIcon} />
                       <span className={styles.metricLabel}>{isEn ? "Humidity:" : "Độ ẩm:"}</span>
-                      <span className={styles.metricVal}>{p.humidity}%</span>
+                      <span className={styles.metricVal}>{measurement(p.humidity)}%</span>
                     </div>
 
                     <div className={styles.metricItem}>
                       <Wind size={14} className={styles.metricIcon} />
                       <span className={styles.metricLabel}>{isEn ? "Wind:" : "Gió:"}</span>
-                      <span className={styles.metricVal}>{p.windSpeedKmh} km/h</span>
+                      <span className={styles.metricVal}>{measurement(p.windSpeedKmh)} km/h</span>
                     </div>
 
                     <div className={styles.metricItem}>
                       <CloudRain size={14} className={styles.metricIcon} />
-                      <span className={styles.metricLabel}>{isEn ? "Rain prob:" : "Xác suất mưa:"}</span>
-                      <span className={styles.metricVal}>{rainProb}%</span>
+                      <span className={styles.metricLabel}>{isEn ? "Rain chance (1h)" : "Xác suất mưa (1h)"}</span>
+                      <span className={styles.metricVal}>{rainProb}</span>
                     </div>
 
                     <div className={styles.metricItem}>
                       <Sun size={14} className={styles.metricIcon} />
                       <span className={styles.metricLabel}>{isEn ? "UV index:" : "Chỉ số UV:"}</span>
-                      <span className={styles.metricVal}>{p.uvIndex}/10</span>
+                      <span className={styles.metricVal}>{measurement(p.uvIndex)}</span>
                     </div>
                   </div>
 
                   {/* Risk Score Dimensions Progress */}
                   <div className={styles.riskDimensions}>
+                    <p>{generalRiskNote(p.assessment, isEn)}</p>
                     <div className={styles.riskDimensionsHeader}>
                       <span>{isEn ? "Composite Risk Index" : "Chỉ số rủi ro tổng hợp"}</span>
                       <span style={{ color: riskColor, fontWeight: 700 }}>
-                        {p.riskScore} / 100
+                        {p.riskScore == null ? (isEn ? "Insufficient data" : "Chưa đủ dữ liệu") : `${p.riskScore} / 100`}
                       </span>
                     </div>
-                    <div className={styles.riskBarContainer}>
+                    {p.riskScore != null && <div className={styles.riskBarContainer}>
                       <div
                         className={styles.riskBarFill}
-                        style={{ width: `${Math.min(100, Math.max(12, p.riskScore))}%`, backgroundColor: riskColor }}
+                        style={{ width: `${p.riskScore}%`, backgroundColor: riskColor }}
                       />
-                    </div>
+                    </div>}
+                    <RiskEvidenceWarnings evidence={p.assessment?.evidence} isEn={isEn} />
                   </div>
 
                   {/* Card Actions */}
@@ -652,7 +650,7 @@ export function WeatherPage() {
                     <button
                       type="button"
                       className={styles.detailBtn}
-                      onClick={() => setSelectedProvince(p)}
+                      onClick={() => setSelectedProvinceId(p.id)}
                     >
                       <Info size={14} />
                       <span>{isEn ? "Details & 24h" : "Xem chi tiết & 24h"}</span>
@@ -690,15 +688,15 @@ export function WeatherPage() {
                   <th>{isEn ? "Temp" : "Nhiệt độ"}</th>
                   <th>{isEn ? "Humidity" : "Độ ẩm"}</th>
                   <th>{isEn ? "Wind Speed" : "Tốc độ gió"}</th>
-                  <th>{isEn ? "Rain Prob" : "Khả năng mưa"}</th>
+                  <th>{isEn ? "Rain chance (1h)" : "Xác suất mưa (1h)"}</th>
                   <th>{isEn ? "Risk Level" : "Mức rủi ro"}</th>
                   <th>{isEn ? "Actions" : "Thao tác"}</th>
                 </tr>
               </thead>
               <tbody>
                 {filteredProvinces.map((p) => {
-                  const riskTier = p.riskLevel || "low";
-                  const rainProb = getRainProb(p);
+                  const riskTier = p.riskLevel || "unknown";
+                  const rainProb = rainChance(p.rainProbabilityPercent);
 
                   return (
                     <tr key={p.code || p.name}>
@@ -713,18 +711,16 @@ export function WeatherPage() {
                         <div className={styles.tableConditionCell}>
                           {renderWeatherIcon(p.conditionCode, 16)}
                           <span>
-                            {isEn
-                              ? (p.conditionCode === "rain" ? "Rain" : p.conditionCode === "heavy_rain" ? "Heavy Rain" : p.conditionCode === "thunderstorm" ? "Thunderstorm" : p.conditionCode === "clear" ? "Clear" : p.conditionCode === "partly_cloudy" ? "Partly Cloudy" : p.conditionCode === "cloudy" ? "Cloudy" : "Stable")
-                              : p.conditionText}
+                            {weatherConditionText(p.conditionCode, isEn)}
                           </span>
                         </div>
                       </td>
                       <td>
-                        <strong style={{ color: "#ffffff" }}>{p.temp}°C</strong>
+                        <strong style={{ color: "#ffffff" }}>{measurement(p.temp)}°C</strong>
                       </td>
-                      <td>{p.humidity}%</td>
-                      <td>{p.windSpeedKmh} km/h</td>
-                      <td>{rainProb}%</td>
+                      <td>{measurement(p.humidity)}%</td>
+                      <td>{measurement(p.windSpeedKmh)} km/h</td>
+                      <td>{rainProb}</td>
                       <td>
                         <span
                           className={`${styles.riskBadge} ${
@@ -732,11 +728,12 @@ export function WeatherPage() {
                               ? styles.riskBadgeHigh
                               : riskTier === "caution"
                               ? styles.riskBadgeCaution
-                              : styles.riskBadgeLow
+                              : riskTier === "low" ? styles.riskBadgeLow : ""
                           }`}
                         >
-                          {riskTier === "high" ? (isEn ? "High Risk" : "Nguy cơ cao") : riskTier === "caution" ? (isEn ? "Caution" : "Chú ý") : (isEn ? "Safe" : "An toàn")}
+                          {riskTier === "high" ? (isEn ? "High Risk" : "Nguy cơ cao") : riskTier === "caution" ? (isEn ? "Caution" : "Chú ý") : riskTier === "low" ? (isEn ? "Low" : "Thấp") : unknownRiskText}
                         </span>
+                        {p.assessment?.evidence.some(e => e.severity >= 2) && <p>{isEn ? "Known caution/high evidence — see details" : "Có bằng chứng cần chú ý / nguy cơ cao — xem chi tiết"}</p>}
                       </td>
                       <td>
                         <div className={styles.tableActions}>
@@ -744,7 +741,7 @@ export function WeatherPage() {
                             type="button"
                             className={styles.detailBtn}
                             style={{ padding: "6px 10px" }}
-                            onClick={() => setSelectedProvince(p)}
+                            onClick={() => setSelectedProvinceId(p.id)}
                           >
                             <span>{isEn ? "Details" : "Chi tiết"}</span>
                           </button>
@@ -769,8 +766,8 @@ export function WeatherPage() {
             Detail Modal with 24h Hourly Trend & Safety Advisory
             ================================================================== */}
         {selectedProvince && (
-          <div className={styles.modalBackdrop} onClick={() => setSelectedProvince(null)}>
-            <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
+          <div className={styles.modalBackdrop} onClick={() => setSelectedProvinceId(null)}>
+            <div className={styles.modalContent} role="dialog" aria-modal="true" aria-label={selectedProvince.name} onClick={(e) => e.stopPropagation()}>
               <div className={styles.modalHeader}>
                 <div className={styles.modalTitleArea}>
                   <h2 className={styles.modalTitle}>{selectedProvince.name}</h2>
@@ -781,13 +778,16 @@ export function WeatherPage() {
                 <button
                   type="button"
                   className={styles.modalCloseBtn}
-                  onClick={() => setSelectedProvince(null)}
+                  aria-label={isEn ? "Close details" : "Đóng chi tiết"}
+                  onClick={() => setSelectedProvinceId(null)}
                 >
                   <X size={20} />
                 </button>
               </div>
 
               <div className={styles.modalBody}>
+                <p>{generalRiskNote(selectedProvince.assessment, isEn)}</p>
+                {selectedProvince.weatherTargetTime && <p>{isEn ? "Selected time: " : "Thời điểm đã chọn: "}{new Date(selectedProvince.weatherTargetTime).toLocaleString(isEn ? "en-US" : "vi-VN", { timeZone: "Asia/Ho_Chi_Minh" })}</p>}
                 {/* Hero weather box inside modal */}
                 <div className={styles.modalHeroWeather}>
                   <div className={styles.modalWeatherDesc}>
@@ -796,17 +796,15 @@ export function WeatherPage() {
                     </div>
                     <div>
                       <div style={{ fontSize: "1.1rem", fontWeight: 700, color: "#ffffff" }}>
-                        {isEn
-                          ? (selectedProvince.conditionCode === "rain" ? "Rain" : selectedProvince.conditionCode === "heavy_rain" ? "Heavy Rain" : selectedProvince.conditionCode === "thunderstorm" ? "Thunderstorm" : selectedProvince.conditionCode === "clear" ? "Clear" : selectedProvince.conditionCode === "partly_cloudy" ? "Partly Cloudy" : selectedProvince.conditionCode === "cloudy" ? "Cloudy" : "Stable Weather")
-                          : selectedProvince.conditionText}
+                        {weatherConditionText(selectedProvince.conditionCode, isEn)}
                       </div>
                       <div style={{ fontSize: "0.85rem", color: "#94a3b8", marginTop: 4 }}>
-                        {isEn ? `Feels like ${selectedProvince.feelsLike}°C` : `Cảm nhận thực tế: ${selectedProvince.feelsLike}°C`}
+                        {isEn ? `Feels like ${measurement(selectedProvince.feelsLike)}°C` : `Cảm nhận thực tế: ${measurement(selectedProvince.feelsLike)}°C`}
                       </div>
                     </div>
                   </div>
 
-                  <div className={styles.modalBigTemp}>{selectedProvince.temp}°C</div>
+                  <div className={styles.modalBigTemp}>{measurement(selectedProvince.temp)}°C</div>
                 </div>
 
                 {/* Metrics Grid */}
@@ -814,32 +812,32 @@ export function WeatherPage() {
                   <div className={styles.metricItem}>
                     <Droplets size={16} className={styles.metricIcon} />
                     <span className={styles.metricLabel}>{isEn ? "Humidity" : "Độ ẩm"}</span>
-                    <span className={styles.metricVal}>{selectedProvince.humidity}%</span>
+                    <span className={styles.metricVal}>{measurement(selectedProvince.humidity)}%</span>
                   </div>
                   <div className={styles.metricItem}>
                     <Wind size={16} className={styles.metricIcon} />
                     <span className={styles.metricLabel}>{isEn ? "Wind Speed" : "Tốc độ gió"}</span>
-                    <span className={styles.metricVal}>{selectedProvince.windSpeedKmh} km/h</span>
+                    <span className={styles.metricVal}>{measurement(selectedProvince.windSpeedKmh)} km/h</span>
                   </div>
                   <div className={styles.metricItem}>
                     <CloudRain size={16} className={styles.metricIcon} />
-                    <span className={styles.metricLabel}>{isEn ? "Rain Prob" : "Khả năng mưa"}</span>
-                    <span className={styles.metricVal}>{getRainProb(selectedProvince)}%</span>
+                    <span className={styles.metricLabel}>{isEn ? "Rain chance (1h)" : "Xác suất mưa (1h)"}</span>
+                    <span className={styles.metricVal}>{rainChance(selectedProvince.rainProbabilityPercent)}</span>
                   </div>
                   <div className={styles.metricItem}>
                     <Sun size={16} className={styles.metricIcon} />
                     <span className={styles.metricLabel}>{isEn ? "UV Index" : "Chỉ số UV"}</span>
-                    <span className={styles.metricVal}>{selectedProvince.uvIndex}/10</span>
+                    <span className={styles.metricVal}>{measurement(selectedProvince.uvIndex)}</span>
                   </div>
                   <div className={styles.metricItem}>
                     <Eye size={16} className={styles.metricIcon} />
                     <span className={styles.metricLabel}>{isEn ? "Visibility" : "Tầm nhìn xa"}</span>
-                    <span className={styles.metricVal}>{selectedProvince.visibilityKm} km</span>
+                    <span className={styles.metricVal}>{measurement(selectedProvince.visibilityKm)} km</span>
                   </div>
                   <div className={styles.metricItem}>
                     <Compass size={16} className={styles.metricIcon} />
                     <span className={styles.metricLabel}>{isEn ? "Pressure" : "Khí áp"}</span>
-                    <span className={styles.metricVal}>{selectedProvince.pressureHpa} hPa</span>
+                    <span className={styles.metricVal}>{measurement(selectedProvince.pressureHpa)} hPa</span>
                   </div>
                 </div>
 
@@ -850,19 +848,49 @@ export function WeatherPage() {
                     <span>{isEn ? `24-Hour Forecast Trajectory for ${selectedProvince.name}` : `Dự báo xu hướng 24 giờ tới tại ${selectedProvince.name}`}</span>
                   </h4>
 
-                  <div className={styles.hourlyTrack}>
-                    {generate24hTrend(selectedProvince.temp, selectedProvince.conditionCode, isEn).map((slot, idx) => (
-                      <div key={idx} className={styles.hourlyCard}>
-                        <span className={styles.hourlyTime}>{slot.time}</span>
-                        <div>{renderWeatherIcon(slot.conditionCode, 18)}</div>
-                        <span className={styles.hourlyTemp}>{slot.temp}°C</span>
-                        <span className={styles.hourlyRainProb}>
-                          <Droplets size={10} />
-                          {slot.rainProb}%
-                        </span>
+                  {!isAuthenticated ? (
+                    <div
+                      className={styles.lockedHourlyBox}
+                      onClick={() =>
+                        openModal(
+                          isEn ? "24-Hour Hourly Forecast" : "Dự báo chi tiết 24 giờ tới",
+                          isEn
+                            ? "Guests can only view current real-time weather. Please sign in to unlock hourly forecast trajectories, temperatures, and rain chances."
+                            : "Khách chỉ xem được số liệu hiện tại. Vui lòng đăng nhập hoặc đăng ký để mở khóa chuỗi dự báo nhiệt độ và xác suất mưa chi tiết từng giờ!"
+                        )
+                      }
+                    >
+                      <Lock size={20} style={{ margin: "0 auto 8px auto", color: "var(--color-primary, #0066cc)" }} />
+                      <div className={styles.lockedHourlyTitle}>
+                        {isEn ? "Hourly Forecast Locked for Guests" : "Dự báo 24 giờ tới yêu cầu đăng nhập"}
                       </div>
-                    ))}
-                  </div>
+                      <div className={styles.lockedHourlySubtitle}>
+                        {isEn ? "Click here or sign in to view hourly forecast trajectories." : "Bấm vào đây hoặc Đăng nhập để mở khóa biểu đồ xu hướng theo giờ."}
+                      </div>
+                      <span className={styles.lockedHourlyBtn}>
+                        {isEn ? "Sign In to Unlock" : "Đăng nhập để xem dự báo theo giờ"}
+                      </span>
+                    </div>
+                  ) : hourlyForecast.length > 0 ? (
+                    <div className={styles.hourlyTrack}>
+                      {hourlyForecast.map(slot => (
+                        <div key={slot.validInterval.from} className={styles.hourlyCard}>
+                          <span className={styles.hourlyTime}>{new Date(slot.validInterval.from).toLocaleString(isEn ? "en-US" : "vi-VN", { timeZone: "Asia/Ho_Chi_Minh", day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" })}</span>
+                          <div>{renderWeatherIcon(slot.conditionCode ?? "unknown", 18)}</div>
+                          <span className={styles.hourlyTemp}>{measurement(slot.temperatureCelsius)}°C</span>
+                          <span className={styles.hourlyRainProb}>
+                            <Droplets size={10} />
+                            {rainChance(slot.precipitationProbabilityPercent)}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div role="status">
+                      <p>{weatherStateText(forecast.hourlyState === "ready" ? "unavailable" : forecast.hourlyState, isEn)}</p>
+                      <button type="button" disabled={forecast.isFetching} onClick={() => void forecast.refetch()}>{isEn ? "Retry" : "Thử lại"}</button>
+                    </div>
+                  )}
                 </div>
 
                 {/* AI Safety Advisory Box */}
@@ -872,18 +900,9 @@ export function WeatherPage() {
                     <h4 className={styles.advisoryTitle}>
                       {isEn ? "Travel Safety & Outdoor Activity Advisories" : "Khuyến nghị an toàn di chuyển & hoạt động ngoài trời"}
                     </h4>
+                    <RiskEvidenceWarnings evidence={selectedProvince.assessment?.evidence} isEn={isEn} />
                     <p className={styles.advisoryText}>
-                      {selectedProvince.riskLevel === "high"
-                        ? (isEn
-                          ? `The ${selectedProvince.name} corridor currently exhibits convective squalls or strong gusts. If traveling by two-wheelers or coach, avoid peak squall windows, equip rain gear, and reduce cruising speed on mountain passes or slippery pavements.`
-                          : `Khu vực ${selectedProvince.name} đang có nguy cơ mưa dông hoặc gió giật mạnh. Nếu di chuyển bằng xe máy hoặc xe khách, nên tránh các khung giờ mưa lớn và trang bị áo mưa bộ, giảm tốc độ khi qua các đoạn đèo dốc hoặc đường trơn.`)
-                        : selectedProvince.riskLevel === "caution"
-                        ? (isEn
-                          ? `Weather across ${selectedProvince.name} is relatively stable but exhibits localized scattered showers or mountain mist. Suitable for transit with proactive check of road checkpoints before departure.`
-                          : `Thời tiết tại ${selectedProvince.name} nhìn chung tương đối ổn định nhưng có khả năng xuất hiện mưa rào cục bộ hoặc sương mù rải rác. Thích hợp cho các chuyến đi nếu chủ động kiểm tra lộ trình trước khi xuất phát.`)
-                        : (isEn
-                          ? `Weather across ${selectedProvince.name} is highly favorable and safe for all forms of road travel, tourism, and outdoor activities. Ideal temperature ${selectedProvince.temp}°C with comfortable humidity.`
-                          : `Thời tiết tại ${selectedProvince.name} rất thuận lợi và an toàn cho mọi hình thức di chuyển, du lịch hay tham quan ngoài trời. Nhiệt độ lý tưởng ${selectedProvince.temp}°C với độ ẩm dễ chịu.`)}
+                      {selectedProvince.assessment?.reasons.map(reason => riskReasonText(reason, isEn)).join(" ") || (isEn ? "Insufficient evidence for a travel recommendation." : "Chưa đủ bằng chứng để khuyến nghị di chuyển.")}
                     </p>
                   </div>
                 </div>
@@ -894,7 +913,7 @@ export function WeatherPage() {
                 <Link
                   to={`/map?lat=${selectedProvince.latitude}&lng=${selectedProvince.longitude}&province=${encodeURIComponent(selectedProvince.name)}`}
                   className={`${styles.actionBtn} ${styles.actionBtnSecondary}`}
-                  onClick={() => setSelectedProvince(null)}
+                  onClick={() => setSelectedProvinceId(null)}
                 >
                   <MapPin size={16} />
                   <span>{isEn ? "View on Map" : "Xem trên bản đồ"}</span>
@@ -903,7 +922,7 @@ export function WeatherPage() {
                 <Link
                   to={`/route?dest=${encodeURIComponent(selectedProvince.name)}`}
                   className={`${styles.actionBtn} ${styles.actionBtnPrimary}`}
-                  onClick={() => setSelectedProvince(null)}
+                  onClick={() => setSelectedProvinceId(null)}
                 >
                   <Navigation size={16} />
                   <span>{isEn ? "Plan Route to Here" : "Lập lộ trình đến đây"}</span>

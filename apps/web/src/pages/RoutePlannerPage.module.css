@@ -429,6 +429,7 @@
 
 /* Alternatives Card */
 .alternativesCard {
+  --route-selection: var(--color-primary);
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-2xl);
@@ -439,11 +440,13 @@
   gap: var(--space-3);
 }
 
+:global([data-theme="dark"]) .alternativesCard {
+  --route-selection: #60a5fa;
+  --focus-ring-color: var(--route-selection);
+}
+
 .resultsHeader {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding-bottom: 8px;
+  padding-bottom: var(--space-3);
   border-bottom: 1px solid var(--color-border);
 }
 
@@ -451,44 +454,68 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-2);
   width: 100%;
+}
+
+.resultsHeading {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-2);
 }
 
 .resultsTitle {
   font-size: var(--font-size-base);
-  font-weight: 800;
+  font-weight: var(--font-weight-bold);
   color: var(--color-text-primary);
   margin: 0;
 }
 
-.resultsMetaText {
-  font-size: 11px;
+.resultsCount {
   color: var(--color-text-secondary);
-  font-weight: 600;
-  background: var(--color-surface-raised);
-  padding: 2px 8px;
-  border-radius: var(--radius-full);
+  font-size: var(--font-size-xs);
+  padding: 0 var(--space-2);
   border: 1px solid var(--color-border);
+  border-radius: var(--radius-full);
+  white-space: nowrap;
+  margin-inline-start: auto;
+}
+
+.resultsMetaText {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+  line-height: var(--line-height-normal);
+  padding: var(--space-2) var(--space-3);
+  border-inline-start: 2px solid var(--color-border);
+  background: var(--color-background-alt);
+  border-radius: var(--radius-sm);
 }
 
 .clearRouteBtn {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
-  padding: 3px 8px;
-  background: rgba(239, 68, 68, 0.08);
-  color: #EF4444;
-  border: 1px solid rgba(239, 68, 68, 0.25);
+  gap: var(--space-1);
+  min-height: var(--space-6);
+  padding: 0 var(--space-2);
+  background: color-mix(in srgb, #ef4444 8%, var(--color-surface));
+  color: #b91c1c;
+  border: 1px solid color-mix(in srgb, #ef4444 25%, var(--color-border));
   border-radius: var(--radius-md);
-  font-size: 11px;
-  font-weight: 600;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: background var(--transition-fast), border-color var(--transition-fast);
 }
 
 .clearRouteBtn:hover {
-  background: rgba(239, 68, 68, 0.16);
-  border-color: #EF4444;
+  background: color-mix(in srgb, #ef4444 14%, var(--color-surface));
+  border-color: #ef4444;
+}
+
+:global([data-theme="dark"]) .clearRouteBtn {
+  color: #fca5a5;
 }
 
 /* Vertical Alternatives Stack */
@@ -499,127 +526,163 @@
 }
 
 .altCard {
+  --route-accent: #0ea5e9;
+  --route-text: #0369a1;
+  appearance: none;
+  width: 100%;
+  min-width: 0;
+  text-align: start;
+  color: var(--color-text-primary);
+  font: inherit;
   background: var(--color-background);
-  border: 1.5px solid var(--color-border);
+  border: 1px solid var(--color-border);
   border-radius: var(--radius-xl);
   padding: var(--space-3) var(--space-4);
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: var(--space-2);
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: transform var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast);
   position: relative;
-  overflow: hidden;
+}
+
+.altCard[data-route-type="weather_safer"] {
+  --route-accent: #10b981;
+  --route-text: #047857;
+  --route-selection: var(--route-accent);
+}
+
+.altCard[data-route-type="shortest"] {
+  --route-accent: #8b5cf6;
+  --route-text: #6d28d9;
+}
+
+:global([data-theme="dark"]) .altCard {
+  --route-text: #7dd3fc;
+}
+
+:global([data-theme="dark"]) .altCard[data-route-type="weather_safer"] {
+  --route-text: #6ee7b7;
+}
+
+:global([data-theme="dark"]) .altCard[data-route-type="shortest"] {
+  --route-text: #c4b5fd;
 }
 
 .altCard:hover {
-  transform: translateY(-2px);
-  border-color: var(--color-primary);
-  box-shadow: var(--shadow-md);
+  transform: translateY(-1px);
+  border-color: var(--route-selection);
+  box-shadow: var(--shadow-sm);
 }
 
 .altCardSelected {
-  border-color: var(--color-primary) !important;
-  background: rgba(0, 102, 204, 0.04);
-  box-shadow: 0 4px 16px rgba(0, 102, 204, 0.18);
+  border-color: var(--route-selection);
+  background: color-mix(in srgb, var(--route-accent) 4%, var(--color-surface));
+  box-shadow: 0 0 0 1px var(--route-selection);
 }
 
-.altCardSafer.altCardSelected {
-  border-color: #10B981 !important;
-  background: rgba(16, 185, 129, 0.05);
-  box-shadow: 0 4px 16px rgba(16, 185, 129, 0.18);
+.altCardSelected:hover {
+  box-shadow: 0 0 0 1px var(--route-selection), var(--shadow-sm);
+}
+
+.altBadge:focus-visible::after {
+  outline: var(--focus-ring-width) solid var(--focus-ring-color);
+  outline-offset: var(--space-1);
+}
+
+.altCard:active {
+  transform: translateY(0);
 }
 
 .cardTop {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-2);
 }
 
 .altBadge {
+  appearance: none;
+  border: 0;
+  padding: var(--space-1) var(--space-2);
+  background: color-mix(in srgb, var(--route-accent) 12%, var(--color-surface));
+  font: inherit;
+  text-align: start;
+  cursor: pointer;
   display: inline-flex;
   align-items: center;
-  gap: 5px;
-  padding: 3px 10px;
+  gap: var(--space-1);
   border-radius: var(--radius-full);
-  font-size: 11px;
-  font-weight: 700;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  color: var(--route-text);
   text-transform: uppercase;
-  letter-spacing: 0.5px;
 }
 
-.badgeFastest {
-  background: rgba(14, 165, 233, 0.15);
-  color: #0284C7;
+.altBadge::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border-radius: var(--radius-xl);
 }
 
-.badgeSafer {
-  background: rgba(16, 185, 129, 0.15);
-  color: #10B981;
-}
-
-.badgeShortest {
-  background: rgba(139, 92, 246, 0.15);
-  color: #8B5CF6;
+.altBadge svg {
+  flex-shrink: 0;
 }
 
 .recommendedRibbon {
-  background: linear-gradient(135deg, #10B981, #059669);
-  color: white;
-  font-size: 10px;
-  font-weight: 700;
-  padding: 3px 8px;
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  padding: var(--space-1) var(--space-2);
   border-radius: var(--radius-md);
   display: inline-flex;
   align-items: center;
-  gap: 3px;
+  gap: var(--space-1);
 }
 
 .activeSelectedPill {
-  background: rgba(14, 165, 233, 0.15);
-  color: #0284C7;
-  font-size: 10px;
-  font-weight: 700;
-  padding: 3px 8px;
+  background: color-mix(in srgb, var(--route-accent) 12%, var(--color-surface));
+  color: var(--route-text);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  padding: var(--space-1) var(--space-2);
   border-radius: var(--radius-md);
   display: inline-flex;
   align-items: center;
-  gap: 3px;
-  border: 1px solid rgba(14, 165, 233, 0.3);
-}
-
-.altCardSafer .activeSelectedPill {
-  background: rgba(16, 185, 129, 0.15);
-  color: #10B981;
-  border-color: rgba(16, 185, 129, 0.3);
+  gap: var(--space-1);
 }
 
 /* Card Metrics */
 .cardMetrics {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 8px;
-  background: var(--color-surface);
-  padding: 8px 10px;
-  border-radius: var(--radius-lg);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
   border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
 }
 
 .metricItem {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  min-width: 0;
+  gap: var(--space-1);
 }
 
 .metricLabel {
-  font-size: 10px;
+  font-size: var(--font-size-xs);
   color: var(--color-text-secondary);
-  font-weight: 500;
+  font-weight: var(--font-weight-medium);
 }
 
 .metricVal {
-  font-size: 12px;
-  font-weight: 700;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  font-variant-numeric: tabular-nums;
   color: var(--color-text-primary);
 }
 
@@ -649,9 +712,19 @@
 }
 
 .cardWeatherSummary {
-  font-size: 11px;
+  display: grid;
+  gap: var(--space-1);
+  font-size: var(--font-size-xs);
   color: var(--color-text-secondary);
-  line-height: 1.4;
+  line-height: var(--line-height-normal);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .altCard,
+  .altCard:hover {
+    transition: none;
+    transform: none;
+  }
 }
 
 /* Locked Card Overlay */
@@ -840,89 +913,6 @@
 .saveBtn:hover {
   border-color: var(--color-primary);
   color: var(--color-primary);
-}
-
-.checkpointsList {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  position: relative;
-  max-height: 380px;
-  overflow-y: auto;
-  padding-right: 4px;
-}
-
-.checkpointsList::-webkit-scrollbar {
-  width: 4px;
-}
-
-.checkpointsList::-webkit-scrollbar-thumb {
-  background: var(--color-border);
-  border-radius: 4px;
-}
-
-.checkpointItem {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  position: relative;
-  cursor: pointer;
-}
-
-.checkpointDot {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background: var(--color-primary);
-  border: 2px solid var(--color-surface);
-  z-index: 2;
-  flex-shrink: 0;
-}
-
-.checkpointContent {
-  flex: 1;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 8px 12px;
-  background: var(--color-background);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
-  transition: all 0.2s ease;
-}
-
-.checkpointItemSelected .checkpointContent {
-  border-color: var(--color-primary) !important;
-  background: var(--color-surface-hover) !important;
-  box-shadow: 0 0 0 2px rgba(0, 102, 204, 0.25) !important;
-}
-
-.checkpointName {
-  font-size: 12px;
-  font-weight: 700;
-  color: var(--color-text-primary);
-}
-
-.checkpointEta {
-  font-size: 10px;
-  color: var(--color-text-secondary);
-}
-
-.checkpointWeather {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.checkpointTemp {
-  font-size: 12px;
-  font-weight: 800;
-  color: #FF5722;
-}
-
-.checkpointCondition {
-  font-size: 10px;
-  color: var(--color-text-secondary);
 }
 
 /* ==========================================================================
@@ -1220,8 +1210,8 @@
     min-height: 340px;
   }
 
-  .cardMetrics {
-    grid-template-columns: 1fr;
-    gap: 4px;
+  .alternativesCard,
+  .altCard {
+    padding: var(--space-3);
   }
 }

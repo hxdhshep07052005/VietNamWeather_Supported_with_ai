@@ -1,0 +1,231 @@
+/* =============================================================================
+   RequireLoginModal.module.css
+   Responsive modal dialog with dedicated Dark & Light theme support
+   ============================================================================= */
+
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background-color: rgba(0, 0, 0, 0.72);
+  backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  animation: fadeIn 0.2s ease-out;
+}
+
+/* Base Modal Container (Default: Dark Theme) */
+.modal {
+  background: #1e293b;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 20px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255, 255, 255, 0.05);
+  max-width: 440px;
+  width: 100%;
+  padding: 28px 24px;
+  position: relative;
+  text-align: center;
+  animation: scaleUp 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  color: #f1f5f9;
+}
+
+:global([data-theme="light"]) .modal {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 20px 30px -8px rgba(0, 0, 0, 0.15), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  color: #0f172a;
+}
+
+/* Close Button */
+.closeButton {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  background: rgba(255, 255, 255, 0.06);
+  border: none;
+  color: #94a3b8;
+  cursor: pointer;
+  padding: 7px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.closeButton:hover {
+  background-color: rgba(255, 255, 255, 0.15);
+  color: #ffffff;
+}
+
+:global([data-theme="light"]) .closeButton {
+  background: #f1f5f9;
+  color: #64748b;
+}
+
+:global([data-theme="light"]) .closeButton:hover {
+  background-color: #e2e8f0;
+  color: #0f172a;
+}
+
+/* Icon Highlight */
+.iconWrapper {
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  background: rgba(0, 102, 204, 0.2);
+  border: 1px solid rgba(0, 102, 204, 0.45);
+  color: #38bdf8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 18px auto;
+  box-shadow: 0 0 24px rgba(0, 102, 204, 0.35);
+}
+
+:global([data-theme="light"]) .iconWrapper {
+  background: #e6f0fa;
+  border: 1px solid #bfdbfe;
+  color: #0066cc;
+  box-shadow: 0 4px 14px rgba(0, 102, 204, 0.18);
+}
+
+/* Text */
+.title {
+  font-size: 19px;
+  font-weight: 700;
+  color: #f1f5f9;
+  margin-bottom: 8px;
+  line-height: 1.35;
+}
+
+:global([data-theme="light"]) .title {
+  color: #0f172a;
+}
+
+.description {
+  font-size: 13.5px;
+  color: #94a3b8;
+  line-height: 1.55;
+  margin-bottom: 24px;
+}
+
+:global([data-theme="light"]) .description {
+  color: #475569;
+}
+
+/* Action Buttons */
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.loginButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 12px 18px;
+  background-color: #0066cc;
+  color: #ffffff !important;
+  font-weight: 600;
+  font-size: 14px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 14px rgba(0, 102, 204, 0.4);
+}
+
+.loginButton:hover {
+  background-color: #0052a3;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(0, 102, 204, 0.5);
+}
+
+/* Secondary Action: Register Button */
+.registerButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 11px 18px;
+  background-color: rgba(255, 255, 255, 0.08);
+  color: #f1f5f9 !important;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  font-weight: 600;
+  font-size: 14px;
+  border-radius: 10px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.registerButton:hover {
+  background-color: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.35);
+  color: #ffffff !important;
+}
+
+:global([data-theme="light"]) .registerButton {
+  background-color: #f8fafc;
+  color: #0f172a !important;
+  border: 1px solid #cbd5e1;
+}
+
+:global([data-theme="light"]) .registerButton:hover {
+  background-color: #f1f5f9;
+  border-color: #94a3b8;
+  color: #0066cc !important;
+}
+
+/* Tertiary Action: Dismiss Button */
+.cancelButton {
+  background: none;
+  border: none;
+  color: #94a3b8;
+  font-size: 13px;
+  padding: 8px;
+  cursor: pointer;
+  margin-top: 2px;
+  transition: color 0.2s ease;
+}
+
+.cancelButton:hover {
+  color: #cbd5e1;
+  text-decoration: underline;
+}
+
+:global([data-theme="light"]) .cancelButton {
+  color: #64748b;
+}
+
+:global([data-theme="light"]) .cancelButton:hover {
+  color: #0f172a;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes scaleUp {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}

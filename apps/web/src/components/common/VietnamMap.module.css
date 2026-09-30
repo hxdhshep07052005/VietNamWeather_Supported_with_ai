@@ -82,6 +82,11 @@
 
 /* On-Demand Interactive Province Hover/Click Card */
 .quickProvinceCard {
+  --hover-meta: #CBD5E1;
+  --hover-low: #34D399;
+  --hover-caution: #FBBF24;
+  --hover-high: #F87171;
+  --hover-unknown: #94A3B8;
   position: absolute;
   bottom: 45px;
   left: 50%;
@@ -147,6 +152,23 @@
   padding: 2px 8px;
   border-radius: var(--radius-full);
   white-space: nowrap;
+  color: var(--hover-unknown);
+  background: rgba(100, 116, 139, 0.2);
+}
+
+.quickCardRiskBadge[data-risk-level="low"] {
+  color: var(--hover-low);
+  background: rgba(16, 185, 129, 0.2);
+}
+
+.quickCardRiskBadge[data-risk-level="caution"] {
+  color: var(--hover-caution);
+  background: rgba(245, 158, 11, 0.2);
+}
+
+.quickCardRiskBadge[data-risk-level="high"] {
+  color: var(--hover-high);
+  background: rgba(239, 68, 68, 0.2);
 }
 
 .quickCardBody {
@@ -158,7 +180,8 @@
 
 .quickTemp {
   display: flex;
-  align-items: baseline;
+  flex-direction: column;
+  align-items: flex-start;
   gap: var(--space-2);
 }
 
@@ -169,36 +192,19 @@
   line-height: 1;
 }
 
-.tempDesc {
+.weatherTime {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
   font-size: 11px;
   font-weight: var(--font-weight-medium);
-  color: #34D399;
+  color: var(--hover-meta);
   font-variant-numeric: tabular-nums;
   letter-spacing: 0.02em;
 }
 
-.liveTimeWrapper {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  background: rgba(16, 185, 129, 0.15);
-  border: 1px solid rgba(16, 185, 129, 0.3);
-  padding: 2px 8px;
-  border-radius: var(--radius-full);
-}
-
-.liveClockDot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: #10B981;
-  box-shadow: 0 0 6px #10B981;
-  animation: liveBlink 1.5s ease-in-out infinite;
-}
-
-@keyframes liveBlink {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.35; transform: scale(0.85); }
+.weatherTime[data-stale="true"] {
+  color: var(--hover-caution);
 }
 
 .quickCardHint {
@@ -234,9 +240,41 @@
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  font-size: 10px;
+  font-size: 10.5px;
   font-weight: var(--font-weight-medium);
   color: rgba(255, 255, 255, 0.85);
+  background: transparent;
+  border: 1px solid transparent;
+  padding: 3px 8px;
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.legendPill:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.legendPillActive {
+  background: rgba(255, 255, 255, 0.22) !important;
+  border-color: rgba(255, 255, 255, 0.4) !important;
+  color: #ffffff !important;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.25);
+}
+
+:global([data-theme="light"]) .legendPill {
+  color: #334155;
+}
+
+:global([data-theme="light"]) .legendPill:hover {
+  background: #e2e8f0;
+}
+
+:global([data-theme="light"]) .legendPillActive {
+  background: #ffffff !important;
+  border-color: #0066cc !important;
+  color: #0066cc !important;
+  box-shadow: 0 2px 8px rgba(0, 102, 204, 0.25);
 }
 
 .dot {
@@ -287,5 +325,52 @@
   .floatingChip {
     animation: none !important;
   }
+}
+
+/* =============================================================================
+   LIGHT THEME OVERRIDES ([data-theme="light"])
+   ============================================================================= */
+
+:global([data-theme="light"]) .showcaseContainer {
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  box-shadow: 0 20px 45px -12px rgba(0, 102, 204, 0.12), 0 4px 6px -2px rgba(0, 0, 0, 0.04);
+}
+
+:global([data-theme="light"]) .legendPills {
+  background: #F1F5F9;
+  border: 1px solid #CBD5E1;
+}
+
+:global([data-theme="light"]) .legendPill {
+  color: #334155;
+}
+
+:global([data-theme="light"]) .quickProvinceCard {
+  --hover-meta: #475569;
+  --hover-low: #166534;
+  --hover-caution: #854D0E;
+  --hover-high: #991B1B;
+  --hover-unknown: #334155;
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid #CBD5E1;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+}
+
+:global([data-theme="light"]) .quickCardTitle {
+  color: #0F172A;
+}
+
+:global([data-theme="light"]) .quickRegionBadge {
+  color: #1D4ED8;
+}
+
+:global([data-theme="light"]) .tempValue {
+  color: #0F172A;
+}
+
+:global([data-theme="light"]) .quickCardHint {
+  border-top-color: #E2E8F0;
+  color: #0066CC;
 }
 

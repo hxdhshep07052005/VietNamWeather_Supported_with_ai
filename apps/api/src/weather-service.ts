@@ -1,4 +1,5 @@
 import { createHash } from "node:crypto";
+import { selectForecastWindow } from "./weather-forecast-window.js";
 
 import {
   parseWeatherCapabilitiesResponse,
@@ -211,8 +212,8 @@ function currentSection(row: Record<string, unknown>, now: Date): CurrentWeather
     ["precipitationMillimetres", numberValue(row.precipitation_mm)],
     ["pressureHectopascals", numberValue(row.pressure_hpa)],
     ["visibilityMetres", numberValue(row.visibility_meters)],
-    ["uvIndex", null],
-    ["cloudCoverPercent", null],
+    ["uvIndex", numberValue(row.uv_index)],
+    ["cloudCoverPercent", numberValue(row.cloud_cover_percent)],
     ["conditionCode", stringValue(row.condition_code)]
   ]);
   const currentCoverage: DatasetCoverage = {
@@ -241,8 +242,8 @@ function currentSection(row: Record<string, unknown>, now: Date): CurrentWeather
       precipitationMillimetres: numberValue(row.precipitation_mm),
       pressureHectopascals: numberValue(row.pressure_hpa),
       visibilityMetres: numberValue(row.visibility_meters),
-      uvIndex: null,
-      cloudCoverPercent: null,
+      uvIndex: numberValue(row.uv_index),
+      cloudCoverPercent: numberValue(row.cloud_cover_percent),
       conditionCode: stringValue(row.condition_code) as CurrentWeatherSection["value"]["conditionCode"]
     }
   };
@@ -253,16 +254,16 @@ function hourlySection(rows: readonly Record<string, unknown>[], now: Date): Hou
   const values = rows.map((row) => {
     const rowQuality = quality([
       ["temperatureCelsius", numberValue(row.temperature_celsius)],
-      ["apparentTemperatureCelsius", null],
-      ["relativeHumidityPercent", null],
+      ["apparentTemperatureCelsius", numberValue(row.feels_like_celsius)],
+      ["relativeHumidityPercent", numberValue(row.humidity_percent)],
       ["windSpeedMetresPerSecond", numberValue(row.wind_speed_mps)],
       ["windGustMetresPerSecond", numberValue(row.wind_gust_mps)],
-      ["windDirectionDegrees", null],
+      ["windDirectionDegrees", numberValue(row.wind_direction_degrees)],
       ["precipitationMillimetres", numberValue(row.precipitation_mm)],
-      ["pressureHectopascals", null],
-      ["visibilityMetres", null],
-      ["uvIndex", null],
-      ["cloudCoverPercent", null],
+      ["pressureHectopascals", numberValue(row.pressure_hpa)],
+      ["visibilityMetres", numberValue(row.visibility_meters)],
+      ["uvIndex", numberValue(row.uv_index)],
+      ["cloudCoverPercent", numberValue(row.cloud_cover_percent)],
       ["conditionCode", stringValue(row.condition_code)],
       ["precipitationProbabilityPercent", numberValue(row.precipitation_probability_percent)]
     ]);
@@ -271,16 +272,16 @@ function hourlySection(rows: readonly Record<string, unknown>[], now: Date): Hou
       validInterval: { from: isoValue(row.valid_from), to: isoValue(row.valid_to) },
       quality: rowQuality,
       temperatureCelsius: numberValue(row.temperature_celsius),
-      apparentTemperatureCelsius: null,
-      relativeHumidityPercent: null,
+      apparentTemperatureCelsius: numberValue(row.feels_like_celsius),
+      relativeHumidityPercent: numberValue(row.humidity_percent),
       windSpeedMetresPerSecond: numberValue(row.wind_speed_mps),
       windGustMetresPerSecond: numberValue(row.wind_gust_mps),
-      windDirectionDegrees: null,
+      windDirectionDegrees: numberValue(row.wind_direction_degrees),
       precipitationMillimetres: numberValue(row.precipitation_mm),
-      pressureHectopascals: null,
-      visibilityMetres: null,
-      uvIndex: null,
-      cloudCoverPercent: null,
+      pressureHectopascals: numberValue(row.pressure_hpa),
+      visibilityMetres: numberValue(row.visibility_meters),
+      uvIndex: numberValue(row.uv_index),
+      cloudCoverPercent: numberValue(row.cloud_cover_percent),
       conditionCode: stringValue(row.condition_code) as HourlyWeatherSection["values"][number]["conditionCode"],
       precipitationProbabilityPercent: numberValue(row.precipitation_probability_percent)
     };
@@ -304,12 +305,12 @@ function dailySection(rows: readonly Record<string, unknown>[], now: Date): Dail
       ["precipitationMillimetres", numberValue(row.precipitation_mm)],
       ["maximumPrecipitationProbabilityPercent", numberValue(row.precipitation_probability_percent)],
       ["maximumWindSpeedMetresPerSecond", numberValue(row.wind_speed_mps)],
-      ["averageRelativeHumidityPercent", null],
+      ["averageRelativeHumidityPercent", numberValue(row.humidity_percent)],
       ["conditionCode", stringValue(row.condition_code)]
     ]);
     return {
       kind: "forecast" as const,
-      date: isoValue(row.valid_from).slice(0, 10),
+      date: new Date(Date.parse(isoValue(row.valid_from)) + 7 * 3600000).toISOString().slice(0, 10),
       validInterval: { from: isoValue(row.valid_from), to: isoValue(row.valid_to) },
       quality: rowQuality,
       minimumTemperatureCelsius: numberValue(row.temperature_min_celsius),
@@ -317,7 +318,7 @@ function dailySection(rows: readonly Record<string, unknown>[], now: Date): Dail
       precipitationMillimetres: numberValue(row.precipitation_mm),
       maximumPrecipitationProbabilityPercent: numberValue(row.precipitation_probability_percent),
       maximumWindSpeedMetresPerSecond: numberValue(row.wind_speed_mps),
-      averageRelativeHumidityPercent: null,
+      averageRelativeHumidityPercent: numberValue(row.humidity_percent),
       conditionCode: stringValue(row.condition_code) as DailyWeatherSection["values"][number]["conditionCode"]
     };
   });
@@ -442,8 +443,8 @@ export class WeatherService {
       const allForecasts = Array.isArray(document.forecasts)
         ? document.forecasts.map(requiredRecord)
         : [];
-      const hourlyRows = allForecasts.filter((row) => row.horizon_kind === "hourly");
-      const dailyRows = allForecasts.filter((row) => row.horizon_kind === "daily");
+      const hourlyRows = selectForecastWindow(allForecasts, "hourly", now);
+      const dailyRows = selectForecastWindow(allForecasts, "daily", now);
       const requested = new Set(request.include);
       const current = requested.has("current") && observation !== null ? currentSection(observation, now) : null;
       const hourly = requested.has("hourly") ? hourlySection(hourlyRows, now) : null;

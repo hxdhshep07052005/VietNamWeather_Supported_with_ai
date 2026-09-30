@@ -44,10 +44,8 @@ function generateIdempotencyKey(
   return createHash("sha256").update(data).digest("hex");
 }
 
-function getCurrentBucket(): number {
-  const now = Date.now();
-  const bucketSize = 30 * 60 * 1000;
-  return Math.floor(now / bucketSize);
+function getCurrentBucket(now: Date, intervalMilliseconds: number): number {
+  return Math.floor(now.getTime() / intervalMilliseconds);
 }
 
 export class WeatherScheduler {
@@ -114,7 +112,7 @@ export class WeatherScheduler {
     const startTime = this.#now();
     this.#logger.info("Weather scheduler run started");
 
-    const bucket = getCurrentBucket();
+    const bucket = getCurrentBucket(startTime, this.#config.intervalMilliseconds);
     const results = {
       enqueued: 0,
       skipped: 0,
@@ -208,7 +206,7 @@ export class WeatherScheduler {
 
 export function createDefaultSchedulerConfig(): WeatherSchedulerConfig {
   return {
-    intervalMilliseconds: 30 * 60 * 1000,
+    intervalMilliseconds: 10 * 60 * 1000,
     batchSize: 10,
     providerKey: "weatherapi",
     parserVersion: "weatherapi-forecast-v1",

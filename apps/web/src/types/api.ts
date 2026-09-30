@@ -47,6 +47,7 @@ export interface RiskCapabilitiesResponse {
 export interface RouteRequest {
   origin: {
     locationId?: string;
+    query?: string;
     coordinates?: {
       latitude: number;
       longitude: number;
@@ -54,6 +55,7 @@ export interface RouteRequest {
   };
   destination: {
     locationId?: string;
+    query?: string;
     coordinates?: {
       latitude: number;
       longitude: number;

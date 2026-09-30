@@ -6,8 +6,10 @@
 
 import { useState, useEffect, useRef, useMemo } from "react";
 import { useTranslation } from "react-i18next";
-import { Clock, Play, Pause, ChevronLeft, ChevronRight } from "lucide-react";
+import { Clock, Play, Pause, ChevronLeft, ChevronRight, Lock } from "lucide-react";
 import { TIMELINE_MILESTONES, type TimelineMilestone } from "@/utils/weatherSimulation";
+import { useAuthStore } from "@/hooks/useAuthStore";
+import { useRequireLoginModal } from "@/hooks/useRequireLoginModal";
 import styles from "./ForecastTimelineSlider.module.css";
 
 interface ForecastTimelineSliderProps {
@@ -25,8 +27,19 @@ export function ForecastTimelineSlider({
 }: ForecastTimelineSliderProps) {
   const { i18n } = useTranslation();
   const isEn = i18n?.language === "en" || (typeof window !== "undefined" && localStorage.getItem("vietnam-weather-language") === "en");
+  const { isAuthenticated } = useAuthStore();
+  const { openModal } = useRequireLoginModal();
   const [isPlaying, setIsPlaying] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
+
+  const requireLoginForForecast = () => {
+    openModal(
+      isEn ? "Hourly & Multi-Day Forecast Simulation" : "Mô phỏng dự báo theo giờ & nhiều ngày",
+      isEn
+        ? "Guests can only view current real-time weather data. Please sign in to simulate future hourly weather (+3h to +72h)!"
+        : "Chế độ khách chỉ xem được thời tiết hiện tại. Vui lòng đăng nhập để tua mốc thời gian và xem dự báo tương lai (+3h đến +72h)!"
+    );
+  };
 
   // Helper for English sublabels
   const getSubLabel = (m: TimelineMilestone) => {
@@ -82,6 +95,10 @@ export function ForecastTimelineSlider({
 
   // Navigation handlers
   const handlePrev = () => {
+    if (!isAuthenticated) {
+      requireLoginForForecast();
+      return;
+    }
     if (currentIndex > 0) {
       const prev = TIMELINE_MILESTONES[currentIndex - 1];
       if (prev) onChange(prev.value);
@@ -89,6 +106,10 @@ export function ForecastTimelineSlider({
   };
 
   const handleNext = () => {
+    if (!isAuthenticated) {
+      requireLoginForForecast();
+      return;
+    }
     if (currentIndex < TIMELINE_MILESTONES.length - 1) {
       const next = TIMELINE_MILESTONES[currentIndex + 1];
       if (next) onChange(next.value);
@@ -96,6 +117,10 @@ export function ForecastTimelineSlider({
   };
 
   const handleSelectMilestone = (m: TimelineMilestone) => {
+    if (!isAuthenticated && m.value > 0) {
+      requireLoginForForecast();
+      return;
+    }
     setIsPlaying(false);
     onChange(m.value);
   };
@@ -103,6 +128,10 @@ export function ForecastTimelineSlider({
   const handleRangeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const idx = parseInt(e.target.value, 10);
     if (!isNaN(idx) && TIMELINE_MILESTONES[idx]) {
+      if (!isAuthenticated && TIMELINE_MILESTONES[idx]!.value > 0) {
+        requireLoginForForecast();
+        return;
+      }
       setIsPlaying(false);
       onChange(TIMELINE_MILESTONES[idx].value);
     }
@@ -115,6 +144,25 @@ export function ForecastTimelineSlider({
         <div className={styles.titleGroup}>
           <Clock size={15} className={styles.clockIcon} />
           <span>{isEn ? "Hourly & Multi-Day Forecast:" : "Dự báo theo giờ & ngày:"}</span>
+          {!isAuthenticated && (
+            <span
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "3px",
+                fontSize: "10.5px",
+                fontWeight: 700,
+                color: "var(--color-primary, #0066cc)",
+                backgroundColor: "rgba(0, 102, 204, 0.1)",
+                padding: "2px 6px",
+                borderRadius: "4px",
+              }}
+              title={isEn ? "Sign in to unlock future forecast hours" : "Đăng nhập để mở khóa các mốc dự báo tương lai"}
+            >
+              <Lock size={10} />
+              <span>{isEn ? "Guest" : "Chế độ Khách"}</span>
+            </span>
+          )}
           <span className={styles.activeBadge}>
             {currentMilestone.value === 0
               ? (isEn ? "Current (Real-time)" : "Hiện tại (Bây giờ)")
@@ -136,7 +184,13 @@ export function ForecastTimelineSlider({
           <button
             type="button"
             className={`${styles.controlBtn} ${isPlaying ? styles.controlBtnActive : ""}`}
-            onClick={() => setIsPlaying((p) => !p)}
+            onClick={() => {
+              if (!isAuthenticated) {
+                requireLoginForForecast();
+                return;
+              }
+              setIsPlaying((p) => !p);
+            }}
             title={isPlaying ? (isEn ? "Pause auto simulation" : "Tạm dừng mô phỏng") : (isEn ? "Play auto simulation" : "Phát mô phỏng tự động")}
           >
             {isPlaying ? <Pause size={12} /> : <Play size={12} />}

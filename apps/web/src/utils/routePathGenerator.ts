@@ -18,12 +18,15 @@ export interface GeoCheckpoint {
   name: string;
   distanceKm: number;
   eta: string;
-  temp: number;
+  etaShort?: string;
+  temp: number | null;
   condition: string;
-  rainProb: number;
-  windKmh: number;
-  risk: "low" | "caution" | "high";
+  rainProb: number | null;
+  windKmh: number | null;
+  risk: "low" | "caution" | "high" | "unknown";
   note?: string;
+  provisional?: boolean;
+  coveragePercent?: number;
   coordinates: [number, number]; // [lng, lat]
 }
 
@@ -629,27 +632,62 @@ export function generateRouteGeoData(
  */
 export function buildRouteGeoDataFromCoordinates(
   coordinates: [number, number][],
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  rawCheckpoints: any[] = [],
-  routeType: "fastest" | "weather_safer" | "shortest" = "weather_safer",
-  originName = "Điểm xuất phát",
-  destinationName = "Điểm đến"
+  rawCheckpoints: ReadonlyArray<Partial<GeoCheckpoint>> = [],
+  _routeType: "fastest" | "weather_safer" | "shortest" = "weather_safer",
+  originName = "Origin",
+  destinationName = "Destination",
+  segmentRisks: ReadonlyArray<{ readonly segment_start: number; readonly segment_end: number; readonly risk_level: GeoCheckpoint["risk"] }> = [],
 ): RouteGeoData {
-  if (!coordinates || coordinates.length < 2) {
-    return generateRouteGeoData(originName, destinationName, rawCheckpoints, routeType);
+  const originCoords = coordinates[0] ?? [106.5, 16.2];
+  const destinationCoords = coordinates.at(-1) ?? originCoords;
+  const cumulative = [0];
+  for (let i = 1; i < coordinates.length; i++) {
+    const previous = coordinates[i - 1];
+    const current = coordinates[i];
+    if (previous && current) cumulative.push((cumulative[i - 1] ?? 0) + haversineKm(previous, current));
   }
-
-  const dummyCorridor: CorridorRoutesData = {
-    originCoords: coordinates[0]!,
-    destinationCoords: coordinates[coordinates.length - 1]!,
-    routes: {
-      fastest: { distanceKm: 0, durationMinutes: 0, coordinates },
-      shortest: { distanceKm: 0, durationMinutes: 0, coordinates },
-      weather_safer: { distanceKm: 0, durationMinutes: 0, coordinates },
-    },
+  const totalDistance = cumulative.at(-1) ?? 0;
+  const reportedDistance = rawCheckpoints.at(-1)?.distanceKm ?? totalDistance;
+  const pointAt = (distance: number): { coordinates: [number, number]; distance: number } => {
+    const target = Math.max(0, Math.min(totalDistance, reportedDistance > 0 ? distance / reportedDistance * totalDistance : 0));
+    const index = cumulative.findIndex(value => value >= target);
+    const after = coordinates[index];
+    const before = coordinates[Math.max(0, index - 1)];
+    if (!after || !before) return { coordinates: destinationCoords, distance: target };
+    const start = cumulative[Math.max(0, index - 1)] ?? 0;
+    const length = (cumulative[index] ?? 0) - start;
+    const fraction = length > 0 ? (target - start) / length : 0;
+    return { coordinates: [before[0] + (after[0] - before[0]) * fraction, before[1] + (after[1] - before[1]) * fraction], distance: target };
   };
-
-  return buildRouteGeoDataFromCorridor(dummyCorridor, rawCheckpoints, routeType, originName, destinationName);
+  const checkpointsWithCoords: GeoCheckpoint[] = rawCheckpoints.map((point, index) => ({
+    id: point.id ?? String(index), name: point.name ?? "", distanceKm: point.distanceKm ?? 0,
+    eta: point.eta ?? "", etaShort: point.etaShort, temp: point.temp ?? null, condition: point.condition ?? "",
+    rainProb: point.rainProb ?? null, windKmh: point.windKmh ?? null, risk: point.risk ?? "unknown", note: point.note, provisional: point.provisional, coveragePercent: point.coveragePercent,
+    coordinates: point.coordinates ?? pointAt(point.distanceKm ?? 0).coordinates,
+  }));
+  const colors = { low: "#22C55E", caution: "#F59E0B", high: "#EF4444", unknown: "#64748B" };
+  const features: GeoJSON.Feature<GeoJSON.LineString>[] = [];
+  for (let index = 0; index < checkpointsWithCoords.length - 1; index++) {
+    const start = checkpointsWithCoords[index];
+    const end = checkpointsWithCoords[index + 1];
+    if (!start || !end) continue;
+    const from = pointAt(start.distanceKm), to = pointAt(end.distanceKm);
+    const strictRisk = segmentRisks.find(segment => segment.segment_start === index && segment.segment_end === index + 1)?.risk_level ?? "unknown";
+    const provisionalLevels = [start.risk, end.risk];
+    const provisionalRisk = strictRisk === "unknown" && start.provisional && end.provisional && !provisionalLevels.includes("unknown")
+      ? (["high", "caution", "low"] as const).find(level => provisionalLevels.includes(level)) ?? "unknown"
+      : "unknown";
+    const isProvisional = strictRisk === "unknown" && provisionalRisk !== "unknown";
+    const risk = isProvisional ? provisionalRisk : strictRisk;
+    features.push({ type: "Feature", properties: { segmentIndex: index, risk, riskColor: colors[risk], provisional: isProvisional, fromName: start.name, toName: end.name },
+      geometry: { type: "LineString", coordinates: [from.coordinates, ...coordinates.filter((_, i) => (cumulative[i] ?? 0) > from.distance && (cumulative[i] ?? 0) < to.distance), to.coordinates] } });
+  }
+  if (features.length === 0 && coordinates.length >= 2) {
+    features.push({ type: "Feature", properties: { segmentIndex: 0, risk: "unknown", riskColor: colors.unknown, fromName: originName, toName: destinationName }, geometry: { type: "LineString", coordinates } });
+  }
+  return { originCoords, destinationCoords, checkpointsWithCoords, fullPathCoordinates: coordinates,
+    segmentsFeatureCollection: { type: "FeatureCollection", features }, bounds: coordinates.length ? computeBounds(coordinates) : [102, 8, 110, 24],
+    isRealRoad: coordinates.length >= 2, distanceKm: Math.round(totalDistance) };
 }
 
 export async function fetchRealRouteGeoData(

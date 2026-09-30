@@ -4,6 +4,9 @@
  */
 
 import { randomUUID } from "node:crypto";
+import { assessReportHazard } from "./report-hazard.js";
+import { readWeatherEvidence } from "./weather-evidence.js";
+import { VIETNAM_PROVINCES, type ReportPointResponse } from "@vietnam-weather/contracts";
 
 import type { FastifyInstance, FastifyRequest } from "fastify";
 import type { Pool } from "pg";
@@ -128,12 +131,13 @@ export class RiskService {
       assessment_id: result.assessment_id,
       location_id: request.location_id,
       target_time: request.target_time ?? new Date().toISOString(),
-      level: result.level,
-      color: result.color,
-      confidence_percent: result.confidence_percent,
+      // Legacy endpoint has no vehicle or complete report evidence. Never publish Phase thresholds as report risk.
+      level: "unknown",
+      color: "#64748B",
+      confidence_percent: 0,
       freshness_state: weatherData.freshness,
-      triggered_rules_count: result.triggered_rules_count,
-      triggered_rules: includeTriggeredRules ? result.triggered_rules : undefined,
+      triggered_rules_count: 0,
+      triggered_rules: includeTriggeredRules ? [] : undefined,
       disclaimer: RISK_DISCLAIMERS,
       rule_set_version: result.rule_set_version,
       assessed_at: result.assessed_at,
@@ -344,6 +348,46 @@ export class RiskService {
     app: FastifyInstance,
     options?: { readonly correlationIdFn?: (request: { id: string }) => string }
   ): void {
+    // One bounded nationwide request instead of 63 browser requests per timeline tick.
+    app.get("/api/v1/risk/report-provinces", async (request, reply) => {
+      const query = request.query as Record<string, string | undefined>;
+      const offset = Number(query.offset_hours ?? 0);
+      const vehicle = query.vehicle;
+      if (!Number.isFinite(offset) || offset < 0 || offset > 72 ||
+        (vehicle !== undefined && vehicle !== "car" && vehicle !== "motorcycle")) {
+        return reply.code(400).send({ error: { code: "VALIDATION_FAILED", message: "Invalid offset or vehicle" } });
+      }
+      const now = new Date();
+      const target = new Date(now.getTime() + offset * 3600000);
+      const points: Array<{ id: string; name: string } & ReportPointResponse> = [];
+      let cursor = 0;
+      await Promise.all(Array.from({ length: 4 }, async () => {
+        while (cursor < VIETNAM_PROVINCES.length) {
+          const province = VIETNAM_PROVINCES[cursor++]!;
+          const weather = await readWeatherEvidence(this.dbPool, province, target, now);
+          points.push({ id: province.id, name: province.name, weather, assessment: assessReportHazard(weather, vehicle) });
+        }
+      }));
+      return { data: { target_time: target.toISOString(), provinces: points } };
+    });
+    app.get("/api/v1/risk/report-point", {
+      // One map refresh reads 63 provinces; allow timeline changes within the same minute.
+      config: { rateLimit: { max: 300, timeWindow: 60_000 } },
+    }, async (request, reply) => {
+      const query = request.query as Record<string, string | undefined>;
+      const latitude = Number(query.latitude), longitude = Number(query.longitude);
+      const target = query.target_time ? new Date(query.target_time) : new Date();
+      const vehicle = query.vehicle;
+      if (!query.latitude || !query.longitude || !Number.isFinite(latitude) || Math.abs(latitude) > 90 ||
+        !Number.isFinite(longitude) || Math.abs(longitude) > 180 || !Number.isFinite(target.getTime()) ||
+        (vehicle !== undefined && vehicle !== "car" && vehicle !== "motorcycle")) {
+        reply.code(400);
+        return { error: { code: "VALIDATION_FAILED", message: "Invalid coordinates, target time or vehicle" } };
+      }
+      const weather = await readWeatherEvidence(this.dbPool, { latitude, longitude }, target);
+      reply.header("cache-control", "no-store");
+      return { data: { weather, assessment: assessReportHazard(weather, vehicle) } };
+    });
     app.get("/api/v1/risk/capabilities", async () => ({
       data: await this.getCapabilities()
     }));

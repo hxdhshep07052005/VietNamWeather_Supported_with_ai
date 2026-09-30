@@ -16,8 +16,6 @@ import {
   GEOAPIFY_TRANSPORT_MODES,
 } from "@vietnam-weather/contracts";
 
-import { requireEnvironmentValue } from "@vietnam-weather/config";
-
 // =============================================================================
 // Types
 // =============================================================================
@@ -29,6 +27,17 @@ export interface RoutingServiceOptions {
 }
 
 interface GeoapifyRouteResult {
+  type?: string;
+  features?: Array<{
+    properties?: {
+      distance?: number;
+      time?: number;
+    };
+    geometry?: {
+      type?: string;
+      coordinates?: unknown;
+    };
+  }>;
   routes?: Array<{
     geometry: string;
     distance: number;
@@ -67,20 +76,51 @@ export class RoutingService {
   async getRoute(
     origin: Coordinates,
     destination: Coordinates,
-    vehicleType: VehicleType
+    vehicleType: VehicleType,
+    preference: "short" | "balanced" = "balanced"
   ): Promise<RouteGeometry> {
     const correlationId = randomUUID();
 
     try {
-      const url = new URL(`${this.baseUrl}/route`);
-      url.searchParams.set("waypoints", `${origin.longitude},${origin.latitude}|${destination.longitude},${destination.latitude}`);
-      url.searchParams.set("mode", GEOAPIFY_TRANSPORT_MODES[vehicleType]);
-      url.searchParams.set("details", "route_instructions");
+      const url = new URL(
+        this.baseUrl.endsWith("/routing") ? this.baseUrl : `${this.baseUrl}/routing`
+      );
+      url.searchParams.set(
+        "waypoints",
+        `${origin.latitude},${origin.longitude}|${destination.latitude},${destination.longitude}`
+      );
+      url.searchParams.set("mode", GEOAPIFY_TRANSPORT_MODES[vehicleType] || "drive");
+      url.searchParams.set("type", preference);
       url.searchParams.set("apiKey", this.apiKey);
 
       const response = await this.fetchWithTimeout(url.toString(), correlationId);
 
-      if (!response.routes || response.routes.length === 0) {
+      let distanceMeters = 0;
+      let durationSeconds = 0;
+      let coordinates: Coordinates[] = [];
+
+      if (response.features && response.features.length > 0) {
+        const feat = response.features[0]!;
+        distanceMeters = feat.properties?.distance || 0;
+        durationSeconds = Math.round(feat.properties?.time || 0);
+
+        const rawCoords = feat.geometry?.coordinates as unknown;
+        const flat: Array<[number, number]> = Array.isArray(rawCoords)
+          ? Array.isArray(rawCoords[0]) && Array.isArray((rawCoords[0] as unknown[])[0])
+            ? (rawCoords as Array<Array<[number, number]>>).flat()
+            : (rawCoords as Array<[number, number]>)
+          : [];
+
+        coordinates = flat.map((pt) => ({
+          longitude: pt[0],
+          latitude: pt[1],
+        }));
+      } else if (response.routes && response.routes.length > 0) {
+        const route = response.routes[0]!;
+        distanceMeters = route.distance;
+        durationSeconds = route.duration;
+        coordinates = this.decodePolyline(route.geometry);
+      } else {
         throw this.createError(
           "ROUTE_NO_ROUTE_FOUND",
           "No route found between points",
@@ -89,15 +129,10 @@ export class RoutingService {
         );
       }
 
-      const route = response.routes[0]!;
-
-      // Decode polyline to coordinates
-      const coordinates = this.decodePolyline(route.geometry);
-
       return {
         coordinates,
-        distance_meters: route.distance,
-        duration_seconds: route.duration,
+        distance_meters: distanceMeters,
+        duration_seconds: durationSeconds,
       };
     } catch (error) {
       if (this.isRoutingError(error)) {
@@ -128,12 +163,12 @@ export class RoutingService {
       // So we make multiple requests for different modes
       const [fastestRoute, shortestRoute] = await Promise.all([
         this.getRoute(origin, destination, vehicleType),
-        this.getRoute(origin, destination, vehicleType),
+        this.getRoute(origin, destination, vehicleType, "short"),
       ]);
 
       // Return unique routes (may be same if no alternative exists)
       const routes = [fastestRoute];
-      if (shortestRoute.distance_meters !== fastestRoute.distance_meters) {
+      if (JSON.stringify(shortestRoute.coordinates) !== JSON.stringify(fastestRoute.coordinates)) {
         routes.push(shortestRoute);
       }
 

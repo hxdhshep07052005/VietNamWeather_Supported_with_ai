@@ -31,6 +31,7 @@ function rowIdentity(
   validTo: string
 ): string {
   return `weather:v1:${kind}:${calculateNormalizedPayloadChecksum({
+    persistence_version: 4,
     provider: payload.source.provider,
     parser_version: payload.source.parserVersion,
     target: {
@@ -119,6 +120,8 @@ function mapObservation(payload: NormalizedWeatherPayload): WeatherObservationSq
     wind_direction_degrees: current.windDirectionDegrees,
     pressure_hpa: current.pressureHectopascals,
     visibility_meters: current.visibilityMetres,
+    uv_index: current.uvIndex,
+    cloud_cover_percent: current.cloudCoverPercent,
     source_quality: "reported",
     status: "valid"
   });
@@ -148,6 +151,13 @@ function mapHourly(
     precipitation_probability_percent: hourly.precipitationProbabilityPercent,
     wind_speed_mps: hourly.windSpeedMetresPerSecond,
     wind_gust_mps: hourly.windGustMetresPerSecond,
+    feels_like_celsius: hourly.apparentTemperatureCelsius,
+    humidity_percent: hourly.relativeHumidityPercent,
+    wind_direction_degrees: hourly.windDirectionDegrees,
+    pressure_hpa: hourly.pressureHectopascals,
+    visibility_meters: hourly.visibilityMetres,
+    uv_index: hourly.uvIndex,
+    cloud_cover_percent: hourly.cloudCoverPercent,
     confidence_percent: null,
     status: "valid"
   });
@@ -177,6 +187,13 @@ function mapDaily(
     precipitation_probability_percent: daily.maximumPrecipitationProbabilityPercent,
     wind_speed_mps: daily.maximumWindSpeedMetresPerSecond,
     wind_gust_mps: null,
+    feels_like_celsius: null,
+    humidity_percent: daily.averageRelativeHumidityPercent,
+    wind_direction_degrees: null,
+    pressure_hpa: null,
+    visibility_meters: null,
+    uv_index: null,
+    cloud_cover_percent: null,
     confidence_percent: null,
     status: "valid"
   });

@@ -4,12 +4,12 @@
  */
 
 import { useState, useEffect, useRef } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { useAuthStore } from "@/hooks/useAuthStore";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { VietnamMap } from "../components/common/VietnamMap";
+import { useReportProvinceWeather } from "../hooks/useReportProvinceWeather";
 import {
   WeatherIcon,
   RiskIcon,
@@ -36,15 +36,7 @@ interface SelectedProvince {
 
 export function LandingPage() {
   const { t, i18n } = useTranslation();
-  const { isAuthenticated } = useAuthStore();
-  const navigate = useNavigate();
 
-  // If already logged in, redirect to /map
-  useEffect(() => {
-    if (isAuthenticated) {
-      navigate("/map", { replace: true });
-    }
-  }, [isAuthenticated, navigate]);
   const heroRef = useRef<HTMLDivElement>(null);
   const featuresRef = useRef<HTMLDivElement>(null);
   const statsRef = useRef<HTMLDivElement>(null);
@@ -53,6 +45,7 @@ export function LandingPage() {
   // View state
   const [viewMode, setViewMode] = useState<"region" | "risk">("region");
   const [selectedProvince, setSelectedProvince] = useState<SelectedProvince | null>(null);
+  const provinceWeather = useReportProvinceWeather(0);
 
 
   // GSAP Entrance and Scroll Animations
@@ -252,7 +245,8 @@ export function LandingPage() {
                   interactive={true}
                   showcaseMode={true}
                   viewMode={viewMode}
-                  selectedProvinceId={selectedProvince?.code || null}
+                  provinceWeather={provinceWeather}
+                  selectedProvinceId={selectedProvince?.name || null}
                   onProvinceClick={(name, code, lat, lng) => {
                     setSelectedProvince({ name, code, lat, lng });
                   }}

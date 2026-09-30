@@ -134,6 +134,69 @@ test("filters unrequested datasets", async () => {
   assert.equal(response.data.coverage.datasets.hourly.status, "not_requested");
 });
 
+const restoredMeasurements = [
+  ["feels_like_celsius", "apparentTemperatureCelsius", 35.125],
+  ["humidity_percent", "relativeHumidityPercent", 82.5],
+  ["wind_direction_degrees", "windDirectionDegrees", 187.5],
+  ["pressure_hpa", "pressureHectopascals", 1005.25],
+  ["visibility_meters", "visibilityMetres", 7250.5],
+  ["uv_index", "uvIndex", 6.75],
+  ["cloud_cover_percent", "cloudCoverPercent", 62.5]
+];
+
+for (const name of ["reported values", "zero", "null", "absent legacy columns"]) {
+  test(`returns restored measurements and accurate quality: ${name}`, async () => {
+    const document = available();
+    const current = document.observation;
+    const hourly = document.forecasts[0];
+    for (const [column, , reported] of restoredMeasurements) {
+      for (const row of [current, hourly]) {
+        // Only UV/cloud columns are new to observations.
+        if (row === current && !["uv_index", "cloud_cover_percent"].includes(column)) continue;
+        if (name === "absent legacy columns") delete row[column];
+        else if (name === "zero") {
+          // The existing public contract requires pressure between 800 and 1200 hPa.
+          row[column] = column === "pressure_hpa" ? reported : 0;
+        } else row[column] = name === "reported values" ? reported : null;
+      }
+    }
+    const store = new Store(document);
+    const response = await service(store).query(request(["current", "hourly"]), "corr-0123456789");
+    const missing = name === "null" || name === "absent legacy columns";
+    assert.equal(isWeatherQueryResponse(response), true);
+    assert.equal(response.status, missing ? "degraded" : "success");
+    for (const [section, row] of [[response.data.current, current], [response.data.hourly, hourly]]) {
+      const value = section.value ?? section.values[0];
+      for (const [column, field] of restoredMeasurements) {
+        assert.equal(value[field], row[column] ?? null, field);
+      }
+      const expectedMissing = restoredMeasurements
+        .filter(([column]) => row[column] === null || row[column] === undefined)
+        .map(([, field]) => field);
+      assert.deepEqual(value.quality.missingFields, expectedMissing);
+      assert.equal(value.quality.state, missing ? "partial" : "complete");
+      assert.equal(section.coverage.status, missing ? "partial" : "complete");
+    }
+    assert.equal(store.enqueues.length, missing ? 1 : 0);
+  });
+}
+
+for (const humidity of [75, 0, null]) {
+  test(`returns daily average humidity and accurate quality for ${humidity}`, async () => {
+    const document = available();
+    document.forecasts[1].humidity_percent = humidity;
+
+    const response = await service(new Store(document)).query(request(["daily"]), "corr-0123456789");
+
+    assert.equal(isWeatherQueryResponse(response), true);
+    assert.equal(response.status, humidity === null ? "degraded" : "success");
+    const daily = response.data.daily.values[0];
+    assert.equal(daily.averageRelativeHumidityPercent, humidity);
+    assert.deepEqual(daily.quality.missingFields, humidity === null ? ["averageRelativeHumidityPercent"] : []);
+    assert.equal(daily.quality.state, humidity === null ? "partial" : "complete");
+  });
+}
+
 test("enqueues one durable hashed refresh on a cache miss", async () => {
   const store = new Store({ status: "unavailable" });
   const response = await service(store).query({

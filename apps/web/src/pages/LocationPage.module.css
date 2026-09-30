@@ -258,6 +258,97 @@
   scrollbar-width: thin;
 }
 
+/* Guest Locked Forecast Banner */
+.lockedForecastBox {
+  cursor: pointer;
+  padding: 36px 20px;
+  text-align: center;
+  border-radius: var(--radius-xl, 16px);
+  background: rgba(30, 41, 59, 0.7);
+  border: 1px dashed rgba(148, 163, 184, 0.35);
+  backdrop-filter: blur(8px);
+  transition: all 0.2s ease;
+}
+
+.lockedForecastBox:hover {
+  background: rgba(30, 41, 59, 0.85);
+  border-color: rgba(56, 189, 248, 0.5);
+  transform: translateY(-1px);
+}
+
+:global([data-theme="light"]) .lockedForecastBox {
+  background: #f8fafc;
+  border: 1px dashed #cbd5e1;
+}
+
+:global([data-theme="light"]) .lockedForecastBox:hover {
+  background: #f1f5f9;
+  border-color: #0066cc;
+}
+
+.lockedIconWrapper {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: rgba(0, 102, 204, 0.2);
+  color: #38bdf8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 12px auto;
+  box-shadow: 0 0 20px rgba(0, 102, 204, 0.3);
+}
+
+:global([data-theme="light"]) .lockedIconWrapper {
+  background: #e6f0fa;
+  color: #0066cc;
+  box-shadow: 0 4px 12px rgba(0, 102, 204, 0.15);
+}
+
+.lockedTitle {
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 6px;
+  color: #f1f5f9;
+}
+
+:global([data-theme="light"]) .lockedTitle {
+  color: #0f172a;
+}
+
+.lockedSubtitle {
+  font-size: 13px;
+  color: #94a3b8;
+  max-width: 480px;
+  margin: 0 auto 16px auto;
+  line-height: 1.55;
+}
+
+:global([data-theme="light"]) .lockedSubtitle {
+  color: #475569;
+}
+
+.lockedButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 20px;
+  background-color: var(--color-primary, #0066cc);
+  color: #ffffff !important;
+  font-size: 13px;
+  font-weight: 600;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(0, 102, 204, 0.3);
+}
+
+.lockedButton:hover {
+  background-color: var(--color-primary-hover, #0052a3);
+  transform: translateY(-1px);
+}
+
 .hourlyCard {
   flex: 0 0 110px;
   background: var(--color-background);

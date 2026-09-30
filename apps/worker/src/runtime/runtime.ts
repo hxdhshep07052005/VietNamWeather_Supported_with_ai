@@ -142,7 +142,7 @@ function classifyError(error: unknown): ClassifiedRuntimeError {
         : "weather_provider_schema_invalid",
       retryable: false,
       message: dependencyCode === "23505"
-        ? "Normalized weather identity conflicted."
+        ? "Normalized weather record conflicted."
         : "Normalized weather data was rejected."
     };
   }

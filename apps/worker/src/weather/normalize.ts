@@ -6,6 +6,7 @@ import type {
 
 import { calculateNormalizedPayloadChecksum } from "./checksum.js";
 import { WeatherProviderError, weatherSchemaError } from "./errors.js";
+import { weatherApiLocalDayStart } from "./local-day.js";
 import {
   WEATHER_UNITS,
   type CurrentWeatherObservation,
@@ -33,10 +34,19 @@ const WEATHERAPI_CONDITION_CODES: Readonly<Record<number, WeatherConditionCode>>
   1003: "partly_cloudy",
   1006: "cloudy",
   1009: "cloudy",
+  1012: "haze",
+  1015: "haze",
+  1018: "dust",
+  1021: "dust_storm",
+  1024: "sandstorm",
+  1027: "sandstorm",
   1030: "fog",
-  1036: "fog",      // Smoky haze
-  1039: "fog",      // Smog
-  1042: "fog",      // Severe smog
+  1033: "smoke",
+  1036: "haze",
+  1039: "smog",
+  1042: "smog",
+  1045: "dust",
+  1048: "dust",
   1063: "rain",
   1066: "snow",
   1069: "sleet",
@@ -66,7 +76,7 @@ const WEATHERAPI_CONDITION_CODES: Readonly<Record<number, WeatherConditionCode>>
   1219: "snow",
   1222: "snow",
   1225: "snow",
-  1237: "hail",
+  1237: "sleet",
   1240: "rain",
   1243: "heavy_rain",
   1246: "heavy_rain",
@@ -74,8 +84,8 @@ const WEATHERAPI_CONDITION_CODES: Readonly<Record<number, WeatherConditionCode>>
   1252: "sleet",
   1255: "snow",
   1258: "snow",
-  1261: "hail",
-  1264: "hail",
+  1261: "sleet",
+  1264: "sleet",
   1273: "thunderstorm",
   1276: "thunderstorm",
   1279: "thunderstorm",
@@ -337,14 +347,12 @@ function normalizeDay(
     throw weatherSchemaError();
   }
 
-  const dateEpoch = requiredInteger(
+  requiredInteger(
     value,
     "date_epoch",
     MIN_WEATHER_EPOCH_SECONDS,
     MAX_WEATHER_EPOCH_SECONDS
   );
-  const validFrom = epochToIso(dateEpoch);
-  const validTo = addSeconds(validFrom, 24 * 60 * 60);
   const day = requiredRecord(value, "day");
   const hourValues = requiredArray(value, "hour");
   if (hourValues.length < 1 || hourValues.length > 24) {
@@ -357,11 +365,17 @@ function normalizeDay(
         throw weatherSchemaError();
       }
       return normalizeHour(hour, fetchedAt);
-    })
-    .filter((hour) => (
-      hour.validInterval.from >= validFrom && hour.validInterval.from < validTo
-    ));
-  if (hourly.length < 1) {
+    });
+  const firstHour = hourly[0];
+  const firstHourValue = hourValues[0];
+  if (firstHour === undefined || !isRecord(firstHourValue)) {
+    throw weatherSchemaError();
+  }
+  const { date, validFrom } = weatherApiLocalDayStart(
+    value["date"], firstHourValue["time"], firstHour.validInterval.from
+  );
+  const validTo = addSeconds(validFrom, 24 * 60 * 60);
+  if (hourly.some((hour) => hour.validInterval.from < validFrom || hour.validInterval.from >= validTo)) {
     throw weatherSchemaError();
   }
   const rainProbability = optionalNumber(day, "daily_chance_of_rain", 0, 100);
@@ -387,7 +401,7 @@ function normalizeDay(
     daily: {
       kind: "forecast",
       granularity: "day",
-      date: validFrom.slice(0, 10),
+      date,
       validInterval: { from: validFrom, to: validTo },
       quality: weatherQuality([
         ["minimumTemperatureCelsius", minimumTemperatureCelsius],

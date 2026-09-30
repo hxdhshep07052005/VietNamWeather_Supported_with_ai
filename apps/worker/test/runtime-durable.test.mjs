@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { readFile } from "node:fs/promises";
 import { inspect } from "node:util";
 import test from "node:test";
 
@@ -16,6 +17,7 @@ const {
   WEATHERAPI_CREDENTIAL_REFERENCE
 } = await import(runtimeModuleUrl);
 const {
+  calculateNormalizedPayloadChecksum,
   WEATHERAPI_ALLOWED_ORIGIN,
   WEATHERAPI_PARSER_VERSION,
   WeatherProviderError
@@ -283,6 +285,7 @@ test("maps only exact SQL-whitelisted normalized fields with deterministic row i
   const second = mapNormalizedWeatherPayload(secondPayload, "bundle");
 
   const observationKeys = [
+    "uv_index", "cloud_cover_percent",
     "condition_code", "expires_at", "feels_like_celsius", "fetched_at",
     "humidity_percent", "idempotency_key", "normalized_payload_checksum_sha256",
     "observed_at", "precipitation_mm", "pressure_hpa", "provider_record_id",
@@ -290,6 +293,8 @@ test("maps only exact SQL-whitelisted normalized fields with deterministic row i
     "wind_direction_degrees", "wind_gust_mps", "wind_speed_mps"
   ].sort();
   const forecastKeys = [
+    "feels_like_celsius", "humidity_percent", "wind_direction_degrees",
+    "pressure_hpa", "visibility_meters", "uv_index", "cloud_cover_percent",
     "condition_code", "confidence_percent", "expires_at", "fetched_at",
     "horizon_kind", "idempotency_key", "normalized_payload_checksum_sha256",
     "precipitation_mm", "precipitation_probability_percent", "provider_issued_at",
@@ -321,6 +326,86 @@ test("maps only exact SQL-whitelisted normalized fields with deterministic row i
   ]) {
     assert.equal(serialized.includes(forbidden), false);
   }
+});
+
+const restoredMeasurements = [
+  ["apparentTemperatureCelsius", "feels_like_celsius"],
+  ["relativeHumidityPercent", "humidity_percent"],
+  ["windDirectionDegrees", "wind_direction_degrees"],
+  ["pressureHectopascals", "pressure_hpa"],
+  ["visibilityMetres", "visibility_meters"],
+  ["uvIndex", "uv_index"],
+  ["cloudCoverPercent", "cloud_cover_percent"]
+];
+
+for (const [name, override] of [["reported values", undefined], ["zero", 0], ["missing", null]]) {
+  test(`mapping retains current/hourly measurements: ${name}`, () => {
+    const normalized = payload();
+    if (override !== undefined) {
+      for (const [field] of restoredMeasurements) {
+        normalized.current[field] = override;
+        normalized.hourly[0][field] = override;
+      }
+    }
+    const bundle = mapNormalizedWeatherPayload(normalized, "bundle");
+    for (const [field, column] of restoredMeasurements) {
+      assert.equal(bundle.observations[0][column], normalized.current[field], `current ${column}`);
+      assert.equal(bundle.forecasts[0][column], normalized.hourly[0][field], `hourly ${column}`);
+      assert.equal(bundle.forecasts[1][column], column === "humidity_percent"
+        ? normalized.daily[0].averageRelativeHumidityPercent : null, `daily ${column}`);
+    }
+  });
+}
+
+for (const humidity of [75, 0, null]) {
+  test(`persists daily average humidity without replacing ${humidity}`, () => {
+    const normalized = payload();
+    normalized.daily[0].averageRelativeHumidityPercent = humidity;
+
+    const bundle = mapNormalizedWeatherPayload(normalized, "daily");
+
+    assert.equal(bundle.forecasts[0].humidity_percent, humidity);
+  });
+}
+
+test("restored measurements affect checksums without changing logical snapshot identity", () => {
+  const original = mapNormalizedWeatherPayload(payload(), "bundle");
+  for (const [field] of restoredMeasurements) {
+    const normalized = payload();
+    normalized.current[field] += 1;
+    normalized.hourly[0][field] += 1;
+    const changed = mapNormalizedWeatherPayload(normalized, "bundle");
+    for (const kind of ["observations", "forecasts"]) {
+      assert.equal(changed[kind][0].idempotency_key, original[kind][0].idempotency_key);
+      assert.notEqual(changed[kind][0].normalized_payload_checksum_sha256,
+        original[kind][0].normalized_payload_checksum_sha256, `${kind} ${field}`);
+    }
+  }
+});
+
+test("measurement migration retains every mapped field through SQL persistence and fetch projections", async () => {
+  const sql = await readFile(new URL("../../../infra/postgres/init/013-weather-measurements.sql", import.meta.url), "utf8");
+  const bundle = mapNormalizedWeatherPayload(payload(), "bundle");
+  for (const [kind, singular, record] of [
+    ["observations", "observation", bundle.observations[0]],
+    ["forecasts", "forecast", bundle.forecasts[0]]
+  ]) {
+    const whitelist = sql.match(new RegExp(`jsonb_array_elements\\(p_${kind}\\)[\\s\\S]*?ARRAY\\[([\\s\\S]*?)\\]`))[1];
+    assert.deepEqual([...whitelist.matchAll(/'([^']+)'/gu)].map((match) => match[1]).sort(), Object.keys(record).sort());
+    const recordset = sql.match(new RegExp(`jsonb_to_recordset\\(p_${kind}\\) AS normalized\\(([\\s\\S]*?)\\n          \\)`))[1];
+    const insert = sql.match(new RegExp(`INSERT INTO public.weather_${kind} \\(([\\s\\S]*?)\\) VALUES \\(([\\s\\S]*?)\\n        \\)`));
+    const columns = insert[1].split(",").map((column) => column.trim());
+    for (const [field, column] of restoredMeasurements) {
+      if (singular === "observation" && !["uvIndex", "cloudCoverPercent"].includes(field)) continue;
+      assert.match(recordset, new RegExp(`\\b${column} numeric\\(`));
+      assert.ok(columns.includes(column), `${kind} INSERT ${column}`);
+      assert.ok(insert[2].includes(`v_${singular}.${column}`), `${kind} VALUES ${column}`);
+      assert.ok(sql.includes(`'${column}', ${singular}.${column}`), `${kind} fetch ${column}`);
+    }
+  }
+  assert.match(sql, /BEGIN;/u);
+  assert.match(sql, /COMMIT;/u);
+  assert.doesNotMatch(sql, /\b(?:GRANT|REVOKE|DROP FUNCTION)\b/u);
 });
 
 test("parses bounded runtime policy and resolves only the injected WeatherAPI secret", () => {
@@ -659,4 +744,43 @@ test("never leaks secrets, target, URL, raw fields, or unsafe error text", async
   assert.equal(call(store, "retry")[4], "weather_runtime_unavailable");
   assert.equal(call(store, "retry")[5], "Weather runtime dependency is unavailable.");
   await runtime.stop();
+});
+
+
+test("separates restored persistence fields from legacy snapshot identities", () => {
+  const normalized = payload();
+  const bundle = mapNormalizedWeatherPayload(normalized, "bundle");
+  for (const row of [...bundle.observations, ...bundle.forecasts]) {
+    const kind = row.horizon_kind ?? "observation";
+    const legacyKey = "weather:v1:" + kind + ":" + calculateNormalizedPayloadChecksum({
+      provider: normalized.source.provider,
+      parser_version: normalized.source.parserVersion,
+      target: normalized.target,
+      logical_snapshot: normalized.current.observedAt,
+      valid_from: row.valid_from ?? row.observed_at,
+      valid_to: row.valid_to ?? row.observed_at,
+    });
+    assert.notEqual(row.idempotency_key, legacyKey);
+  }
+});
+
+test("persistence conflicts produce failure messages accepted by SQL sanitization", async () => {
+  const store = new MockStore([claim()]);
+  store.persist = async () => { throw Object.assign(new Error("provider secret"), { code: "23505" }); };
+  const runtime = new WeatherDurableRuntime({
+    config: baseConfig,
+    secrets: { WEATHERAPI_API_KEY: secret },
+    store,
+    adapterFactory: adapterFactory(async () => payload()),
+    now: () => now,
+  });
+  runtime.start();
+  try {
+    await waitFor(() => call(store, "fail") !== undefined);
+    const failure = call(store, "fail");
+    assert.equal(failure[3], "weather_persistence_conflict");
+    assert.doesNotMatch(failure[4], /https?:[/][/]|api[_-]?key|token|secret|password|credential|coordinates?|latitude|longitude|email|user[_ -]?id|identity|session|[?&][A-Za-z0-9_-]+=/iu);
+  } finally {
+    await runtime.stop();
+  }
 });

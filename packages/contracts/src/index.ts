@@ -1,3 +1,5 @@
+export * from "./report-hazard-v1.js";
+
 export interface HealthResponse {
   readonly service: string;
   readonly status: "live" | "ready";
@@ -230,3 +232,12 @@ export {
   type ChatToolCallDto,
   type ChatToolResultDto,
 } from "./chat-v1.js";
+
+export {
+  VIETNAM_PROVINCES,
+  VIETNAM_PROVINCES_BY_ID,
+  VIETNAM_PROVINCES_BY_COORDS,
+  normalizeProvinceName,
+  findVietnamProvinceByName,
+  type VietnamProvince,
+} from "./weather-provinces.js";

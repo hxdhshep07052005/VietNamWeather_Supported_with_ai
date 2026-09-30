@@ -95,8 +95,8 @@ export const SAMPLE_INTERVAL_METERS = 5_000;
  * Geoapify transport mode mapping
  */
 export const GEOAPIFY_TRANSPORT_MODES: Record<VehicleType, string> = {
-  [VEHICLE_TYPES.CAR]: "driving-car",
-  [VEHICLE_TYPES.MOTORCYCLE]: "driving-hgv"
+  [VEHICLE_TYPES.CAR]: "drive",
+  [VEHICLE_TYPES.MOTORCYCLE]: "motorcycle"
 } as const;
 
 // =============================================================================
@@ -183,6 +183,9 @@ export interface RouteGeometry {
 // =============================================================================
 
 export interface SamplePoint {
+  readonly provisional_assessment?: import("./report-hazard-v1.js").ReportAssessment;
+  readonly assessment?: import("./report-hazard-v1.js").ReportAssessment;
+  readonly weather?: import("./report-hazard-v1.js").ReportWeatherEvidence;
   /** Coordinates */
   readonly coordinates: Coordinates;
   /** Distance from route start in meters */
@@ -211,7 +214,8 @@ export interface SegmentRisk {
   /** Risk level at this segment */
   readonly risk_level: "low" | "caution" | "high" | "unknown";
   /** Risk score 0-1 */
-  readonly risk_score: number;
+  readonly risk_score: number | null;
+  readonly distance_meters?: number;
   /** Risk severity 0-3 */
   readonly severity: number;
   /** Contributing factors */
@@ -236,14 +240,18 @@ export interface RouteAlternative {
   readonly sample_points: SamplePoint[];
   /** Risk assessment for entire route */
   readonly route_risk: {
+    readonly provisional?: { readonly score: number; readonly observed_score: number; readonly coverage_percent: number; readonly rule_set_version: string };
     readonly level: "low" | "caution" | "high" | "unknown";
-    readonly score: number;
+    readonly score: number | null;
     readonly confidence: number;
+    readonly dangerous_checkpoint_count?: number;
+    readonly unknown_checkpoint_count?: number;
+    readonly rule_set_version?: string;
   };
   /** Per-segment risks */
   readonly segment_risks: SegmentRisk[];
   /** Balanced score (0-1, lower is better) */
-  readonly balanced_score: number;
+  readonly balanced_score: number | null;
   /** Summary text */
   readonly summary: {
     readonly vi: string;
@@ -269,6 +277,24 @@ export interface RouteAttribution {
 // =============================================================================
 
 export interface RouteResponse {
+  readonly weather_refresh?: {
+    readonly status: "pending" | "unavailable";
+    readonly requested_points: number;
+    readonly retry_after_seconds: number;
+  };
+  /** Named OpenStreetMap rest areas near this response's primary route; not weather samples. */
+  readonly rest_stops?: {
+    readonly route_type: "fastest";
+    readonly status: "available" | "unavailable";
+    readonly source: "OpenStreetMap";
+    readonly items: ReadonlyArray<{
+      readonly id: string;
+      readonly name: string;
+      readonly coordinates: Coordinates;
+      readonly distance_from_start_meters: number;
+      readonly source_url: string;
+    }>;
+  };
   /** Request origin (resolved) */
   readonly origin: ResolvedLocation;
   /** Request destination (resolved) */
@@ -278,7 +304,7 @@ export interface RouteResponse {
   /** Available alternatives */
   readonly alternatives: RouteAlternative[];
   /** Best route recommendation (lowest balanced score) */
-  readonly recommended_alternative: RouteAlternativeType;
+  readonly recommended_alternative: RouteAlternativeType | null;
   /** Attribution metadata */
   readonly attribution: RouteAttribution;
   /** Overall warnings */
@@ -370,7 +396,7 @@ export const ROUTE_RESPONSE_SCHEMA = {
     destination: { type: "object" },
     departure_time: { type: "string" },
     alternatives: { type: "array" },
-    recommended_alternative: { type: "string" },
+    recommended_alternative: { type: ["string", "null"] },
     attribution: { type: "object" },
     warnings: { type: "array" },
     is_incomplete: { type: "boolean" }

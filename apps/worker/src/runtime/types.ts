@@ -46,6 +46,8 @@ export interface WeatherObservationSqlRecord {
   readonly wind_direction_degrees: number | null;
   readonly pressure_hpa: number | null;
   readonly visibility_meters: number | null;
+  readonly uv_index: number | null;
+  readonly cloud_cover_percent: number | null;
   readonly source_quality: "reported";
   readonly status: "valid";
 }
@@ -68,6 +70,13 @@ export interface WeatherForecastSqlRecord {
   readonly precipitation_probability_percent: number | null;
   readonly wind_speed_mps: number | null;
   readonly wind_gust_mps: number | null;
+  readonly feels_like_celsius: number | null;
+  readonly humidity_percent: number | null;
+  readonly wind_direction_degrees: number | null;
+  readonly pressure_hpa: number | null;
+  readonly visibility_meters: number | null;
+  readonly uv_index: number | null;
+  readonly cloud_cover_percent: number | null;
   readonly confidence_percent: number | null;
   readonly status: "valid";
 }

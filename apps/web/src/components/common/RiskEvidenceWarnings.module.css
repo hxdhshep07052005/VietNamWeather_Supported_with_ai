@@ -1,0 +1,108 @@
+.list {
+  display: grid;
+  gap: var(--space-2);
+  min-inline-size: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  container-type: inline-size;
+}
+
+.item {
+  --warning-text: #a16207;
+  --warning-surface: #fef9c3;
+  --warning-border: #fde047;
+  --warning-accent: #f59e0b;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-3);
+  border: 1px solid var(--warning-border);
+  border-radius: var(--radius-xl);
+  background: color-mix(in srgb, var(--warning-surface) 28%, var(--color-surface));
+  color: var(--color-text-primary);
+}
+
+.item[data-severity="high"] {
+  --warning-text: #b91c1c;
+  --warning-surface: #fee2e2;
+  --warning-border: #fca5a5;
+  --warning-accent: #ef4444;
+}
+
+:global([data-theme="dark"]) .item {
+  --warning-text: #fbbf24;
+  --warning-surface: color-mix(in srgb, var(--warning-accent) 15%, transparent);
+  --warning-border: color-mix(in srgb, var(--warning-accent) 35%, transparent);
+}
+
+:global([data-theme="dark"]) .item[data-severity="high"] {
+  --warning-text: #fca5a5;
+}
+
+.icon {
+  inline-size: var(--space-5);
+  block-size: var(--space-5);
+  color: var(--warning-text);
+}
+
+.metric {
+  display: grid;
+  gap: var(--space-1);
+  min-inline-size: 0;
+}
+
+.label {
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--line-height-tight);
+  overflow-wrap: anywhere;
+}
+
+.measurement {
+  margin: 0;
+  line-height: var(--line-height-tight);
+  text-wrap: pretty;
+  overflow-wrap: anywhere;
+}
+
+.measurement[data-numeric="true"] {
+  white-space: nowrap;
+}
+
+.value {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  font-variant-numeric: tabular-nums;
+}
+
+.unit {
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+  white-space: nowrap;
+}
+
+.badge {
+  justify-self: end;
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-md);
+  background: var(--warning-surface);
+  color: var(--warning-text);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-normal);
+  white-space: nowrap;
+}
+
+@container (max-width: 17rem) {
+  .item {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+
+  .badge {
+    grid-column: 2;
+    justify-self: start;
+  }
+}

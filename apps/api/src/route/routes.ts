@@ -8,7 +8,7 @@
 import type { FastifyInstance, FastifyRequest } from "fastify";
 import type { RouteRequest, RouteResponse } from "@vietnam-weather/contracts";
 
-import { ApiError } from "../errors.js";
+import { ApiError, type ApiErrorCode } from "../errors.js";
 import type { RouteService } from "./route-service.js";
 import { RouteServiceError } from "./route-service.js";
 
@@ -58,7 +58,26 @@ function validateRouteRequest(body: unknown): RouteRequest {
     throw new ApiError(400, "VALIDATION_FAILED", false, "Destination must have coordinates, query, or place_id");
   }
 
-  return body as unknown as RouteRequest;
+  if (body.vehicle_type !== "car" && body.vehicle_type !== "motorcycle") {
+    throw new ApiError(400, "VALIDATION_FAILED", false, "Select car or motorcycle");
+  }
+  if (body.departure_time !== undefined && (typeof body.departure_time !== "string" || !Number.isFinite(Date.parse(body.departure_time)))) {
+    throw new ApiError(400, "VALIDATION_FAILED", false, "Invalid departure time");
+  }
+  const location = (value: Record<string, unknown>): RouteRequest["origin"] => {
+    if (isRecord(value.coordinates)) {
+      const { latitude, longitude } = value.coordinates;
+      if (typeof latitude !== "number" || !Number.isFinite(latitude) || Math.abs(latitude) > 90 ||
+          typeof longitude !== "number" || !Number.isFinite(longitude) || Math.abs(longitude) > 180) {
+        throw new ApiError(400, "VALIDATION_FAILED", false, "Invalid coordinates");
+      }
+      return { type: "coordinates", value: { latitude, longitude } };
+    }
+    if (typeof value.query !== "string" || !value.query.trim()) throw new ApiError(400, "VALIDATION_FAILED", false, "Location query required");
+    return { type: "text", value: value.query.trim() };
+  };
+  return { origin: location(origin), destination: location(destination), vehicle_type: body.vehicle_type,
+    departure_time: body.departure_time as string | undefined };
 }
 
 export function buildRouteRoutes(app: FastifyInstance, options: RouteRoutesOptions): void {
@@ -85,8 +104,9 @@ export function buildRouteRoutes(app: FastifyInstance, options: RouteRoutesOptio
         const response = await routeService.calculateRoutes(validatedBody);
         return { data: response };
       } catch (error) {
+        request.log.error({ err: error }, "Failed to calculate routes");
         if (error instanceof RouteServiceError) {
-          let errorCode: import("../errors.js").ApiErrorCode = "ROUTE_PROVIDER_ERROR";
+          let errorCode: ApiErrorCode = "ROUTE_PROVIDER_ERROR";
           let statusCode = 502;
 
           if (error.code === "ROUTE_TOO_LONG") {

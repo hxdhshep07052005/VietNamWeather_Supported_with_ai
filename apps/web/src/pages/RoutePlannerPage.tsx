@@ -3,7 +3,7 @@
  * Weather-aware multi-alternative route planning with Free & Pro tier differentiation
  */
 
-import { useState, useEffect, useMemo, useCallback } from "react";
+import { useState, useEffect, useMemo, useCallback, useRef } from "react";
 import { useSearchParams, Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import {
@@ -11,7 +11,6 @@ import {
   Zap,
   ShieldCheck,
   Ruler,
-  Gauge,
   Sparkles,
   Navigation,
   Bookmark,
@@ -21,33 +20,24 @@ import {
   Check,
   Trash2,
   Scale,
-  SlidersHorizontal,
 } from "lucide-react";
 import { useAuthStore } from "@/hooks/useAuthStore";
+import { useRequireLoginModal } from "@/hooks/useRequireLoginModal";
 import { routeApi } from "@/api/client";
 import { PROVINCE_MAP } from "@/data/provinces";
 import { RouteInteractiveMap } from "@/components/map/RouteInteractiveMap";
-import { resolveLocationCoords } from "@/utils/routePathGenerator";
+import { useReportProvinceWeather } from "@/hooks/useReportProvinceWeather";
+import { RouteScore, routeScoreDescription } from "@/components/route/RouteScore";
+import { RestStops } from "@/components/route/RestStops";
+import { RouteWeatherTimeline, type RouteCheckpoint } from "@/components/route/RouteWeatherTimeline";
+import type { RouteAlternative as ApiRouteAlternative, SamplePoint, SegmentRisk, RouteResponse } from "@vietnam-weather/contracts";
+import { formatRiskScore, reportMeasurements, riskReasonText } from "@/utils/reportRisk";
 import {
   CarIcon,
   MotorcycleIcon,
-  WindIcon,
-  RainIcon,
   RiskIcon,
 } from "@/components/ui/Icons";
 import styles from "./RoutePlannerPage.module.css";
-
-interface RouteCheckpoint {
-  name: string;
-  distanceKm: number;
-  eta: string;
-  temp: number;
-  condition: string;
-  rainProb: number;
-  windKmh: number;
-  risk: "low" | "caution" | "high";
-  note?: string;
-}
 
 interface RouteAlternative {
   id: string;
@@ -56,16 +46,25 @@ interface RouteAlternative {
   titleEn: string;
   distanceKm: number;
   durationMinutes: number;
-  riskScore: number;
-  riskLevel: "low" | "caution" | "high";
-  rainExposureKm: number;
+  riskScore: number | null;
+  riskLevel: "low" | "caution" | "high" | "unknown";
+  provisionalRisk?: boolean;
+  riskCoveragePercent?: number;
+  routeScore: number | null;
+  scoreRiskLevel: "low" | "caution" | "high" | "unknown";
+  rainExposureKm: number | null;
   weatherSummaryVi: string;
   weatherSummaryEn: string;
   checkpoints: RouteCheckpoint[];
+  segmentRisks: SegmentRisk[];
+  dangerousCheckpointCount: number;
+  unknownCheckpointCount: number;
   isProOnly: boolean;
   coordinates?: [number, number][];
 }
 
+type BackendSamplePoint = SamplePoint;
+type BackendRouteAlternative = ApiRouteAlternative;
 // 63 Provinces flattened for quick selection
 const PROVINCES_LIST = Object.entries(PROVINCE_MAP).map(([id, p]) => ({
   id,
@@ -78,7 +77,9 @@ export function RoutePlannerPage() {
   const { t, i18n } = useTranslation();
   const isEn = i18n.language === "en";
   const [searchParams] = useSearchParams();
-  const { user, saveRoute, incrementRouteCount } = useAuthStore();
+  const { user, isAuthenticated, saveRoute, incrementRouteCount } = useAuthStore();
+  const { openModal } = useRequireLoginModal();
+  const provinceWeather = useReportProvinceWeather(0);
 
   const isPro = user?.plan === "pro";
   const dailyQuotaMax = isPro ? 30 : 3;
@@ -86,14 +87,18 @@ export function RoutePlannerPage() {
 
   // Form State
   const [origin, setOrigin] = useState("Hà Nội");
-  const [destination, setDestination] = useState("Lào Cai");
+  const [originCoordinates, setOriginCoordinates] = useState<{ latitude: number; longitude: number } | null>(null);
+  const [destinationCoordinates, setDestinationCoordinates] = useState<{ latitude: number; longitude: number } | null>(null);
+  const [destination, setDestination] = useState(() => {
+    const query = searchParams.get("to");
+    return PROVINCES_LIST.find(p => p.name.toLowerCase() === query?.toLowerCase() || p.code.toLowerCase() === query?.toLowerCase())?.name ?? query ?? "Lào Cai";
+  });
   const [vehicle, setVehicle] = useState<"car" | "motorcycle">("car");
   const [departureTime, setDepartureTime] = useState("now");
   const [isPlanning, setIsPlanning] = useState(false);
-  const [hasPlanned, setHasPlanned] = useState(true);
-  const [selectedAltId, setSelectedAltId] = useState<string>("alt-safer");
+  const [hasPlanned, setHasPlanned] = useState(false);
+  const [selectedAltId, setSelectedAltId] = useState<string>("alt-weather_safer");
   const [selectedCheckpointIndex, setSelectedCheckpointIndex] = useState<number | null>(null);
-  const [activeViewTab, setActiveViewTab] = useState<"comparison" | "checkpoints">("comparison");
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
   // Read URL query param ?to=
@@ -109,7 +114,7 @@ export function RoutePlannerPage() {
       } else {
         setDestination(toParam);
       }
-      setHasPlanned(true);
+      setDestinationCoordinates(null);
     }
   }, [searchParams]);
 
@@ -123,10 +128,10 @@ export function RoutePlannerPage() {
   const handleUseCurrentLocation = () => {
     if ("geolocation" in navigator) {
       navigator.geolocation.getCurrentPosition(
-        () => {
+        (position) => {
+          setOriginCoordinates({ latitude: position.coords.latitude, longitude: position.coords.longitude });
           setOrigin("Vị trí GPS của bạn");
           showToast("Đã lấy tọa độ GPS vị trí hiện tại thành công!");
-          setHasPlanned(true);
         },
         () => {
           showToast("Không thể truy cập GPS. Vui lòng chọn địa điểm từ danh sách.");
@@ -140,13 +145,16 @@ export function RoutePlannerPage() {
     const temp = origin;
     setOrigin(destination);
     setDestination(temp);
+    setOriginCoordinates(destinationCoordinates);
+    setDestinationCoordinates(originCoordinates);
   };
 
   // Select Quick Preset
   const handleSelectPreset = (from: string, to: string) => {
     setOrigin(from);
+    setOriginCoordinates(null);
     setDestination(to);
-    setHasPlanned(true);
+    setDestinationCoordinates(null);
   };
 
   // Handle Vehicle selection (Free vs Pro)
@@ -158,62 +166,109 @@ export function RoutePlannerPage() {
     setVehicle(selected);
   };
 
-  // State for real backend-calculated route alternatives
   const [alternatives, setAlternatives] = useState<RouteAlternative[]>([]);
+  const [weatherRefreshStatus, setWeatherRefreshStatus] = useState<"pending" | "waiting" | "unavailable" | null>(null);
+  const mountedRef = useRef(true);
+  useEffect(() => { mountedRef.current = true; return () => { mountedRef.current = false; }; }, []);
+  const [restStops, setRestStops] = useState<RouteResponse["rest_stops"]>();
+  const [planningError, setPlanningError] = useState<string | null>(null);
+  const requestVersion = useRef(0);
+  const routeInputKey = JSON.stringify([origin, destination, originCoordinates, destinationCoordinates, vehicle, departureTime]);
+  const previousInputKey = useRef(routeInputKey);
+  useEffect(() => {
+    if (previousInputKey.current === routeInputKey) return;
+    previousInputKey.current = routeInputKey;
+    requestVersion.current += 1;
+    setHasPlanned(false);
+    setAlternatives([]);
+    setRestStops(undefined);
+    setWeatherRefreshStatus(null);
+    setIsPlanning(false);
+    setPlanningError(null);
+  }, [routeInputKey]);
 
   // Map real backend RouteResponse alternatives into UI RouteAlternative model
   const mapBackendAlternatives = useCallback(
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (data: any): RouteAlternative[] => {
-      const alts = (data?.alternatives || []) as any[];
+    (data: { alternatives?: BackendRouteAlternative[] } | null | undefined): RouteAlternative[] => {
+      const alts = data?.alternatives || [];
       if (!alts.length) return [];
 
       return alts.map((alt) => {
         const type = (alt.alternative_type || "fastest") as "fastest" | "weather_safer" | "shortest";
         const distanceKm = Math.max(1, Math.round((alt.geometry?.distance_meters || 0) / 1000));
         const durationMinutes = Math.max(1, Math.round((alt.geometry?.duration_seconds || 0) / 60));
-        const riskScore = Math.round((alt.route_risk?.score || 0) * 100);
-        const riskLevel: "low" | "caution" | "high" =
-          alt.route_risk?.level === "high" ? "high" : alt.route_risk?.level === "caution" ? "caution" : "low";
+        const provisionalRouteRisk = alt.route_risk.provisional;
+        const provisionalRisk = alt.route_risk?.score == null && provisionalRouteRisk != null;
+        const riskScore = alt.route_risk?.score != null ? Math.round(alt.route_risk.score * 100) : provisionalRouteRisk ? Math.round(provisionalRouteRisk.score * 100) : null;
+        const riskLevel = alt.route_risk?.level === "high" ? "high" : alt.route_risk?.level === "caution" ? "caution" : alt.route_risk?.level === "low" ? "low" : "unknown";
 
         const titleVi =
           type === "weather_safer"
-            ? "An toàn Thời tiết nhất"
+            ? "Ít rủi ro thời tiết hơn"
             : type === "fastest"
-            ? "Nhanh nhất (Cao tốc)"
-            : "Ngắn nhất (Quốc lộ)";
+            ? "Nhanh nhất"
+            : "Ngắn nhất";
         const titleEn =
           type === "weather_safer"
             ? "Weather-Safer"
             : type === "fastest"
-            ? "Fastest (Highway)"
-            : "Shortest (National Road)";
+            ? "Fastest"
+            : "Shortest";
 
-        const samplePoints = (alt.sample_points || []) as any[];
-        const checkpoints: RouteCheckpoint[] = samplePoints.map((sp: any, idx: number) => {
-          const dist = Math.round((sp.distance_from_origin_meters || 0) / 1000);
-          const etaMin = sp.eta_minutes || 0;
-          const h = Math.floor(etaMin / 60);
-          const m = etaMin % 60;
-          const eta = `+${h > 0 ? `${h}h ` : ""}${m}m`;
+        const samplePoints = alt.sample_points || [];
+
+        const selectedPoints: BackendSamplePoint[] = samplePoints;
+
+        const checkpoints: RouteCheckpoint[] = selectedPoints.map((sp, idx: number) => {
+          const dist = sp.distance_from_start_meters / 1000;
+          const rawEtaMin = Math.round(sp.time_from_departure_seconds / 60);
+
+          const h = Math.floor(rawEtaMin / 60);
+          const m = rawEtaMin % 60;
+          const elapsed = `+${h > 0 ? `${h}h ` : ""}${m}m`;
+          const arrival = sp.eta ? new Date(sp.eta) : null;
+          const eta = arrival && Number.isFinite(arrival.getTime())
+            ? `${arrival.toLocaleTimeString("en-GB", { timeZone: "Asia/Ho_Chi_Minh", hour: "2-digit", minute: "2-digit" })} ${arrival.toLocaleDateString("en-GB", { timeZone: "Asia/Ho_Chi_Minh" })} (UTC+7, ${elapsed})`
+            : elapsed;
+          const etaShort = arrival && Number.isFinite(arrival.getTime())
+            ? `${arrival.toLocaleTimeString("en-GB", { timeZone: "Asia/Ho_Chi_Minh", hour: "2-digit", minute: "2-digit" })} · ${arrival.toLocaleDateString("en-GB", { timeZone: "Asia/Ho_Chi_Minh", day: "2-digit", month: "2-digit" })}`
+            : elapsed;
+
+          const defaultName =
+            idx === 0
+              ? `${origin} (${isEn ? "Departure" : "Xuất phát"})`
+              : idx === selectedPoints.length - 1
+              ? `${destination} (${isEn ? "Destination" : "Điểm đến"})`
+              : (isEn ? `Weather sample · km ${Math.round(dist * 10) / 10}` : `Điểm thời tiết · km ${Math.round(dist * 10) / 10}`);
+
+          const name = defaultName;
+
+          const temp = sp.weather?.temperature_c ?? null;
+          const condition = sp.weather ? (isEn ? (sp.weather.condition_code?.replace(/_/g, " ") ?? "Condition unavailable") : reportMeasurements(sp.weather).conditionText) : (isEn ? "Condition unavailable" : "Chưa có trạng thái thời tiết");
+          const rainProb = sp.weather?.precipitation_probability_percent ?? null;
+          const windKmh = sp.weather?.wind_kmh ?? null;
+          const provisionalAssessment = sp.provisional_assessment;
+          const strictAssessment = sp.assessment;
+          const pointProvisional = (!strictAssessment || strictAssessment.level === "unknown") && provisionalAssessment?.display_score != null;
+          const pointAssessment = pointProvisional ? provisionalAssessment : strictAssessment;
+          const risk = pointAssessment?.level ?? "unknown";
+          const note = pointAssessment?.reasons?.map(reason => riskReasonText(reason, isEn)).join("; ");
 
           return {
-            name:
-              sp.name ||
-              (idx === 0
-                ? `${origin} (Xuất phát)`
-                : idx === samplePoints.length - 1
-                ? `${destination} (Điểm đến)`
-                : `Trạm quan trắc Km ${dist}`),
+            name,
             distanceKm: dist,
             eta,
-            temp: Math.round(sp.observation?.temperature ?? 27),
-            condition: sp.observation?.condition || "Thời tiết bình thường",
-            rainProb: Math.round(sp.observation?.rain_probability ?? 10),
-            windKmh: Math.round(sp.observation?.wind_speed ?? 12),
-            risk: sp.risk_level === "high" ? "high" : sp.risk_level === "caution" ? "caution" : "low",
-            note: Array.isArray(sp.factors) && sp.factors.length ? sp.factors.join(", ") : undefined,
-            coordinates: sp.coordinates ? [sp.coordinates.longitude, sp.coordinates.latitude] : undefined,
+            etaShort,
+            temp,
+            condition,
+            rainProb,
+            windKmh,
+            risk,
+            note,
+            riskScore: pointAssessment?.display_score == null ? undefined : Math.round(pointAssessment.display_score),
+            provisional: pointProvisional,
+            coveragePercent: pointProvisional ? provisionalRouteRisk?.coverage_percent : undefined,
+            coordinates: [sp.coordinates.longitude, sp.coordinates.latitude],
           };
         });
 
@@ -226,68 +281,122 @@ export function RoutePlannerPage() {
           durationMinutes,
           riskScore,
           riskLevel,
-          rainExposureKm: Math.round(distanceKm * (riskLevel === "high" ? 0.35 : riskLevel === "caution" ? 0.15 : 0.05)),
-          weatherSummaryVi: alt.summary?.vi || "Điều kiện thời tiết ổn định dọc tuyến di chuyển",
-          weatherSummaryEn: alt.summary?.en || "Stable weather conditions along travel corridor",
+          provisionalRisk,
+          riskCoveragePercent: provisionalRouteRisk?.coverage_percent,
+          routeScore: alt.balanced_score == null ? null : Math.round(alt.balanced_score * 100),
+          scoreRiskLevel: riskLevel !== "unknown" || !provisionalRisk ? riskLevel
+            : checkpoints.some(point => point.risk === "high") ? "high"
+            : checkpoints.some(point => point.risk === "caution") ? "caution"
+            : checkpoints.some(point => point.risk === "low") ? "low" : "unknown",
+          rainExposureKm: null,
+          weatherSummaryVi: alt.summary?.vi || "Chưa đủ dữ liệu",
+          weatherSummaryEn: alt.summary?.en || "Insufficient data",
           checkpoints,
-          isProOnly: !isPro && type !== "fastest",
-          coordinates: Array.isArray(alt.geometry?.coordinates) ? alt.geometry.coordinates : undefined,
+          segmentRisks: alt.segment_risks,
+          dangerousCheckpointCount: alt.route_risk?.dangerous_checkpoint_count ?? samplePoints.filter(p => p.assessment?.evidence.some(e => e.severity >= 2)).length,
+          unknownCheckpointCount: alt.route_risk?.unknown_checkpoint_count ?? samplePoints.filter(p => !p.assessment || p.assessment.severity === 0).length,
+          isProOnly: !isPro && type === "shortest",
+          coordinates: alt.geometry.coordinates.map(c => [c.longitude, c.latitude]),
         };
       });
     },
-    [origin, destination, isPro]
+    [origin, destination, isPro, isEn]
   );
 
   // Execute Route Planning via Backend API
-  const handlePlanRoute = useCallback(async () => {
+  const handlePlanRoute = useCallback(async (isInitial = false) => {
     if (!origin.trim() || !destination.trim()) {
       showToast("Vui lòng nhập đầy đủ Điểm xuất phát và Điểm đến!");
       return;
     }
 
-    // Check quota
-    const quotaCheck = incrementRouteCount();
-    if (!quotaCheck.allowed) {
-      showToast(
-        isPro
-          ? "Bạn đã dùng hết 30 lượt tìm lộ trình hôm nay."
-          : "Bạn đã dùng hết 3 lượt miễn phí hôm nay. Hãy nâng cấp Pro để có 30 lượt/ngày!"
+    if (!isAuthenticated && !isInitial) {
+      openModal(
+        isEn ? "Safe Route Planning" : "Lập lộ trình an toàn thời tiết",
+        isEn
+          ? "Please sign in or create a free account to calculate weather-aware routes and check checkpoints on your route!"
+          : "Vui lòng đăng nhập hoặc tạo tài khoản miễn phí để tính toán các tuyến theo dữ liệu thời tiết và cảnh báo trạm kiểm soát dọc đường!"
       );
       return;
     }
 
-    setIsPlanning(true);
-
-    const originCoords = resolveLocationCoords(origin, [105.8544, 21.0285]);
-    const destCoords = resolveLocationCoords(destination, [103.9754, 22.4856]);
-
-    try {
-      const response = await routeApi.calculateRoutes({
-        origin: { coordinates: { latitude: originCoords[1], longitude: originCoords[0] } },
-        destination: { coordinates: { latitude: destCoords[1], longitude: destCoords[0] } },
-        vehicle_type: vehicle,
-      });
-
-      const mapped = mapBackendAlternatives(response);
-      if (mapped.length > 0) {
-        setAlternatives(mapped);
-        setHasPlanned(true);
-        setSelectedAltId(isPro ? mapped[0]!.id : "alt-fastest");
-        setSelectedCheckpointIndex(null);
-      } else {
-        throw new Error("Không tìm thấy dữ liệu lộ trình.");
+    if (!isInitial) {
+      // Check quota for live user queries
+      const quotaCheck = incrementRouteCount();
+      if (!quotaCheck.allowed) {
+        showToast(
+          isPro
+            ? "Bạn đã dùng hết 30 lượt tìm lộ trình hôm nay."
+            : "Bạn đã dùng hết 3 lượt miễn phí hôm nay. Hãy nâng cấp Pro để có 30 lượt/ngày!"
+        );
+        return;
       }
-    } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : "Không thể tính toán lộ trình lúc này.";
-      showToast(msg);
-    } finally {
-      setIsPlanning(false);
     }
-  }, [origin, destination, vehicle, isPro, incrementRouteCount, mapBackendAlternatives]);
 
-  // Initial planning on mount
+    const version = ++requestVersion.current;
+    setIsPlanning(true);
+    setPlanningError(null);
+    setAlternatives([]);
+    setRestStops(undefined);
+    setWeatherRefreshStatus(null);
+
+    let hasInterimResult = false;
+    try {
+      const selectedDeparture = new Date();
+      if (departureTime === "morning") { selectedDeparture.setDate(selectedDeparture.getDate() + 1); selectedDeparture.setHours(6, 0, 0, 0); }
+      else if (departureTime === "in-1h" || departureTime === "in-2h") selectedDeparture.setHours(selectedDeparture.getHours() + (departureTime === "in-1h" ? 1 : 2));
+      const routeRequest = {
+        origin: originCoordinates ? { coordinates: originCoordinates } : { query: origin },
+        destination: destinationCoordinates ? { coordinates: destinationCoordinates } : { query: destination },
+        vehicle_type: vehicle,
+        departure_time: departureTime === "now" ? undefined : selectedDeparture.toISOString(),
+      };
+      for (let refreshAttempt = 0; refreshAttempt <= 6; refreshAttempt++) {
+        if (!mountedRef.current || version !== requestVersion.current) return;
+        const response = await routeApi.calculateRoutes(routeRequest);
+
+        if (!mountedRef.current || version !== requestVersion.current) return;
+        const routeResponse = response as { alternatives?: BackendRouteAlternative[]; recommended_alternative?: string | null; rest_stops?: RouteResponse["rest_stops"]; weather_refresh?: RouteResponse["weather_refresh"] };
+        const mapped = mapBackendAlternatives(routeResponse);
+        if (mapped.length > 0) {
+          hasInterimResult = true;
+          setAlternatives(mapped);
+          setRestStops(routeResponse.rest_stops);
+          setHasPlanned(true);
+          setSelectedAltId(mapped.find(alternative => alternative.type === routeResponse.recommended_alternative)?.id ?? mapped[0]!.id);
+          setSelectedCheckpointIndex(null);
+        } else {
+          throw new Error("Không tìm thấy dữ liệu lộ trình.");
+        }
+        if (routeResponse.weather_refresh?.status !== "pending") {
+          setWeatherRefreshStatus(routeResponse.weather_refresh?.status === "unavailable" ? "unavailable" : null);
+          break;
+        }
+        setWeatherRefreshStatus(refreshAttempt === 6 ? "waiting" : "pending");
+        if (refreshAttempt === 6) break;
+        await new Promise(resolve => setTimeout(resolve, 5000));
+      }
+    } catch {
+      if (!mountedRef.current || version !== requestVersion.current) return;
+      if (hasInterimResult) {
+        setWeatherRefreshStatus("unavailable");
+        return;
+      }
+      setAlternatives([]);
+      setRestStops(undefined);
+      setWeatherRefreshStatus(null);
+      setHasPlanned(false);
+      setPlanningError(isEn ? "Route unavailable. Please try again." : "Không tải được lộ trình. Vui lòng thử lại.");
+    } finally {
+      if (mountedRef.current && version === requestVersion.current) setIsPlanning(false);
+    }
+  }, [origin, destination, originCoordinates, destinationCoordinates, vehicle, departureTime, isPro, isEn, isAuthenticated, openModal, showToast, incrementRouteCount, mapBackendAlternatives]);
+
+  const initialPlanStarted = useRef(false);
   useEffect(() => {
-    void handlePlanRoute();
+    if (initialPlanStarted.current) return;
+    initialPlanStarted.current = true;
+    void handlePlanRoute(true);
   }, [handlePlanRoute]);
 
   // Selected Alternative Object
@@ -298,9 +407,9 @@ export function RoutePlannerPage() {
 
   // Comparison Data between 3 alternatives
   const comparisonData = useMemo(() => {
-    const safer = alternatives.find((a) => a.type === "weather_safer") || alternatives[0] || null;
-    const fastest = alternatives.find((a) => a.type === "fastest") || alternatives[1] || null;
-    const shortest = alternatives.find((a) => a.type === "shortest") || alternatives[2] || null;
+    const safer = alternatives.find((a) => a.type === "weather_safer") || null;
+    const fastest = alternatives.find((a) => a.type === "fastest") || null;
+    const shortest = alternatives.find((a) => a.type === "shortest") || null;
     return { safer, fastest, shortest };
   }, [alternatives]);
 
@@ -310,6 +419,15 @@ export function RoutePlannerPage() {
 
   // Save Route Action
   const handleSaveCurrentRoute = () => {
+    if (!isAuthenticated) {
+      openModal(
+        isEn ? "Save Travel Route" : "Lưu lộ trình di chuyển",
+        isEn
+          ? "Please sign in or create an account to save your routes and track real-time weather changes before departing!"
+          : "Vui lòng đăng nhập hoặc tạo tài khoản để lưu trữ lộ trình này và theo dõi cập nhật thời tiết trước khi khởi hành!"
+      );
+      return;
+    }
     if (!currentSelectedAlt) return;
     const res = saveRoute({
       fromName: origin,
@@ -323,6 +441,7 @@ export function RoutePlannerPage() {
 
   return (
     <div className={styles.page}>
+      {planningError && <p role="alert">{planningError}</p>}
       {/* Toast Notification */}
       {toastMessage && (
         <div
@@ -409,7 +528,10 @@ export function RoutePlannerPage() {
                     type="text"
                     list="provinces-list"
                     value={origin}
-                    onChange={(e) => setOrigin(e.target.value)}
+                    onChange={(e) => {
+                      setOrigin(e.target.value);
+                      setOriginCoordinates(null);
+                    }}
                     placeholder={isEn ? "Enter origin (e.g., Hanoi)..." : "Nhập tỉnh thành đi (ví dụ: Hà Nội)..."}
                     className={styles.inputField}
                   />
@@ -440,7 +562,7 @@ export function RoutePlannerPage() {
                     type="text"
                     list="provinces-list"
                     value={destination}
-                    onChange={(e) => setDestination(e.target.value)}
+                    onChange={(e) => { setDestination(e.target.value); setDestinationCoordinates(null); }}
                     placeholder={isEn ? "Enter destination (e.g., Lao Cai)..." : "Nhập tỉnh thành đến (ví dụ: Lào Cai)..."}
                     className={styles.inputField}
                   />
@@ -534,7 +656,7 @@ export function RoutePlannerPage() {
               <button
                 type="button"
                 className={styles.planActionBtn}
-                onClick={handlePlanRoute}
+                onClick={() => void handlePlanRoute(false)}
                 disabled={isPlanning}
               >
                 {isPlanning ? (
@@ -556,74 +678,76 @@ export function RoutePlannerPage() {
           {hasPlanned && currentSelectedAlt && (
             <div className={styles.resultsSection}>
               {/* Alternatives List */}
-              <div className={styles.alternativesCard}>
+              <section className={styles.alternativesCard} aria-labelledby="travel-alternatives-title">
                 <div className={styles.resultsHeader}>
                   <div className={styles.resultsTitleRow}>
-                    <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                      <h2 className={styles.resultsTitle}>{isEn ? "Travel Alternatives" : "Phương án di chuyển"}</h2>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setHasPlanned(false);
-                          setSelectedCheckpointIndex(null);
-                          setSelectedAltId("alt-safer");
-                          showToast(isEn ? "Route cleared and map reset." : "Đã hủy lộ trình và làm mới bản đồ.");
-                        }}
-                        className={styles.clearRouteBtn}
-                        title={isEn ? "Clear route and reset map" : "Hủy toàn bộ lộ trình và làm mới bản đồ"}
-                      >
-                        <Trash2 size={12} />
-                        <span>{isEn ? "Clear Route" : "Hủy lộ trình"}</span>
-                      </button>
+                    <div className={styles.resultsHeading}>
+                      <h2 id="travel-alternatives-title" className={styles.resultsTitle}>{isEn ? "Travel Alternatives" : "Phương án di chuyển"}</h2>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        requestVersion.current += 1;
+                        setIsPlanning(false);
+                        setWeatherRefreshStatus(null);
+                        setHasPlanned(false);
+                        setSelectedCheckpointIndex(null);
+                        setSelectedAltId("alt-weather_safer");
+                        showToast(isEn ? "Route cleared and map reset." : "Đã hủy lộ trình và làm mới bản đồ.");
+                      }}
+                      className={styles.clearRouteBtn}
+                      title={isEn ? "Clear route and reset map" : "Hủy toàn bộ lộ trình và làm mới bản đồ"}
+                    >
+                      <Trash2 size={12} />
+                      <span>{isEn ? "Clear Route" : "Hủy lộ trình"}</span>
+                    </button>
                     </div>
-                    <span className={styles.resultsMetaText}>
-                      {isPro ? (isEn ? "PRO: 3 alternatives" : "PRO: 3 phương án") : (isEn ? "Free: 1 alternative" : "Free: 1 phương án")}
+                    <span className={styles.resultsCount}>
+                      {isEn ? `${alternatives.length} ${alternatives.length === 1 ? "alternative" : "alternatives"}` : `${alternatives.length} phương án`}
                     </span>
                   </div>
-                </div>
+              </div>
 
-                {/* Vertical Stack of Alternative Cards */}
-                <div className={styles.alternativesStack}>
-                  {alternatives.map((alt) => {
-                    const isLocked = !isPro && alt.type !== "fastest";
-                    const isSelected = selectedAltId === alt.id && !isLocked;
+              {weatherRefreshStatus && <p role="status" className={styles.resultsMetaText}>{weatherRefreshStatus === "pending" ? (isEn ? "Refreshing weather along the route… Assessment will update automatically." : "Đang bổ sung thời tiết dọc tuyến… Đánh giá sẽ tự động cập nhật.") : weatherRefreshStatus === "waiting" ? (isEn ? "Weather refresh is still processing. Use Find Safe Route again to check progress." : "Dữ liệu thời tiết vẫn đang được xử lý. Bấm tìm lộ trình lần nữa để cập nhật.") : (isEn ? "Weather refresh is unavailable. Missing sections remain unknown." : "Chưa thể bổ sung dữ liệu thời tiết. Các đoạn thiếu dữ liệu vẫn chưa xác định.")}</p>}
+              {!saferAlt && (
+                <p className={styles.resultsMetaText} role="status">
+                  {alternatives.every(alternative => alternative.riskScore === null)
+                    ? (isEn ? "Weather-Safer unavailable: weather coverage is incomplete along the candidate routes." : "Chưa thể đề xuất tuyến ít rủi ro thời tiết: dữ liệu chưa phủ đầy đủ các tuyến.")
+                    : (isEn ? "Weather-Safer unavailable: the routing provider returned no distinct eligible road to compare." : "Chưa thể đề xuất tuyến ít rủi ro thời tiết: nhà cung cấp chưa trả về tuyến khác đủ điều kiện để so sánh.")}
+                </p>
+              )}
+              <p className={styles.resultsMetaText}>
+                {isEn ? "Combined score: lower is better. Color shows weather risk." : "Điểm tổng hợp: càng thấp càng tốt. Màu thể hiện rủi ro thời tiết."}
+              </p>
+              {/* Vertical Stack of Alternative Cards */}
+              <div className={styles.alternativesStack}>
+                {alternatives.map((alt) => {
+                  const isSelected = selectedAltId === alt.id;
 
-                    return (
-                      <div
-                        key={alt.id}
-                        className={`${styles.altCard} ${isSelected ? styles.altCardSelected : ""} ${
-                          alt.type === "weather_safer" ? styles.altCardSafer : ""
-                        } ${isLocked ? styles.altCardLocked : ""}`}
-                        onClick={() => {
-                          if (!isLocked) {
-                            setSelectedAltId(alt.id);
-                            setSelectedCheckpointIndex(null);
-                          }
-                        }}
-                        style={{ cursor: isLocked ? "default" : "pointer" }}
-                        title={
-                          isLocked
-                            ? (isEn ? "Upgrade to Pro to unlock this corridor" : "Nâng cấp gói Pro để mở khóa tuyến này")
-                            : (isEn ? `Click to select ${alt.titleEn}` : `Nhấp để chọn phương án ${alt.titleVi}`)
-                        }
-                      >
+                  return (
+                    <article
+                      key={alt.id}
+                      className={`${styles.altCard} ${isSelected ? styles.altCardSelected : ""}`}
+                      data-route-type={alt.type}
+                      title={routeScoreDescription({ score: alt.routeScore, level: alt.scoreRiskLevel, provisional: alt.provisionalRisk, coveragePercent: alt.riskCoveragePercent, isEn })}
+                    >
                         {/* Top Bar */}
                         <div className={styles.cardTop}>
-                          <span
-                            className={`${styles.altBadge} ${
-                              alt.type === "fastest"
-                                ? styles.badgeFastest
-                                : alt.type === "weather_safer"
-                                ? styles.badgeSafer
-                                : styles.badgeShortest
-                            }`}
-                            style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}
+                          <button
+                            type="button"
+                            className={styles.altBadge}
+                            aria-pressed={isSelected}
+                            aria-label={isEn ? `Select ${alt.titleEn} route` : `Chọn tuyến ${alt.titleVi}`}
+                            aria-describedby={`${alt.id}-metrics`}
+                            onClick={() => {
+                              setSelectedAltId(alt.id);
+                              setSelectedCheckpointIndex(null);
+                            }}
                           >
                             {alt.type === "weather_safer" && <ShieldCheck size={14} />}
                             {alt.type === "fastest" && <Zap size={14} />}
-                            {alt.type === "shortest" && <Gauge size={14} />}
+                            {alt.type === "shortest" && <Ruler size={14} />}
                             <span>{isEn ? alt.titleEn : alt.titleVi}</span>
-                          </span>
+                          </button>
 
                           {isSelected ? (
                             <span className={styles.activeSelectedPill}>
@@ -639,7 +763,7 @@ export function RoutePlannerPage() {
                         </div>
 
                         {/* Metrics */}
-                        <div className={styles.cardMetrics}>
+                        <div id={`${alt.id}-metrics`} className={styles.cardMetrics}>
                           <div className={styles.metricItem}>
                             <span className={styles.metricLabel}>{isEn ? "Distance" : "Khoảng cách"}</span>
                             <span className={styles.metricVal}>{alt.distanceKm} km</span>
@@ -650,54 +774,23 @@ export function RoutePlannerPage() {
                               {Math.floor(alt.durationMinutes / 60)}h {alt.durationMinutes % 60}{isEn ? "m" : "p"}
                             </span>
                           </div>
-                          <div className={styles.metricItem}>
-                            <span className={styles.metricLabel}>{isEn ? "ETA Risk" : "Rủi ro ETA"}</span>
-                            <span
-                              className={`${styles.riskScoreBadge} ${
-                                alt.riskLevel === "low"
-                                  ? styles.riskLow
-                                  : alt.riskLevel === "caution"
-                                  ? styles.riskMedium
-                                  : styles.riskHigh
-                              }`}
-                            >
-                              {alt.riskScore}/100
-                            </span>
-                          </div>
+                          <RouteScore id={`${alt.id}-score`} score={alt.routeScore} level={alt.scoreRiskLevel} provisional={alt.provisionalRisk} coveragePercent={alt.riskCoveragePercent} isEn={isEn} />
                         </div>
 
                         {/* Summary */}
                         <div className={styles.cardWeatherSummary}>
+                          {alt.provisionalRisk && <span>{isEn ? "Provisional" : "Tạm tính"}{alt.riskCoveragePercent == null ? "" : (isEn ? ` · Weather coverage: ${alt.riskCoveragePercent}%` : ` · Độ phủ thời tiết: ${alt.riskCoveragePercent}%`)}</span>}
                           <span>{isEn ? alt.weatherSummaryEn : alt.weatherSummaryVi}</span>
+                          {alt.type === "weather_safer" && alternatives.some(other => other.type !== "weather_safer" && JSON.stringify(other.coordinates) === JSON.stringify(alt.coordinates)) && (
+                            <span>{isEn ? "Uses the same road as another option; selected by the combined risk, time and distance score." : "Cùng đường với một phương án khác; được chọn theo điểm tổng hợp rủi ro, thời gian và khoảng cách."}</span>
+                          )}
                         </div>
 
-                        {/* Locked Overlay for Free Tier */}
-                        {isLocked && (
-                          <div className={styles.lockedOverlay}>
-                            <div className={styles.lockIconWrap}>
-                              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
-                                <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-                              </svg>
-                            </div>
-                            <div className={styles.lockTitle}>
-                              {isEn ? `Unlock ${alt.titleEn}` : `Mở khóa Tuyến ${alt.titleVi}`}
-                            </div>
-                            <p className={styles.lockDesc}>
-                              {isEn
-                                ? "Upgrade to PRO to compare routes avoiding severe squalls, landslides, and high winds."
-                                : "Nâng cấp gói PRO để so sánh lộ trình tránh giông bão, sạt lở và gió mạnh."}
-                            </p>
-                            <Link to="/upgrade" className={styles.unlockBtn}>
-                              {isEn ? "Upgrade to Pro now" : "Nâng cấp Pro ngay"}
-                            </Link>
-                          </div>
-                        )}
-                      </div>
+                      </article>
                     );
                   })}
                 </div>
-              </div>
+              </section>
 
               {/* Vehicle Specific Advisory Banner */}
               <div className={styles.advisoryBox}>
@@ -711,220 +804,23 @@ export function RoutePlannerPage() {
                       : (isEn ? "Weather safety recommendation for Passenger Cars" : "Khuyến nghị thời tiết an toàn cho Ô tô")}
                   </div>
                   <div className={styles.advisoryText}>
-                    {vehicle === "motorcycle" ? (
-                      isEn ? (
-                        <>
-                          Route encounters scattered drizzle and gusty winds along mountain curves from 10:30 to 11:30.
-                          Waterproof rain suits recommended; verify tire pressure and maintain speeds under 40 km/h on slick pavements.
-                        </>
-                      ) : (
-                        <>
-                          Tuyến đường có đoạn mưa rải rác và gió tạt qua các khúc cua sườn đồi lúc 10:30 - 11:30. Khuyến nghị
-                          mang theo áo mưa bộ chống nước, kiểm tra áp suất lốp và duy trì tốc độ dưới 40km/h trên mặt đường trơn trượt.
-                        </>
-                      )
-                    ) : (
-                      isEn ? (
-                        <>
-                          Expressway visibility is forecast to drop to 300m - 500m at low-elevation stretches due to squalls.
-                          Please engage fog lamps and maintain a minimum 50m following distance.
-                        </>
-                      ) : (
-                        <>
-                          Tầm nhìn trên cao tốc dự báo giảm xuống còn 300m - 500m tại một số trạm trũng thấp do mưa giông. Vui
-                          lòng bật đèn sương mù và giữ khoảng cách tối thiểu 50m với xe phía trước.
-                        </>
-                      )
-                    )}
+                    {isEn ? currentSelectedAlt.weatherSummaryEn : currentSelectedAlt.weatherSummaryVi}
+                    <p>{isEn ? "Checkpoints with Caution/High evidence" : "Điểm có bằng chứng Chú ý/Cao"}: {currentSelectedAlt.dangerousCheckpointCount}; {isEn ? "Unknown checkpoints" : "Điểm chưa đủ dữ liệu"}: {currentSelectedAlt.unknownCheckpointCount}</p>
                   </div>
                 </div>
               </div>
 
-              {/* View Mode Tabs: Comparison Matrix vs Checkpoints */}
-              <div className={styles.viewTabsRow}>
-                <button
-                  type="button"
-                  className={`${styles.viewTabBtn} ${activeViewTab === "comparison" ? styles.viewTabBtnActive : ""}`}
-                  onClick={() => setActiveViewTab("comparison")}
-                >
-                  <Scale size={13} />
-                  <span>{isEn ? "Compare 3 alternatives" : "So sánh 3 phương án"}</span>
-                </button>
-                <button
-                  type="button"
-                  className={`${styles.viewTabBtn} ${activeViewTab === "checkpoints" ? styles.viewTabBtnActive : ""}`}
-                  onClick={() => setActiveViewTab("checkpoints")}
-                >
-                  <MapPin size={13} />
-                  <span>
-                    {isEn
-                      ? `Checkpoints (${currentSelectedAlt.checkpoints.length})`
-                      : `Trạm kiểm tra (${currentSelectedAlt.checkpoints.length} trạm)`}
-                  </span>
-                </button>
-              </div>
+              <RestStops stops={restStops} isEn={isEn} />
 
-              {/* 1. Comparison Matrix Mode */}
-              {activeViewTab === "comparison" && saferAlt && fastestAlt && (
-                <div className={styles.comparisonCard}>
-                  <div className={styles.comparisonHeader}>
-                    <div className={styles.comparisonTitleRow}>
-                      <div className={styles.comparisonTitle}>
-                        <SlidersHorizontal size={15} color="#38BDF8" />
-                        <span>{isEn ? "Multi-Criteria 3-Alternative Comparison" : "So sánh đa tiêu chí 3 phương án"}</span>
-                      </div>
-                      <span className={styles.paretoBadge}>{isEn ? "Pareto Optimal" : "Tối ưu Pareto"}</span>
-                    </div>
-                    <p className={styles.comparisonSubtitle}>
-                      {isEn
-                        ? "Evaluating trade-offs between travel duration, total distance, and extreme meteorological risk exposure."
-                        : "Đánh giá tương quan giữa thời gian lưu thông, tổng quãng đường và mức độ phơi nhiễm trước rủi ro khí tượng cực đoan."}
-                    </p>
+              {/* Checkpoints Timeline Mode */}
+              <div className={styles.timelineCard}>
+                <div className={styles.timelineTitle}>
+                  <div className={styles.timelineTitleLeft}>
+                    <span>
+                      {isEn ? "Weather along your route:" : "Thời tiết dọc tuyến:"}{" "}
+                      <strong>{isEn ? currentSelectedAlt.titleEn : currentSelectedAlt.titleVi}</strong>
+                    </span>
                   </div>
-
-                  <div className={styles.comparisonTableWrap}>
-                    <table className={styles.comparisonTable}>
-                      <thead>
-                        <tr>
-                          <th className={styles.comparisonCriteriaCell}>{isEn ? "Criteria" : "Tiêu chí"}</th>
-                          <th className={`${styles.colSafer} ${selectedAltId === saferAlt.id ? styles.colSelected : ""}`}>
-                            <span style={{ color: "#10B981", display: "inline-flex", alignItems: "center", gap: "5px" }}>
-                              <ShieldCheck size={14} /> {isEn ? "Weather-Safer" : "An toàn"}
-                            </span>
-                          </th>
-                          <th className={`${styles.colFastest} ${selectedAltId === fastestAlt.id ? styles.colSelected : ""}`}>
-                            <span style={{ color: "#0EA5E9", display: "inline-flex", alignItems: "center", gap: "5px" }}>
-                              <Zap size={14} /> {isEn ? "Fastest" : "Nhanh nhất"}
-                            </span>
-                          </th>
-                          {shortestAlt && (
-                            <th className={`${styles.colShortest} ${selectedAltId === shortestAlt.id ? styles.colSelected : ""}`}>
-                              <span style={{ color: "#8B5CF6", display: "inline-flex", alignItems: "center", gap: "5px" }}>
-                                <Ruler size={14} /> {isEn ? "Shortest" : "Ngắn nhất"}
-                              </span>
-                            </th>
-                          )}
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr>
-                          <td className={styles.comparisonCriteriaCell}>{isEn ? "Route Corridor" : "Hành lang tuyến"}</td>
-                          <td className={styles.colSafer}>{isEn ? "CT05 (Squall Evading)" : "CT05 (Tránh dông)"}</td>
-                          <td className={styles.colFastest}>{isEn ? "CT05 (Direct Crossing)" : "CT05 (Đi xuyên tâm)"}</td>
-                          {shortestAlt && <td className={styles.colShortest}>{isEn ? "QL70 (Bao Yen Pass)" : "QL70 (Đèo Bảo Yên)"}</td>}
-                        </tr>
-                        <tr>
-                          <td className={styles.comparisonCriteriaCell}>{isEn ? "Distance" : "Quãng đường"}</td>
-                          <td className={styles.colSafer}><strong>{saferAlt.distanceKm} km</strong> ({isEn ? "+11 km" : "+11 km"})</td>
-                          <td className={styles.colFastest}><strong>{fastestAlt.distanceKm} km</strong> ({isEn ? "Baseline" : "Chuẩn"})</td>
-                          {shortestAlt && <td className={styles.colShortest}><strong>{shortestAlt.distanceKm} km</strong> ({isEn ? "-12 km" : "-12 km"})</td>}
-                        </tr>
-                        <tr>
-                          <td className={styles.comparisonCriteriaCell}>{isEn ? "ETA Duration" : "Thời gian ETA"}</td>
-                          <td className={styles.colSafer}>
-                            <strong>{Math.floor(saferAlt.durationMinutes / 60)}h {saferAlt.durationMinutes % 60}m</strong> ({isEn ? "+26m" : "+26p"})
-                          </td>
-                          <td className={styles.colFastest}>
-                            <strong>{Math.floor(fastestAlt.durationMinutes / 60)}h {fastestAlt.durationMinutes % 60}m</strong> ({isEn ? "Fastest" : "Nhanh nhất"})
-                          </td>
-                          {shortestAlt && (
-                            <td className={styles.colShortest}>
-                              <strong>{Math.floor(shortestAlt.durationMinutes / 60)}h {shortestAlt.durationMinutes % 60}m</strong> ({isEn ? "+1h 36m" : "+1h 36p"})
-                            </td>
-                          )}
-                        </tr>
-                        <tr>
-                          <td className={styles.comparisonCriteriaCell}>{isEn ? "Risk Score" : "Chỉ số rủi ro"}</td>
-                          <td className={styles.colSafer}>
-                            <span className={`${styles.riskScoreBadge} ${styles.riskLow}`}>{saferAlt.riskScore}/100</span> {isEn ? "Safe" : "An toàn"}
-                          </td>
-                          <td className={styles.colFastest}>
-                            <span className={`${styles.riskScoreBadge} ${styles.riskHigh}`}>{fastestAlt.riskScore}/100</span> {isEn ? "Hazard" : "Nguy hiểm"}
-                          </td>
-                          {shortestAlt && (
-                            <td className={styles.colShortest}>
-                              <span className={`${styles.riskScoreBadge} ${styles.riskMedium}`}>{shortestAlt.riskScore}/100</span> {isEn ? "Caution" : "Chú ý"}
-                            </td>
-                          )}
-                        </tr>
-                        <tr>
-                          <td className={styles.comparisonCriteriaCell}>{isEn ? "Severe Weather" : "Thời tiết cực đoan"}</td>
-                          <td className={styles.colSafer}>{isEn ? "0 km squalls (15 km light rain)" : "0 km dông (15 km mưa nhẹ)"}</td>
-                          <td className={styles.colFastest}>{isEn ? "98 km heavy storm >35mm/h" : "98 km mưa dông >35mm/h"}</td>
-                          {shortestAlt && <td className={styles.colShortest}>{isEn ? "41 km mountain fog" : "41 km sương mù đèo dốc"}</td>}
-                        </tr>
-                        <tr>
-                          <td className={styles.comparisonCriteriaCell}>{isEn ? "Visibility & Road" : "Tầm nhìn & Đường"}</td>
-                          <td className={styles.colSafer}>{isEn ? "> 10 km, dry pavement" : "> 10 km, khô thoáng"}</td>
-                          <td className={styles.colFastest}>{isEn ? "< 300 m, aquaplaning" : "< 300 m, trơn trượt ngập úng"}</td>
-                          {shortestAlt && <td className={styles.colShortest}>{isEn ? "< 500 m, winding bends" : "< 500 m, khúc cua trơn"}</td>}
-                        </tr>
-                        <tr>
-                          <td className={styles.comparisonCriteriaCell}>{isEn ? "Pareto Evaluation" : "Đánh giá Pareto"}</td>
-                          <td className={styles.colSafer} style={{ color: "#10B981", fontWeight: 700 }}>{isEn ? "Recommended Optimal" : "Khuyên dùng tối ưu"}</td>
-                          <td className={styles.colFastest} style={{ color: "#EF4444", fontWeight: 600 }}>{isEn ? "Hazardous Warning" : "Cảnh báo nguy hiểm"}</td>
-                          {shortestAlt && <td className={styles.colShortest} style={{ color: "#F59E0B", fontWeight: 600 }}>{isEn ? "Not Recommended" : "Không khuyến nghị"}</td>}
-                        </tr>
-                        <tr>
-                          <td className={styles.comparisonCriteriaCell}>{isEn ? "Apply Route" : "Áp dụng tuyến"}</td>
-                          <td className={styles.colSafer}>
-                            <button
-                              type="button"
-                              className={`${styles.tableApplyBtn} ${selectedAltId === saferAlt.id ? styles.tableApplyBtnActive : ""}`}
-                              onClick={() => {
-                                setSelectedAltId(saferAlt.id);
-                                setSelectedCheckpointIndex(null);
-                              }}
-                            >
-                              {selectedAltId === saferAlt.id ? <Check size={11} /> : null}
-                              <span>{selectedAltId === saferAlt.id ? (isEn ? "Active" : "Đang chọn") : (isEn ? "Select" : "Chọn")}</span>
-                            </button>
-                          </td>
-                          <td className={styles.colFastest}>
-                            <button
-                              type="button"
-                              className={`${styles.tableApplyBtn} ${selectedAltId === fastestAlt.id ? styles.tableApplyBtnActive : ""}`}
-                              onClick={() => {
-                                setSelectedAltId(fastestAlt.id);
-                                setSelectedCheckpointIndex(null);
-                              }}
-                            >
-                              {selectedAltId === fastestAlt.id ? <Check size={11} /> : null}
-                              <span>{selectedAltId === fastestAlt.id ? (isEn ? "Active" : "Đang chọn") : (isEn ? "Select" : "Chọn")}</span>
-                            </button>
-                          </td>
-                          {shortestAlt && (
-                            <td className={styles.colShortest}>
-                              <button
-                                type="button"
-                                className={`${styles.tableApplyBtn} ${selectedAltId === shortestAlt.id ? styles.tableApplyBtnActive : ""}`}
-                                onClick={() => {
-                                  setSelectedAltId(shortestAlt.id);
-                                  setSelectedCheckpointIndex(null);
-                                }}
-                              >
-                                {selectedAltId === shortestAlt.id ? <Check size={11} /> : null}
-                                <span>{selectedAltId === shortestAlt.id ? (isEn ? "Active" : "Đang chọn") : (isEn ? "Select" : "Chọn")}</span>
-                              </button>
-                            </td>
-                          )}
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-              )}
-
-              {/* 2. Checkpoints Timeline Mode */}
-              {activeViewTab === "checkpoints" && (
-                <div className={styles.timelineCard}>
-                  <div className={styles.timelineTitle}>
-                    <div className={styles.timelineTitleLeft}>
-                      <span>
-                        {isEn ? "Corridor Checkpoints:" : "Trạm kiểm tra dọc tuyến:"}{" "}
-                        <strong>{isEn ? currentSelectedAlt.titleEn : currentSelectedAlt.titleVi}</strong>
-                      </span>
-                    </div>
 
                   <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
                     {selectedCheckpointIndex !== null && (
@@ -932,107 +828,40 @@ export function RoutePlannerPage() {
                         type="button"
                         onClick={() => setSelectedCheckpointIndex(null)}
                         className={styles.clearCheckpointBtn}
-                        title={isEn ? "Deselect checkpoint to view entire corridor" : "Bỏ chọn trạm để quay lại xem toàn cảnh lộ trình"}
+                        title={isEn ? "Deselect weather point to view the full route" : "Bỏ chọn điểm thời tiết để xem toàn tuyến"}
                       >
                         <RotateCcw size={12} />
-                        <span>{isEn ? "View Corridor" : "Xem toàn tuyến"}</span>
+                        <span>{isEn ? "View full route" : "Xem toàn tuyến"}</span>
                       </button>
                     )}
                     <button type="button" onClick={handleSaveCurrentRoute} className={styles.saveBtn}>
                       <Bookmark size={14} />
-                      <span>{isEn ? "Save Route" : "Lưu lộ trình"}</span>
+                      <span>{isEn ? "Save route" : "Lưu tuyến"}</span>
                     </button>
                   </div>
                 </div>
 
-                <div className={styles.checkpointsList}>
-                  {currentSelectedAlt.checkpoints.map((cp, idx) => {
-                    const isSelected = selectedCheckpointIndex === idx;
-                    const displayName = isEn
-                      ? cp.name
-                          .replace("Hà Nội (Xuất phát)", "Hanoi (Departure)")
-                          .replace("Lào Cai - Sa Pa (Đích)", "Lao Cai - Sa Pa (Destination)")
-                          .replace("Trạm Vĩnh Yên", "Vinh Yen Station")
-                          .replace("Trạm Phú Thọ", "Phu Tho Station")
-                          .replace("Trạm Yên Bái", "Yen Bai Station")
-                          .replace("Trạm Bảo Thắng", "Bao Thang Station")
-                          .replace("Trạm Km 115 (Cao tốc)", "Station Km 115 (Expressway)")
-                          .replace("Trạm quan trắc", "Monitoring Station")
-                          .replace("Hà Nội", "Hanoi")
-                          .replace("Lào Cai", "Lao Cai")
-                      : cp.name;
-
-                    const displayCondition = isEn
-                      ? cp.condition
-                          .replace("Mây nhẹ", "Partly Cloudy")
-                          .replace("Trời nắng nhẹ", "Mild Sun")
-                          .replace("Mây rải rác", "Scattered Clouds")
-                          .replace("Mưa nhỏ rải rác", "Light Drizzle")
-                          .replace("Mây thay đổi", "Variable Clouds")
-                          .replace("Trời mát", "Cool & Clear")
-                          .replace("Dông lốc nguy hiểm", "Severe Squalls")
-                          .replace("Mưa rào", "Rain Showers")
-                          .replace("Sương mù", "Dense Fog")
-                          .replace("Thời tiết bình thường", "Normal Weather")
-                      : cp.condition;
-
-                    return (
-                      <div
-                        key={idx}
-                        className={`${styles.checkpointItem} ${isSelected ? styles.checkpointItemSelected : ""}`}
-                        onClick={() => setSelectedCheckpointIndex((prev) => (prev === idx ? null : idx))}
-                        style={{ cursor: "pointer" }}
-                        title={isSelected ? (isEn ? "Click to deselect" : "Nhấp lại để bỏ chọn trạm này") : (isEn ? "Click to inspect on map" : "Nhấp để xem trạm này trên bản đồ")}
-                      >
-                        <div className={styles.checkpointDot} />
-                        <div className={styles.checkpointContent}>
-                          <div>
-                            <div className={styles.checkpointName}>{displayName}</div>
-                            <div className={styles.checkpointEta}>
-                              {isEn ? "Milestone" : "Cột mốc"} {cp.distanceKm} km • ETA: <strong>{cp.eta}</strong>
-                            </div>
-                          </div>
-
-                          <div className={styles.checkpointWeather}>
-                            <div style={{ textAlign: "right" }}>
-                              <span className={styles.checkpointTemp}>{cp.temp}°C</span>
-                              <div className={styles.checkpointCondition}>{displayCondition}</div>
-                            </div>
-
-                            <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
-                              <span
-                                style={{
-                                  fontSize: "12px",
-                                  display: "inline-flex",
-                                  alignItems: "center",
-                                  gap: "3px",
-                                  color: cp.rainProb > 40 ? "#38BDF8" : "var(--color-text-secondary)",
-                                }}
-                              >
-                                <RainIcon size={14} /> {cp.rainProb}%
-                              </span>
-                              <span
-                                style={{
-                                  fontSize: "12px",
-                                  display: "inline-flex",
-                                  alignItems: "center",
-                                  gap: "3px",
-                                  color: cp.windKmh > 25 ? "#F59E0B" : "var(--color-text-secondary)",
-                                }}
-                              >
-                                <WindIcon size={14} /> {cp.windKmh} km/h
-                              </span>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    );
-                  })}
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "4px 0 10px 0" }}>
+                  <span style={{ fontSize: "12px", color: "var(--color-text-secondary)" }}>
+                    {isEn ? `${currentSelectedAlt.checkpoints.length} weather points` : `${currentSelectedAlt.checkpoints.length} điểm thời tiết`}
+                  </span>
+                  <a
+                    href="#comparison-matrix"
+                    style={{ fontSize: "12px", color: "var(--color-primary, #0066cc)", textDecoration: "none", fontWeight: 600 }}
+                  >
+                    {isEn ? "Compare routes" : "So sánh các tuyến"}
+                  </a>
                 </div>
+
+                <RouteWeatherTimeline
+                  checkpoints={currentSelectedAlt.checkpoints}
+                  selectedIndex={selectedCheckpointIndex}
+                  onSelect={setSelectedCheckpointIndex}
+                  isEn={isEn}
+                />
               </div>
-            )}
-          </div>
-        )}
+            </div>
+          )}
         </div>
 
         {/* Right Column: Sticky Interactive Map */}
@@ -1057,10 +886,12 @@ export function RoutePlannerPage() {
 
           <div className={styles.mapCanvasHolder}>
             <RouteInteractiveMap
+              provinces={provinceWeather}
               hasPlanned={hasPlanned}
               originName={origin === "Hà Nội" && isEn ? "Hanoi" : origin}
               destinationName={destination === "Lào Cai" && isEn ? "Lao Cai" : destination}
               checkpoints={hasPlanned && currentSelectedAlt ? currentSelectedAlt.checkpoints : []}
+              segmentRisks={currentSelectedAlt?.segmentRisks}
               coordinates={hasPlanned && currentSelectedAlt ? currentSelectedAlt.coordinates : undefined}
               routeType={currentSelectedAlt ? currentSelectedAlt.type : "fastest"}
               titleVi={hasPlanned && currentSelectedAlt ? currentSelectedAlt.titleVi : "Bản đồ thời tiết"}
@@ -1074,15 +905,15 @@ export function RoutePlannerPage() {
 
       {/* Full-width Comprehensive Corridor Comparison Table */}
       {hasPlanned && saferAlt && fastestAlt && (
-        <div className={styles.fullWidthComparisonSection}>
+        <div id="comparison-matrix" className={styles.fullWidthComparisonSection}>
           <div className={styles.comparisonHeader}>
             <div className={styles.comparisonTitleRow}>
               <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
                 <Scale size={20} color="var(--color-primary)" />
                 <h3 className={styles.comparisonTitle}>
                   {isEn
-                    ? `Multi-Criteria 3-Alternative Corridor Comparison (${origin === "Hà Nội" ? "Hanoi" : origin} → ${destination === "Lào Cai" ? "Lao Cai" : destination})`
-                    : `Bảng đối sánh đa tiêu chí 3 phương án di chuyển hành lang (${origin} → ${destination})`}
+                    ? `Multi-Criteria ${alternatives.length}-Alternative Corridor Comparison (${origin === "Hà Nội" ? "Hanoi" : origin} → ${destination === "Lào Cai" ? "Lao Cai" : destination})`
+                    : `Bảng đối sánh đa tiêu chí ${alternatives.length} phương án di chuyển hành lang (${origin} → ${destination})`}
                 </h3>
               </div>
               <span className={styles.paretoBadge}>
@@ -1123,67 +954,67 @@ export function RoutePlannerPage() {
               <tbody>
                 <tr>
                   <td className={styles.comparisonCriteriaCell}>{isEn ? "Route Corridor" : "Hành lang tuyến"}</td>
-                  <td className={styles.colSafer}>{isEn ? "CT05 expressway evading Doan Hung squalls" : "CT05 điều hướng vòng tránh vùng mây dông Đoan Hùng"}</td>
-                  <td className={styles.colFastest}>{isEn ? "Noi Bai - Lao Cai direct via Km 110 - 150" : "Cao tốc Nội Bài - Lào Cai đi thẳng qua Km 110 - 150"}</td>
-                  {shortestAlt && <td className={styles.colShortest}>{isEn ? "National Route 70 via Bao Yen Pass" : "Quốc lộ 70 qua địa phận đèo Bảo Yên"}</td>}
+                   <td className={styles.colSafer}>{isEn ? saferAlt.weatherSummaryEn : saferAlt.weatherSummaryVi}</td>
+                   <td className={styles.colFastest}>{isEn ? fastestAlt.weatherSummaryEn : fastestAlt.weatherSummaryVi}</td>
+                   {shortestAlt && <td className={styles.colShortest}>{isEn ? shortestAlt.weatherSummaryEn : shortestAlt.weatherSummaryVi}</td>}
                 </tr>
                 <tr>
                   <td className={styles.comparisonCriteriaCell}>{isEn ? "Total Distance" : "Tổng quãng đường"}</td>
-                  <td className={styles.colSafer}><strong>{saferAlt.distanceKm} km</strong> ({isEn ? "+11 km / +3.8%" : "+11 km / +3.8%"})</td>
+                   <td className={styles.colSafer}><strong>{saferAlt.distanceKm} km</strong></td>
                   <td className={styles.colFastest}><strong>{fastestAlt.distanceKm} km</strong> ({isEn ? "Baseline distance" : "Khoảng cách chuẩn"})</td>
-                  {shortestAlt && <td className={styles.colShortest}><strong>{shortestAlt.distanceKm} km</strong> ({isEn ? "-12 km / -4.2%" : "-12 km / -4.2%"})</td>}
+                   {shortestAlt && <td className={styles.colShortest}><strong>{shortestAlt.distanceKm} km</strong></td>}
                 </tr>
                 <tr>
                   <td className={styles.comparisonCriteriaCell}>{isEn ? "Estimated Duration (ETA)" : "Thời gian dự kiến (ETA)"}</td>
                   <td className={styles.colSafer}>
-                    <strong>{Math.floor(saferAlt.durationMinutes / 60)}h {saferAlt.durationMinutes % 60}m</strong> ({isEn ? "+26 min / +11.1%" : "+26 phút / +11.1%"})
+                     <strong>{Math.floor(saferAlt.durationMinutes / 60)}h {saferAlt.durationMinutes % 60}m</strong>
                   </td>
                   <td className={styles.colFastest}>
                     <strong>{Math.floor(fastestAlt.durationMinutes / 60)}h {fastestAlt.durationMinutes % 60}m</strong> ({isEn ? "Fastest" : "Nhanh nhất"})
                   </td>
                   {shortestAlt && (
                     <td className={styles.colShortest}>
-                      <strong>{Math.floor(shortestAlt.durationMinutes / 60)}h {shortestAlt.durationMinutes % 60}m</strong> ({isEn ? "+1h 36 min / +41.0%" : "+1h 36 phút / +41.0%"})
+                       <strong>{Math.floor(shortestAlt.durationMinutes / 60)}h {shortestAlt.durationMinutes % 60}m</strong>
                     </td>
                   )}
                 </tr>
                 <tr>
                   <td className={styles.comparisonCriteriaCell}>{isEn ? "Meteorological Risk Score" : "Chỉ số rủi ro khí tượng"}</td>
                   <td className={styles.colSafer}>
-                    <span className={`${styles.riskScoreBadge} ${styles.riskLow}`}>{saferAlt.riskScore}/100</span> {isEn ? "Absolute Safe (0/6 hazards)" : "An toàn tuyệt đối (0/6 điểm hiểm họa)"}
+                     <span className={styles.riskScoreBadge}>{saferAlt.provisionalRisk ? (isEn ? "Provisional · " : "Tạm tính · ") : ""}{formatRiskScore(saferAlt.riskScore == null ? null : saferAlt.riskScore / 100, isEn)}</span>
                   </td>
                   <td className={styles.colFastest}>
-                    <span className={`${styles.riskScoreBadge} ${styles.riskHigh}`}>{fastestAlt.riskScore}/100</span> {isEn ? "High Risk (4/6 hazards)" : "Nguy cơ cao (4/6 điểm hiểm họa)"}
+                     <span className={styles.riskScoreBadge}>{fastestAlt.provisionalRisk ? (isEn ? "Provisional · " : "Tạm tính · ") : ""}{formatRiskScore(fastestAlt.riskScore == null ? null : fastestAlt.riskScore / 100, isEn)}</span>
                   </td>
                   {shortestAlt && (
                     <td className={styles.colShortest}>
-                      <span className={`${styles.riskScoreBadge} ${styles.riskMedium}`}>{shortestAlt.riskScore}/100</span> {isEn ? "Caution (2/6 hazards)" : "Mức độ chú ý (2/6 điểm hiểm họa)"}
+                       <span className={styles.riskScoreBadge}>{shortestAlt.provisionalRisk ? (isEn ? "Provisional · " : "Tạm tính · ") : ""}{formatRiskScore(shortestAlt.riskScore == null ? null : shortestAlt.riskScore / 100, isEn)}</span>
                     </td>
                   )}
                 </tr>
                 <tr>
                   <td className={styles.comparisonCriteriaCell}>{isEn ? "Severe Weather Exposure" : "Phơi nhiễm thời tiết cực đoan"}</td>
-                  <td className={styles.colSafer}>{isEn ? "0 km squall (15 km light drizzle near Yen Bai)" : "0 km dông lốc (15 km mưa nhỏ nhẹ đoạn Yên Bái)"}</td>
-                  <td className={styles.colFastest}>{isEn ? "98 km heavy storm > 35mm/h, gale force 6 - 7" : "98 km mưa dông cực lớn > 35mm/h, gió giật cấp 6 - 7"}</td>
-                  {shortestAlt && <td className={styles.colShortest}>{isEn ? "41 km dense fog & slippery drizzle on Bao Yen Pass" : "41 km sương mù dày đặc và mưa phùn trơn trượt đèo Bảo Yên"}</td>}
+                   <td className={styles.colSafer}>—</td>
+                   <td className={styles.colFastest}>—</td>
+                   {shortestAlt && <td className={styles.colShortest}>—</td>}
                 </tr>
                 <tr>
                   <td className={styles.comparisonCriteriaCell}>{isEn ? "Visibility & Road Condition" : "Tầm nhìn & Trạng thái đường"}</td>
-                  <td className={styles.colSafer}>{isEn ? "Visibility > 10 km, dry pavement, clear pass" : "Tầm nhìn > 10 km, mặt đường khô ráo, đèo dốc thông thoáng"}</td>
-                  <td className={styles.colFastest}>{isEn ? "Visibility < 300 m, aquaplaning & flooded highway" : "Tầm nhìn < 300 m, nguy cơ trơn trượt và ngập úng mặt đường cao tốc"}</td>
-                  {shortestAlt && <td className={styles.colShortest}>{isEn ? "Visibility < 500 m, narrow dangerous hairpin turns" : "Tầm nhìn < 500 m, đường hẹp nhiều khúc cua tay áo nguy hiểm"}</td>}
+                   <td className={styles.colSafer}>—</td>
+                   <td className={styles.colFastest}>—</td>
+                   {shortestAlt && <td className={styles.colShortest}>—</td>}
                 </tr>
                 <tr>
                   <td className={styles.comparisonCriteriaCell}>{isEn ? "Pareto Optimal Evaluation" : "Đánh giá tối ưu Pareto"}</td>
                   <td className={styles.colSafer} style={{ color: "#10B981", fontWeight: 700 }}>
-                    {isEn ? "Recommended Optimal: 100% hazard eliminated with negligible delay (+26m)." : "Khuyên dùng tối ưu: Triệt tiêu 100% rủi ro hiểm họa, thời gian tăng không đáng kể (+26p)."}
+                     {isEn ? saferAlt.weatherSummaryEn : saferAlt.weatherSummaryVi}
                   </td>
                   <td className={styles.colFastest} style={{ color: "#EF4444", fontWeight: 600 }}>
-                    {isEn ? "Hazard Warning: Saves 26 min but directly enters severe squall and gale winds." : "Cảnh báo nguy hiểm: Tiết kiệm 26 phút nhưng đối mặt trực diện dông lốc và gió giật mạnh."}
+                     {isEn ? fastestAlt.weatherSummaryEn : fastestAlt.weatherSummaryVi}
                   </td>
                   {shortestAlt && (
                     <td className={styles.colShortest} style={{ color: "#F59E0B", fontWeight: 600 }}>
-                      {isEn ? "Not Recommended: 12 km shorter but adds 1h 36 min over degraded roads." : "Không khuyến nghị: Cự ly ngắn hơn 12 km nhưng tốn thêm hơn 1h 36 phút do đường xấu."}
+                       {isEn ? shortestAlt.weatherSummaryEn : shortestAlt.weatherSummaryVi}
                     </td>
                   )}
                 </tr>

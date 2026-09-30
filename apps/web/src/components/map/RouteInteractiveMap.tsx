@@ -5,10 +5,16 @@
  * and automatic camera framing (fitBounds).
  */
 
-import { useEffect, useRef, useState, useCallback } from "react";
+import { useEffect, useRef, useState, useCallback, useMemo, useId } from "react";
 import { useTranslation } from "react-i18next";
-import maplibregl from "maplibre-gl";
+import * as maplibregl from "maplibre-gl";
+import maplibreWorkerUrl from "maplibre-gl/dist/maplibre-gl-worker.mjs?url";
 import "maplibre-gl/dist/maplibre-gl.css";
+
+// Configure MapLibre Web Worker URL for Vite bundling & dev server
+if (typeof maplibregl.setWorkerUrl === "function") {
+  maplibregl.setWorkerUrl(maplibreWorkerUrl);
+}
 import {
   ZoomIn,
   ZoomOut,
@@ -25,14 +31,12 @@ import {
   Sparkles,
 } from "lucide-react";
 import {
-  generateRouteGeoData,
-  fetchRealRouteGeoData,
-  getCorridorRoutesSync,
-  buildRouteGeoDataFromCorridor,
   buildRouteGeoDataFromCoordinates,
-  type RouteGeoData,
+  type GeoCheckpoint,
 } from "@/utils/routePathGenerator";
-import { getVietnamProvincesGeoJson } from "@/data/vietnamGeoJsonWGS84";
+import type { ProvinceGeoFeatureProperties } from "@/data/vietnamGeoJsonWGS84";
+import { provinceWeatherGeoJson, provinceFillPaint, provinceBorderPaint } from "./provinceOverlay";
+import { createCheckpointMarker, type CheckpointMarker } from "./checkpointMarker";
 import styles from "./RouteInteractiveMap.module.css";
 
 // Vietnam Geographical Center fallback
@@ -159,10 +163,11 @@ const MAP_STYLES = {
 };
 
 export interface RouteInteractiveMapProps {
+  provinces?: readonly ProvinceGeoFeatureProperties[];
   originName: string;
   destinationName: string;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  checkpoints?: any[];
+  checkpoints?: ReadonlyArray<Partial<GeoCheckpoint>>;
+  segmentRisks?: ReadonlyArray<import("@vietnam-weather/contracts").SegmentRisk>;
   coordinates?: [number, number][];
   routeType?: "fastest" | "weather_safer" | "shortest";
   titleVi?: string;
@@ -172,10 +177,33 @@ export interface RouteInteractiveMapProps {
   hasPlanned?: boolean;
 }
 
+export function selectVisibleCheckpoints(
+  checkpoints: ReadonlyArray<{ readonly risk: GeoCheckpoint["risk"] }>, selectedIndex: number | null,
+): number[] {
+  const count = checkpoints.length - 2;
+  if (count <= 0) return [];
+  const severity = { low: 1, caution: 2, high: 3, unknown: 0 };
+  const indices: number[] = [];
+  const groups = Math.min(5, count);
+  for (let group = 0; group < groups; group++) {
+    const start = 1 + Math.floor(group * count / groups);
+    const end = 1 + Math.floor((group + 1) * count / groups);
+    let candidate = Math.floor((start + end - 1) / 2);
+    for (let index = start; index < end; index++) {
+      if (severity[checkpoints[index]?.risk ?? "unknown"] > severity[checkpoints[candidate]?.risk ?? "unknown"]) candidate = index;
+    }
+    indices.push(candidate);
+  }
+  if (selectedIndex !== null && selectedIndex > 0 && selectedIndex < checkpoints.length - 1) indices.push(selectedIndex);
+  return [...new Set(indices)].sort((a, b) => a - b);
+}
+
 export function RouteInteractiveMap({
+  provinces,
   originName,
   destinationName,
   checkpoints = [],
+  segmentRisks = [],
   coordinates,
   routeType = "weather_safer",
   titleVi = "Lộ trình di chuyển",
@@ -190,6 +218,8 @@ export function RouteInteractiveMap({
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<maplibregl.Map | null>(null);
   const markersRef = useRef<maplibregl.Marker[]>([]);
+  const checkpointMarkersRef = useRef<CheckpointMarker[]>([]);
+  const checkpointTooltipId = useId();
 
   const [activeTileStyle, setActiveTileStyle] = useState<"google" | "satellite" | "voyager" | "dark">(() => {
     if (typeof window !== "undefined") {
@@ -202,216 +232,46 @@ export function RouteInteractiveMap({
   });
   const [mapLoaded, setMapLoaded] = useState(false);
   const [showRiskOverlay, setShowRiskOverlay] = useState(true);
-  const [routeGeoData, setRouteGeoData] = useState<RouteGeoData>(() => {
-    if (coordinates && coordinates.length >= 2) {
-      return buildRouteGeoDataFromCoordinates(coordinates, checkpoints, routeType, originName, destinationName);
-    }
-    const syncCorridor = getCorridorRoutesSync(originName, destinationName);
-    if (syncCorridor) {
-      return buildRouteGeoDataFromCorridor(syncCorridor, checkpoints, routeType, originName, destinationName);
-    }
-    return generateRouteGeoData(originName, destinationName, checkpoints, routeType);
-  });
-  const [isLoadingRealRoad, setIsLoadingRealRoad] = useState(false);
-  const reqIdRef = useRef(0);
+  const provincesRef = useRef(provinces);
+  provincesRef.current = provinces;
+  const showRiskRef = useRef(showRiskOverlay);
+  showRiskRef.current = showRiskOverlay;
+  const styleReadyRef = useRef(false);
+  const routeGeoData = useMemo(() => buildRouteGeoDataFromCoordinates(
+    coordinates ?? [], checkpoints, routeType, originName, destinationName, segmentRisks,
+  ), [coordinates, checkpoints, routeType, originName, destinationName, segmentRisks]);
+  const latestRouteGeoDataRef = useRef(routeGeoData);
+  latestRouteGeoDataRef.current = routeGeoData;
   const lastBoundsKeyRef = useRef<string>("");
 
-  // Helper to add GeoJSON boundaries & risk styling (interpolates to 0 opacity when zoomed close >= 10)
-  const addProvincesLayers = useCallback((map: maplibregl.Map, showRisk: boolean) => {
-    const geojson = getVietnamProvincesGeoJson();
-
-    if (map.getSource("vietnam-provinces")) {
-      (map.getSource("vietnam-provinces") as maplibregl.GeoJSONSource).setData(geojson);
+  const addProvincesLayers = useCallback((map: maplibregl.Map) => {
+    const geojson = provinceWeatherGeoJson(provincesRef.current);
+    const source = map.getSource<maplibregl.GeoJSONSource>("vietnam-provinces");
+    if (source) source.setData(geojson);
+    else map.addSource("vietnam-provinces", { type: "geojson", data: geojson });
+    const fill = provinceFillPaint(showRiskRef.current);
+    const border = provinceBorderPaint(showRiskRef.current);
+    const before = map.getLayer("route-glow-layer") ? "route-glow-layer" : undefined;
+    if (!map.getLayer("provinces-fill")) {
+      map.addLayer({ id: "provinces-fill", type: "fill", source: "vietnam-provinces", paint: fill }, before);
     } else {
-      map.addSource("vietnam-provinces", {
-        type: "geojson",
-        data: geojson,
-      });
-
-      // 1. Fill Layer: Soft background color representing city risk level
-      // Zoom-interpolated: fades to 0 opacity when zoomed in deep (zoom >= 10) so streets and landmarks are crystal clear!
-      map.addLayer(
-        {
-          id: "provinces-fill",
-          type: "fill",
-          source: "vietnam-provinces",
-          paint: {
-            "fill-color": ["get", "riskColor"],
-            "fill-opacity": showRisk
-              ? [
-                  "interpolate",
-                  ["linear"],
-                  ["zoom"],
-                  5, 0.16,
-                  8, 0.12,
-                  9.2, 0.04,
-                  10.0, 0.0,
-                ]
-              : 0.001,
-          },
-        },
-        map.getLayer("route-glow-layer") ? "route-glow-layer" : undefined
-      );
-
-      // 2. Risk Border Line Layer: Fades out gently as zoom gets deeper so boundary lines don't clutter street view
-      map.addLayer(
-        {
-          id: "provinces-border",
-          type: "line",
-          source: "vietnam-provinces",
-          paint: {
-            "line-color": showRisk ? ["get", "riskColor"] : "rgba(100, 116, 139, 0.28)",
-            "line-width": showRisk
-              ? [
-                  "interpolate",
-                  ["linear"],
-                  ["zoom"],
-                  5, 1.8,
-                  8.5, 1.4,
-                  10.0, 0.8,
-                  10.5, 0.3,
-                ]
-              : 0.8,
-            "line-opacity": showRisk
-              ? [
-                  "interpolate",
-                  ["linear"],
-                  ["zoom"],
-                  5, 0.85,
-                  8.5, 0.6,
-                  9.8, 0.2,
-                  10.5, 0.0,
-                ]
-              : 0.4,
-          },
-        },
-        map.getLayer("route-glow-layer") ? "route-glow-layer" : undefined
-      );
+      for (const key of ["fill-color", "fill-opacity"] as const) map.setPaintProperty("provinces-fill", key, fill[key]);
+    }
+    if (!map.getLayer("provinces-border")) {
+      map.addLayer({ id: "provinces-border", type: "line", source: "vietnam-provinces", paint: border }, before);
+    } else {
+      for (const key of ["line-color", "line-width", "line-opacity"] as const) map.setPaintProperty("provinces-border", key, border[key]);
     }
   }, []);
 
-  // Dynamically update province risk overlay styling when toggled
   useEffect(() => {
     const map = mapRef.current;
-    if (!map || !mapLoaded || !map.getStyle()) return;
-
-    if (map.getLayer("provinces-fill")) {
-      map.setPaintProperty(
-        "provinces-fill",
-        "fill-opacity",
-        showRiskOverlay
-          ? [
-              "interpolate",
-              ["linear"],
-              ["zoom"],
-              5, 0.16,
-              8, 0.12,
-              9.2, 0.04,
-              10.0, 0.0,
-            ]
-          : 0.001
-      );
-    }
-
-    if (map.getLayer("provinces-border")) {
-      map.setPaintProperty(
-        "provinces-border",
-        "line-color",
-        showRiskOverlay ? ["get", "riskColor"] : "rgba(100, 116, 139, 0.28)"
-      );
-      map.setPaintProperty(
-        "provinces-border",
-        "line-width",
-        showRiskOverlay
-          ? [
-              "interpolate",
-              ["linear"],
-              ["zoom"],
-              5, 1.8,
-              8.5, 1.4,
-              10.0, 0.8,
-              10.5, 0.3,
-            ]
-          : 0.8
-      );
-      map.setPaintProperty(
-        "provinces-border",
-        "line-opacity",
-        showRiskOverlay
-          ? [
-              "interpolate",
-              ["linear"],
-              ["zoom"],
-              5, 0.85,
-              8.5, 0.6,
-              9.8, 0.2,
-              10.5, 0.0,
-            ]
-          : 0.4
-      );
-    }
-  }, [showRiskOverlay, mapLoaded]);
-
-  // Fetch or retrieve real road network from corridor cache
-  useEffect(() => {
-    const currentReqId = ++reqIdRef.current;
-    let isMounted = true;
-
-    // 0. Use real coordinates directly if passed from backend routing response
-    if (coordinates && coordinates.length >= 2) {
-      const instantData = buildRouteGeoDataFromCoordinates(
-        coordinates,
-        checkpoints,
-        routeType,
-        originName,
-        destinationName
-      );
-      setRouteGeoData(instantData);
-      setIsLoadingRealRoad(false);
-      return;
-    }
-
-    // 1. Check synchronous corridor cache or precalculated data (0ms, 100% instant switch)
-    const syncCorridor = getCorridorRoutesSync(originName, destinationName);
-    if (syncCorridor) {
-      const instantData = buildRouteGeoDataFromCorridor(
-        syncCorridor,
-        checkpoints,
-        routeType,
-        originName,
-        destinationName
-      );
-      setRouteGeoData(instantData);
-      setIsLoadingRealRoad(false);
-      return;
-    }
-
-    // 2. Custom corridor that needs asynchronous OSRM fetch
-    setIsLoadingRealRoad(true);
-
-    fetchRealRouteGeoData(originName, destinationName, checkpoints, routeType)
-      .then((realData) => {
-        if (isMounted && reqIdRef.current === currentReqId && realData) {
-          setRouteGeoData(realData);
-        }
-      })
-      .catch((err) => {
-        console.warn("Could not load real road data, retaining current road:", err);
-      })
-      .finally(() => {
-        if (isMounted && reqIdRef.current === currentReqId) {
-          setIsLoadingRealRoad(false);
-        }
-      });
-
-    return () => {
-      isMounted = false;
-    };
-  }, [originName, destinationName, checkpoints, routeType, coordinates]);
+    if (map && mapLoaded && styleReadyRef.current) addProvincesLayers(map);
+  }, [provinces, showRiskOverlay, mapLoaded, addProvincesLayers]);
 
   // Sync polyline layers on the map (active route + alternative routes)
   const syncRouteLayers = useCallback((map: maplibregl.Map, geoData: typeof routeGeoData) => {
-    if (!map || !map.getStyle()) return;
+    if (!map || !map.getStyle() || !styleReadyRef.current) return;
 
     try {
       // Clean up any legacy secondary alternative layers so only the active route is rendered
@@ -450,7 +310,7 @@ export function RouteInteractiveMap({
           "line-cap": "round",
         },
         paint: {
-          "line-color": ["get", "riskColor"],
+          "line-color": ["coalesce", ["get", "riskColor"], "#10B981"],
           "line-width": 14,
           "line-opacity": 0.28,
           "line-blur": 3,
@@ -487,12 +347,17 @@ export function RouteInteractiveMap({
           "line-cap": "round",
         },
         paint: {
-          "line-color": ["get", "riskColor"],
+          "line-color": ["coalesce", ["get", "riskColor"], "#22C55E"],
           "line-width": 6,
           "line-opacity": 0.95,
         },
       });
     }
+
+    // Ensure route line layers are always brought to the absolute top of the stack
+    if (map.getLayer("route-glow-layer")) map.moveLayer("route-glow-layer");
+    if (map.getLayer("route-casing-layer")) map.moveLayer("route-casing-layer");
+    if (map.getLayer("route-core-layer")) map.moveLayer("route-core-layer");
 
     // Fit camera bounds smoothly to entire route only when the corridor actually changes
     if (geoData.bounds) {
@@ -520,9 +385,12 @@ export function RouteInteractiveMap({
 
   // Sync Markers (Origin, Destination, Weather Checkpoint Chips)
   const syncMarkers = useCallback((map: maplibregl.Map, geoData: typeof routeGeoData) => {
+    const focusedTooltip = checkpointMarkersRef.current
+      .find(marker => marker.element === document.activeElement)?.element.getAttribute("aria-describedby");
     // Clear previous markers
     markersRef.current.forEach((m) => m.remove());
     markersRef.current = [];
+    checkpointMarkersRef.current = [];
 
     // If route is not active/planned, don't draw markers
     if (!hasPlanned) return;
@@ -533,11 +401,13 @@ export function RouteInteractiveMap({
     originEl.innerHTML = `
       <div class="origin-marker-chip">
         <span style="font-weight:900; font-size:10px;">A</span>
-        <span>${originName || (isEn ? "Origin" : "Xuất phát")}</span>
+        <span></span>
       </div>
       <div class="origin-marker-pointer"></div>
       <div class="origin-marker-dot"></div>
     `;
+    const originLabel = originEl.querySelector(".origin-marker-chip span:last-child");
+    if (originLabel) originLabel.textContent = originName || (isEn ? "Origin" : "Xuất phát");
     const originMarker = new maplibregl.Marker({ element: originEl, anchor: "bottom" })
       .setLngLat(geoData.originCoords)
       .addTo(map);
@@ -549,104 +419,57 @@ export function RouteInteractiveMap({
     destEl.innerHTML = `
       <div class="destination-marker-chip">
         <span style="font-weight:900; font-size:10px;">B</span>
-        <span>${destinationName || (isEn ? "Destination" : "Điểm đến")}</span>
+        <span></span>
       </div>
       <div class="destination-marker-pointer"></div>
       <div class="destination-marker-dot"></div>
     `;
+    const destinationLabel = destEl.querySelector(".destination-marker-chip span:last-child");
+    if (destinationLabel) destinationLabel.textContent = destinationName || (isEn ? "Destination" : "Điểm đến");
     const destMarker = new maplibregl.Marker({ element: destEl, anchor: "bottom" })
       .setLngLat(geoData.destinationCoords)
       .addTo(map);
     markersRef.current.push(destMarker);
 
-    // 3. Intermediate Checkpoints (Skip index 0 and last index)
-    const intermediateCheckpoints = geoData.checkpointsWithCoords.slice(1, -1);
-    intermediateCheckpoints.forEach((cp, subIdx) => {
-      const actualIdx = subIdx + 1;
+    const focusedIndex = geoData.checkpointsWithCoords.findIndex((_, index) => `${checkpointTooltipId}-${index}` === focusedTooltip);
+    const priorityIndex = selectedCheckpointIndex ?? (focusedIndex >= 0 ? focusedIndex : null);
+    const markerIndices = selectVisibleCheckpoints(geoData.checkpointsWithCoords, priorityIndex);
+    const visiblePixels: { x: number; y: number }[] = [];
+    markerIndices.sort((a, b) => Number(b === priorityIndex) - Number(a === priorityIndex));
+    markerIndices.forEach((actualIdx) => {
+      const cp = geoData.checkpointsWithCoords[actualIdx];
+      if (!cp) return;
       const isSelected = selectedCheckpointIndex === actualIdx;
-      const riskBorderColor =
-        cp.risk === "high" ? "#EF4444" : cp.risk === "caution" ? "#F59E0B" : (routeType === "weather_safer" ? "#10B981" : "#0EA5E9");
-      const riskIconSvg =
-        cp.risk === "high"
-          ? `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:3px;"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>`
-          : cp.risk === "caution"
-          ? `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:3px;"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>`
-          : "";
-
-      const cpEl = document.createElement("div");
-      cpEl.className = `checkpoint-marker-pin ${isSelected ? "checkpoint-marker-selected" : ""}`;
-      cpEl.style.setProperty("--cp-border-color", riskBorderColor);
-
-      cpEl.innerHTML = `
-        <div class="checkpoint-marker-chip" style="${cp.risk === "high" ? "background: rgba(185, 28, 28, 0.9); border-color: #EF4444; box-shadow: 0 0 12px rgba(239, 68, 68, 0.6);" : cp.risk === "caution" ? "background: rgba(180, 83, 9, 0.9); border-color: #F59E0B;" : ""}">
-          <span>${riskIconSvg}${cp.name}</span>
-          <span class="checkpoint-marker-temp">${cp.temp}°</span>
-        </div>
-        <div class="checkpoint-marker-dot"></div>
-      `;
-
-      cpEl.addEventListener("click", (e) => {
-        e.stopPropagation();
-        if (onSelectCheckpoint) {
-          onSelectCheckpoint(isSelected ? null : actualIdx);
-        }
+      const position = map.project(cp.coordinates);
+      if (actualIdx !== priorityIndex && visiblePixels.some(point => Math.hypot(point.x - position.x, point.y - position.y) < 42)) return;
+      visiblePixels.push(position);
+      const checkpoint = createCheckpointMarker(cp, {
+        boundary: map.getContainer(),
+        tooltipId: `${checkpointTooltipId}-${actualIdx}`, selected: isSelected, isEn,
+        onSelect: () => onSelectCheckpoint?.(isSelected ? null : actualIdx),
       });
-
-      const cpMarker = new maplibregl.Marker({ element: cpEl, anchor: "bottom" })
-        .setLngLat(cp.coordinates)
-        .addTo(map);
-      markersRef.current.push(cpMarker);
+      const marker = new maplibregl.Marker({ element: checkpoint.element, anchor: "center" }).setLngLat(cp.coordinates).addTo(map);
+      markersRef.current.push(marker);
+      checkpointMarkersRef.current.push(checkpoint);
+      if (checkpoint.element.getAttribute("aria-describedby") === focusedTooltip) checkpoint.element.focus({ preventScroll: true });
+      checkpoint.reposition();
     });
-  }, [originName, destinationName, checkpoints, coordinates, routeType, selectedCheckpointIndex, onSelectCheckpoint, hasPlanned, isEn]);
+  }, [originName, destinationName, checkpoints, coordinates, routeType, selectedCheckpointIndex, onSelectCheckpoint, hasPlanned, isEn, checkpointTooltipId]);
 
-  // Sync routeGeoData if props change
-  useEffect(() => {
-    let cancelled = false;
-    const currentReq = ++reqIdRef.current;
-
-    // Fast sync preview first
-    if (coordinates && coordinates.length >= 2) {
-      setRouteGeoData(buildRouteGeoDataFromCoordinates(coordinates, checkpoints, routeType, originName, destinationName));
-      return;
-    }
-    const syncCorridor = getCorridorRoutesSync(originName, destinationName);
-    if (syncCorridor) {
-      setRouteGeoData(buildRouteGeoDataFromCorridor(syncCorridor, checkpoints, routeType, originName, destinationName));
-      return;
-    }
-
-    // Attempt real async routing if origin & destination are provided
-    if (originName && destinationName) {
-      setIsLoadingRealRoad(true);
-      fetchRealRouteGeoData(originName, destinationName, checkpoints, routeType)
-        .then((realData) => {
-          if (!cancelled && currentReq === reqIdRef.current) {
-            setRouteGeoData(realData);
-          }
-        })
-        .catch(() => {
-          // Fallback gracefully
-          if (!cancelled && currentReq === reqIdRef.current) {
-            setRouteGeoData(generateRouteGeoData(originName, destinationName, checkpoints, routeType));
-          }
-        })
-        .finally(() => {
-          if (!cancelled && currentReq === reqIdRef.current) {
-            setIsLoadingRealRoad(false);
-          }
-        });
-    } else {
-      setRouteGeoData(generateRouteGeoData(originName, destinationName, checkpoints, routeType));
-    }
-
-    return () => {
-      cancelled = true;
-    };
-  }, [originName, destinationName, checkpoints, routeType, coordinates]);
+  const latestSyncRouteLayersRef = useRef(syncRouteLayers);
+  latestSyncRouteLayersRef.current = syncRouteLayers;
+  const latestSyncMarkersRef = useRef(syncMarkers);
+  latestSyncMarkersRef.current = syncMarkers;
 
   // Initial Map Mount & Tile Setup
   useEffect(() => {
     if (!mapContainerRef.current || mapRef.current) return;
+
+    const dismissTooltips = (event: KeyboardEvent) => {
+      if (event.key === "Escape") checkpointMarkersRef.current.forEach(marker => marker.dismiss());
+    };
+    const repositionTooltips = () => checkpointMarkersRef.current.forEach(marker => marker.reposition());
+    document.addEventListener("keydown", dismissTooltips);
 
     try {
       const map = new maplibregl.Map({
@@ -660,17 +483,23 @@ export function RouteInteractiveMap({
         attributionControl: false,
       });
 
-      map.on("load", () => {
-        addProvincesLayers(map, showRiskOverlay);
-        syncRouteLayers(map, routeGeoData);
-        syncMarkers(map, routeGeoData);
+      const restoreStyle = () => {
+        styleReadyRef.current = true;
+        addProvincesLayers(map);
+        latestSyncRouteLayersRef.current(map, latestRouteGeoDataRef.current);
+        latestSyncMarkersRef.current(map, latestRouteGeoDataRef.current);
         setMapLoaded(true);
+      };
+      map.on("style.load", restoreStyle);
+      map.on("render", repositionTooltips);
+      map.on("load", () => {
+        if (!styleReadyRef.current) restoreStyle();
 
         // Ensure canvas expands to fill container correctly
         setTimeout(() => {
           try {
             map.resize();
-            syncRouteLayers(map, routeGeoData);
+            latestSyncRouteLayersRef.current(map, latestRouteGeoDataRef.current);
           } catch {
             // ignore
           }
@@ -683,9 +512,12 @@ export function RouteInteractiveMap({
     }
 
     return () => {
+      document.removeEventListener("keydown", dismissTooltips);
+      checkpointMarkersRef.current = [];
       if (mapRef.current) {
         markersRef.current.forEach((m) => m.remove());
         markersRef.current = [];
+        styleReadyRef.current = false;
         mapRef.current.remove();
         mapRef.current = null;
       }
@@ -695,36 +527,11 @@ export function RouteInteractiveMap({
   // Update Route Polylines and Markers whenever routeGeoData changes
   useEffect(() => {
     const map = mapRef.current;
-    if (!map || !mapLoaded) return;
+    if (!map || !mapLoaded || !styleReadyRef.current) return;
 
     syncRouteLayers(map, routeGeoData);
     syncMarkers(map, routeGeoData);
   }, [routeGeoData, mapLoaded, syncRouteLayers, syncMarkers]);
-
-  // Update risk overlay layer visibility without reloading style
-  useEffect(() => {
-    const map = mapRef.current;
-    if (!map || !mapLoaded) return;
-
-    try {
-      if (map.getLayer("province-boundaries-layer")) {
-        map.setLayoutProperty(
-          "province-boundaries-layer",
-          "visibility",
-          showRiskOverlay ? "visible" : "none"
-        );
-      }
-      if (map.getLayer("province-fills-layer")) {
-        map.setLayoutProperty(
-          "province-fills-layer",
-          "visibility",
-          showRiskOverlay ? "visible" : "none"
-        );
-      }
-    } catch (e) {
-      // ignore
-    }
-  }, [showRiskOverlay, mapLoaded]);
 
   // Switch Base Tile Style dynamically
   const handleSwitchStyle = (styleKey: "google" | "satellite" | "voyager" | "dark") => {
@@ -736,12 +543,8 @@ export function RouteInteractiveMap({
     const map = mapRef.current;
     if (!map) return;
 
+    styleReadyRef.current = false;
     map.setStyle(MAP_STYLES[styleKey]);
-    map.once("style.load", () => {
-      addProvincesLayers(map, showRiskOverlay);
-      syncRouteLayers(map, routeGeoData);
-      syncMarkers(map, routeGeoData);
-    });
   };
 
   // Nav Handlers
@@ -819,26 +622,22 @@ export function RouteInteractiveMap({
         <button
           type="button"
           className={`${styles.riskToggleBtn} ${showRiskOverlay ? styles.riskToggleBtnActive : ""}`}
+          aria-pressed={showRiskOverlay}
           onClick={() => setShowRiskOverlay((v) => !v)}
           title={isEn ? (showRiskOverlay ? "Disable province risk borders" : "Enable province risk borders") : (showRiskOverlay ? "Tắt lớp viền cảnh báo các tỉnh thành để nhìn đường phố rõ hơn" : "Bật lớp viền cảnh báo rủi ro các tỉnh thành")}
         >
           {showRiskOverlay ? <ShieldCheck size={14} /> : <ShieldOff size={14} />}
-          <span>{isEn ? (showRiskOverlay ? "Risk Border: ON" : "Risk Border: OFF") : (showRiskOverlay ? "Viền rủi ro: BẬT" : "Viền rủi ro: TẮT")}</span>
+          <span>{isEn ? (showRiskOverlay ? "Province Borders: ON" : "Province Borders: OFF") : (showRiskOverlay ? "Viền tỉnh: BẬT" : "Viền tỉnh: TẮT")}</span>
         </button>
 
         <div className={styles.routeTypeTag}>
           {routeType === "weather_safer" && <ShieldCheck size={14} color="#22C55E" />}
-          {routeType === "fastest" && <Zap size={14} color="#0EA5E9" />}
+          {routeType === "fastest" && <Zap size={14} color="#22C55E" />}
           {routeType === "shortest" && <Gauge size={14} color="#F59E0B" />}
           <span>{isEn ? (titleEn || (routeType === "weather_safer" ? "Weather-Safer Route" : routeType === "fastest" ? "Fastest Route" : "Shortest Route")) : titleVi}</span>
         </div>
 
-        {isLoadingRealRoad ? (
-          <div className={styles.loadingRoadTag}>
-            <span className="spinner-border spinner-border-sm" role="status" style={{ width: 10, height: 10 }} />
-            <span>{isEn ? "Loading real road network..." : "Đang tải mạng đường thật..."}</span>
-          </div>
-        ) : routeGeoData.isRealRoad ? (
+        {routeGeoData.isRealRoad ? (
           <div className={styles.realRoadBadge} title={isEn ? "Real road path from OpenStreetMap network" : "Tuyến đường thực tế chính xác theo mạng lưới giao thông đường bộ OpenStreetMap"}>
             <Navigation size={12} color="#34D399" />
             <span>{isEn ? `Real Road (${routeGeoData.distanceKm} km)` : `Đường thật (${routeGeoData.distanceKm} km)`}</span>
@@ -867,10 +666,10 @@ export function RouteInteractiveMap({
 
       {/* Floating Route Risk Legend (Bottom Left) */}
       <div className={styles.legendBar}>
-        <span style={{ color: "var(--color-text-secondary)", fontSize: "11px" }}>{isEn ? "Route:" : "Tuyến đường:"}</span>
+        <span style={{ color: "var(--color-text-secondary)", fontSize: "11px" }}>{checkpoints.some(point => point.provisional) ? (isEn ? "Provisional observed risk:" : "Rủi ro quan sát tạm tính:") : (isEn ? "Route:" : "Tuyến đường:")}</span>
         <div className={styles.legendItem}>
-          <span className={styles.legendLine} style={{ background: "#0EA5E9" }} />
-          <span>{isEn ? "Safe" : "An toàn"}</span>
+          <span className={styles.legendLine} style={{ background: "#22C55E" }} />
+          <span>{checkpoints.some(point => point.provisional) ? (isEn ? "Low observed risk" : "Rủi ro quan sát thấp") : (isEn ? "Safe" : "An toàn")}</span>
         </div>
         <div className={styles.legendItem}>
           <span className={styles.legendLine} style={{ background: "#F59E0B" }} />
@@ -881,23 +680,10 @@ export function RouteInteractiveMap({
           <span>{isEn ? "Hazard" : "Nguy hiểm"}</span>
         </div>
 
-        {showRiskOverlay && (
-          <>
-            <span style={{ color: "var(--color-text-secondary)", fontSize: "11px", marginLeft: "6px" }}>{isEn ? "Province border:" : "Viền tỉnh:"}</span>
-            <div className={styles.legendItem}>
-              <span style={{ width: 8, height: 8, borderRadius: "50%", background: "#22C55E", display: "inline-block" }} />
-              <span>{isEn ? "Safe" : "An toàn"}</span>
-            </div>
-            <div className={styles.legendItem}>
-              <span style={{ width: 8, height: 8, borderRadius: "50%", background: "#EAB308", display: "inline-block" }} />
-              <span>{isEn ? "Caution" : "Chú ý"}</span>
-            </div>
-            <div className={styles.legendItem}>
-              <span style={{ width: 8, height: 8, borderRadius: "50%", background: "#EF4444", display: "inline-block" }} />
-              <span>{isEn ? "High Risk" : "Nguy cơ cao"}</span>
-            </div>
-          </>
-        )}
+        <div className={styles.legendItem}>
+          <span className={styles.legendLine} style={{ background: "#64748B" }} />
+          <span>{isEn ? "Unknown" : "Chưa đủ dữ liệu"}</span>
+        </div>
       </div>
     </div>
   );

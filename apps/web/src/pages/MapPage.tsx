@@ -22,18 +22,20 @@ import { useAuthStore } from "@/hooks/useAuthStore";
 import { RealInteractiveMap } from "@/components/map/RealInteractiveMap";
 import { ProvinceStatusDetail } from "@/components/province/ProvinceStatusDetail";
 import { ForecastTimelineSlider } from "@/components/common/ForecastTimelineSlider";
-import { getEnrichedProvinceWeather } from "@/utils/weatherSimulation";
+import { useReportProvinceWeather } from "@/hooks/useReportProvinceWeather";
+import { formatMeasurement as measurement } from "@/utils/reportRisk";
 import {
-  getAllProvincesData,
   type ProvinceGeoFeatureProperties,
 } from "@/data/vietnamGeoJsonWGS84";
 import { VIETNAM_REGIONS } from "@/data/provinces";
+import { useRequireLoginModal } from "@/hooks/useRequireLoginModal";
 import styles from "./MapPage.module.css";
 
 export function MapPage() {
   const { t, i18n } = useTranslation();
   const isEn = i18n?.language === "en" || (typeof window !== "undefined" && localStorage.getItem("vietnam-weather-language") === "en");
-  const { user, saveLocation, removeSavedLocation } = useAuthStore();
+  const { user, isAuthenticated, saveLocation, removeSavedLocation } = useAuthStore();
+  const { openModal } = useRequireLoginModal();
   const isPro = user?.plan === "pro";
   const savedLocations = user?.savedLocations || [];
   const maxSavedLocations = isPro ? 50 : 3;
@@ -41,14 +43,11 @@ export function MapPage() {
   // Timeline Offset State
   const [timelineOffsetHours, setTimelineOffsetHours] = useState(0);
 
-  // Province dataset enriched with timeline simulation
-  const rawProvinces = useMemo(() => getAllProvincesData(), []);
-  const allProvinces = useMemo(() => {
-    return rawProvinces.map((p) => getEnrichedProvinceWeather(p, timelineOffsetHours));
-  }, [rawProvinces, timelineOffsetHours]);
+  const allProvinces = useReportProvinceWeather(timelineOffsetHours);
 
   // State
-  const [selectedProvince, setSelectedProvince] = useState<ProvinceGeoFeatureProperties | null>(null);
+  const [selectedProvinceId, setSelectedProvinceId] = useState<string | null>(null);
+  const selectedProvince = allProvinces.find(p => p.id === selectedProvinceId) ?? null;
   const [activeView, setActiveView] = useState<"list" | "detail">("list");
   const [searchQuery, setSearchQuery] = useState("");
   const [regionFilter, setRegionFilter] = useState<"all" | "North" | "Central" | "South">("all");
@@ -67,16 +66,36 @@ export function MapPage() {
 
   // Handle Pro Layer Toggle
   const handleToggleProLayer = (type: "radar" | "heatmap") => {
-    if (!isPro) {
-      showToast(
-        type === "radar"
-          ? "Lớp Radar mây dông thời gian thực là tính năng độc quyền của Gói PRO. Hãy nâng cấp để mở khóa!"
-          : "Bản đồ nhiệt rủi ro cao cấp là tính năng độc quyền của Gói PRO. Hãy nâng cấp để mở khóa!"
-      );
-      return;
+    if (type === "radar") {
+      setRadarEnabled((prev) => {
+        const next = !prev;
+        showToast(
+          next
+            ? isEn
+              ? "Radar & convective storm layer activated"
+              : "Đã bật Lớp Radar mây vệ tinh & giông bão thời gian thực"
+            : isEn
+            ? "Radar layer disabled"
+            : "Đã tắt Lớp Radar mây giông"
+        );
+        return next;
+      });
     }
-    if (type === "radar") setRadarEnabled((v) => !v);
-    if (type === "heatmap") setHeatmapEnabled((v) => !v);
+    if (type === "heatmap") {
+      setHeatmapEnabled((prev) => {
+        const next = !prev;
+        showToast(
+          next
+            ? isEn
+              ? "Meteorological risk heatmap activated"
+              : "Đã bật Lớp Bản đồ nhiệt rủi ro khí tượng toàn quốc"
+            : isEn
+            ? "Risk heatmap disabled"
+            : "Đã tắt Bản đồ nhiệt rủi ro"
+        );
+        return next;
+      });
+    }
   };
 
   // Check if a province is saved
@@ -90,6 +109,16 @@ export function MapPage() {
   // Toggle Save Province
   const handleToggleSaveLocation = useCallback(
     (province: ProvinceGeoFeatureProperties) => {
+      if (!isAuthenticated) {
+        openModal(
+          isEn ? "Save Favorite Province" : "Lưu tỉnh thành yêu thích",
+          isEn
+            ? "Please sign in or create an account to save your favorite locations and track personalized weather alerts!"
+            : "Vui lòng đăng nhập hoặc tạo tài khoản để lưu trữ các tỉnh thành yêu thích và theo dõi cảnh báo thời tiết cá nhân hóa!"
+        );
+        return;
+      }
+
       const existing = savedLocations.find(
         (l) => l.name.toLowerCase() === province.name.toLowerCase()
       );
@@ -123,7 +152,7 @@ export function MapPage() {
 
   // Select Province from List or Map
   const handleSelectProvince = useCallback((province: ProvinceGeoFeatureProperties) => {
-    setSelectedProvince(province);
+    setSelectedProvinceId(province.id);
     setActiveView("detail");
   }, []);
 
@@ -173,7 +202,7 @@ export function MapPage() {
       })
       .sort((a, b) => {
         if (sortBy === "risk") {
-          return b.riskScore - a.riskScore;
+          return (b.riskScore ?? -1) - (a.riskScore ?? -1);
         }
         if (sortBy === "temp_desc") {
           return b.temp - a.temp;
@@ -251,12 +280,15 @@ export function MapPage() {
         {/* Left: Real Interactive Map */}
         <div className={styles.mapPane}>
           <RealInteractiveMap
-            selectedProvinceCode={selectedProvince?.code}
+            provinces={allProvinces}
+            selectedProvinceCode={selectedProvince?.id}
             onSelectProvince={handleSelectProvince}
             radarEnabled={radarEnabled}
             heatmapEnabled={heatmapEnabled}
             onToggleProLayer={handleToggleProLayer}
             isPro={isPro}
+            riskFilter={riskFilter}
+            onRiskFilterChange={(lvl) => setRiskFilter(lvl)}
           />
         </div>
 
@@ -269,7 +301,7 @@ export function MapPage() {
               isSaved={isProvinceSaved(selectedProvince.name)}
               onBack={() => {
                 setActiveView("list");
-                setSelectedProvince(null);
+                setSelectedProvinceId(null);
               }}
               onToggleSave={() => handleToggleSaveLocation(selectedProvince)}
             />
@@ -355,7 +387,7 @@ export function MapPage() {
                     onClick={() => setRiskFilter("low")}
                     style={riskFilter === "low" ? { background: "#22C55E", borderColor: "#22C55E" } : {}}
                   >
-                    {isEn ? "Safe" : "An toàn"}
+                    {isEn ? "Low" : "Thấp"}
                   </button>
                   <button
                     type="button"
@@ -376,7 +408,18 @@ export function MapPage() {
                   <button
                     type="button"
                     className={`${styles.chip} ${riskFilter === "saved" ? styles.chipActive : ""}`}
-                    onClick={() => setRiskFilter("saved")}
+                    onClick={() => {
+                      if (!isAuthenticated) {
+                        openModal(
+                          isEn ? "Saved Locations" : "Địa điểm đã lưu",
+                          isEn
+                            ? "Please sign in to view and manage your saved locations."
+                            : "Vui lòng đăng nhập để xem và quản lý danh sách địa điểm đã lưu của bạn."
+                        );
+                        return;
+                      }
+                      setRiskFilter("saved");
+                    }}
                   >
                     <Bookmark size={11} fill={riskFilter === "saved" ? "currentColor" : "none"} />
                     <span>{isEn ? `Saved (${savedLocations.length})` : `Đã lưu (${savedLocations.length})`}</span>
@@ -390,7 +433,7 @@ export function MapPage() {
                     onChange={(val) => {
                       setTimelineOffsetHours(val);
                       if (val > 0) {
-                        showToast(isEn ? `Showing forecast simulation +${val}h` : `Đang hiển thị mô phỏng dự báo +${val}h`);
+                        showToast(isEn ? `Requesting forecast +${val}h` : `Đang truy vấn dự báo +${val}h`);
                       }
                     }}
                     isCompact
@@ -436,11 +479,11 @@ export function MapPage() {
                   </div>
                 ) : (
                   filteredProvinces.map((p) => {
-                    const isSelected = selectedProvince?.code === p.code;
+                    const isSelected = selectedProvince?.id === p.id;
                     const isSaved = isProvinceSaved(p.name);
                     const cardRiskDisplay = isEn
-                      ? (p.riskLevel === "high" ? "Hazard" : p.riskLevel === "caution" ? "Caution" : "Safe")
-                      : p.riskText;
+                      ? (p.riskLevel === "high" ? "Hazard" : p.riskLevel === "caution" ? "Caution" : p.riskLevel === "low" ? "Low" : "Unknown — insufficient evidence")
+                      : (p.riskLevel === "unknown" ? "Chưa đủ bằng chứng đánh giá" : p.riskText);
                     const cardRegionDisplay = isEn
                       ? (VIETNAM_REGIONS[p.region]?.en || p.region)
                       : p.regionVi;
@@ -460,19 +503,23 @@ export function MapPage() {
                           <div className={styles.cardWeatherRow}>
                             <span style={{ display: "inline-flex", alignItems: "center", gap: "3px" }}>
                               <CloudRain size={12} color="#0EA5E9" />
-                              <span>{p.humidity}% {isEn ? "hum" : "ẩm"}</span>
+                              <span>{measurement(p.humidity)}% {isEn ? "hum" : "ẩm"}</span>
                             </span>
                             <span>•</span>
                             <span style={{ display: "inline-flex", alignItems: "center", gap: "3px" }}>
                               <Wind size={12} />
-                              <span>{p.windSpeedKmh} km/h</span>
+                              <span>{measurement(p.windSpeedKmh)} km/h</span>
                             </span>
                           </div>
+                          {p.dataState === "loading" && <span>{isEn ? "Loading weather…" : "Đang tải thời tiết…"}</span>}
+                          {p.dataState === "error" && <span>{isEn ? "Weather request failed. Reload to retry." : "Không tải được thời tiết. Tải lại để thử lại."}</span>}
+                          {p.dataState === "ready" && p.freshnessState === "unavailable" && <span>{isEn ? "Weather unavailable" : "Chưa có dữ liệu thời tiết"}</span>}
+                          {p.assessment?.evidence.some(e => e.severity >= 2) && <span>{isEn ? "Known caution/high evidence — see details" : "Có bằng chứng cần chú ý / nguy cơ cao — xem chi tiết"}</span>}
                         </div>
 
                         <div className={styles.cardRight}>
                           <div className={styles.tempBox}>
-                            <span className={styles.tempVal}>{p.temp}°C</span>
+                            <span className={styles.tempVal}>{measurement(p.temp)}°C</span>
                             <span
                               className={styles.riskTag}
                               style={{

@@ -5,114 +5,71 @@
 
 import { useState, useMemo } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
-import { Bookmark, Navigation, Info, Compass, Bike, ArrowLeft } from "lucide-react";
+import { Bookmark, Navigation, Info, ArrowLeft, Lock, LogIn } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import type { ReportPointResponse } from "@vietnam-weather/contracts";
+import { apiClient } from "@/api/client";
 import { useAuthStore } from "@/hooks/useAuthStore";
-import { PROVINCE_MAP } from "@/data/provinces";
 import { getProvincePropertiesByCode } from "@/data/vietnamGeoJsonWGS84";
-import { useProvinceWeather } from "@/hooks/useProvinceWeather";
+import { forecastHours, useProvinceWeather, weatherStateText } from "@/hooks/useProvinceWeather";
+import { reportRiskDisplay, riskReasonText, weatherConditionText } from "@/utils/reportRisk";
 import {
-  WeatherIcon,
-  WindIcon,
   RainIcon,
-  RiskIcon,
 } from "@/components/ui/Icons";
+import { useRequireLoginModal } from "@/hooks/useRequireLoginModal";
+import { RiskEvidenceWarnings } from "@/components/common/RiskEvidenceWarnings";
 import styles from "./LocationPage.module.css";
 
 function getConditionVi(code: string | null | undefined): string {
-  switch (code) {
-    case "clear":
-      return "Trời quang mây tạnh, nắng ráo";
-    case "partly_cloudy":
-      return "Có mây thay đổi, nắng gián đoạn";
-    case "cloudy":
-      return "Nhiều mây, thời tiết dịu mát";
-    case "rain":
-      return "Mưa rào rải rác, mặt đường ướt";
-    case "heavy_rain":
-      return "Mưa to diện rộng, nguy cơ ngập úng";
-    case "thunderstorm":
-      return "Dông sét, mưa dông cục bộ mạnh";
-    case "fog":
-      return "Sương mù nhẹ, giảm tầm nhìn xa";
-    case "drizzle":
-      return "Mưa phùn hạt nhỏ";
-    default:
-      return "Thời tiết ổn định";
-  }
+  return weatherConditionText(code ?? "unknown");
 }
 
 export function LocationPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { user, saveLocation, removeSavedLocation } = useAuthStore();
+  const { user, isAuthenticated, saveLocation, removeSavedLocation } = useAuthStore();
+  const { openModal } = useRequireLoginModal();
 
-  const isPro = user?.plan === "pro";
-  const [forecastTab, setForecastTab] = useState<"24h" | "72h" | "14d">("24h");
+  const [forecastTab, setForecastTab] = useState<"24h" | "72h">("24h");
+  const [riskVehicle, setRiskVehicle] = useState<"car" | "motorcycle" | "">("");
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
   // Match province from id or code, including centroid coordinates
   const province = useMemo(() => {
-    if (!id) {
-      return {
-        name: "Hà Nội",
-        region: "Đồng bằng sông Hồng",
-        code: "HN",
-        latitude: 21.0285,
-        longitude: 105.8542,
-      };
-    }
-
-    const decoded = decodeURIComponent(id);
-    const geoProps = getProvincePropertiesByCode(decoded);
-    if (geoProps) {
-      return {
-        name: geoProps.name,
-        region: geoProps.regionVi,
-        code: geoProps.code,
-        latitude: geoProps.latitude,
-        longitude: geoProps.longitude,
-      };
-    }
-
-    const entry = Object.entries(PROVINCE_MAP).find(
-      ([key, p]) =>
-        key.toLowerCase() === decoded.toLowerCase() ||
-        p.name.toLowerCase() === decoded.toLowerCase() ||
-        p.code.toLowerCase() === decoded.toLowerCase()
-    );
-
-    if (entry) {
-      return {
-        name: entry[1].name,
-        region: entry[1].region,
-        code: entry[1].code,
-        latitude: 16.0,
-        longitude: 106.0,
-      };
-    }
-
-    return {
-      name: decoded,
-      region: "Việt Nam",
-      code: "VN",
-      latitude: 16.0,
-      longitude: 106.0,
-    };
+    return getProvincePropertiesByCode(id || "HN");
   }, [id]);
 
   // Real weather query with forecast
-  const { data: weatherQuery, isLoading: isWeatherLoading } = useProvinceWeather({
-    latitude: province.latitude,
-    longitude: province.longitude,
-    includeForecast: true,
+  const weather = useProvinceWeather({
+    latitude: province?.latitude,
+    longitude: province?.longitude,
+    includeForecast: isAuthenticated,
   });
 
-  const weatherData = weatherQuery?.data?.data;
-  const current = weatherData?.current?.value ?? null;
+  const { current } = weather;
   const conditionVi = getConditionVi(current?.conditionCode);
+  const riskQuery = useQuery({
+    queryKey: ["location-report-risk", province?.id, riskVehicle],
+    enabled: Boolean(province && riskVehicle),
+    queryFn: () => {
+      const query = new URLSearchParams({
+        latitude: String(province!.latitude), longitude: String(province!.longitude),
+        target_time: new Date().toISOString(), vehicle: riskVehicle,
+      });
+      return apiClient.get<{ data: ReportPointResponse }>(`/risk/report-point?${query}`);
+    },
+    staleTime: 120000,
+    retry: 1,
+    refetchOnWindowFocus: false,
+  });
+  const assessment = riskVehicle && !riskQuery.isError ? riskQuery.data?.data.assessment : undefined;
+  const riskDisplay = reportRiskDisplay(assessment);
+  const dimensionLabels = { rain: "Mưa (mm/h)", wind: "Gió giật (km/h)", temperature: "Nhiệt độ (°C)", visibility: "Tầm nhìn (m)", storm: "Dông", alert: "Cảnh báo chính thức" };
+  const severityLabels = ["Chưa đủ dữ liệu", "Thấp", "Chú ý", "Cao"];
+  const severityColors = ["#64748B", "#22C55E", "#EAB308", "#EF4444"];
 
   const isSaved = user?.savedLocations?.some(
-    (l) => l.name.toLowerCase() === province.name.toLowerCase()
+    (l) => l.name.toLowerCase() === province?.name.toLowerCase()
   );
 
   const showToast = (msg: string) => {
@@ -121,6 +78,14 @@ export function LocationPage() {
   };
 
   const handleToggleSave = () => {
+    if (!province) return;
+    if (!isAuthenticated) {
+      openModal(
+        "Lưu địa điểm yêu thích",
+        "Vui lòng đăng nhập hoặc tạo tài khoản để lưu trữ các địa điểm yêu thích và theo dõi cập nhật thời tiết nhanh chóng!"
+      );
+      return;
+    }
     if (isSaved) {
       removeSavedLocation(province.name);
       showToast(`Đã bỏ lưu ${province.name}`);
@@ -133,9 +98,12 @@ export function LocationPage() {
     }
   };
 
-  const handleTabChange = (tab: "24h" | "72h" | "14d") => {
-    if (tab === "14d" && !isPro) {
-      showToast("Dự báo dài hạn 7 - 14 ngày là đặc quyền của gói PRO. Hãy nâng cấp ngay!");
+  const handleTabChange = (tab: "24h" | "72h") => {
+    if (!isAuthenticated) {
+      openModal(
+        tab === "24h" ? "Dự báo 24 giờ tới" : "Dự báo 3 ngày (72h)",
+        "Bạn đang xem thời tiết hiện tại ở chế độ khách. Vui lòng đăng nhập hoặc đăng ký tài khoản để mở khóa chuỗi dự báo theo giờ và các ngày tiếp theo!"
+      );
       return;
     }
     setForecastTab(tab);
@@ -143,201 +111,22 @@ export function LocationPage() {
 
   // Real hourly forecast points from backend
   const hourlyPoints = useMemo(() => {
-    const hourlyValues = weatherData?.hourly?.values;
+    const hourlyValues = weather.hourly;
     if (hourlyValues && hourlyValues.length > 0) {
-      const maxCount = forecastTab === "24h" ? 24 : forecastTab === "72h" ? 72 : 24;
-      return hourlyValues.slice(0, maxCount).map((item, idx) => {
-        const date = item.validInterval?.from ? new Date(item.validInterval.from) : null;
-        const timeStr = date
-          ? date.toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" })
-          : `${idx}:00`;
+      return forecastHours(hourlyValues, forecastTab === "24h" ? 24 : 72).map(item => {
+        const timeStr = new Date(item.validInterval.from).toLocaleString("vi-VN", { timeZone: "Asia/Ho_Chi_Minh", day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" });
         return {
           time: timeStr,
           temp: item.temperatureCelsius != null ? Math.round(item.temperatureCelsius) : "—",
-          rainProb: item.precipitationProbabilityPercent ?? 0,
+          rainProb: item.precipitationProbabilityPercent ?? "—",
           condition: getConditionVi(item.conditionCode),
         };
       });
     }
     return [];
-  }, [weatherData, forecastTab]);
+  }, [weather.hourly, forecastTab]);
 
-  // Dynamic 6-dimensional risk assessment based on live observation
-  const riskAnalysis = useMemo(() => {
-    const rainVal = current?.precipitationMillimetres ?? 0;
-    const rainStatus =
-      rainVal > 25
-        ? {
-            label: "Nguy cơ cao",
-            percent: 85,
-            color: "#EF4444",
-            desc: `Lượng mưa lớn ${rainVal}mm/h. Nguy cơ ngập úng cục bộ và sạt lở các vùng đồi dốc.`,
-          }
-        : rainVal > 5
-        ? {
-            label: "Cần chú ý",
-            percent: 50,
-            color: "#F59E0B",
-            desc: `Lượng mưa ${rainVal}mm/h. Mặt đường ướt, giảm ma sát phanh xe.`,
-          }
-        : {
-            label: "Thấp",
-            percent: 15,
-            color: "#10B981",
-            desc: "Lượng mưa thấp hoặc khô ráo. Không có nguy cơ ngập úng cục bộ.",
-          };
-
-    const windKmh =
-      current?.windSpeedMetresPerSecond != null
-        ? Math.round(current.windSpeedMetresPerSecond * 3.6)
-        : 12;
-    const windStatus =
-      windKmh > 50
-        ? {
-            label: "Gió mạnh",
-            percent: 85,
-            color: "#EF4444",
-            desc: `Tốc độ gió ${windKmh} km/h. Nguy hiểm cho xe máy khi qua cầu cao và đường ven biển.`,
-          }
-        : windKmh > 25
-        ? {
-            label: "Gió vừa",
-            percent: 45,
-            color: "#F59E0B",
-            desc: `Tốc độ gió ${windKmh} km/h. Chú ý gió tạt nhẹ khi di chuyển tốc độ cao.`,
-          }
-        : {
-            label: "Thấp",
-            percent: 20,
-            color: "#10B981",
-            desc: `Gió nhẹ ${windKmh} km/h. Điều kiện lý tưởng cho các phương tiện di chuyển.`,
-          };
-
-    const visKm =
-      current?.visibilityMetres != null ? current.visibilityMetres / 1000 : 10;
-    const visStatus =
-      visKm < 1
-        ? {
-            label: "Kém (<1km)",
-            percent: 85,
-            color: "#EF4444",
-            desc: "Sương mù dày hoặc khói bụi cản trở tầm nhìn nghiêm trọng. Bật đèn sương mù.",
-          }
-        : visKm < 5
-        ? {
-            label: "Trung bình (1-5km)",
-            percent: 48,
-            color: "#F59E0B",
-            desc: "Tầm nhìn giảm do mưa phùn hoặc sương mù nhẹ. Giữ khoảng cách an toàn.",
-          }
-        : {
-            label: `Tốt (${visKm.toFixed(0)}km)`,
-            percent: 12,
-            color: "#10B981",
-            desc: "Tầm nhìn thông thoáng, không có sương mù dày đặc hay khói bụi cản trở.",
-          };
-
-    const isStorm = current?.conditionCode === "thunderstorm";
-    const stormStatus = isStorm
-      ? {
-          label: "Cảnh báo sét",
-          percent: 90,
-          color: "#EF4444",
-          desc: "Đang có cơn dông sét. Tuyệt đối không đứng dưới cây to hoặc khu vực đất trống.",
-        }
-      : {
-          label: "An toàn",
-          percent: 10,
-          color: "#10B981",
-          desc: "Chỉ số bất ổn định khí quyển thấp, không phát hiện dấu hiệu dông nhiệt cực đoan.",
-        };
-
-    const temp = current?.temperatureCelsius ?? 28;
-    const tempStatus =
-      temp > 38
-        ? {
-            label: "Nắng nóng gay gắt",
-            percent: 85,
-            color: "#EF4444",
-            desc: `Nhiệt độ ${temp}°C cực đoan. Hạn chế ra đường giữa trưa để tránh sốc nhiệt.`,
-          }
-        : temp > 34
-        ? {
-            label: "Nắng nóng",
-            percent: 58,
-            color: "#F59E0B",
-            desc: `Nhiệt độ ${temp}°C khá cao. Nên bổ sung nước và hạn chế hoạt động nặng ngoài trời.`,
-          }
-        : temp < 10
-        ? {
-            label: "Rét đậm",
-            percent: 75,
-            color: "#38BDF8",
-            desc: `Nhiệt độ ${temp}°C giá rét. Chuẩn bị trang phục giữ ấm khi lưu thông bằng xe máy.`,
-          }
-        : {
-            label: "Dịu mát",
-            percent: 22,
-            color: "#10B981",
-            desc: `Nhiệt độ ${temp}°C dễ chịu, rất thích hợp cho các hoạt động ngoài trời.`,
-          };
-
-    const uv = current?.uvIndex ?? 5;
-    const uvStatus =
-      uv >= 8
-        ? {
-            label: `Rất cao (UV ${uv})`,
-            percent: 85,
-            color: "#EF4444",
-            desc: "Chỉ số UV nguy cơ gây tổn hại da cao. Cần thoa kem chống nắng, đeo kính râm.",
-          }
-        : uv >= 5
-        ? {
-            label: `Trung bình (UV ${uv})`,
-            percent: 55,
-            color: "#F59E0B",
-            desc: "Khuyến nghị đeo kính râm, thoa kem chống nắng khi ra ngoài từ 11:00 đến 14:00.",
-          }
-        : {
-            label: `Thấp (UV ${uv})`,
-            percent: 20,
-            color: "#10B981",
-            desc: "Chỉ số bức xạ tia cực tím an toàn cho da.",
-          };
-
-    const overallHigh =
-      rainStatus.percent > 70 ||
-      windStatus.percent > 70 ||
-      stormStatus.percent > 70 ||
-      tempStatus.percent > 80;
-    const overallCaution =
-      !overallHigh &&
-      (rainStatus.percent >= 45 ||
-        windStatus.percent >= 45 ||
-        visStatus.percent >= 45 ||
-        tempStatus.percent >= 55 ||
-        uvStatus.percent >= 50);
-
-    const overall = overallHigh
-      ? {
-          label: "Tổng thể: Nguy cơ cao",
-          color: "#EF4444",
-          bg: "rgba(239, 68, 68, 0.15)",
-        }
-      : overallCaution
-      ? {
-          label: "Tổng thể: Cần chú ý",
-          color: "#F59E0B",
-          bg: "rgba(245, 158, 11, 0.15)",
-        }
-      : {
-          label: "Tổng thể: An toàn (Thấp)",
-          color: "#10B981",
-          bg: "rgba(16, 185, 129, 0.15)",
-        };
-
-    return { rainStatus, windStatus, visStatus, stormStatus, tempStatus, uvStatus, overall };
-  }, [current]);
+  if (!province) return <div className={styles.page}><p role="status">Không tìm thấy tỉnh thành. Chưa truy vấn thời tiết cho địa điểm này.</p><Link to="/map">Chọn địa điểm trên bản đồ</Link></div>;
 
   return (
     <div className={styles.page}>
@@ -378,7 +167,7 @@ export function LocationPage() {
         <div className={styles.titleArea}>
           <h1 className={styles.title}>{province.name}</h1>
           <span className={styles.regionTag}>
-            Khu vực: {province.region} • Mã tỉnh: {province.code}
+            Khu vực: {province.regionVi} • Mã tỉnh: {province.code}
           </span>
         </div>
 
@@ -410,9 +199,9 @@ export function LocationPage() {
             <span className={styles.temperature}>
               {current?.temperatureCelsius != null
                 ? `${Math.round(current.temperatureCelsius)}°C`
-                : isWeatherLoading
+                : weather.isLoading
                 ? "..."
-                : "26°C"}
+                : "—"}
             </span>
             {current?.apparentTemperatureCelsius != null && (
               <span className={styles.feelsLike}>
@@ -422,8 +211,9 @@ export function LocationPage() {
           </div>
           <div className={styles.conditionText}>{conditionVi}</div>
           <div className={styles.updateTime}>
-            Cập nhật từ trạm quan trắc • {current?.observedAt ? new Date(current.observedAt).toLocaleTimeString("vi-VN") : "Thời gian thực"}
+            {current?.observedAt ? `Thời điểm quan trắc: ${new Date(current.observedAt).toLocaleString("vi-VN", { timeZone: "Asia/Ho_Chi_Minh" })}` : weatherStateText(weather.currentState)}
           </div>
+          {(weather.currentState === "error" || weather.currentState === "unavailable") && <button type="button" disabled={weather.isFetching} onClick={() => void weather.refetch()}>Thử lại thời tiết</button>}
         </div>
 
         <div className={styles.metricsGrid}>
@@ -456,7 +246,7 @@ export function LocationPage() {
             <span className={styles.metricVal} style={{ color: "#38BDF8" }}>
               {current?.precipitationMillimetres != null
                 ? `${current.precipitationMillimetres} mm`
-                : "0 mm"}
+                : "—"}
             </span>
           </div>
           <div className={styles.metricCard}>
@@ -464,8 +254,7 @@ export function LocationPage() {
             <span
               className={styles.metricVal}
               style={{
-                color:
-                  current?.uvIndex && current.uvIndex >= 6 ? "#F59E0B" : "#10B981",
+                color: "var(--color-text-primary)",
               }}
             >
               {current?.uvIndex != null ? `${current.uvIndex}` : "—"}
@@ -501,18 +290,34 @@ export function LocationPage() {
             >
               3 ngày (72h)
             </button>
-            <button
-              type="button"
-              className={`${styles.tabBtn} ${forecastTab === "14d" ? styles.tabBtnActive : ""}`}
-              onClick={() => handleTabChange("14d")}
-            >
-              <span>7 - 14 ngày</span>
-              <span className={styles.proBadgeSmall}>PRO</span>
-            </button>
           </div>
         </div>
 
-        {hourlyPoints.length > 0 ? (
+        {!isAuthenticated ? (
+          <div
+            className={styles.lockedForecastBox}
+            onClick={() =>
+              openModal(
+                "Dự báo theo giờ & Nhiều ngày",
+                "Bạn đang xem thời tiết hiện tại ở chế độ khách. Vui lòng đăng nhập hoặc đăng ký tài khoản để mở khóa toàn bộ chuỗi dự báo theo giờ và xu hướng nhiều ngày tới!"
+              )
+            }
+          >
+            <div className={styles.lockedIconWrapper}>
+              <Lock size={22} />
+            </div>
+            <h4 className={styles.lockedTitle}>
+              Dự báo 24 giờ & Nhiều ngày tới yêu cầu đăng nhập
+            </h4>
+            <p className={styles.lockedSubtitle}>
+              Khách chỉ xem được các thông số thời tiết hiện tại. Bấm vào đây hoặc Đăng nhập để mở khóa biểu đồ dự báo chi tiết nhiệt độ, gió và xác suất mưa theo giờ!
+            </p>
+            <span className={styles.lockedButton}>
+              <LogIn size={15} />
+              <span>Đăng nhập để xem dự báo theo giờ</span>
+            </span>
+          </div>
+        ) : hourlyPoints.length > 0 ? (
           <div className={styles.hourlyStrip}>
             {hourlyPoints.map((item, idx) => (
               <div key={idx} className={styles.hourlyCard}>
@@ -538,9 +343,8 @@ export function LocationPage() {
               border: "1px dashed rgba(100, 116, 139, 0.3)",
             }}
           >
-            {isWeatherLoading
-              ? "Đang đồng bộ chuỗi dữ liệu dự báo từ hệ thống trạm quan trắc..."
-              : "Dữ liệu chuỗi dự báo theo giờ đang được cập nhật từ trạm quan trắc địa phương."}
+            <p role="status">{weatherStateText(weather.hourlyState === "ready" ? "unavailable" : weather.hourlyState)}</p>
+            <button type="button" disabled={weather.isFetching} onClick={() => void weather.refetch()}>Thử lại</button>
           </div>
         )}
       </div>
@@ -551,225 +355,52 @@ export function LocationPage() {
           <div>
             <h2 className={styles.sectionTitle}>Đánh giá Rủi ro Du lịch 6 Chiều</h2>
             <span style={{ fontSize: "12px", color: "var(--color-text-secondary)" }}>
-              Phân tích theo bộ quy chuẩn rủi ro du lịch của VietnamWeather AI
+              Đánh giá theo phương tiện và bằng chứng Bảng 3.1
             </span>
           </div>
           <span
             style={{
               padding: "4px 12px",
-              background: riskAnalysis.overall.bg,
-              color: riskAnalysis.overall.color,
+              color: riskDisplay.riskColor,
               borderRadius: "999px",
               fontSize: "12px",
               fontWeight: 700,
             }}
           >
-            {riskAnalysis.overall.label}
+            {!riskVehicle ? "Chưa chọn phương tiện" : riskQuery.isLoading ? "Đang tải đánh giá…" : riskQuery.isError ? "Không tải được đánh giá" : riskDisplay.riskText}
           </span>
         </div>
 
-        <div className={styles.riskGrid}>
-          {/* Dimension 1: Rain */}
-          <div className={styles.riskItemCard}>
-            <div className={styles.riskCardTop}>
-              <span className={styles.riskCardTitle}>
-                <RainIcon size={18} /> 1. Mưa lớn & Ngập úng
-              </span>
-              <span
-                style={{
-                  color: riskAnalysis.rainStatus.color,
-                  fontWeight: 600,
-                  fontSize: "12px",
-                }}
-              >
-                {riskAnalysis.rainStatus.label}
-              </span>
-            </div>
-            <div className={styles.riskProgressBar}>
-              <div
-                className={styles.riskProgressFill}
-                style={{
-                  width: `${riskAnalysis.rainStatus.percent}%`,
-                  background: riskAnalysis.rainStatus.color,
-                }}
-              />
-            </div>
-            <p className={styles.riskDesc}>{riskAnalysis.rainStatus.desc}</p>
+        <label>Phương tiện đánh giá rủi ro: <select value={riskVehicle} onChange={event => setRiskVehicle(event.target.value as typeof riskVehicle)}>
+          <option value="">Chọn phương tiện</option>
+          <option value="car">Ô tô</option>
+          <option value="motorcycle">Xe máy</option>
+        </select></label>
+        {assessment ? <>
+          <p>Chỉ số rủi ro: {riskDisplay.riskScore == null ? "Chưa đủ dữ liệu" : `${riskDisplay.riskScore}/100`}</p>
+          <div className={styles.riskGrid}>
+            {assessment.evidence.map(evidence => (
+              <div key={evidence.dimension} className={styles.riskItemCard}>
+                <div className={styles.riskCardTop}>
+                  <span className={styles.riskCardTitle}>{dimensionLabels[evidence.dimension]}</span>
+                  <span style={{ color: severityColors[evidence.severity] }}>{severityLabels[evidence.severity]}</span>
+                </div>
+                <p className={styles.riskDesc}>{evidence.value ?? "Chưa có bằng chứng"}</p>
+              </div>
+            ))}
           </div>
-
-          {/* Dimension 2: Wind */}
-          <div className={styles.riskItemCard}>
-            <div className={styles.riskCardTop}>
-              <span className={styles.riskCardTitle}>
-                <WindIcon size={18} /> 2. Gió giật & Áp thấp
-              </span>
-              <span
-                style={{
-                  color: riskAnalysis.windStatus.color,
-                  fontWeight: 600,
-                  fontSize: "12px",
-                }}
-              >
-                {riskAnalysis.windStatus.label}
-              </span>
-            </div>
-            <div className={styles.riskProgressBar}>
-              <div
-                className={styles.riskProgressFill}
-                style={{
-                  width: `${riskAnalysis.windStatus.percent}%`,
-                  background: riskAnalysis.windStatus.color,
-                }}
-              />
-            </div>
-            <p className={styles.riskDesc}>{riskAnalysis.windStatus.desc}</p>
-          </div>
-
-          {/* Dimension 3: Visibility */}
-          <div className={styles.riskItemCard}>
-            <div className={styles.riskCardTop}>
-              <span className={styles.riskCardTitle}>
-                <WeatherIcon size={18} /> 3. Tầm nhìn xa
-              </span>
-              <span
-                style={{
-                  color: riskAnalysis.visStatus.color,
-                  fontWeight: 600,
-                  fontSize: "12px",
-                }}
-              >
-                {riskAnalysis.visStatus.label}
-              </span>
-            </div>
-            <div className={styles.riskProgressBar}>
-              <div
-                className={styles.riskProgressFill}
-                style={{
-                  width: `${riskAnalysis.visStatus.percent}%`,
-                  background: riskAnalysis.visStatus.color,
-                }}
-              />
-            </div>
-            <p className={styles.riskDesc}>{riskAnalysis.visStatus.desc}</p>
-          </div>
-
-          {/* Dimension 4: Lightning */}
-          <div className={styles.riskItemCard}>
-            <div className={styles.riskCardTop}>
-              <span className={styles.riskCardTitle}>
-                <RiskIcon size={18} /> 4. Dông sét & Lốc xoáy
-              </span>
-              <span
-                style={{
-                  color: riskAnalysis.stormStatus.color,
-                  fontWeight: 600,
-                  fontSize: "12px",
-                }}
-              >
-                {riskAnalysis.stormStatus.label}
-              </span>
-            </div>
-            <div className={styles.riskProgressBar}>
-              <div
-                className={styles.riskProgressFill}
-                style={{
-                  width: `${riskAnalysis.stormStatus.percent}%`,
-                  background: riskAnalysis.stormStatus.color,
-                }}
-              />
-            </div>
-            <p className={styles.riskDesc}>{riskAnalysis.stormStatus.desc}</p>
-          </div>
-
-          {/* Dimension 5: Extreme Temperature */}
-          <div className={styles.riskItemCard}>
-            <div className={styles.riskCardTop}>
-              <span className={styles.riskCardTitle}>
-                <WeatherIcon size={18} /> 5. Cực đoan Nhiệt
-              </span>
-              <span
-                style={{
-                  color: riskAnalysis.tempStatus.color,
-                  fontWeight: 600,
-                  fontSize: "12px",
-                }}
-              >
-                {riskAnalysis.tempStatus.label}
-              </span>
-            </div>
-            <div className={styles.riskProgressBar}>
-              <div
-                className={styles.riskProgressFill}
-                style={{
-                  width: `${riskAnalysis.tempStatus.percent}%`,
-                  background: riskAnalysis.tempStatus.color,
-                }}
-              />
-            </div>
-            <p className={styles.riskDesc}>{riskAnalysis.tempStatus.desc}</p>
-          </div>
-
-          {/* Dimension 6: UV & Air Quality */}
-          <div className={styles.riskItemCard}>
-            <div className={styles.riskCardTop}>
-              <span className={styles.riskCardTitle}>
-                <WeatherIcon size={18} /> 6. Chỉ số UV & Bức xạ
-              </span>
-              <span
-                style={{
-                  color: riskAnalysis.uvStatus.color,
-                  fontWeight: 600,
-                  fontSize: "12px",
-                }}
-              >
-                {riskAnalysis.uvStatus.label}
-              </span>
-            </div>
-            <div className={styles.riskProgressBar}>
-              <div
-                className={styles.riskProgressFill}
-                style={{
-                  width: `${riskAnalysis.uvStatus.percent}%`,
-                  background: riskAnalysis.uvStatus.color,
-                }}
-              />
-            </div>
-            <p className={styles.riskDesc}>{riskAnalysis.uvStatus.desc}</p>
-          </div>
-        </div>
+        </> : <p role="status">{!riskVehicle ? "Chọn ô tô hoặc xe máy để xem đánh giá thực tế." : riskQuery.isLoading ? "Đang tải đánh giá theo phương tiện…" : "Chưa có đánh giá cho địa điểm này."}</p>}
+        {riskVehicle && riskQuery.isError && <button type="button" disabled={riskQuery.isFetching} onClick={() => void riskQuery.refetch()}>Thử lại đánh giá</button>}
       </div>
 
       {/* Travel Advisories */}
       <div className={styles.section}>
         <h2 className={styles.sectionTitle}>Khuyến cáo Du lịch & Di chuyển</h2>
         <div className={styles.advisoriesList}>
-          <div className={styles.advisoryRow}>
-            <Compass size={22} color="var(--color-primary)" />
-            <div>
-              <div className={styles.advisoryRowTitle}>Hoạt động tham quan ngoài trời</div>
-              <div className={styles.advisoryRowDesc}>
-                {riskAnalysis.rainStatus.percent > 60
-                  ? "Mưa lớn diện rộng, nên ưu tiên các hoạt động tham quan trong nhà hoặc lùi lịch trình."
-                  : riskAnalysis.tempStatus.percent > 60
-                  ? "Thời tiết oi bức nhiệt cao giữa trưa, ưu tiên tham quan vào sáng sớm hoặc sau 16:00."
-                  : "Thời tiết thuận lợi cho việc chụp ảnh, dạo phố và các hoạt động tham quan trải nghiệm."}
-              </div>
-            </div>
-          </div>
-
-          <div className={styles.advisoryRow}>
-            <Bike size={22} color="var(--color-primary)" />
-            <div>
-              <div className={styles.advisoryRowTitle}>Lưu ý phương tiện hai bánh</div>
-              <div className={styles.advisoryRowDesc}>
-                {riskAnalysis.windStatus.percent > 60
-                  ? "Gió tạt mạnh nguy hiểm khi qua cầu lớn và đường đèo dốc; giảm tốc độ và giữ vững tay lái."
-                  : riskAnalysis.rainStatus.percent > 40
-                  ? "Mặt đường trơn ướt; giữ khoảng cách phanh an toàn tối thiểu 35m và chuẩn bị áo mưa."
-                  : "Đường sá khô ráo, phương tiện hai bánh lưu thông thuận lợi trên các trục đường chính."}
-              </div>
-            </div>
-          </div>
+          <RiskEvidenceWarnings evidence={assessment?.evidence} />
+          {assessment?.reasons.map(reason => <p key={reason} className={styles.advisoryRow}>{riskReasonText(reason)}</p>)}
+          {!assessment && <p>Chưa có bằng chứng đánh giá theo phương tiện cho địa điểm này.</p>}
+          {assessment && assessment.reasons.length === 0 && !assessment.evidence.some(e => e.severity >= 2) && <p>Chưa có khuyến cáo di chuyển từ đánh giá này.</p>}
         </div>
       </div>
     </div>

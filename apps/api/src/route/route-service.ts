@@ -1,41 +1,18 @@
-/**
- * Phase 8 Route Service
- * Main orchestrator for weather-aware route planning
- *
- * Integrates: Geocoding → Routing → Sampling → Risk → Scoring
- */
-
+import type { RouteWeatherRefresh } from "./route-weather-refresh.js";
+import { provisionalRouteScore } from "./provisional-risk.js";
 import { randomUUID } from "node:crypto";
-
 import type { Pool } from "pg";
+import { type RouteRequest, type RouteResponse, type RouteAlternative, MAX_ROUTE_LENGTH_METERS, MAX_ETA_HOURS } from "@vietnam-weather/contracts";
+import { createGeocodingService, type GeocodingService } from "./geocoding-service.js";
+import { createRoutingService, type RoutingService } from "./routing-service.js";
+import { createRouteSampler, type RouteSampler } from "./route-sampler.js";
+import { createRouteRiskEngine, type RouteRiskEngine } from "./route-risk-engine.js";
 
-import {
-  type RouteRequest,
-  type RouteResponse,
-  type RouteAlternative,
-  type RouteAlternativeType,
-  type RouteAttribution,
-  type Coordinates,
-  ROUTE_ALTERNATIVES,
-  MAX_ROUTE_LENGTH_METERS,
-  MAX_ETA_HOURS,
-  DEFAULT_SCORING_WEIGHTS,
-} from "@vietnam-weather/contracts";
-
-import type { GeocodingService } from "./geocoding-service.js";
-import { createGeocodingService } from "./geocoding-service.js";
-import type { RoutingService } from "./routing-service.js";
-import { createRoutingService } from "./routing-service.js";
-import type { RouteSampler } from "./route-sampler.js";
-import { createRouteSampler } from "./route-sampler.js";
-import type { RouteRiskEngine } from "./route-risk-engine.js";
-import { createRouteRiskEngine } from "./route-risk-engine.js";
-
-// =============================================================================
-// Types
-// =============================================================================
+import type { RestStopService } from "./rest-stop-service.js";
 
 export interface RouteServiceOptions {
+  readonly weatherRefresh?: Pick<RouteWeatherRefresh, "refresh">;
+  readonly restStopService?: Pick<RestStopService, "findForRoute">;
   readonly dbPool: Pool;
   readonly geocodingService?: GeocodingService;
   readonly routingService?: RoutingService;
@@ -43,472 +20,93 @@ export interface RouteServiceOptions {
   readonly routeRiskEngine?: RouteRiskEngine;
 }
 
-interface ScoringWeights {
-  risk_weight: number;
-  time_weight: number;
-  distance_weight: number;
+/** Report (3.14) weights; incomplete evidence uses the separately versioned provisional policy. */
+export function rankAlternatives(alternatives: RouteAlternative[]): RouteAlternative[] {
+  const maxTime = Math.max(...alternatives.map(a => a.geometry.duration_seconds));
+  const maxDistance = Math.max(...alternatives.map(a => a.geometry.distance_meters));
+  return alternatives.map(a => ({ ...a, balanced_score: (a.route_risk.score ?? a.route_risk.provisional?.score) == null || maxTime <= 0 || maxDistance <= 0 ? null :
+    0.5 * (a.route_risk.score ?? a.route_risk.provisional?.score ?? 0) + 0.3 * a.geometry.duration_seconds / maxTime + 0.2 * a.geometry.distance_meters / maxDistance }));
 }
 
-// =============================================================================
-// Route Service
-// =============================================================================
-
 export class RouteService {
-  private readonly dbPool: Pool;
+  private readonly weatherRefresh?: Pick<RouteWeatherRefresh, "refresh">;
   private readonly geocodingService: GeocodingService;
   private readonly routingService: RoutingService;
   private readonly routeSampler: RouteSampler;
   private readonly routeRiskEngine: RouteRiskEngine;
-  private routeRiskEngineInitialized: boolean;
-
+  private readonly restStopService?: Pick<RestStopService, "findForRoute">;
   constructor(options: RouteServiceOptions) {
-    this.dbPool = options.dbPool;
+    this.weatherRefresh = options.weatherRefresh;
+    this.restStopService = options.restStopService;
     this.geocodingService = options.geocodingService ?? createGeocodingService();
     this.routingService = options.routingService ?? createRoutingService();
-    this.routeSampler = options.routeSampler ?? createRouteSampler({ dbPool: this.dbPool });
-
-    // RouteRiskEngine requires Phase 6 risk rules - loaded per request
-    if (options.routeRiskEngine) {
-      this.routeRiskEngine = options.routeRiskEngine;
-      this.routeRiskEngineInitialized = true;
-    } else {
-      this.routeRiskEngine = createRouteRiskEngine({
-        dbPool: this.dbPool,
-        ruleSet: {
-          id: "",
-          external_key: "",
-          version: 0,
-          status: "draft",
-          effective_from: null,
-          effective_to: null,
-        },
-        rules: [],
-      });
-      this.routeRiskEngineInitialized = false;
-    }
+    this.routeSampler = options.routeSampler ?? createRouteSampler({ dbPool: options.dbPool });
+    this.routeRiskEngine = options.routeRiskEngine ?? createRouteRiskEngine({ dbPool: options.dbPool });
   }
 
-  /**
-   * Calculate weather-aware routes
-   */
   async calculateRoutes(request: RouteRequest): Promise<RouteResponse> {
-    const correlationId = randomUUID();
-    const warnings: string[] = [];
-
-    // Initialize route risk engine with Phase 6 rules if not already initialized
-    if (!this.routeRiskEngineInitialized) {
-      await this.initializeRouteRiskEngine();
-    }
-
-    // Parse departure time
-    const departureTime = request.departure_time
-      ? new Date(request.departure_time)
-      : new Date();
-
-    // Validate departure time is within limits
     const now = new Date();
-    const maxDeparture = new Date(now.getTime() + MAX_ETA_HOURS * 60 * 60 * 1000);
-
-    if (departureTime < now) {
-      throw new RouteServiceError(
-        "ROUTE_INVALID_ORIGIN",
-        "Departure time cannot be in the past",
-        correlationId,
-        false
-      );
-    }
-
-    if (departureTime > maxDeparture) {
-      throw new RouteServiceError(
-        "ROUTE_ETA_EXCEEDS_LIMIT",
-        `Departure time exceeds maximum ${MAX_ETA_HOURS} hours`,
-        correlationId,
-        false
-      );
-    }
-
-    // Resolve locations
+    const departure = request.departure_time ? new Date(request.departure_time) : now;
+    if (!Number.isFinite(departure.getTime()) || departure < now || departure.getTime() > now.getTime() + MAX_ETA_HOURS * 3600000)
+      throw new RouteServiceError("ROUTE_ETA_EXCEEDS_LIMIT", "Departure must be within the forecast horizon", randomUUID(), false);
     const [origin, destination] = await Promise.all([
-      this.geocodingService.resolveLocation(request.origin),
-      this.geocodingService.resolveLocation(request.destination),
+      this.geocodingService.resolveLocation(request.origin), this.geocodingService.resolveLocation(request.destination),
     ]);
-
-    // Get route alternatives
-    const routes = await this.routingService.getAlternatives(
-      origin.coordinates,
-      destination.coordinates,
-      request.vehicle_type
-    );
-
-    // Validate route length (ROUTE-005)
+    const routes = await this.routingService.getAlternatives(origin.coordinates, destination.coordinates, request.vehicle_type);
+    const primaryRoute = [...routes].sort((a, b) => a.duration_seconds - b.duration_seconds)[0];
+    const restStops = primaryRoute ? this.restStopService?.findForRoute(primaryRoute) : undefined;
+    const candidates: RouteAlternative[] = [];
     for (const route of routes) {
-      if (route.distance_meters > MAX_ROUTE_LENGTH_METERS) {
-        throw new RouteServiceError(
-          "ROUTE_TOO_LONG",
-          `Route exceeds maximum ${MAX_ROUTE_LENGTH_METERS / 1000} km`,
-          correlationId,
-          false
-        );
+      if (route.distance_meters > MAX_ROUTE_LENGTH_METERS) throw new RouteServiceError("ROUTE_TOO_LONG", "Route exceeds supported distance", randomUUID(), false);
+      const samples = await this.routeSampler.sampleRoute(route, departure);
+      const points = await this.routeRiskEngine.calculatePointRisks(samples, request.vehicle_type);
+      const segments = this.routeRiskEngine.calculateSegmentRisks(points, samples);
+      const strictRisk = this.routeRiskEngine.calculateRouteRisk(segments);
+      const risk = { ...strictRisk, ...(strictRisk.score === null ? { provisional: provisionalRouteScore(samples) } : {}) };
+      candidates.push({ alternative_type: "fastest", geometry: route, sample_points: samples,
+        route_risk: { ...risk, dangerous_checkpoint_count: [...points.values()].filter(p => p.severity >= 2 || p.evidence.some(e => e.severity >= 2)).length,
+          unknown_checkpoint_count: [...points.values()].filter(p => p.severity === 0).length },
+        segment_risks: segments, balanced_score: null,
+        summary: { vi: risk.provisional ? "Điểm sơ bộ theo thời tiết hiện có; đoạn thiếu dữ liệu bị tính mức phạt tối đa" : risk.score === null ? "Chưa đủ dữ liệu để đánh giá toàn tuyến" : `Rủi ro thời tiết: ${risk.level}`,
+          en: risk.provisional ? "Provisional weather ranking; uncovered segments receive the maximum penalty" : risk.score === null ? "Insufficient evidence to assess the entire route" : `Weather risk: ${risk.level}` },
+        warnings: risk.score === null ? ["incomplete_weather_evidence"] : [] });
+    }
+    let weatherRefresh: RouteResponse["weather_refresh"];
+    if (this.weatherRefresh) {
+      try {
+        const refresh = await this.weatherRefresh.refresh(candidates.flatMap(candidate => candidate.sample_points));
+        if (refresh.requested || refresh.deferred) weatherRefresh = {
+          status: refresh.runs.some(run => ["pending", "running", "retry_wait"].includes(run.status)) ? "pending" : "unavailable",
+          requested_points: refresh.requested, retry_after_seconds: 5,
+        };
+      } catch {
+        weatherRefresh = { status: "unavailable", requested_points: 0, retry_after_seconds: 5 };
       }
     }
-
-    // Calculate alternatives
+    const ranked = rankAlternatives(candidates);
+    const fastest = [...ranked].sort((a,b) => a.geometry.duration_seconds - b.geometry.duration_seconds)[0];
+    const shortest = [...ranked].sort((a,b) => a.geometry.distance_meters - b.geometry.distance_meters)[0];
+    const eligible = ranked.filter(a => a.balanced_score !== null);
+    const safer = [...eligible].sort((a,b) => a.balanced_score! - b.balanced_score!)[0];
+    // Labels select real candidates; they never modify geometry, weather, risk or confidence.
     const alternatives: RouteAlternative[] = [];
-    const weights = this.getScoringWeights(request.scoring_weights);
-
-    for (const route of routes) {
-      const alternative = await this.createAlternative(
-        route,
-        departureTime,
-        request,
-        weights,
-        warnings
-      );
-      alternatives.push(alternative);
-    }
-
-    // Create weather-safer alternative if we have routes
-    if (routes.length >= 1) {
-      const weatherSafer = await this.createWeatherSaferAlternative(
-        routes[0]!,
-        departureTime,
-        request,
-        weights,
-        warnings
-      );
-      if (weatherSafer) {
-        alternatives.push(weatherSafer);
-      }
-    }
-
-    // Determine recommended route (lowest balanced score)
-    const recommended = this.getRecommendedAlternative(alternatives);
-
-    // Build attribution
-    const attribution: RouteAttribution = {
-      routing_provider: "Geoapify",
-      weather_provider: "WeatherAPI.com",
-      issue_time: new Date().toISOString(),
-      last_updated: new Date().toISOString(),
-    };
-
-    return {
-      origin,
-      destination,
-      departure_time: departureTime.toISOString(),
-      alternatives,
-      recommended_alternative: recommended,
-      attribution,
-      warnings: [...new Set(warnings)],
-      is_incomplete: warnings.some(w => w.includes("missing") || w.includes("incomplete")),
-    };
-  }
-
-  /**
-   * Create a route alternative
-   */
-  private async createAlternative(
-    route: { coordinates: readonly Coordinates[]; distance_meters: number; duration_seconds: number },
-    departureTime: Date,
-    request: RouteRequest,
-    weights: ScoringWeights,
-    warnings: string[]
-  ): Promise<RouteAlternative> {
-    // Sample points along route
-    const samples = await this.routeSampler.sampleRoute(
-      route,
-      departureTime
-    );
-
-    // Enrich with weather data
-    const enrichedSamples = await this.routeSampler.enrichWithWeather(samples);
-
-    // Calculate risks
-    const pointRisks = await this.routeRiskEngine.calculatePointRisks(enrichedSamples);
-
-    // Create segments (divide route into equal segments)
-    const segments = this.createSegments(enrichedSamples.length);
-    const segmentRisks = this.routeRiskEngine.calculateSegmentRisks(pointRisks, segments);
-
-    // Calculate route risk
-    const routeRisk = this.routeRiskEngine.calculateRouteRisk(segmentRisks);
-
-    // Check for incomplete data
-    if (routeRisk.confidence < 100) {
-      warnings.push(`Route has ${100 - routeRisk.confidence}% missing weather data`);
-    }
-
-    // Calculate balanced score
-    const balancedScore = this.calculateBalancedScore(
-      routeRisk.score,
-      route.distance_meters,
-      route.duration_seconds,
-      weights,
-      route
-    );
-
-    // Determine alternative type based on scoring
-    const alternativeType = this.determineAlternativeType(
-      route,
-      alternatives =>
-        alternatives.filter(a => a.alternative_type !== ROUTE_ALTERNATIVES.WEATHER_SAFER)
-    );
-
-    return {
-      alternative_type: alternativeType,
-      geometry: route,
-      sample_points: enrichedSamples,
-      route_risk: routeRisk,
-      segment_risks: segmentRisks,
-      balanced_score: balancedScore,
-      summary: this.generateSummary(routeRisk),
-      warnings: [],
-    };
-  }
-
-  /**
-   * Create weather-safer alternative
-   */
-  private async createWeatherSaferAlternative(
-    route: { coordinates: readonly Coordinates[]; distance_meters: number; duration_seconds: number },
-    departureTime: Date,
-    request: RouteRequest,
-    weights: ScoringWeights,
-    warnings: string[]
-  ): Promise<RouteAlternative | null> {
-    // For MVP, weather-safer is same geometry with weather-safer scoring
-    // In future, this could call alternative routing considering weather
-    const alternative = await this.createAlternative(route, departureTime, request, weights, warnings);
-
-    return {
-      ...alternative,
-      alternative_type: ROUTE_ALTERNATIVES.WEATHER_SAFER,
-      summary: {
-        vi: "Tuyến đường có rủi ro thời tiết thấp hơn theo dữ liệu hiện có",
-        en: "Route with lower weather risk based on available data",
-      },
-    };
-  }
-
-  /**
-   * Create route segments
-   */
-  private createSegments(pointCount: number): Array<{ start: number; end: number }> {
-    const segments: Array<{ start: number; end: number }> = [];
-    const segmentSize = Math.max(1, Math.floor(pointCount / 4)); // ~4 segments
-
-    for (let i = 0; i < pointCount; i += segmentSize) {
-      segments.push({
-        start: i,
-        end: Math.min(i + segmentSize - 1, pointCount - 1),
-      });
-    }
-
-    return segments;
-  }
-
-  /**
-   * Calculate balanced score
-   */
-  private calculateBalancedScore(
-    riskScore: number,
-    distance: number,
-    duration: number,
-    weights: ScoringWeights,
-    referenceRoute: { distance_meters: number; duration_seconds: number }
-  ): number {
-    const normalizedRisk = riskScore;
-    const normalizedTime = duration / Math.max(referenceRoute.duration_seconds, 1);
-    const normalizedDistance = distance / Math.max(referenceRoute.distance_meters, 1);
-
-    return (
-      weights.risk_weight * normalizedRisk +
-      weights.time_weight * normalizedTime +
-      weights.distance_weight * normalizedDistance
-    );
-  }
-
-  /**
-   * Determine alternative type
-   */
-  private determineAlternativeType(
-    route: { distance_meters: number; duration_seconds: number },
-    getOthers: (alternatives: RouteAlternative[]) => RouteAlternative[]
-  ): RouteAlternativeType {
-    const others = getOthers([]);
-    if (others.length === 0) return ROUTE_ALTERNATIVES.FASTEST;
-
-    const fastest = others.find(a => a.alternative_type === ROUTE_ALTERNATIVES.FASTEST);
-    const shortest = others.find(a => a.alternative_type === ROUTE_ALTERNATIVES.SHORTEST);
-
-    if (route.duration_seconds <= (fastest?.geometry.duration_seconds ?? Infinity)) {
-      return ROUTE_ALTERNATIVES.FASTEST;
-    }
-
-    if (route.distance_meters <= (shortest?.geometry.distance_meters ?? Infinity)) {
-      return ROUTE_ALTERNATIVES.SHORTEST;
-    }
-
-    return ROUTE_ALTERNATIVES.FASTEST;
-  }
-
-  /**
-   * Get recommended alternative (lowest balanced score)
-   */
-  private getRecommendedAlternative(alternatives: RouteAlternative[]): RouteAlternativeType {
-    if (alternatives.length === 0) return ROUTE_ALTERNATIVES.FASTEST;
-
-    const best = alternatives.reduce((prev, curr) =>
-      prev.balanced_score < curr.balanced_score ? prev : curr
-    );
-
-    return best.alternative_type;
-  }
-
-  /**
-   * Get scoring weights
-   */
-  private getScoringWeights(override?: RouteRequest["scoring_weights"]): ScoringWeights {
-    const defaults = DEFAULT_SCORING_WEIGHTS;
-    return {
-      risk_weight: override?.risk_weight ?? defaults.risk_weight,
-      time_weight: override?.time_weight ?? defaults.time_weight,
-      distance_weight: override?.distance_weight ?? defaults.distance_weight,
-    };
-  }
-
-  /**
-   * Initialize route risk engine with active risk rule set from database
-   */
-  private async initializeRouteRiskEngine(): Promise<void> {
-    try {
-      // Fetch active rule set (same as Phase 6 risk service)
-      const ruleSetResult = await this.dbPool.query<{
-        id: string;
-        external_key: string;
-        version: number;
-        effective_from: string | null;
-        effective_to: string | null;
-      }>(
-        `SELECT id, external_key, version, effective_from, effective_to
-         FROM app_risk.risk_rule_sets
-         WHERE status = 'published'
-         ORDER BY version DESC
-         LIMIT 1`
-      );
-
-      if (ruleSetResult.rows.length === 0) {
-        throw new RouteServiceError(
-          "ROUTE_PROVIDER_ERROR",
-          "No active risk rule set found - Phase 6 risk rules must be configured",
-          randomUUID(),
-          false
-        );
-      }
-
-      const ruleSet = ruleSetResult.rows[0]!;
-
-      // Fetch rules for this rule set
-      const rulesResult = await this.dbPool.query<{
-        id: string;
-        external_key: string;
-        dimension: string;
-        field_path: string;
-        operator: string;
-        threshold_value: number | null;
-        threshold_upper_value: number | null;
-        threshold_unit: string | null;
-        severity: string;
-        sort: number;
-      }>(
-        `SELECT id, external_key, dimension, field_path, operator,
-                threshold_value, threshold_upper_value, threshold_unit,
-                severity, sort
-         FROM app_risk.risk_rules
-         WHERE rule_set_id = $1
-         ORDER BY sort ASC`,
-        [ruleSet.id]
-      );
-
-      const rules = rulesResult.rows;
-
-      // Re-create route risk engine with loaded rules
-      const newEngine = createRouteRiskEngine({
-        dbPool: this.dbPool,
-        ruleSet: {
-          id: ruleSet.id,
-          external_key: ruleSet.external_key,
-          version: ruleSet.version,
-          status: "published",
-          effective_from: ruleSet.effective_from,
-          effective_to: ruleSet.effective_to,
-        },
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        rules: rules as any,
-      });
-
-      // Replace engine reference (using mutability)
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (this as any).routeRiskEngine = newEngine;
-      this.routeRiskEngineInitialized = true;
-    } catch (error) {
-      if (error instanceof RouteServiceError) {
-        throw error;
-      }
-      throw new RouteServiceError(
-        "ROUTE_PROVIDER_ERROR",
-        `Failed to initialize risk engine: ${error instanceof Error ? error.message : "Unknown"}`,
-        randomUUID(),
-        true
-      );
-    }
-  }
-
-  /**
-   * Generate summary text
-   */
-  private generateSummary(
-    routeRisk: { level: string; score: number }
-  ): { vi: string; en: string } {
-    const levelText = {
-      low: { vi: "Thấp", en: "Low" },
-      caution: { vi: "Trung bình", en: "Moderate" },
-      high: { vi: "Cao", en: "High" },
-      unknown: { vi: "Không xác định", en: "Unknown" },
-    };
-
-    const riskLevel = routeRisk.level as keyof typeof levelText;
-    const text = levelText[riskLevel] ?? levelText.unknown;
-
-    return {
-      vi: `Rủi ro thời tiết: ${text.vi}`,
-      en: `Weather risk: ${text.en}`,
-    };
+    if (fastest) alternatives.push({ ...fastest, alternative_type: "fastest" });
+    if (shortest && shortest !== fastest) alternatives.push({ ...shortest, alternative_type: "shortest" });
+    if (safer && ranked.length > 1) alternatives.push({ ...safer, alternative_type: "weather_safer" });
+    const best = alternatives.find(a => a.alternative_type === "weather_safer") ??
+      alternatives.filter(a => a.balanced_score !== null).sort((a,b) => a.balanced_score! - b.balanced_score!)[0];
+    const incomplete = ranked.length === 0 || ranked.some(a => a.route_risk.score === null || a.route_risk.level === "unknown");
+    return { ...(weatherRefresh ? { weather_refresh: weatherRefresh } : {}), origin, destination, departure_time: departure.toISOString(), alternatives,
+      ...(restStops ? { rest_stops: await restStops } : {}),
+      recommended_alternative: best?.alternative_type ?? null,
+      attribution: { routing_provider: "Geoapify", weather_provider: "Persisted weather evidence (see sample sources)",
+        issue_time: now.toISOString(), last_updated: now.toISOString() },
+      warnings: incomplete ? [ranked.some(a => a.route_risk.provisional) ? "provisional_weather_score: missing evidence remains unknown; review before travel" : "incomplete_weather_evidence"] : [], is_incomplete: incomplete };
   }
 }
-
-// =============================================================================
-// Route Service Error
-// =============================================================================
-
 export class RouteServiceError extends Error {
-  readonly code: string;
-  readonly correlationId: string;
-  readonly retryable: boolean;
-
-  constructor(code: string, message: string, correlationId: string, retryable: boolean) {
-    super(message);
-    this.name = "RouteServiceError";
-    this.code = code;
-    this.correlationId = correlationId;
-    this.retryable = retryable;
+  constructor(readonly code: string, message: string, readonly correlationId: string, readonly retryable: boolean) {
+    super(message); this.name = "RouteServiceError";
   }
 }
-
-// =============================================================================
-// Factory
-// =============================================================================
-
-export function createRouteService(options: RouteServiceOptions): RouteService {
-  return new RouteService(options);
-}
+export function createRouteService(options: RouteServiceOptions): RouteService { return new RouteService(options); }

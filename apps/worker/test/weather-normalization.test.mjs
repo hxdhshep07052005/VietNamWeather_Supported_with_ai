@@ -60,28 +60,29 @@ test("normalizes sanitized current, 72 hourly, and 3 daily records", () => {
   assert.deepEqual(weather.capabilities.hourly, {
     available: true,
     records: 72,
-    validFrom: "2026-08-09T00:00:00.000Z",
-    validTo: "2026-08-12T00:00:00.000Z",
+    validFrom: "2026-08-08T17:00:00.000Z",
+    validTo: "2026-08-11T17:00:00.000Z",
     intervalMinutes: 60
   });
   assert.deepEqual(weather.capabilities.daily, {
     available: true,
     records: 3,
-    validFrom: "2026-08-09T00:00:00.000Z",
-    validTo: "2026-08-12T00:00:00.000Z",
+    validFrom: "2026-08-08T17:00:00.000Z",
+    validTo: "2026-08-11T17:00:00.000Z",
     intervalDays: 1
   });
   assert.equal(weather.capabilities.operationalHorizonHours, 72);
   assert.equal(weather.capabilities.day4To7Outlook, false);
 });
 
-test("uses UTC epoch fields as authoritative and emits metric units", () => {
+test("preserves Vietnam local-day coverage while emitting UTC instants and metric units", () => {
   const weather = normalize();
 
   assert.equal(weather.current.observedAt, "2026-08-09T12:34:56.000Z");
-  assert.equal(weather.daily[0].validInterval.from, "2026-08-09T00:00:00.000Z");
-  assert.equal(weather.hourly[0].validInterval.from, "2026-08-09T00:00:00.000Z");
-  assert.equal(weather.hourly[0].validInterval.to, "2026-08-09T01:00:00.000Z");
+  assert.equal(weather.daily[0].date, "2026-08-09");
+  assert.equal(weather.daily[0].validInterval.from, "2026-08-08T17:00:00.000Z");
+  assert.equal(weather.hourly[0].validInterval.from, "2026-08-08T17:00:00.000Z");
+  assert.equal(weather.hourly[0].validInterval.to, "2026-08-08T18:00:00.000Z");
   assert.equal(JSON.stringify(weather).includes("ignored-local"), false);
 
   assert.equal(weather.units.temperature, "celsius");
@@ -109,6 +110,31 @@ test("unit conversion covers zero, exact values, and invalid boundaries", () => 
   assert.throws(() => kilometersPerHourToMetersPerSecond(Number.POSITIVE_INFINITY), RangeError);
   assert.throws(() => kilometersToMeters(-0.001), RangeError);
   assert.throws(() => kilometersToMeters(Number.NaN), RangeError);
+});
+
+test("keeps local midnight boundaries when the provider returns a partial day", () => {
+  const partial = structuredClone(fixture);
+  partial.forecast.forecastday[0].hour = partial.forecast.forecastday[0].hour.slice(12);
+
+  const weather = normalize(partial);
+
+  assert.equal(weather.daily[0].date, "2026-08-09");
+  assert.deepEqual(weather.daily[0].validInterval, {
+    from: "2026-08-08T17:00:00.000Z",
+    to: "2026-08-09T17:00:00.000Z"
+  });
+  assert.equal(weather.hourly.length, 60);
+  assert.equal(weather.hourly[0].validInterval.from, "2026-08-09T05:00:00.000Z");
+});
+
+test("rejects inconsistent provider days instead of silently dropping forecast hours", () => {
+  const wrongHour = structuredClone(fixture);
+  wrongHour.forecast.forecastday[0].hour[23].time_epoch += 3_600;
+  assert.throws(() => normalize(wrongHour), assertSchemaError);
+
+  const wrongDate = structuredClone(fixture);
+  wrongDate.forecast.forecastday[0].date = "2026-08-10";
+  assert.throws(() => normalize(wrongDate), assertSchemaError);
 });
 
 test("checksum is deterministic over the complete normalized payload", () => {
@@ -161,3 +187,35 @@ test("does not retain raw provider fields or provider condition text", () => {
   assert.equal(serialized.includes("sanitized-raw-marker"), false);
   assert.equal(serialized.includes("unrecognized_provider_field"), false);
 });
+
+test("normalizes ice pellets as sleet without inventing hail evidence", () => {
+  for (const code of [1237, 1261, 1264]) {
+    const raw = structuredClone(fixture);
+    raw.current.condition.code = code;
+    raw.forecast.forecastday[0].hour[0].condition.code = code;
+    raw.forecast.forecastday[0].day.condition.code = code;
+
+    const weather = normalize(raw);
+
+    assert.equal(weather.current.conditionCode, "sleet", `current ${code}`);
+    assert.equal(weather.hourly[0].conditionCode, "sleet", `hourly ${code}`);
+    assert.equal(weather.daily[0].conditionCode, "sleet", `daily ${code}`);
+  }
+});
+
+for (const [code, condition] of [
+  [1012, 'haze'], [1015, 'haze'], [1018, 'dust'], [1021, 'dust_storm'],
+  [1024, 'sandstorm'], [1027, 'sandstorm'], [1033, 'smoke'], [1036, 'haze'],
+  [1039, 'smog'], [1042, 'smog'], [1045, 'dust'], [1048, 'dust'],
+]) {
+  test(`normalizes provider condition ${code} as ${condition} in all datasets`, () => {
+    const raw = structuredClone(fixture);
+    raw.current.condition.code = code;
+    raw.forecast.forecastday[0].hour[0].condition.code = code;
+    raw.forecast.forecastday[0].day.condition.code = code;
+    const weather = normalize(raw);
+    assert.equal(weather.current.conditionCode, condition);
+    assert.equal(weather.hourly[0].conditionCode, condition);
+    assert.equal(weather.daily[0].conditionCode, condition);
+  });
+}

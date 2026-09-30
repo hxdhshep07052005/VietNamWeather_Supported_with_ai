@@ -16,8 +16,6 @@ import {
   VIETNAM_COUNTRY_CODE,
 } from "@vietnam-weather/contracts";
 
-import { requireEnvironmentValue } from "@vietnam-weather/config";
-
 // =============================================================================
 // Types
 // =============================================================================
@@ -80,16 +78,70 @@ export class GeocodingService {
   /**
    * Resolve a location input to coordinates
    */
-  async resolveLocation(input: LocationInput): Promise<ResolvedLocation> {
-    if (input.type === "coordinates") {
-      this.validateCoordinates(input.value);
+  async resolveLocation(input: LocationInput | unknown): Promise<ResolvedLocation> {
+    if (!input || typeof input !== "object") {
+      throw new GeocodingError(
+        "ROUTE_INVALID_ORIGIN",
+        "Invalid location input",
+        randomUUID(),
+        false
+      );
+    }
+
+    const rec = input as Record<string, unknown>;
+
+    // Case 1: Standard LocationInput { type: "coordinates", value: Coordinates }
+    if (rec.type === "coordinates" && rec.value && typeof rec.value === "object") {
+      const coords = rec.value as Coordinates;
+      this.validateCoordinates(coords);
       return {
-        original: input,
-        coordinates: input.value,
+        original: input as LocationInput,
+        coordinates: coords,
       };
     }
 
-    return this.geocodeText(input.value);
+    // Case 2: Frontend format { coordinates: { latitude, longitude } }
+    if (rec.coordinates && typeof rec.coordinates === "object") {
+      const coords = rec.coordinates as Coordinates;
+      this.validateCoordinates(coords);
+      return {
+        original: { type: "coordinates", value: coords },
+        coordinates: coords,
+      };
+    }
+
+    // Case 3: Raw coordinates { latitude, longitude }
+    if (typeof rec.latitude === "number" && typeof rec.longitude === "number") {
+      const coords = { latitude: rec.latitude, longitude: rec.longitude };
+      this.validateCoordinates(coords);
+      return {
+        original: { type: "coordinates", value: coords },
+        coordinates: coords,
+      };
+    }
+
+    // Case 4: Text query { type: "text", value: string } or { query: string } or string
+    const query =
+      typeof rec.value === "string"
+        ? rec.value
+        : typeof rec.query === "string"
+        ? rec.query
+        : typeof rec.name === "string"
+        ? rec.name
+        : typeof input === "string"
+        ? input
+        : "";
+
+    if (!query.trim()) {
+      throw new GeocodingError(
+        "ROUTE_INVALID_ORIGIN",
+        "Location text query cannot be empty",
+        randomUUID(),
+        false
+      );
+    }
+
+    return this.geocodeText(query.trim());
   }
 
   /**

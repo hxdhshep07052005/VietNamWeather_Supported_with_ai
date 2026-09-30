@@ -151,6 +151,6 @@ export interface ProvinceData {
   region: VietnamRegion;
   regionVi: string;
   color: string;
-  riskLevel: "low" | "caution" | "high";
-  estimatedTemp: number;
+  riskLevel: "low" | "caution" | "high" | "unknown";
+  estimatedTemp: number | string;
 }

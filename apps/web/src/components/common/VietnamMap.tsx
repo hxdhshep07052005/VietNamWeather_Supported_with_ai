@@ -7,6 +7,8 @@ import { useState, useEffect, useMemo, useCallback } from "react";
 import { geoNaturalEarth1, geoPath, GeoProjection, GeoPermissibleObjects } from "d3-geo";
 import { vietnamGeoJson } from "@xdev-asia/vietnam-map-34-provinces/core";
 import { useTranslation } from "react-i18next";
+import type { ProvinceGeoFeatureProperties } from "../../data/vietnamGeoJsonWGS84";
+import { formatMeasurement } from "../../utils/reportRisk";
 import {
   PROVINCE_MAP,
   VIETNAM_REGIONS,
@@ -27,6 +29,7 @@ export interface VietnamMapProps {
   onProvinceHover?: (province: string | null, code: string | null) => void;
   selectedProvinceId?: string | null;
   highlightProvinceId?: string | null;
+  provinceWeather?: readonly ProvinceGeoFeatureProperties[];
 }
 
 const RISK_COLORS: Record<string, string> = {
@@ -77,24 +80,21 @@ export function VietnamMap({
   onProvinceHover,
   selectedProvinceId,
   highlightProvinceId,
+  provinceWeather,
 }: VietnamMapProps) {
   const { t, i18n } = useTranslation();
   const [isLoaded, setIsLoaded] = useState(false);
   const [hoveredProvince, setHoveredProvince] = useState<string | null>(null);
-  const [currentTime, setCurrentTime] = useState(() => new Date());
+  const [activeRiskFilter, setActiveRiskFilter] = useState<"all" | "low" | "caution" | "high">("all");
+  const weatherById = useMemo(
+    () => new Map(provinceWeather?.map(province => [province.id, province])),
+    [provinceWeather]
+  );
 
-  // Real-time clock ticker
+  // Reset risk filter when view mode switches
   useEffect(() => {
-    const timer = setInterval(() => setCurrentTime(new Date()), 1000);
-    return () => clearInterval(timer);
-  }, []);
-
-  const timeFormatted = useMemo(() => {
-    const hours = String(currentTime.getHours()).padStart(2, "0");
-    const minutes = String(currentTime.getMinutes()).padStart(2, "0");
-    const seconds = String(currentTime.getSeconds()).padStart(2, "0");
-    return `${hours}:${minutes}:${seconds}`;
-  }, [currentTime]);
+    setActiveRiskFilter("all");
+  }, [viewMode]);
 
   // Setup d3-geo projection and parse all 63 provinces
   const { provinces } = useMemo(() => {
@@ -158,14 +158,14 @@ export function VietnamMap({
         // Keep default centroid
       }
 
-      // Consistent risk level and estimated temperature
-      const charSum = name.split("").reduce((acc, char) => acc + char.charCodeAt(0), 0);
-      const riskLevel: "low" | "caution" | "high" = charSum % 10 === 0 ? "high" : charSum % 4 === 0 ? "caution" : "low";
-      const estimatedTemp = 25 + (charSum % 9);
+      // SVG and weather records share the GIS ID; short codes are not unique.
+      const weather = weatherById.get(featureId);
+      const riskLevel = weather?.riskLevel ?? "unknown";
+      const estimatedTemp = formatMeasurement(weather?.temp);
 
       const color =
         viewMode === "risk"
-          ? (RISK_COLORS[riskLevel] || DEFAULT_COLOR)
+          ? (RISK_COLORS[riskLevel as keyof typeof RISK_COLORS] || DEFAULT_COLOR)
           : (regionMeta.color || DEFAULT_COLOR);
 
       return {
@@ -186,7 +186,7 @@ export function VietnamMap({
     });
 
     return { provinces: provincesList };
-  }, [viewMode]);
+  }, [viewMode, weatherById]);
 
   // Tight viewBox bounding calculation
   const tightViewBox = useMemo(() => {
@@ -264,6 +264,12 @@ export function VietnamMap({
       ) || null
     );
   }, [hoveredProvince, selectedProvinceId, highlightProvinceId, provinces]);
+  const activeWeather = activeProvinceData ? weatherById.get(activeProvinceData.id) : undefined;
+  const sourceTime = activeWeather?.assessment?.source_time;
+  const sourceDate = sourceTime ? new Date(sourceTime) : null;
+  const hasSourceTime = sourceDate !== null && Number.isFinite(sourceDate.getTime());
+  const isEn = i18n.language !== "vi";
+  const isOldWeather = activeWeather?.freshnessState === "aging" || activeWeather?.freshnessState === "stale" || activeWeather?.freshnessState === "expired";
 
   return (
     <div className={`${styles.mapContainer} ${showcaseMode ? styles.showcaseContainer : ""} ${className || ""}`}>
@@ -298,6 +304,7 @@ export function VietnamMap({
         {/* Vietnam Provinces Group */}
         <g filter="url(#mapGlowFilter)" className={styles.provincesGroup}>
           {provinces.map((province, index) => {
+            const isRiskMatch = activeRiskFilter === "all" || province.riskLevel === activeRiskFilter;
             const isHovered = hoveredProvince === province.id;
             const isSelected = selectedProvinceId === province.id || selectedProvinceId === province.code || selectedProvinceId === province.name;
             const isHighlighted = highlightProvinceId === province.id || highlightProvinceId === province.code || highlightProvinceId === province.name;
@@ -315,10 +322,10 @@ export function VietnamMap({
                 key={province.id}
                 d={province.path}
                 fill={fillColor}
-                fillOpacity={isSelected || isHovered ? 1 : 0.82}
+                fillOpacity={isRiskMatch ? (isSelected || isHovered ? 1 : 0.85) : 0.12}
                 stroke="#FFFFFF"
-                strokeWidth={isSelected || isHovered ? 1.8 : 0.55}
-                strokeOpacity={isSelected || isHovered ? 1 : 0.85}
+                strokeWidth={isRiskMatch ? (isSelected || isHovered ? 2.0 : 0.7) : 0.35}
+                strokeOpacity={isRiskMatch ? 0.9 : 0.2}
                 className={`${styles.province} ${interactive || showcaseMode ? styles.interactive : ""}`}
                 style={{ animationDelay: `${(index % 20) * 0.015}s` }}
                 onMouseEnter={() => handleProvinceHover(province)}
@@ -333,7 +340,22 @@ export function VietnamMap({
 
       {/* On-Demand Province Hover / Selection Info Card (Only shown when hovering or selected) */}
       {activeProvinceData && (
-        <div className={styles.quickProvinceCard}>
+        <div
+          role="tooltip"
+          className={styles.quickProvinceCard}
+          style={{ cursor: "pointer" }}
+          onClick={() => {
+            if (onProvinceClick) {
+              onProvinceClick(
+                activeProvinceData.name,
+                activeProvinceData.code,
+                activeProvinceData.latitude,
+                activeProvinceData.longitude
+              );
+            }
+          }}
+          title={t("landing.clickToExplore")}
+        >
           <div className={styles.quickCardHeader}>
             <div className={styles.quickTitleWrap}>
               <span className={styles.quickCardTitle}>{activeProvinceData.name}</span>
@@ -343,36 +365,37 @@ export function VietnamMap({
             </div>
             <span
               className={styles.quickCardRiskBadge}
-              style={{
-                backgroundColor:
-                  activeProvinceData.riskLevel === "high"
-                    ? "rgba(239, 68, 68, 0.25)"
-                    : activeProvinceData.riskLevel === "caution"
-                    ? "rgba(245, 158, 11, 0.25)"
-                    : "rgba(16, 185, 129, 0.25)",
-                color:
-                  activeProvinceData.riskLevel === "high"
-                    ? "#F87171"
-                    : activeProvinceData.riskLevel === "caution"
-                    ? "#FBBF24"
-                    : "#34D399",
-              }}
+              data-risk-level={activeProvinceData.riskLevel}
             >
               {activeProvinceData.riskLevel === "high"
                 ? t("landing.weatherHighRisk")
                 : activeProvinceData.riskLevel === "caution"
                 ? t("landing.weatherCaution")
-                : t("landing.weatherSafe")}
+                : activeProvinceData.riskLevel === "low"
+                ? t("landing.weatherSafe")
+                : (i18n.language === "vi" ? "Chưa đủ dữ liệu" : "Unknown")}
             </span>
           </div>
           <div className={styles.quickCardBody}>
             <div className={styles.quickTemp}>
-              <span className={styles.tempValue}>{activeProvinceData.estimatedTemp}°C</span>
-              <div className={styles.liveTimeWrapper}>
-                <span className={styles.liveClockDot} />
-                <span className={styles.tempDesc}>
-                  {t("common.updatedAt")}: {timeFormatted}
-                </span>
+              <span className={styles.tempValue}>
+                {activeProvinceData.estimatedTemp}{Number.isFinite(activeWeather?.temp) ? "°C" : ""}
+              </span>
+              <div className={styles.weatherTime} data-stale={isOldWeather}>
+                {activeWeather?.dataState === "loading" ? t("common.loading")
+                  : activeWeather?.dataState === "error" ? (isEn ? "Weather unavailable" : "Không tải được thời tiết")
+                  : !Number.isFinite(activeWeather?.temp) ? (isEn ? "Weather unavailable" : "Chưa có dữ liệu thời tiết")
+                  : <>
+                    {isOldWeather && <span>{isEn ? "Older data" : "Dữ liệu cũ"}</span>}
+                    {hasSourceTime && sourceDate ? <span>
+                      {t("common.updatedAt")}: {" "}
+                      <time dateTime={sourceTime ?? undefined}>
+                        {sourceDate.toLocaleString(isEn ? "en-GB" : "vi-VN", {
+                          timeZone: "Asia/Ho_Chi_Minh", hour: "2-digit", minute: "2-digit", day: "2-digit", month: "2-digit",
+                        })} (UTC+7)
+                      </time>
+                    </span> : <span>{isEn ? "Update time unavailable" : "Chưa có thời điểm cập nhật"}</span>}
+                  </>}
               </div>
             </div>
           </div>
@@ -398,9 +421,54 @@ export function VietnamMap({
             </div>
           ) : (
             <div className={styles.legendPills}>
-              <span className={styles.legendPill}><span className={styles.dot} style={{ background: "#10B981" }} />Thuận lợi</span>
-              <span className={styles.legendPill}><span className={styles.dot} style={{ background: "#F59E0B" }} />Lưu ý</span>
-              <span className={styles.legendPill}><span className={styles.dot} style={{ background: "#EF4444" }} />Rủi ro cao</span>
+              <button
+                type="button"
+                className={`${styles.legendPill} ${activeRiskFilter === "low" ? styles.legendPillActive : ""}`}
+                onClick={() => {
+                  const next = activeRiskFilter === "low" ? "all" : "low";
+                  setActiveRiskFilter(next);
+                  const firstMatch = provinces.find((p) => p.riskLevel === "low");
+                  if (firstMatch && onProvinceClick) {
+                    onProvinceClick(firstMatch.name, firstMatch.code, firstMatch.latitude, firstMatch.longitude);
+                  }
+                }}
+                title={i18n.language === "vi" ? "Lọc tỉnh thành thời tiết thuận lợi (Xanh)" : "Filter safe provinces"}
+              >
+                <span className={styles.dot} style={{ background: "#10B981" }} />
+                <span>{i18n.language === "vi" ? "Thuận lợi" : "Safe"}</span>
+              </button>
+              <button
+                type="button"
+                className={`${styles.legendPill} ${activeRiskFilter === "caution" ? styles.legendPillActive : ""}`}
+                onClick={() => {
+                  const next = activeRiskFilter === "caution" ? "all" : "caution";
+                  setActiveRiskFilter(next);
+                  const firstMatch = provinces.find((p) => p.riskLevel === "caution");
+                  if (firstMatch && onProvinceClick) {
+                    onProvinceClick(firstMatch.name, firstMatch.code, firstMatch.latitude, firstMatch.longitude);
+                  }
+                }}
+                title={i18n.language === "vi" ? "Lọc tỉnh thành cần lưu ý (Vàng)" : "Filter caution provinces"}
+              >
+                <span className={styles.dot} style={{ background: "#F59E0B" }} />
+                <span>{i18n.language === "vi" ? "Lưu ý" : "Caution"}</span>
+              </button>
+              <button
+                type="button"
+                className={`${styles.legendPill} ${activeRiskFilter === "high" ? styles.legendPillActive : ""}`}
+                onClick={() => {
+                  const next = activeRiskFilter === "high" ? "all" : "high";
+                  setActiveRiskFilter(next);
+                  const firstMatch = provinces.find((p) => p.riskLevel === "high");
+                  if (firstMatch && onProvinceClick) {
+                    onProvinceClick(firstMatch.name, firstMatch.code, firstMatch.latitude, firstMatch.longitude);
+                  }
+                }}
+                title={i18n.language === "vi" ? "Lọc tỉnh thành nguy hiểm (Đỏ)" : "Filter hazard high risk provinces"}
+              >
+                <span className={styles.dot} style={{ background: "#EF4444" }} />
+                <span>{i18n.language === "vi" ? "Rủi ro cao" : "Hazard"}</span>
+              </button>
             </div>
           )}
         </div>
