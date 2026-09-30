@@ -1,0 +1,62 @@
+✖ current weather retains observed rainfall while rain risk uses labeled matching hourly forecast (2.8096ms)
+✔ missing hourly rain keeps the known accumulation and never assumes mm means mm/hour (0.2697ms)
+✖ rain supplement failure cannot discard valid current temperature and wind (6.5334ms)
+✖ eligible closest source is selected before newest nearby source for current and forecast (0.275ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 1
+ℹ fail 3
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 81.3208
+
+✖ failing tests:
+
+test at apps\api\test\weather-evidence-sources.test.mjs:13:1
+✖ current weather retains observed rainfall while rain risk uses labeled matching hourly forecast (2.8096ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  null !== 12
+  
+      at TestContext.<anonymous> (file:///C:/Users/dangh/Downloads/VietNameWeatherWithAi/VietNamWeather_Supported_with_ai/apps/api/test/weather-evidence-sources.test.mjs:18:10)
+      at async Test.run (node:internal/test_runner/test:1332:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:385:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: null,
+    expected: 12,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps\api\test\weather-evidence-sources.test.mjs:38:1
+✖ rain supplement failure cannot discard valid current temperature and wind (6.5334ms)
+  AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:
+  
+    assert.ok(weather.reasons.includes('hourly_rain_query_failed'))
+  
+      at TestContext.<anonymous> (file:///C:/Users/dangh/Downloads/VietNameWeatherWithAi/VietNamWeather_Supported_with_ai/apps/api/test/weather-evidence-sources.test.mjs:42:10)
+      at async Test.run (node:internal/test_runner/test:1332:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:911:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at apps\api\test\weather-evidence-sources.test.mjs:44:1
+✖ eligible closest source is selected before newest nearby source for current and forecast (0.275ms)
+  AssertionError [ERR_ASSERTION]: order must prioritize matched distance
+      at TestContext.<anonymous> (file:///C:/Users/dangh/Downloads/VietNameWeatherWithAi/VietNamWeather_Supported_with_ai/apps/api/test/weather-evidence-sources.test.mjs:50:12)
+      at async Test.run (node:internal/test_runner/test:1332:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:911:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }

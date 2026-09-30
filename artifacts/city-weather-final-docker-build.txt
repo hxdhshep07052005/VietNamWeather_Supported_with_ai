@@ -1,0 +1,236 @@
+ Image vietnam_weather_local-worker Building 
+ Image vietnam_weather_local-api Building 
+#1 [internal] load local bake definitions
+#1 reading from stdin 1.22kB done
+#1 DONE 0.0s
+
+#2 [api internal] load build definition from Dockerfile
+#2 transferring dockerfile: 1.72kB 0.0s done
+#2 DONE 0.1s
+
+#3 [worker internal] load build definition from Dockerfile
+#3 transferring dockerfile: 1.75kB done
+#3 DONE 0.1s
+
+#4 [api internal] load metadata for docker.io/library/node:24.18.0-alpine3.24@sha256:a0b9bf06e4e6193cf7a0f58816cc935ff8c2a908f81e6f1a95432d679c54fbfd
+#4 DONE 0.1s
+
+#5 [worker internal] load .dockerignore
+#5 transferring context: 157B done
+#5 DONE 0.0s
+
+#6 [api internal] load build context
+#6 DONE 0.0s
+
+#7 [worker internal] load build context
+#7 DONE 0.0s
+
+#8 [worker build  1/12] FROM docker.io/library/node:24.18.0-alpine3.24@sha256:a0b9bf06e4e6193cf7a0f58816cc935ff8c2a908f81e6f1a95432d679c54fbfd
+#8 resolve docker.io/library/node:24.18.0-alpine3.24@sha256:a0b9bf06e4e6193cf7a0f58816cc935ff8c2a908f81e6f1a95432d679c54fbfd 0.1s done
+#8 resolve docker.io/library/node:24.18.0-alpine3.24@sha256:a0b9bf06e4e6193cf7a0f58816cc935ff8c2a908f81e6f1a95432d679c54fbfd 0.1s done
+#8 DONE 0.1s
+
+#7 [worker internal] load build context
+#7 transferring context: 141.40kB 0.0s done
+#7 DONE 0.1s
+
+#6 [api internal] load build context
+#6 transferring context: 414.46kB 0.0s done
+#6 DONE 0.1s
+
+#9 [worker build  7/12] COPY packages/contracts/package.json packages/contracts/tsconfig.json ./packages/contracts/
+#9 CACHED
+
+#10 [worker build  4/12] COPY package.json pnpm-lock.yaml pnpm-workspace.yaml tsconfig.base.json ./
+#10 CACHED
+
+#11 [worker build  5/12] COPY apps/worker/package.json apps/worker/tsconfig.json ./apps/worker/
+#11 CACHED
+
+#12 [worker build  6/12] COPY packages/config/package.json packages/config/tsconfig.json ./packages/config/
+#12 CACHED
+
+#13 [worker build  8/12] RUN pnpm install --frozen-lockfile
+#13 CACHED
+
+#14 [api build  7/12] COPY packages/contracts/package.json packages/contracts/tsconfig.json ./packages/contracts/
+#14 CACHED
+
+#15 [api build  3/12] RUN corepack enable && corepack prepare pnpm@11.9.0 --activate
+#15 CACHED
+
+#16 [api build  4/12] COPY package.json pnpm-lock.yaml pnpm-workspace.yaml tsconfig.base.json ./
+#16 CACHED
+
+#17 [api build  2/12] WORKDIR /workspace
+#17 CACHED
+
+#18 [api build  5/12] COPY apps/api/package.json apps/api/tsconfig.json ./apps/api/
+#18 CACHED
+
+#19 [api build  6/12] COPY packages/config/package.json packages/config/tsconfig.json ./packages/config/
+#19 CACHED
+
+#20 [api build  8/12] RUN pnpm install --frozen-lockfile
+#20 CACHED
+
+#21 [worker build  9/12] COPY apps/worker/src ./apps/worker/src
+#21 DONE 0.4s
+
+#22 [api build  9/12] COPY apps/api/src ./apps/api/src
+#22 DONE 0.4s
+
+#23 [api build 10/12] COPY packages/config/src ./packages/config/src
+#23 ...
+
+#24 [worker build 10/12] COPY packages/config/src ./packages/config/src
+#24 DONE 0.4s
+
+#23 [api build 10/12] COPY packages/config/src ./packages/config/src
+#23 DONE 0.4s
+
+#25 [api build 11/12] COPY packages/contracts/src ./packages/contracts/src
+#25 ...
+
+#26 [worker build 11/12] COPY packages/contracts/src ./packages/contracts/src
+#26 DONE 0.4s
+
+#25 [api build 11/12] COPY packages/contracts/src ./packages/contracts/src
+#25 DONE 0.4s
+
+#27 [api build 12/12] RUN pnpm --filter @vietnam-weather/api... build
+#27 1.188 Scope: 3 of 4 workspace projects
+#27 1.197 packages/config build$ tsc -p tsconfig.json
+#27 1.198 packages/contracts build$ tsc -p tsconfig.json
+#27 6.564 packages/config build: Done
+#27 7.022 packages/contracts build: Done
+#27 7.023 apps/api build$ tsc -p tsconfig.json
+#27 ...
+
+#28 [worker build 12/12] RUN pnpm --filter @vietnam-weather/worker... build
+#28 1.248 Scope: 3 of 4 workspace projects
+#28 1.258 packages/config build$ tsc -p tsconfig.json
+#28 1.259 packages/contracts build$ tsc -p tsconfig.json
+#28 6.537 packages/config build: Done
+#28 6.937 packages/contracts build: Done
+#28 6.939 apps/worker build$ tsc -p tsconfig.json
+#28 11.15 apps/worker build: Done
+#28 DONE 11.2s
+
+#27 [api build 12/12] RUN pnpm --filter @vietnam-weather/api... build
+#27 ...
+
+#29 [worker runtime  3/10] COPY --from=build --chown=node:node /workspace/node_modules ./node_modules
+#29 CACHED
+
+#30 [worker runtime  4/10] COPY --from=build --chown=node:node /workspace/apps/worker/package.json ./apps/worker/package.json
+#30 CACHED
+
+#31 [worker runtime  5/10] COPY --from=build --chown=node:node /workspace/apps/worker/node_modules ./apps/worker/node_modules
+#31 CACHED
+
+#32 [worker runtime  6/10] COPY --from=build --chown=node:node /workspace/apps/worker/dist ./apps/worker/dist
+#32 DONE 0.2s
+
+#27 [api build 12/12] RUN pnpm --filter @vietnam-weather/api... build
+#27 ...
+
+#33 [worker runtime  7/10] COPY --from=build --chown=node:node /workspace/packages/config/package.json ./packages/config/package.json
+#33 DONE 0.3s
+
+#27 [api build 12/12] RUN pnpm --filter @vietnam-weather/api... build
+#27 ...
+
+#34 [worker runtime  8/10] COPY --from=build --chown=node:node /workspace/packages/config/dist ./packages/config/dist
+#34 DONE 0.3s
+
+#27 [api build 12/12] RUN pnpm --filter @vietnam-weather/api... build
+#27 ...
+
+#35 [worker runtime  9/10] COPY --from=build --chown=node:node /workspace/packages/contracts/package.json ./packages/contracts/package.json
+#35 DONE 0.3s
+
+#27 [api build 12/12] RUN pnpm --filter @vietnam-weather/api... build
+#27 ...
+
+#36 [worker runtime 10/10] COPY --from=build --chown=node:node /workspace/packages/contracts/dist ./packages/contracts/dist
+#36 DONE 0.3s
+
+#27 [api build 12/12] RUN pnpm --filter @vietnam-weather/api... build
+#27 ...
+
+#37 [worker] exporting to image
+#37 exporting layers
+#37 ...
+
+#27 [api build 12/12] RUN pnpm --filter @vietnam-weather/api... build
+#27 13.59 apps/api build: Done
+#27 DONE 13.8s
+
+#37 [worker] exporting to image
+#37 exporting layers 1.0s done
+#37 exporting manifest sha256:f471ea9af863ed7a5b37d609c35d72733897ed014307eb0d263a6dbd9931d170 0.1s done
+#37 exporting config sha256:c695fdfe88e454c0f83cba2e349397efca61bb070cf185a4d9dc3b76ab87235b 0.1s done
+#37 exporting attestation manifest sha256:69a2be24689202a81a7f65f60322fc56dd30a8293d8710ccbe04e7be06c164eb
+#37 exporting attestation manifest sha256:69a2be24689202a81a7f65f60322fc56dd30a8293d8710ccbe04e7be06c164eb 0.2s done
+#37 exporting manifest list sha256:28d4b3af53af9d4946e96e15333cd6237300c1eab78065e659249cb52bf77184
+#37 ...
+
+#38 [api runtime  3/10] COPY --from=build --chown=node:node /workspace/node_modules ./node_modules
+#38 CACHED
+
+#39 [api runtime  4/10] COPY --from=build --chown=node:node /workspace/apps/api/package.json ./apps/api/package.json
+#39 CACHED
+
+#40 [api runtime  5/10] COPY --from=build --chown=node:node /workspace/apps/api/node_modules ./apps/api/node_modules
+#40 CACHED
+
+#37 [worker] exporting to image
+#37 exporting manifest list sha256:28d4b3af53af9d4946e96e15333cd6237300c1eab78065e659249cb52bf77184 0.1s done
+#37 naming to docker.io/library/vietnam_weather_local-worker:latest
+#37 naming to docker.io/library/vietnam_weather_local-worker:latest 0.0s done
+#37 unpacking to docker.io/library/vietnam_weather_local-worker:latest
+#37 ...
+
+#41 [api runtime  6/10] COPY --from=build --chown=node:node /workspace/apps/api/dist ./apps/api/dist
+#41 DONE 0.3s
+
+#42 [api runtime  7/10] COPY --from=build --chown=node:node /workspace/packages/config/package.json ./packages/config/package.json
+#42 DONE 0.5s
+
+#37 [worker] exporting to image
+#37 unpacking to docker.io/library/vietnam_weather_local-worker:latest 0.5s done
+#37 DONE 2.2s
+
+#43 [api runtime  8/10] COPY --from=build --chown=node:node /workspace/packages/config/dist ./packages/config/dist
+#43 DONE 0.4s
+
+#44 [api runtime  9/10] COPY --from=build --chown=node:node /workspace/packages/contracts/package.json ./packages/contracts/package.json
+#44 ...
+
+#45 [worker] resolving provenance for metadata file
+#45 DONE 0.0s
+
+#44 [api runtime  9/10] COPY --from=build --chown=node:node /workspace/packages/contracts/package.json ./packages/contracts/package.json
+#44 DONE 0.6s
+
+#46 [api runtime 10/10] COPY --from=build --chown=node:node /workspace/packages/contracts/dist ./packages/contracts/dist
+#46 DONE 0.3s
+
+#47 [api] exporting to image
+#47 exporting layers 1.0s done
+#47 exporting manifest sha256:478d2df326a7b413dcf9d95397986d7a4b3e5f7430878eae7c4a4287e47dff7d 0.1s done
+#47 exporting config sha256:23677047cbeb347d242c18eca9cc2e9bb026d923c1c1581a558031bba5f1c24e 0.1s done
+#47 exporting attestation manifest sha256:5428faa22f19e9ba7e7b0c4b27e57ad11b9bef83e545b87bfbbbca5699605f61
+#47 exporting attestation manifest sha256:5428faa22f19e9ba7e7b0c4b27e57ad11b9bef83e545b87bfbbbca5699605f61 0.2s done
+#47 exporting manifest list sha256:a32cff5590c0b8622ae64e167019e3e061dcc295c93ae7fe9e9784eea6b52d00
+#47 exporting manifest list sha256:a32cff5590c0b8622ae64e167019e3e061dcc295c93ae7fe9e9784eea6b52d00 0.1s done
+#47 naming to docker.io/library/vietnam_weather_local-api:latest 0.0s done
+#47 unpacking to docker.io/library/vietnam_weather_local-api:latest
+#47 unpacking to docker.io/library/vietnam_weather_local-api:latest 0.4s done
+#47 DONE 1.8s
+
+#48 [api] resolving provenance for metadata file
+#48 DONE 0.1s
+ Image vietnam_weather_local-api Built 
+ Image vietnam_weather_local-worker Built 

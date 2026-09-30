@@ -1,0 +1,521 @@
+
+ RUN  v2.1.9 C:/Users/dangh/Downloads/VietNameWeatherWithAi/VietNamWeather_Supported_with_ai/apps/web
+
+ ❯ src/components/map/RouteInteractiveMap.lifecycle.test.tsx (5 tests | 1 failed) 263ms
+   × route map delayed load lifecycle > shows a compact weather tooltip without the technical evidence paragraph 158ms
+     → Unable to find an accessible element with the role "tooltip"
+
+Here are the accessible roles:
+
+  button:
+
+  Name "Google Maps":
+  [36m<button[39m
+    [33mclass[39m=[32m"_styleBtn_6cd966 _styleBtnActive_6cd966"[39m
+    [33mtitle[39m=[32m"Google Maps High-DPI road network"[39m
+    [33mtype[39m=[32m"button"[39m
+  [36m/>[39m
+
+  Name "Satellite":
+  [36m<button[39m
+    [33mclass[39m=[32m"_styleBtn_6cd966 "[39m
+    [33mtitle[39m=[32m"Google Hybrid satellite imagery with road network"[39m
+    [33mtype[39m=[32m"button"[39m
+  [36m/>[39m
+
+  Name "Voyager HD":
+  [36m<button[39m
+    [33mclass[39m=[32m"_styleBtn_6cd966 "[39m
+    [33mtitle[39m=[32m"Modern Apple Maps Retina HD style"[39m
+    [33mtype[39m=[32m"button"[39m
+  [36m/>[39m
+
+  Name "Dark":
+  [36m<button[39m
+    [33mclass[39m=[32m"_styleBtn_6cd966 "[39m
+    [33mtitle[39m=[32m"Dark tech-focused base style"[39m
+    [33mtype[39m=[32m"button"[39m
+  [36m/>[39m
+
+  Name "Province Borders: ON":
+  [36m<button[39m
+    [33maria-pressed[39m=[32m"true"[39m
+    [33mclass[39m=[32m"_riskToggleBtn_6cd966 _riskToggleBtnActive_6cd966"[39m
+    [33mtitle[39m=[32m"Disable province risk borders"[39m
+    [33mtype[39m=[32m"button"[39m
+  [36m/>[39m
+
+  Name "Zoom in (+)":
+  [36m<button[39m
+    [33mclass[39m=[32m"_navBtn_6cd966"[39m
+    [33mtitle[39m=[32m"Zoom in (+)"[39m
+    [33mtype[39m=[32m"button"[39m
+  [36m/>[39m
+
+  Name "Zoom out (-)":
+  [36m<button[39m
+    [33mclass[39m=[32m"_navBtn_6cd966"[39m
+    [33mtitle[39m=[32m"Zoom out (-)"[39m
+    [33mtype[39m=[32m"button"[39m
+  [36m/>[39m
+
+  Name "Reset North (Compass)":
+  [36m<button[39m
+    [33mclass[39m=[32m"_navBtn_6cd966"[39m
+    [33mtitle[39m=[32m"Reset North (Compass)"[39m
+    [33mtype[39m=[32m"button"[39m
+  [36m/>[39m
+
+  Name "My GPS Location":
+  [36m<button[39m
+    [33mclass[39m=[32m"_navBtn_6cd966"[39m
+    [33mtitle[39m=[32m"My GPS Location"[39m
+    [33mtype[39m=[32m"button"[39m
+  [36m/>[39m
+
+  Name "Fit Entire Route":
+  [36m<button[39m
+    [33mclass[39m=[32m"_navBtn_6cd966"[39m
+    [33mtitle[39m=[32m"Fit Entire Route"[39m
+    [33mtype[39m=[32m"button"[39m
+  [36m/>[39m
+
+  --------------------------------------------------button:
+
+  Name "Weather sample · km 39.9":
+  [36m<button[39m
+    [33maria-label[39m=[32m"Weather sample · km 39.9"[39m
+    [33mclass[39m=[32m"checkpoint-marker-pin"[39m
+    [33mstyle[39m=[32m"width: 16px; height: 16px; border-radius: 50%; border: 2px solid white; cursor: pointer; padding: 0px; box-shadow: 0 1px 5px #0f172a; background: rgb(34, 197, 94);"[39m
+    [33mtitle[39m=[32m"Weather sample · km 39.9"[39m
+    [33mtype[39m=[32m"button"[39m
+  [36m/>[39m
+
+  --------------------------------------------------
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"_mapRootContainer_6cd966"[39m
+    [36m>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"_mapCanvas_6cd966"[39m
+      [36m/>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"_topToolbar_6cd966"[39m
+      [36m>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"_styleToggleGroup_6cd966"[39m
+        [36m>[39m
+          [36m<button[39m
+            [33mclass[39m=[32m"_styleBtn_6cd966 _styleBtnActive_6cd966"[39m
+            [33mtitle[39m=[32m"Google Maps High-DPI road network"[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [36m<svg[39m
+              [33maria-hidden[39m=[32m"true"[39m
+              [33mclass[39m=[32m"lucide lucide-map"[39m
+              [33mfill[39m=[32m"none"[39m
+              [33mheight[39m=[32m"14"[39m
+              [33mstroke[39m=[32m"currentColor"[39m
+              [33mstroke-linecap[39m=[32m"round"[39m
+              [33mstroke-linejoin[39m=[32m"round"[39m
+              [33mstroke-width[39m=[32m"2"[39m
+              [33mviewBox[39m=[32m"0 0 24 24"[39m
+              [33mwidth[39m=[32m"14"[39m
+              [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+            [36m>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M14.106 5.553a2 2 0 0 0 1.788 0l3.659-1.83A1 1 0 0 1 21 4.619v12.764a1 1 0 0 1-.553.894l-4.553 2.277a2 2 0 0 1-1.788 0l-4.212-2.106a2 2 0 0 0-1.788 0l-3.659 1.83A1 1 0 0 1 3 19.381V6.618a1 1 0 0 1 .553-.894l4.553-2.277a2 2 0 0 1 1.788 0z"[39m
+              [36m/>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M15 5.764v15"[39m
+              [36m/>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M9 3.236v15"[39m
+              [36m/>[39m
+            [36m</svg>[39m
+            [36m<span>[39m
+              [0mGoogle Maps[0m
+            [36m</span>[39m
+          [36m</button>[39m
+          [36m<button[39m
+            [33mclass[39m=[32m"_styleBtn_6cd966 "[39m
+            [33mtitle[39m=[32m"Google Hybrid satellite imagery with road network"[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [36m<svg[39m
+              [33maria-hidden[39m=[32m"true"[39m
+              [33mclass[39m=[32m"lucide lucide-globe"[39m
+              [33mfill[39m=[32m"none"[39m
+              [33mheight[39m=[32m"14"[39m
+              [33mstroke[39m=[32m"currentColor"[39m
+              [33mstroke-linecap[39m=[32m"round"[39m
+              [33mstroke-linejoin[39m=[32m"round"[39m
+              [33mstroke-width[39m=[32m"2"[39m
+              [33mviewBox[39m=[32m"0 0 24 24"[39m
+              [33mwidth[39m=[32m"14"[39m
+              [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+            [36m>[39m
+              [36m<circle[39m
+                [33mcx[39m=[32m"12"[39m
+                [33mcy[39m=[32m"12"[39m
+                [33mr[39m=[32m"10"[39m
+              [36m/>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"[39m
+              [36m/>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M2 12h20"[39m
+              [36m/>[39m
+            [36m</svg>[39m
+            [36m<span>[39m
+              [0mSatellite[0m
+            [36m</span>[39m
+          [36m</button>[39m
+          [36m<button[39m
+            [33mclass[39m=[32m"_styleBtn_6cd966 "[39m
+            [33mtitle[39m=[32m"Modern Apple Maps Retina HD style"[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [36m<svg[39m
+              [33maria-hidden[39m=[32m"true"[39m
+              [33mclass[39m=[32m"lucide lucide-sparkles"[39m
+              [33mfill[39m=[32m"none"[39m
+              [33mheight[39m=[32m"14"[39m
+              [33mstroke[39m=[32m"currentColor"[39m
+              [33mstroke-linecap[39m=[32m"round"[39m
+              [33mstroke-linejoin[39m=[32m"round"[39m
+              [33mstroke-width[39m=[32m"2"[39m
+              [33mviewBox[39m=[32m"0 0 24 24"[39m
+              [33mwidth[39m=[32m"14"[39m
+              [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+            [36m>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M11.017 2.814a1 1 0 0 1 1.966 0l1.051 5.558a2 2 0 0 0 1.594 1.594l5.558 1.051a1 1 0 0 1 0 1.966l-5.558 1.051a2 2 0 0 0-1.594 1.594l-1.051 5.558a1 1 0 0 1-1.966 0l-1.051-5.558a2 2 0 0 0-1.594-1.594l-5.558-1.051a1 1 0 0 1 0-1.966l5.558-1.051a2 2 0 0 0 1.594-1.594z"[39m
+              [36m/>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M20 2v4"[39m
+              [36m/>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M22 4h-4"[39m
+              [36m/>[39m
+              [36m<circle[39m
+                [33mcx[39m=[32m"4"[39m
+                [33mcy[39m=[32m"20"[39m
+                [33mr[39m=[32m"2"[39m
+              [36m/>[39m
+            [36m</svg>[39m
+            [36m<span>[39m
+              [0mVoyager HD[0m
+            [36m</span>[39m
+          [36m</button>[39m
+          [36m<button[39m
+            [33mclass[39m=[32m"_styleBtn_6cd966 "[39m
+            [33mtitle[39m=[32m"Dark tech-focused base style"[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [36m<svg[39m
+              [33maria-hidden[39m=[32m"true"[39m
+              [33mclass[39m=[32m"lucide lucide-moon"[39m
+              [33mfill[39m=[32m"none"[39m
+              [33mheight[39m=[32m"14"[39m
+              [33mstroke[39m=[32m"currentColor"[39m
+              [33mstroke-linecap[39m=[32m"round"[39m
+              [33mstroke-linejoin[39m=[32m"round"[39m
+              [33mstroke-width[39m=[32m"2"[39m
+              [33mviewBox[39m=[32m"0 0 24 24"[39m
+              [33mwidth[39m=[32m"14"[39m
+              [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+            [36m>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"[39m
+              [36m/>[39m
+            [36m</svg>[39m
+            [36m<span>[39m
+              [0mDark[0m
+            [36m</span>[39m
+          [36m</button>[39m
+        [36m</div>[39m
+        [36m<button[39m
+          [33maria-pressed[39m=[32m"true"[39m
+          [33mclass[39m=[32m"_riskToggleBtn_6cd966 _riskToggleBtnActive_6cd966"[39m
+          [33mtitle[39m=[32m"Disable province risk borders"[39m
+          [33mtype[39m=[32m"button"[39m
+        [36m>[39m
+          [36m<svg[39m
+            [33maria-hidden[39m=[32m"true"[39m
+            [33mclass[39m=[32m"lucide lucide-shield-check"[39m
+            [33...
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/components/map/RouteInteractiveMap.lifecycle.test.tsx > route map delayed load lifecycle > shows a compact weather tooltip without the technical evidence paragraph
+TestingLibraryElementError: Unable to find an accessible element with the role "tooltip"
+
+Here are the accessible roles:
+
+  button:
+
+  Name "Google Maps":
+  [36m<button[39m
+    [33mclass[39m=[32m"_styleBtn_6cd966 _styleBtnActive_6cd966"[39m
+    [33mtitle[39m=[32m"Google Maps High-DPI road network"[39m
+    [33mtype[39m=[32m"button"[39m
+  [36m/>[39m
+
+  Name "Satellite":
+  [36m<button[39m
+    [33mclass[39m=[32m"_styleBtn_6cd966 "[39m
+    [33mtitle[39m=[32m"Google Hybrid satellite imagery with road network"[39m
+    [33mtype[39m=[32m"button"[39m
+  [36m/>[39m
+
+  Name "Voyager HD":
+  [36m<button[39m
+    [33mclass[39m=[32m"_styleBtn_6cd966 "[39m
+    [33mtitle[39m=[32m"Modern Apple Maps Retina HD style"[39m
+    [33mtype[39m=[32m"button"[39m
+  [36m/>[39m
+
+  Name "Dark":
+  [36m<button[39m
+    [33mclass[39m=[32m"_styleBtn_6cd966 "[39m
+    [33mtitle[39m=[32m"Dark tech-focused base style"[39m
+    [33mtype[39m=[32m"button"[39m
+  [36m/>[39m
+
+  Name "Province Borders: ON":
+  [36m<button[39m
+    [33maria-pressed[39m=[32m"true"[39m
+    [33mclass[39m=[32m"_riskToggleBtn_6cd966 _riskToggleBtnActive_6cd966"[39m
+    [33mtitle[39m=[32m"Disable province risk borders"[39m
+    [33mtype[39m=[32m"button"[39m
+  [36m/>[39m
+
+  Name "Zoom in (+)":
+  [36m<button[39m
+    [33mclass[39m=[32m"_navBtn_6cd966"[39m
+    [33mtitle[39m=[32m"Zoom in (+)"[39m
+    [33mtype[39m=[32m"button"[39m
+  [36m/>[39m
+
+  Name "Zoom out (-)":
+  [36m<button[39m
+    [33mclass[39m=[32m"_navBtn_6cd966"[39m
+    [33mtitle[39m=[32m"Zoom out (-)"[39m
+    [33mtype[39m=[32m"button"[39m
+  [36m/>[39m
+
+  Name "Reset North (Compass)":
+  [36m<button[39m
+    [33mclass[39m=[32m"_navBtn_6cd966"[39m
+    [33mtitle[39m=[32m"Reset North (Compass)"[39m
+    [33mtype[39m=[32m"button"[39m
+  [36m/>[39m
+
+  Name "My GPS Location":
+  [36m<button[39m
+    [33mclass[39m=[32m"_navBtn_6cd966"[39m
+    [33mtitle[39m=[32m"My GPS Location"[39m
+    [33mtype[39m=[32m"button"[39m
+  [36m/>[39m
+
+  Name "Fit Entire Route":
+  [36m<button[39m
+    [33mclass[39m=[32m"_navBtn_6cd966"[39m
+    [33mtitle[39m=[32m"Fit Entire Route"[39m
+    [33mtype[39m=[32m"button"[39m
+  [36m/>[39m
+
+  --------------------------------------------------button:
+
+  Name "Weather sample · km 39.9":
+  [36m<button[39m
+    [33maria-label[39m=[32m"Weather sample · km 39.9"[39m
+    [33mclass[39m=[32m"checkpoint-marker-pin"[39m
+    [33mstyle[39m=[32m"width: 16px; height: 16px; border-radius: 50%; border: 2px solid white; cursor: pointer; padding: 0px; box-shadow: 0 1px 5px #0f172a; background: rgb(34, 197, 94);"[39m
+    [33mtitle[39m=[32m"Weather sample · km 39.9"[39m
+    [33mtype[39m=[32m"button"[39m
+  [36m/>[39m
+
+  --------------------------------------------------
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"_mapRootContainer_6cd966"[39m
+    [36m>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"_mapCanvas_6cd966"[39m
+      [36m/>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"_topToolbar_6cd966"[39m
+      [36m>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"_styleToggleGroup_6cd966"[39m
+        [36m>[39m
+          [36m<button[39m
+            [33mclass[39m=[32m"_styleBtn_6cd966 _styleBtnActive_6cd966"[39m
+            [33mtitle[39m=[32m"Google Maps High-DPI road network"[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [36m<svg[39m
+              [33maria-hidden[39m=[32m"true"[39m
+              [33mclass[39m=[32m"lucide lucide-map"[39m
+              [33mfill[39m=[32m"none"[39m
+              [33mheight[39m=[32m"14"[39m
+              [33mstroke[39m=[32m"currentColor"[39m
+              [33mstroke-linecap[39m=[32m"round"[39m
+              [33mstroke-linejoin[39m=[32m"round"[39m
+              [33mstroke-width[39m=[32m"2"[39m
+              [33mviewBox[39m=[32m"0 0 24 24"[39m
+              [33mwidth[39m=[32m"14"[39m
+              [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+            [36m>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M14.106 5.553a2 2 0 0 0 1.788 0l3.659-1.83A1 1 0 0 1 21 4.619v12.764a1 1 0 0 1-.553.894l-4.553 2.277a2 2 0 0 1-1.788 0l-4.212-2.106a2 2 0 0 0-1.788 0l-3.659 1.83A1 1 0 0 1 3 19.381V6.618a1 1 0 0 1 .553-.894l4.553-2.277a2 2 0 0 1 1.788 0z"[39m
+              [36m/>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M15 5.764v15"[39m
+              [36m/>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M9 3.236v15"[39m
+              [36m/>[39m
+            [36m</svg>[39m
+            [36m<span>[39m
+              [0mGoogle Maps[0m
+            [36m</span>[39m
+          [36m</button>[39m
+          [36m<button[39m
+            [33mclass[39m=[32m"_styleBtn_6cd966 "[39m
+            [33mtitle[39m=[32m"Google Hybrid satellite imagery with road network"[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [36m<svg[39m
+              [33maria-hidden[39m=[32m"true"[39m
+              [33mclass[39m=[32m"lucide lucide-globe"[39m
+              [33mfill[39m=[32m"none"[39m
+              [33mheight[39m=[32m"14"[39m
+              [33mstroke[39m=[32m"currentColor"[39m
+              [33mstroke-linecap[39m=[32m"round"[39m
+              [33mstroke-linejoin[39m=[32m"round"[39m
+              [33mstroke-width[39m=[32m"2"[39m
+              [33mviewBox[39m=[32m"0 0 24 24"[39m
+              [33mwidth[39m=[32m"14"[39m
+              [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+            [36m>[39m
+              [36m<circle[39m
+                [33mcx[39m=[32m"12"[39m
+                [33mcy[39m=[32m"12"[39m
+                [33mr[39m=[32m"10"[39m
+              [36m/>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"[39m
+              [36m/>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M2 12h20"[39m
+              [36m/>[39m
+            [36m</svg>[39m
+            [36m<span>[39m
+              [0mSatellite[0m
+            [36m</span>[39m
+          [36m</button>[39m
+          [36m<button[39m
+            [33mclass[39m=[32m"_styleBtn_6cd966 "[39m
+            [33mtitle[39m=[32m"Modern Apple Maps Retina HD style"[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [36m<svg[39m
+              [33maria-hidden[39m=[32m"true"[39m
+              [33mclass[39m=[32m"lucide lucide-sparkles"[39m
+              [33mfill[39m=[32m"none"[39m
+              [33mheight[39m=[32m"14"[39m
+              [33mstroke[39m=[32m"currentColor"[39m
+              [33mstroke-linecap[39m=[32m"round"[39m
+              [33mstroke-linejoin[39m=[32m"round"[39m
+              [33mstroke-width[39m=[32m"2"[39m
+              [33mviewBox[39m=[32m"0 0 24 24"[39m
+              [33mwidth[39m=[32m"14"[39m
+              [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+            [36m>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M11.017 2.814a1 1 0 0 1 1.966 0l1.051 5.558a2 2 0 0 0 1.594 1.594l5.558 1.051a1 1 0 0 1 0 1.966l-5.558 1.051a2 2 0 0 0-1.594 1.594l-1.051 5.558a1 1 0 0 1-1.966 0l-1.051-5.558a2 2 0 0 0-1.594-1.594l-5.558-1.051a1 1 0 0 1 0-1.966l5.558-1.051a2 2 0 0 0 1.594-1.594z"[39m
+              [36m/>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M20 2v4"[39m
+              [36m/>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M22 4h-4"[39m
+              [36m/>[39m
+              [36m<circle[39m
+                [33mcx[39m=[32m"4"[39m
+                [33mcy[39m=[32m"20"[39m
+                [33mr[39m=[32m"2"[39m
+              [36m/>[39m
+            [36m</svg>[39m
+            [36m<span>[39m
+              [0mVoyager HD[0m
+            [36m</span>[39m
+          [36m</button>[39m
+          [36m<button[39m
+            [33mclass[39m=[32m"_styleBtn_6cd966 "[39m
+            [33mtitle[39m=[32m"Dark tech-focused base style"[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [36m<svg[39m
+              [33maria-hidden[39m=[32m"true"[39m
+              [33mclass[39m=[32m"lucide lucide-moon"[39m
+              [33mfill[39m=[32m"none"[39m
+              [33mheight[39m=[32m"14"[39m
+              [33mstroke[39m=[32m"currentColor"[39m
+              [33mstroke-linecap[39m=[32m"round"[39m
+              [33mstroke-linejoin[39m=[32m"round"[39m
+              [33mstroke-width[39m=[32m"2"[39m
+              [33mviewBox[39m=[32m"0 0 24 24"[39m
+              [33mwidth[39m=[32m"14"[39m
+              [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+            [36m>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"[39m
+              [36m/>[39m
+            [36m</svg>[39m
+            [36m<span>[39m
+              [0mDark[0m
+            [36m</span>[39m
+          [36m</button>[39m
+        [36m</div>[39m
+        [36m<button[39m
+          [33maria-pressed[39m=[32m"true"[39m
+          [33mclass[39m=[32m"_riskToggleBtn_6cd966 _riskToggleBtnActive_6cd966"[39m
+          [33mtitle[39m=[32m"Disable province risk borders"[39m
+          [33mtype[39m=[32m"button"[39m
+        [36m>[39m
+          [36m<svg[39m
+            [33maria-hidden[39m=[32m"true"[39m
+            [33mclass[39m=[32m"lucide lucide-shield-check"[39m
+            [33...
+ ❯ Object.getElementError ../../node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/config.js:37:19
+ ❯ ../../node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/query-helpers.js:76:38
+ ❯ ../../node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/query-helpers.js:52:17
+ ❯ ../../node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/query-helpers.js:95:19
+ ❯ src/components/map/RouteInteractiveMap.lifecycle.test.tsx:44:28
+     42|     const marker = screen.getByRole("button", { name: "Weather sample …
+     43|     fireEvent.mouseEnter(marker);
+     44|     const tooltip = screen.getByRole("tooltip");
+       |                            ^
+     45|     expect(tooltip).toHaveTextContent("32°C");
+     46|     expect(tooltip).toHaveTextContent("12:16 · 30/09");
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 4 passed (5)
+   Start at  11:53:38
+   Duration  2.42s (transform 605ms, setup 200ms, collect 931ms, tests 263ms, environment 519ms, prepare 206ms)
+
+undefined
+C:\Users\dangh\Downloads\VietNameWeatherWithAi\VietNamWeather_Supported_with_ai\apps\web:
+[ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL] Command failed with exit code 1: vitest run src/components/map/RouteInteractiveMap.lifecycle.test.tsx "--reporter=dot"

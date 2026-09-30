@@ -1,0 +1,103 @@
+ Image vietnam_weather_local-api Building 
+#1 [internal] load local bake definitions
+#1 reading from stdin 648B done
+#1 DONE 0.0s
+
+#2 [internal] load build definition from Dockerfile
+#2 transferring dockerfile: 1.72kB 0.0s done
+#2 DONE 0.0s
+
+#3 [internal] load metadata for docker.io/library/node:24.18.0-alpine3.24@sha256:a0b9bf06e4e6193cf7a0f58816cc935ff8c2a908f81e6f1a95432d679c54fbfd
+#3 DONE 1.6s
+
+#4 [internal] load .dockerignore
+#4 transferring context: 157B done
+#4 DONE 0.0s
+
+#5 [build  1/12] FROM docker.io/library/node:24.18.0-alpine3.24@sha256:a0b9bf06e4e6193cf7a0f58816cc935ff8c2a908f81e6f1a95432d679c54fbfd
+#5 resolve docker.io/library/node:24.18.0-alpine3.24@sha256:a0b9bf06e4e6193cf7a0f58816cc935ff8c2a908f81e6f1a95432d679c54fbfd 0.0s done
+#5 DONE 0.0s
+
+#6 [internal] load build context
+#6 transferring context: 57.96kB 0.0s done
+#6 DONE 0.0s
+
+#7 [build  6/12] COPY packages/config/package.json packages/config/tsconfig.json ./packages/config/
+#7 CACHED
+
+#8 [build  7/12] COPY packages/contracts/package.json packages/contracts/tsconfig.json ./packages/contracts/
+#8 CACHED
+
+#9 [build  2/12] WORKDIR /workspace
+#9 CACHED
+
+#10 [build  5/12] COPY apps/api/package.json apps/api/tsconfig.json ./apps/api/
+#10 CACHED
+
+#11 [build  3/12] RUN corepack enable && corepack prepare pnpm@11.9.0 --activate
+#11 CACHED
+
+#12 [build  4/12] COPY package.json pnpm-lock.yaml pnpm-workspace.yaml tsconfig.base.json ./
+#12 CACHED
+
+#13 [build  8/12] RUN pnpm install --frozen-lockfile
+#13 CACHED
+
+#14 [build  9/12] COPY apps/api/src ./apps/api/src
+#14 DONE 0.1s
+
+#15 [build 10/12] COPY packages/config/src ./packages/config/src
+#15 DONE 0.1s
+
+#16 [build 11/12] COPY packages/contracts/src ./packages/contracts/src
+#16 DONE 0.1s
+
+#17 [build 12/12] RUN pnpm --filter @vietnam-weather/api... build
+#17 0.721 Scope: 3 of 4 workspace projects
+#17 0.730 packages/config build$ tsc -p tsconfig.json
+#17 0.730 packages/contracts build$ tsc -p tsconfig.json
+#17 3.559 packages/config build: Done
+#17 3.902 packages/contracts build: Done
+#17 3.902 apps/api build$ tsc -p tsconfig.json
+#17 8.511 apps/api build: Done
+#17 DONE 8.5s
+
+#18 [runtime  3/10] COPY --from=build --chown=node:node /workspace/node_modules ./node_modules
+#18 CACHED
+
+#19 [runtime  4/10] COPY --from=build --chown=node:node /workspace/apps/api/package.json ./apps/api/package.json
+#19 CACHED
+
+#20 [runtime  5/10] COPY --from=build --chown=node:node /workspace/apps/api/node_modules ./apps/api/node_modules
+#20 CACHED
+
+#21 [runtime  6/10] COPY --from=build --chown=node:node /workspace/apps/api/dist ./apps/api/dist
+#21 DONE 0.1s
+
+#22 [runtime  7/10] COPY --from=build --chown=node:node /workspace/packages/config/package.json ./packages/config/package.json
+#22 DONE 0.1s
+
+#23 [runtime  8/10] COPY --from=build --chown=node:node /workspace/packages/config/dist ./packages/config/dist
+#23 DONE 0.1s
+
+#24 [runtime  9/10] COPY --from=build --chown=node:node /workspace/packages/contracts/package.json ./packages/contracts/package.json
+#24 DONE 0.1s
+
+#25 [runtime 10/10] COPY --from=build --chown=node:node /workspace/packages/contracts/dist ./packages/contracts/dist
+#25 DONE 0.1s
+
+#26 exporting to image
+#26 exporting layers
+#26 exporting layers 0.3s done
+#26 exporting manifest sha256:814fc394131efc2b6834e44cc5bedb58a6be3670d43f10c7841f9a1cfb26e1a2 0.0s done
+#26 exporting config sha256:25f08105787d6ca8adefaa3246fe81192d6c372b75e14960e0d86d274541a7db 0.0s done
+#26 exporting attestation manifest sha256:18672d0c5eacaf8060a73cdac37cc7a0616e8908a35ed998f033e127bfb3bd54 0.0s done
+#26 exporting manifest list sha256:06e9d7dfdfb33a1e8bd8093b6e9034aa24c7b2a9989148e76d9b295cdb2c22e2
+#26 exporting manifest list sha256:06e9d7dfdfb33a1e8bd8093b6e9034aa24c7b2a9989148e76d9b295cdb2c22e2 0.0s done
+#26 naming to docker.io/library/vietnam_weather_local-api:latest done
+#26 unpacking to docker.io/library/vietnam_weather_local-api:latest 0.1s done
+#26 DONE 0.6s
+
+#27 resolving provenance for metadata file
+#27 DONE 0.0s
+ Image vietnam_weather_local-api Built 

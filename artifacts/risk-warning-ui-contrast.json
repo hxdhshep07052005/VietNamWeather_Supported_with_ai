@@ -1,0 +1,25 @@
+{
+  "method": "Calculated from source CSS palette; no browser rendering verification",
+  "results": [
+    {
+      "theme": "light",
+      "severity": "caution",
+      "ratio": 4.58
+    },
+    {
+      "theme": "light",
+      "severity": "high",
+      "ratio": 5.3
+    },
+    {
+      "theme": "dark",
+      "severity": "caution",
+      "ratio": 6.26
+    },
+    {
+      "theme": "dark",
+      "severity": "high",
+      "ratio": 6.47
+    }
+  ]
+}

@@ -647,3 +647,96 @@
   font-size: var(--font-size-sm);
   color: rgba(255, 255, 255, 0.85);
 }
+
+/* =============================================================================
+   LIGHT THEME OVERRIDES ([data-theme="light"])
+   ============================================================================= */
+
+:global([data-theme="light"]) .authPage {
+  background: linear-gradient(180deg, #F0F7FF 0%, #FFFFFF 60%, #F8FAFC 100%);
+  color: #0F172A;
+}
+
+:global([data-theme="light"]) .ambientGlow1 {
+  background: radial-gradient(circle, rgba(0, 102, 204, 0.08) 0%, transparent 70%);
+}
+
+:global([data-theme="light"]) .ambientGlow2 {
+  background: radial-gradient(circle, rgba(255, 205, 0, 0.06) 0%, transparent 70%);
+}
+
+:global([data-theme="light"]) .tagline {
+  color: #475569;
+}
+
+:global([data-theme="light"]) .feature {
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+}
+
+:global([data-theme="light"]) .featureText {
+  color: #334155;
+}
+
+:global([data-theme="light"]) .formContainer {
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  box-shadow: 0 20px 45px -10px rgba(0, 102, 204, 0.1), 0 0 0 1px rgba(0, 0, 0, 0.03);
+}
+
+:global([data-theme="light"]) .title {
+  color: #0F172A;
+}
+
+:global([data-theme="light"]) .subtitle {
+  color: #475569;
+}
+
+:global([data-theme="light"]) .authTabs {
+  background: #F1F5F9;
+  border: 1px solid #E2E8F0;
+}
+
+:global([data-theme="light"]) .authTab {
+  color: #64748B;
+}
+
+:global([data-theme="light"]) .authTab:hover {
+  color: #0F172A;
+}
+
+:global([data-theme="light"]) .authTabActive {
+  background: #0066CC;
+  color: #FFFFFF;
+  box-shadow: 0 2px 6px rgba(0, 102, 204, 0.25);
+}
+
+:global([data-theme="light"]) .authDividerText {
+  color: #64748B;
+  background: #FFFFFF;
+}
+
+:global([data-theme="light"]) .authDividerLine {
+  background: #E2E8F0;
+}
+
+:global([data-theme="light"]) .formFooterText {
+  color: #64748B;
+}
+
+:global([data-theme="light"]) .formFooterLink {
+  color: #0066CC;
+}
+
+:global([data-theme="light"]) .formFooterLink:hover {
+  color: #0052A3;
+}
+
+:global([data-theme="light"]) .loadingOverlay {
+  background: rgba(255, 255, 255, 0.88);
+}
+
+:global([data-theme="light"]) .loadingText {
+  color: #0F172A;
+}

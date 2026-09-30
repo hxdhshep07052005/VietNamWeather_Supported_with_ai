@@ -1,0 +1,34 @@
+$ vitest run
+
+[1m[7m[36m RUN [39m[27m[22m [36mv2.1.9 [39m[90mC:/Users/dangh/Downloads/VietNameWeatherWithAi/VietNamWeather_Supported_with_ai/apps/web[39m
+
+ [32m✓[39m src/api/client.test.ts [2m([22m[2m4 tests[22m[2m)[22m[90m 11[2mms[22m[39m
+ [32m✓[39m src/utils/reportRisk.test.ts [2m([22m[2m4 tests[22m[2m)[22m[90m 6[2mms[22m[39m
+ [32m✓[39m src/hooks/useProvinceWeather.test.tsx [2m([22m[2m5 tests[22m[2m)[22m[90m 265[2mms[22m[39m
+ [32m✓[39m src/components/common/VietnamMap.test.tsx [2m([22m[2m5 tests[22m[2m)[22m[33m 361[2mms[22m[39m
+[90mstderr[2m | src/pages/RoutePlannerPage.test.tsx[2m > [22m[2mroute request inputs[2m > [22m[2mshows the returned alternative count and explains unavailable weather ranking
+[22m[39m⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition.
+⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath.
+
+[90mstderr[2m | src/pages/LandingPage.test.tsx[2m > [22m[2mLandingPage Component[2m > [22m[2mrenders Hero headline and eyebrow badge
+[22m[39m⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition.
+⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath.
+
+ [32m✓[39m src/pages/LandingPage.test.tsx [2m([22m[2m3 tests[22m[2m)[22m[33m 427[2mms[22m[39m
+ [32m✓[39m src/components/map/RouteInteractiveMap.test.ts [2m([22m[2m2 tests[22m[2m)[22m[90m 6[2mms[22m[39m
+ [32m✓[39m src/utils/routePathGenerator.test.ts [2m([22m[2m7 tests[22m[2m)[22m[90m 17[2mms[22m[39m
+[90mstderr[2m | src/pages/WeatherData.test.tsx[2m > [22m[2mweather display regressions[2m > [22m[2mkeeps an open modal on the latest province and displays real hourly data
+[22m[39m⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition.
+⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath.
+
+ [32m✓[39m src/pages/RoutePlannerPage.test.tsx [2m([22m[2m7 tests[22m[2m)[22m[33m 854[2mms[22m[39m
+   [33m[2m✓[22m[39m route request inputs[2m > [22mshows the returned alternative count and explains unavailable weather ranking [33m370[2mms[22m[39m
+ [32m✓[39m src/hooks/useReportProvinceWeather.test.tsx [2m([22m[2m2 tests[22m[2m)[22m[33m 580[2mms[22m[39m
+   [33m[2m✓[22m[39m bulk province report data[2m > [22mrequests the selected offset and clears previous values during timeline debounce [33m474[2mms[22m[39m
+ [32m✓[39m src/pages/WeatherData.test.tsx [2m([22m[2m6 tests[22m[2m)[22m[33m 513[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m10 passed[39m[22m[90m (10)[39m
+[2m      Tests [22m [1m[32m45 passed[39m[22m[90m (45)[39m
+[2m   Start at [22m 03:19:25
+[2m   Duration [22m 3.83s[2m (transform 2.78s, setup 3.67s, collect 8.20s, tests 3.04s, environment 10.48s, prepare 2.01s)[22m
+

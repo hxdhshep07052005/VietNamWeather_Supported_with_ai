@@ -1,0 +1,57 @@
+
+ RUN  v2.1.9 C:/Users/dangh/Downloads/VietNameWeatherWithAi/VietNamWeather_Supported_with_ai/apps/web
+
+ ❯ src/components/map/provinceOverlay.test.mjs (5 tests | 4 failed) 16ms
+   × shared MapLibre province overlay expressions > accepts enabled and disabled paint for low filter 7ms
+     → fill-opacity: [{"key":""}]: expected 'error' to be 'success' // Object.is equality
+   × shared MapLibre province overlay expressions > accepts enabled and disabled paint for caution filter 1ms
+     → fill-opacity: [{"key":""}]: expected 'error' to be 'success' // Object.is equality
+   × shared MapLibre province overlay expressions > accepts enabled and disabled paint for high filter 1ms
+     → fill-opacity: [{"key":""}]: expected 'error' to be 'success' // Object.is equality
+   × shared MapLibre province overlay expressions > fades the matching province fill while keeping other provinces faint 1ms
+     → expected 'error' to be 'success' // Object.is equality
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/components/map/provinceOverlay.test.mjs > shared MapLibre province overlay expressions > accepts enabled and disabled paint for low filter
+ FAIL  src/components/map/provinceOverlay.test.mjs > shared MapLibre province overlay expressions > accepts enabled and disabled paint for caution filter
+ FAIL  src/components/map/provinceOverlay.test.mjs > shared MapLibre province overlay expressions > accepts enabled and disabled paint for high filter
+AssertionError: fill-opacity: [{"key":""}]: expected 'error' to be 'success' // Object.is equality
+
+Expected: "success"
+Received: "error"
+
+ ❯ src/components/map/provinceOverlay.test.mjs:18:76
+     16|         for (const [key, value] of Object.entries(paint)) {
+     17|           const parsed = createPropertyExpression(value, key, spec[key…
+     18|           expect(parsed.result, `${key}: ${JSON.stringify(parsed.value…
+       |                                                                            ^
+     19|         }
+     20|       }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/4]⎯
+
+ FAIL  src/components/map/provinceOverlay.test.mjs > shared MapLibre province overlay expressions > fades the matching province fill while keeping other provinces faint
+AssertionError: expected 'error' to be 'success' // Object.is equality
+
+Expected: "success"
+Received: "error"
+
+ ❯ src/components/map/provinceOverlay.test.mjs:26:27
+     24|   it("fades the matching province fill while keeping other provinces f…
+     25|     const parsed = createPropertyExpression(provinceFillPaint(true, "l…
+     26|     expect(parsed.result).toBe("success");
+       |                           ^
+     27|     const low = { type: 3, properties: { riskLevel: "low" } };
+     28|     const high = { type: 3, properties: { riskLevel: "high" } };
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/4]⎯
+
+ Test Files  1 failed (1)
+      Tests  4 failed | 1 passed (5)
+   Start at  09:38:13
+   Duration  1.85s (transform 451ms, setup 233ms, collect 637ms, tests 16ms, environment 493ms, prepare 178ms)
+
+undefined
+C:\Users\dangh\Downloads\VietNameWeatherWithAi\VietNamWeather_Supported_with_ai\apps\web:
+[ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL] Command failed with exit code 1: vitest run src/components/map/provinceOverlay.test.mjs "--reporter=dot"

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<body style="margin:0; background:#0D1322; display:flex; align-items:center; justify-content:center; width:570px; height:330px;">
+  <svg viewBox="0 0 570 330" width="570" height="330" xmlns="http://www.w3.org/2000/svg">
+    <!-- Danger Zone in center -->
+    <ellipse cx="260" cy="165" rx="88" ry="52" fill="rgba(239, 68, 68, 0.12)" stroke="rgba(239, 68, 68, 0.6)" stroke-width="1.5" stroke-dasharray="4,4" />
+    <text x="260" y="136" fill="#EF4444" font-size="11" font-weight="700" font-family="sans-serif" text-anchor="middle" letter-spacing="0.08em">DANGER ZONE</text>
+
+    <!-- Danger Route (Fastest, direct through hazard) -->
+    <line x1="90" y1="165" x2="430" y2="165" stroke="#EF4444" stroke-width="2" stroke-dasharray="5,4" />
+    <text x="260" y="190" fill="#F87171" font-size="10" font-family="monospace" font-weight="600" text-anchor="middle">Danger Route (Fastest)</text>
+
+    <!-- Shortest Route (curved smoothly below) -->
+    <path d="M 90 165 C 140 165, 175 260, 260 260 C 345 260, 380 165, 430 165" fill="none" stroke="#F59E0B" stroke-width="1.8" />
+    <text x="260" y="282" fill="#FBBF24" font-size="10" font-family="monospace" font-weight="600" text-anchor="middle">Shortest Route</text>
+
+    <!-- Safer Route (curved smoothly above) -->
+    <path d="M 90 165 C 140 165, 175 70, 260 70 C 345 70, 380 165, 430 165" fill="none" stroke="#10B981" stroke-width="2.5" />
+    <text x="260" y="56" fill="#34D399" font-size="11" font-family="monospace" font-weight="700" text-anchor="middle">Safer Route (Weather-Safer)</text>
+
+    <!-- Origin Point O -->
+    <circle cx="90" cy="165" r="9" fill="#0D1322" stroke="#38BDF8" stroke-width="2.5" />
+    <circle cx="90" cy="165" r="4" fill="#38BDF8" />
+    <text x="74" y="161" fill="#F8FAFC" font-size="11" font-weight="700" font-family="sans-serif" text-anchor="end">ORIGIN (O)</text>
+    <text x="74" y="175" fill="#38BDF8" font-size="9" font-family="monospace" text-anchor="end">Departure: t₀</text>
+
+    <!-- Destination Point D -->
+    <circle cx="430" cy="165" r="9" fill="#0D1322" stroke="#94A3B8" stroke-width="2.5" />
+    <circle cx="430" cy="165" r="4" fill="#94A3B8" />
+    <text x="446" y="161" fill="#F8FAFC" font-size="11" font-weight="700" font-family="sans-serif" text-anchor="start">DESTINATION (D)</text>
+    <text x="446" y="175" fill="#94A3B8" font-size="9" font-family="monospace" text-anchor="start">Arrival: ETA</text>
+
+    <!-- Vehicle profile text -->
+    <text x="260" y="318" fill="#94A3B8" font-size="10" font-family="sans-serif" text-anchor="middle">Vehicle: Motorcycle / Car</text>
+  </svg>
+</body>
+</html>

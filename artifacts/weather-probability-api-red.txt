@@ -1,0 +1,59 @@
+✔ current weather retains observed rainfall while rain risk uses labeled matching hourly forecast (3.7809ms)
+✔ missing hourly rain keeps the known accumulation and never assumes mm means mm/hour (0.226ms)
+✖ current rain probability comes from the matching hourly forecast without replacing observations (0.7549ms)
+✖ zero rain chance is preserved independently of missing forecast accumulation (0.2952ms)
+✔ unavailable or invalid probability cannot be inferred from rain accumulation (0.53ms)
+✖ future probability uses the selected forecast interval with its source (0.2195ms)
+✔ rain supplement failure cannot discard valid current temperature and wind (0.2655ms)
+✔ eligible closest source is selected before newest nearby source for current and forecast (0.3638ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 5
+ℹ fail 3
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 89.112
+
+✖ failing tests:
+
+test at apps\api\test\weather-evidence-sources.test.mjs:38:1
+✖ current rain probability comes from the matching hourly forecast without replacing observations (0.7549ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  null !== 34
+  
+      at TestContext.<anonymous> (file:///C:/Users/dangh/Downloads/VietNameWeatherWithAi/VietNamWeather_Supported_with_ai/apps/api/test/weather-evidence-sources.test.mjs:41:10)
+      at async Test.run (node:internal/test_runner/test:1332:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:911:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: null,
+    expected: 34,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps\api\test\weather-evidence-sources.test.mjs:47:1
+✖ zero rain chance is preserved independently of missing forecast accumulation (0.2952ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  null !== 0
+  
+      at TestContext.<anonymous> (file:///C:/Users/dangh/Downloads/VietNameWeatherWithAi/VietNamWeather_Supported_with_ai/apps/api/test/weather-evidence-sources.test.mjs:51:10)
+      at async Test.run (node:internal/test_runner/test:1332:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:911:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: null,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps\api\test\weather-evidence-sources.test.mjs:68:1
+✖ future probability uses the selected forecast interval with its source (0.2195ms)
+  TypeError: Cannot read properties of undefined (reading 'kind')
+      at TestContext.<anonymous> (file:///C:/Users/dangh/Downloads/VietNameWeatherWithAi/VietNamWeather_Supported_with_ai/apps/api/test/weather-evidence-sources.test.mjs:71:57)
+      at async Test.run (node:internal/test_runner/test:1332:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:911:7)

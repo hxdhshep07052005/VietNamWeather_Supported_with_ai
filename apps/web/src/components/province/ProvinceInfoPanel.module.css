@@ -354,3 +354,71 @@
   border-color: rgba(255, 205, 0, 0.4);
   color: #FFCD00;
 }
+
+/* =============================================================================
+   LIGHT THEME OVERRIDES ([data-theme="light"])
+   ============================================================================= */
+
+:global([data-theme="light"]) .panel {
+  background: #FFFFFF;
+  color: #0F172A;
+  scrollbar-color: #CBD5E1 transparent;
+}
+
+:global([data-theme="light"]) .panel::-webkit-scrollbar-thumb {
+  background: #CBD5E1;
+}
+
+:global([data-theme="light"]) .header {
+  border-bottom: 1px solid #E2E8F0;
+}
+
+:global([data-theme="light"]) .provinceName {
+  color: #0F172A;
+}
+
+:global([data-theme="light"]) .freshness {
+  color: #64748B;
+}
+
+:global([data-theme="light"]) .regionTag {
+  color: #64748B;
+}
+
+:global([data-theme="light"]) .paramCard {
+  background: #F8FAFC;
+  border: 1px solid #E2E8F0;
+}
+
+:global([data-theme="light"]) .paramVal {
+  color: #0F172A;
+}
+
+:global([data-theme="light"]) .paramLabel {
+  color: #64748B;
+}
+
+:global([data-theme="light"]) .advisoryCard {
+  background: #F8FAFC;
+  border: 1px solid #E2E8F0;
+}
+
+:global([data-theme="light"]) .advisoryTitle {
+  color: #0F172A;
+}
+
+:global([data-theme="light"]) .advisoryDesc {
+  color: #475569;
+}
+
+:global([data-theme="light"]) .actionBtn {
+  background: #F1F5F9;
+  border-color: #CBD5E1;
+  color: #334155;
+}
+
+:global([data-theme="light"]) .actionBtn:hover {
+  background: #E0F2FE;
+  border-color: #0066CC;
+  color: #0066CC;
+}

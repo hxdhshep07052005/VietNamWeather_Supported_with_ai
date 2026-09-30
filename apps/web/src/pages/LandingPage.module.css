@@ -852,3 +852,163 @@
     padding: var(--space-8) var(--space-4);
   }
 }
+
+/* =============================================================================
+   LIGHT THEME OVERRIDES ([data-theme="light"])
+   Creates a crisp, luminous, modern daytime weather visual
+   ============================================================================= */
+
+:global([data-theme="light"]) .hero {
+  background: linear-gradient(180deg, #F0F7FF 0%, #FFFFFF 65%, #F8FAFC 100%);
+  color: #0F172A;
+}
+
+:global([data-theme="light"]) .heroBackground {
+  background:
+    radial-gradient(circle at 15% 25%, rgba(0, 102, 204, 0.08) 0%, transparent 50%),
+    radial-gradient(circle at 85% 65%, rgba(255, 205, 0, 0.08) 0%, transparent 45%);
+}
+
+:global([data-theme="light"]) .heroGlowSphere1 {
+  background: radial-gradient(circle, rgba(0, 102, 204, 0.1) 0%, transparent 70%);
+}
+
+:global([data-theme="light"]) .heroGlowSphere2 {
+  background: radial-gradient(circle, rgba(255, 205, 0, 0.08) 0%, transparent 70%);
+}
+
+:global([data-theme="light"]) .eyebrowBadge {
+  background: rgba(0, 102, 204, 0.08);
+  border: 1px solid rgba(0, 102, 204, 0.25);
+  box-shadow: 0 2px 8px rgba(0, 102, 204, 0.08);
+}
+
+:global([data-theme="light"]) .eyebrowText {
+  color: #0066CC;
+}
+
+:global([data-theme="light"]) .eyebrowPulse {
+  background: #0066CC;
+  box-shadow: 0 0 8px rgba(0, 102, 204, 0.5);
+}
+
+:global([data-theme="light"]) .heroTitle {
+  color: #0F172A;
+}
+
+:global([data-theme="light"]) .heroHighlight {
+  background: linear-gradient(135deg, #0066CC 0%, #0284C7 50%, #D97706 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 2px 8px rgba(0, 102, 204, 0.15));
+}
+
+:global([data-theme="light"]) .heroSubtitle {
+  color: #475569;
+}
+
+:global([data-theme="light"]) .heroPrimaryBtn {
+  background: linear-gradient(135deg, #0066CC 0%, #0052A3 100%);
+  color: #FFFFFF !important;
+  box-shadow: 0 6px 20px rgba(0, 102, 204, 0.35);
+}
+
+:global([data-theme="light"]) .heroPrimaryBtn:hover {
+  background: linear-gradient(135deg, #0052A3 0%, #003D7A 100%);
+  color: #FFFFFF !important;
+  box-shadow: 0 8px 28px rgba(0, 102, 204, 0.45);
+}
+
+:global([data-theme="light"]) .heroSecondaryBtn {
+  background: #FFFFFF;
+  border: 1.5px solid #CBD5E1;
+  color: #0F172A;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+:global([data-theme="light"]) .heroSecondaryBtn:hover {
+  background: #F1F5F9;
+  border-color: #94A3B8;
+  color: #0066CC;
+}
+
+:global([data-theme="light"]) .trustMetrics {
+  border-top: 1px solid #E2E8F0;
+}
+
+:global([data-theme="light"]) .trustItem {
+  color: #475569;
+}
+
+:global([data-theme="light"]) .trustIconOk {
+  background: rgba(34, 197, 94, 0.15);
+  color: #16A34A;
+}
+
+:global([data-theme="light"]) .mapBadgeTag {
+  color: #0369A1;
+}
+
+:global([data-theme="light"]) .viewModeToggle {
+  background: #F1F5F9;
+  border: 1px solid #E2E8F0;
+}
+
+:global([data-theme="light"]) .viewModeBtn {
+  color: #64748B;
+}
+
+:global([data-theme="light"]) .viewModeBtnActive {
+  background: #0066CC;
+  color: #FFFFFF;
+  box-shadow: 0 2px 8px rgba(0, 102, 204, 0.3);
+}
+
+:global([data-theme="light"]) .stats {
+  background: linear-gradient(135deg, #F0F7FF 0%, #E0F2FE 100%);
+  border-top: 1px solid #BAE6FD;
+  border-bottom: 1px solid #BAE6FD;
+  color: #0F172A;
+}
+
+:global([data-theme="light"]) .statNumber {
+  background: linear-gradient(135deg, #0066CC 0%, #0284C7 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+:global([data-theme="light"]) .statLabel {
+  color: #334155;
+}
+
+:global([data-theme="light"]) .ctaCard {
+  background: linear-gradient(135deg, #0066CC 0%, #0284C7 100%);
+  box-shadow: 0 20px 45px rgba(0, 102, 204, 0.25);
+  color: #FFFFFF;
+}
+
+:global([data-theme="light"]) .ctaSubtitle {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+:global([data-theme="light"]) .ctaPrimaryBtn {
+  background: #FFCD00;
+  color: #0F172A !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+}
+
+:global([data-theme="light"]) .ctaPrimaryBtn:hover {
+  background: #FBBF24;
+}
+
+:global([data-theme="light"]) .ctaSecondaryBtn {
+  background: rgba(255, 255, 255, 0.18);
+  border: 1.5px solid rgba(255, 255, 255, 0.45);
+  color: #FFFFFF !important;
+}
+
+:global([data-theme="light"]) .ctaSecondaryBtn:hover {
+  background: rgba(255, 255, 255, 0.28);
+}

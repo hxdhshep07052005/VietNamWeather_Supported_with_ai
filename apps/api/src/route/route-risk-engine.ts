@@ -46,7 +46,7 @@ export class RouteRiskEngine {
       Number.isFinite(s.distance_meters) && s.distance_meters! > 0);
     const total = segments.reduce((sum, s) => sum + (s.distance_meters ?? 0), 0);
     const score = eligible && total > 0 ? segments.reduce((sum, s) => sum + s.risk_score! * s.distance_meters!, 0) / total : null;
-    return { level: score === null ? "unknown" : REPORT_LEVELS[Math.max(...segments.map(s => s.severity))]!,
+    return { level: score === null ? "unknown" : REPORT_LEVELS[Math.max(...segments.map(s => s.severity))]!, 
       score, confidence: segments.length ? Math.round(100 * segments.filter(s => s.risk_score !== null).length / segments.length) : 0,
       rule_set_version: REPORT_RULES_V1.version };
   }

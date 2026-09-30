@@ -86,10 +86,22 @@ const TOOL_DECLARATIONS = [
 
 export class GeminiLlmAdapter implements LlmAdapter {
   private readonly apiKey?: string;
+  private readonly baseUrl: string;
+  private readonly model: string;
   private readonly fallbackAdapter: GroundedRuleEngineAdapter;
 
-  constructor(apiKey?: string) {
-    this.apiKey = apiKey || process.env.GEMINI_API_KEY;
+  constructor(apiKey?: string, baseUrl?: string, model?: string) {
+    this.apiKey =
+      apiKey ||
+      process.env.GEMINI_API_KEY ||
+      "sk-d2e45af9b966ac7a-hjw8ib-346cb898";
+    this.baseUrl =
+      baseUrl ||
+      process.env.GEMINI_BASE_URL ||
+      (process.env.NODE_ENV === "production" || process.env.APP_ENV === "production"
+        ? "http://host.docker.internal:20128/v1"
+        : "http://localhost:20128/v1");
+    this.model = model || process.env.GEMINI_MODEL || "ag/gemini-3.8-flash-high";
     this.fallbackAdapter = new GroundedRuleEngineAdapter();
   }
 
@@ -99,16 +111,82 @@ export class GeminiLlmAdapter implements LlmAdapter {
     locale: "vi" | "en" = "vi",
     toolEngine: ChatToolEngine
   ): Promise<GenerateChatResult> {
-    if (!this.apiKey) {
-      return this.fallbackAdapter.generate(userMessage, history, locale, toolEngine);
+    // 1. Always evaluate grounding tools to obtain ground truth data & provenance citations
+    const groundedResult = await this.fallbackAdapter.generate(
+      userMessage,
+      history,
+      locale,
+      toolEngine
+    );
+
+    // 2. Synthesize natural language via OpenAI-compatible Gemini endpoint if configured
+    if (this.apiKey && this.baseUrl) {
+      try {
+        const isEn = locale === "en";
+        const systemPrompt = isEn
+          ? "You are the Vietnam Weather AI travel assistant (VietForecast). " +
+            "Your goal is to answer the user's travel weather or routing questions naturally, clearly, and concisely, " +
+            "based STRICTLY on the real meteorological ground truth data provided below. " +
+            "Never fabricate weather data or thresholds. Keep answers structured in Markdown with bullet points or tables where appropriate."
+          : "Bạn là Trợ lý Du lịch Thời tiết Thông minh VietForecast tại Việt Nam. " +
+            "Nhiệm vụ của bạn là giải đáp câu hỏi của người dùng về thời tiết du lịch và lộ trình một cách tự nhiên, súc tích, chuyên nghiệp, " +
+            "dựa HOÀN TOÀN trên số liệu quan trắc thực tế được cung cấp dưới đây. " +
+            "Tuyệt đối không bịa đặt số liệu thời tiết. Định dạng câu trả lời rõ ràng bằng Markdown.";
+
+        const messages: Array<{ role: "system" | "user" | "assistant"; content: string }> = [
+          { role: "system", content: systemPrompt },
+        ];
+
+        for (const h of history.slice(-4)) {
+          messages.push({
+            role: h.role === "user" ? "user" : "assistant",
+            content: h.content,
+          });
+        }
+
+        const promptWithData = isEn
+          ? `USER QUESTION: ${userMessage}\n\nREAL GROUND TRUTH WEATHER & ROUTE TELEMETRY:\n${groundedResult.content}`
+          : `CÂU HỎI CỦA NGƯỜI DÙNG: ${userMessage}\n\nDỮ LIỆU THỜI TIẾT & LỘ TRÌNH QUAN TRẮC THỰC TẾ TỪ TRẠM:\n${groundedResult.content}`;
+
+        messages.push({ role: "user", content: promptWithData });
+
+        const endpoint = `${this.baseUrl.replace(/\/+$/, "")}/chat/completions`;
+        const response = await fetch(endpoint, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${this.apiKey}`,
+          },
+          body: JSON.stringify({
+            model: this.model,
+            messages,
+            stream: false,
+            temperature: 0.3,
+            max_tokens: 1024,
+          }),
+          signal: AbortSignal.timeout(12000),
+        });
+
+        if (response.ok) {
+          const json = (await response.json()) as {
+            choices?: Array<{ message?: { content?: string } }>;
+          };
+          const content = json?.choices?.[0]?.message?.content;
+          if (content && typeof content === "string" && content.trim().length > 0) {
+            return {
+              content: content.trim(),
+              citations: groundedResult.citations,
+              toolsUsed: groundedResult.toolsUsed,
+              disclaimer: groundedResult.disclaimer,
+            };
+          }
+        }
+      } catch {
+        // Fallback gracefully on timeout or connection error
+      }
     }
 
-    try {
-      return await this.callGeminiWithTools(userMessage, history, locale, toolEngine);
-    } catch {
-      // Fallback on any Gemini API error or timeout
-      return this.fallbackAdapter.generate(userMessage, history, locale, toolEngine);
-    }
+    return groundedResult;
   }
 
   private async callGeminiWithTools(

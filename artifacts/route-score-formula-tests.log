@@ -1,0 +1,22 @@
+✔ provisional ETA uses real vehicle thresholds without changing strict assessment (1.5593ms)
+✔ uncovered stale or missing core evidence stays unscored (0.2383ms)
+✔ distance weighting penalizes gaps and reports observed coverage separately (0.258ms)
+✔ partial real weather produces provisional Weather-Safer while strict risk stays unknown (2.5115ms)
+✔ report trapezoid example has score 13/24, display 54 and High maximum (0.9545ms)
+✔ all low/high and incomplete or invalid distances (0.2853ms)
+✔ sparse geometry includes endpoints and meets both sampling bounds (1.5559ms)
+✔ balanced maxima, label invariance and Unknown exclusion (0.2299ms)
+✔ all-Low routes can score 64 and 66 using actual time and distance rather than route labels (0.2712ms)
+✔ route orchestrator preserves provider geometry and never recommends missing evidence (1.3318ms)
+✔ Weather-Safer follows report balanced score rather than minimum risk alone (0.3305ms)
+✔ weather samples use bounded concurrency and retain their original ETA association (50.9196ms)
+✔ route reports durable refresh pending without claiming missing weather is scored (0.6919ms)
+✔ refresh failure preserves route and reports unavailable (0.5041ms)
+ℹ tests 14
+ℹ suites 0
+ℹ pass 14
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 152.6529

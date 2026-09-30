@@ -1,0 +1,106 @@
+ Image vietnam_weather_local-api Building 
+#1 [internal] load local bake definitions
+#1 reading from stdin 648B done
+#1 DONE 0.0s
+
+#2 [internal] load build definition from Dockerfile
+#2 transferring dockerfile: 1.72kB done
+#2 DONE 0.1s
+
+#3 [internal] load metadata for docker.io/library/node:24.18.0-alpine3.24@sha256:a0b9bf06e4e6193cf7a0f58816cc935ff8c2a908f81e6f1a95432d679c54fbfd
+#3 DONE 0.1s
+
+#4 [internal] load .dockerignore
+#4 transferring context: 157B done
+#4 DONE 0.0s
+
+#5 [internal] load build context
+#5 DONE 0.0s
+
+#6 [build  1/12] FROM docker.io/library/node:24.18.0-alpine3.24@sha256:a0b9bf06e4e6193cf7a0f58816cc935ff8c2a908f81e6f1a95432d679c54fbfd
+#6 resolve docker.io/library/node:24.18.0-alpine3.24@sha256:a0b9bf06e4e6193cf7a0f58816cc935ff8c2a908f81e6f1a95432d679c54fbfd 0.1s done
+#6 DONE 0.1s
+
+#5 [internal] load build context
+#5 transferring context: 341.76kB 0.0s done
+#5 DONE 0.1s
+
+#7 [build  3/12] RUN corepack enable && corepack prepare pnpm@11.9.0 --activate
+#7 CACHED
+
+#8 [build  4/12] COPY package.json pnpm-lock.yaml pnpm-workspace.yaml tsconfig.base.json ./
+#8 CACHED
+
+#9 [build  6/12] COPY packages/config/package.json packages/config/tsconfig.json ./packages/config/
+#9 CACHED
+
+#10 [build  7/12] COPY packages/contracts/package.json packages/contracts/tsconfig.json ./packages/contracts/
+#10 CACHED
+
+#11 [build  2/12] WORKDIR /workspace
+#11 CACHED
+
+#12 [build  5/12] COPY apps/api/package.json apps/api/tsconfig.json ./apps/api/
+#12 CACHED
+
+#13 [build  8/12] RUN pnpm install --frozen-lockfile
+#13 CACHED
+
+#14 [build  9/12] COPY apps/api/src ./apps/api/src
+#14 DONE 0.1s
+
+#15 [build 10/12] COPY packages/config/src ./packages/config/src
+#15 DONE 0.2s
+
+#16 [build 11/12] COPY packages/contracts/src ./packages/contracts/src
+#16 DONE 0.2s
+
+#17 [build 12/12] RUN pnpm --filter @vietnam-weather/api... build
+#17 0.931 Scope: 3 of 4 workspace projects
+#17 0.938 packages/config build$ tsc -p tsconfig.json
+#17 0.939 packages/contracts build$ tsc -p tsconfig.json
+#17 3.709 packages/config build: Done
+#17 3.994 packages/contracts build: Done
+#17 3.994 apps/api build$ tsc -p tsconfig.json
+#17 8.556 apps/api build: Done
+#17 DONE 8.6s
+
+#18 [runtime  3/10] COPY --from=build --chown=node:node /workspace/node_modules ./node_modules
+#18 CACHED
+
+#19 [runtime  4/10] COPY --from=build --chown=node:node /workspace/apps/api/package.json ./apps/api/package.json
+#19 CACHED
+
+#20 [runtime  5/10] COPY --from=build --chown=node:node /workspace/apps/api/node_modules ./apps/api/node_modules
+#20 CACHED
+
+#21 [runtime  6/10] COPY --from=build --chown=node:node /workspace/apps/api/dist ./apps/api/dist
+#21 DONE 0.2s
+
+#22 [runtime  7/10] COPY --from=build --chown=node:node /workspace/packages/config/package.json ./packages/config/package.json
+#22 DONE 0.2s
+
+#23 [runtime  8/10] COPY --from=build --chown=node:node /workspace/packages/config/dist ./packages/config/dist
+#23 DONE 0.2s
+
+#24 [runtime  9/10] COPY --from=build --chown=node:node /workspace/packages/contracts/package.json ./packages/contracts/package.json
+#24 DONE 0.2s
+
+#25 [runtime 10/10] COPY --from=build --chown=node:node /workspace/packages/contracts/dist ./packages/contracts/dist
+#25 DONE 0.2s
+
+#26 exporting to image
+#26 exporting layers
+#26 exporting layers 0.9s done
+#26 exporting manifest sha256:2e3e97adcc21ea3d5c625aabd82183c1cf94ef7091cd4587b9a67c3fa1ad3b67 0.0s done
+#26 exporting config sha256:cc838c022cd80ee8897c9784fff6dc8d18d70cc8722597358e1e383515399f8d 0.0s done
+#26 exporting attestation manifest sha256:bc264ecd6c5da588f885e3b297a4e2352c53385302b7d65dffc14f1564525a29 0.0s done
+#26 exporting manifest list sha256:89f73cfacf38213cd3c7a8ec1d1f45b96723e47963875689f5a151be11b4a826
+#26 exporting manifest list sha256:89f73cfacf38213cd3c7a8ec1d1f45b96723e47963875689f5a151be11b4a826 0.0s done
+#26 naming to docker.io/library/vietnam_weather_local-api:latest done
+#26 unpacking to docker.io/library/vietnam_weather_local-api:latest 0.1s done
+#26 DONE 1.2s
+
+#27 resolving provenance for metadata file
+#27 DONE 0.0s
+ Image vietnam_weather_local-api Built 

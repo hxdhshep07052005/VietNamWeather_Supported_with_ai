@@ -1,0 +1,45 @@
+{
+  "at": "2026-09-29T20:02:35.479Z",
+  "checks": [
+    {
+      "province": "Hà Nội",
+      "checks": "temperature/humidity/visibility/rainProbability/wind equal report vs hourly API",
+      "dailyDates": [
+        "2026-09-30",
+        "2026-10-01",
+        "2026-10-02"
+      ],
+      "hourlyCount": 69
+    },
+    {
+      "province": "Lào Cai",
+      "checks": "temperature/humidity/visibility/rainProbability/wind equal report vs hourly API",
+      "dailyDates": [
+        "2026-09-30",
+        "2026-10-01",
+        "2026-10-02"
+      ],
+      "hourlyCount": 69
+    },
+    {
+      "province": "Điện Biên",
+      "checks": "temperature/humidity/visibility/rainProbability/wind equal report vs hourly API",
+      "dailyDates": [
+        "2026-09-30",
+        "2026-10-01",
+        "2026-10-02"
+      ],
+      "hourlyCount": 69
+    },
+    {
+      "province": "TP. Hồ Chí Minh",
+      "checks": "temperature/humidity/visibility/rainProbability/wind equal report vs hourly API",
+      "dailyDates": [
+        "2026-09-30",
+        "2026-10-01",
+        "2026-10-02"
+      ],
+      "hourlyCount": 69
+    }
+  ]
+}

@@ -1,0 +1,681 @@
+
+[1m[7m[36m RUN [39m[27m[22m [36mv2.1.9 [39m[90mC:/Users/dangh/Downloads/VietNameWeatherWithAi/VietNamWeather_Supported_with_ai/apps/web[39m
+
+[90mstderr[2m | src/pages/WeatherData.test.tsx[2m > [22m[2mweather display regressions[2m > [22m[2mkeeps an open modal on the latest province and displays real hourly data
+[22m[39m⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition.
+⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath.
+
+ [31m❯[39m src/pages/WeatherData.test.tsx [2m([22m[2m13 tests[22m[2m | [22m[31m4 failed[39m[2m)[22m[33m 646[2mms[22m[39m
+[31m   [31m×[31m weather display regressions[2m > [22mkeeps fog in the weather banner instead of presenting it as storm evidence[90m 18[2mms[22m[31m[39m
+[31m     → [2mexpect([22m[31melement[31m[2m).not.toBeInTheDocument()[22m
+
+[31mexpected document not to contain element, found <div
+  class="_dimensionValue_e987a0"
+>
+  Fog
+</div> instead[31m[39m
+[31m   [31m×[31m weather display regressions[2m > [22mrenders hourly rain chance 73 without a unit on missing data[90m 24[2mms[22m[31m[39m
+[31m     → Unable to find an element with the text: Rain chance (1h). This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+
+Ignored nodes: comments, script, style
+[36m<body>[31m
+  [36m<div>[31m
+    [36m<div[31m
+      [33mclass[31m=[32m"_weatherPage_25f627"[31m
+    [36m>[31m
+      [36m<div[31m
+        [33mclass[31m=[32m"_container_25f627"[31m
+      [36m>[31m
+        [36m<div[31m
+          [33mclass[31m=[32m"_heroSection_25f627"[31m
+        [36m>[31m
+          [36m<div[31m
+            [33mclass[31m=[32m"_heroHeader_25f627"[31m
+          [36m>[31m
+            [36m<div[31m
+              [33mclass[31m=[32m"_heroTitleArea_25f627"[31m
+            [36m>[31m
+              [36m<div[31m
+                [33mclass[31m=[32m"_heroBadge_25f627"[31m
+              [36m>[31m
+                [36m<svg[31m
+                  [33maria-hidden[31m=[32m"true"[31m
+                  [33mclass[31m=[32m"lucide lucide-sparkles"[31m
+                  [33mfill[31m=[32m"none"[31m
+                  [33mheight[31m=[32m"14"[31m
+                  [33mstroke[31m=[32m"currentColor"[31m
+                  [33mstroke-linecap[31m=[32m"round"[31m
+                  [33mstroke-linejoin[31m=[32m"round"[31m
+                  [33mstroke-width[31m=[32m"2"[31m
+                  [33mviewBox[31m=[32m"0 0 24 24"[31m
+                  [33mwidth[31m=[32m"14"[31m
+                  [33mxmlns[31m=[32m"http://www.w3.org/2000/svg"[31m
+                [36m>[31m
+                  [36m<path[31m
+                    [33md[31m=[32m"M11.017 2.814a1 1 0 0 1 1.966 0l1.051 5.558a2 2 0 0 0 1.594 1.594l5.558 1.051a1 1 0 0 1 0 1.966l-5.558 1.051a2 2 0 0 0-1.594 1.594l-1.051 5.558a1 1 0 0 1-1.966 0l-1.051-5.558a2 2 0 0 0-1.594-1.594l-5.558-1.051a1 1 0 0 1 0-1.966l5.558-1.051a2 2 0 0 0 1.594-1.594z"[31m
+                  [36m/>[31m
+                  [36m<path[31m
+                    [33md[31m=[32m"M20 2v4"[31m
+                  [36m/>[31m
+                  [36m<path[31m
+                    [33md[31m=[32m"M22 4h-4"[31m
+                  [36m/>[31m
+                  [36m<circle[31m
+                    [33mcx[31m=[32m"4"[31m
+                    [33mcy[31m=[32m"20"[31m
+                    [33mr[31m=[32m"2"[31m
+                  [36m/>[31m
+                [36m</svg>[31m
+                [36m<span>[31m
+                  [0mNationwide 63 Provinces Meteorological Telemetry[0m
+                [36m</span>[31m
+              [36m</div>[31m
+              [36m<h1[31m
+                [33mclass[31m=[32m"_heroTitle_25f627"[31m
+              [36m>[31m
+                [0mVietnam 63 Provinces Weather Directory[0m
+              [36m</h1>[31m
+              [36m<p[31m
+                [33mclass[31m=[32m"_heroSubtitle_25f627"[31m
+              [36m>[31m
+                [0mWeather observations and available forecasts along an interactive timeline[0m
+              [36m</p>[31m
+            [36m</div>[31m
+            [36m<div[31m
+              [33mclass[31m=[32m"_quickActions_25f627"[31m
+            [36m>[31m
+              [36m<a[31m
+                [33mclass[31m=[32m"_actionBtn_25f627 _actionBtnPrimary_25f627"[31m
+                [33mhref[31m=[32m"/map"[31m
+              [36m>[31m
+                [36m<svg[31m
+                  [33maria-hidden[31m=[32m"true"[31m
+                  [33mclass[31m=[32m"lucide lucide-map-pin"[31m
+                  [33mfill[31m=[32m"none"[31m
+                  [33mheight[31m=[32m"16"[31m
+                  [33mstroke[31m=[32m"currentColor"[31m
+                  [33mstroke-linecap[31m=[32m"round"[31m
+                  [33mstroke-linejoin[31m=[32m"round"[31m
+                  [33mstroke-width[31m=[32m"2"[31m
+                  [33mviewBox[31m=[32m"0 0 24 24"[31m
+                  [33mwidth[31m=[32m"16"[31m
+                  [33mxmlns[31m=[32m"http://www.w3.org/2000/svg"[31m
+                [36m>[31m
+                  [36m<path[31m
+                    [33md[31m=[32m"M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"[31m
+                  [36m/>[31m
+                  [36m<circle[31m
+                    [33mcx[31m=[32m"12"[31m
+                    [33mcy[31m=[32m"10"[31m
+                    [33mr[31m=[32m"3"[31m
+                  [36m/>[31m
+                [36m</svg>[31m
+                [36m<span>[31m
+                  [0mOpen Digital Map[0m
+                [36m</span>[31m
+              [36m</a>[31m
+              [36m<a[31m
+                [33mclass[31m=[32m"_actionBtn_25f627 _actionBtnSecondary_25f627"[31m
+                [33mhref[31m=[32m"/route"[31m
+              [36m>[31m
+                [36m<svg[31m
+                  [33maria-hidden[31m=[32m"true"[31m
+                  [33mclass[31m=[32m"lucide lucide-navigation"[31m
+                  [33mfill[31m=[32m"none"[31m
+                  [33mheight[31m=[32m"16"[31m
+                  [33mstroke[31m=[32m"currentColor"[31m
+                  [33mstroke-linecap[31m=[32m"round"[31m
+                  [33mstroke-linejoin[31m=[32m"round"[31m
+                  [33mstroke-width[31m=[32m"2"[31m
+                  [33mviewBox[31m=[32m"0 0 24 24"[31m
+                  [33mwidth[31m=[32m"16"[31m
+                  [33mxmlns[31m=[32m"http://www.w3.org/2000/svg"[31m
+                [36m>[31m
+                  [36m<polygon[31m
+                    [33mpoints[31m=[32m"3 11 22 2 13 21 11 13 3 11"[31m
+                  [36m/>[31m
+                [36m</svg>[31m
+                [36m<span>[31m
+                  [0mPlan Route[0m
+                [36m</span>[31m
+              [36m</a>[31m
+            [36m</div>[31m
+          [36m</div>[31m
+          [36m<div[31m
+            [33mclass[31m=[32m"_statsGrid_25f627"[31m
+          [36m>[31m
+            [36m<div[31m
+              [33mclass[31m=[32m"_statCard_25f627"[31m
+            [36m>[31m
+              [36m<div[31m
+                [33mclass[31m=[32m"_statHeader_25f627"[31m
+              [36m>[31m
+                [36m<svg[31m
+                  [33maria-hidden[31m=[32m"true"[31m
+                  [33mclass[31m=[32m"lucide lucide-thermometer"[31m
+                  [33mfill[31m=[32m"none"[31m
+                  [33mheight[31m=[32m"16"[31m
+                  [33mstroke[31m=[32m"currentColor"[31m
+                  [33mstroke-linecap[31m=[32m"round"[31m
+                  [33mstroke-linejoin[31m=[32m"round"[31m
+                  [33mstroke-width[31m=[32m"2"[31m
+                  [33mviewBox[31m=[32m"0 0 24 24"[31m
+                  [33mwidth[31m=[32m"16"[31m
+                  [33mxmlns[31m=[32m"http://www.w3.org/2000/svg"[31m
+                [36m>[31m
+                  [36m<path[31m
+                    [33md[31m=[32m"M14 4v10.54a4 4 0 1 1-4 0V4a2 2 0 0 1 4 0Z"[31m
+                  [36m/>[31m
+                [36m</svg>[31m
+                [36m<span>[31m
+                  [0...[39m
+[31m   [31m×[31m weather display regressions[2m > [22mrenders hourly rain chance 0 without a unit on missing data[90m 21[2mms[22m[31m[39m
+[31m     → Unable to find an element with the text: Rain chance (1h). This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+
+Ignored nodes: comments, script, style
+[36m<body>[31m
+  [36m<div>[31m
+    [36m<div[31m
+      [33mclass[31m=[32m"_weatherPage_25f627"[31m
+    [36m>[31m
+      [36m<div[31m
+        [33mclass[31m=[32m"_container_25f627"[31m
+      [36m>[31m
+        [36m<div[31m
+          [33mclass[31m=[32m"_heroSection_25f627"[31m
+        [36m>[31m
+          [36m<div[31m
+            [33mclass[31m=[32m"_heroHeader_25f627"[31m
+          [36m>[31m
+            [36m<div[31m
+              [33mclass[31m=[32m"_heroTitleArea_25f627"[31m
+            [36m>[31m
+              [36m<div[31m
+                [33mclass[31m=[32m"_heroBadge_25f627"[31m
+              [36m>[31m
+                [36m<svg[31m
+                  [33maria-hidden[31m=[32m"true"[31m
+                  [33mclass[31m=[32m"lucide lucide-sparkles"[31m
+                  [33mfill[31m=[32m"none"[31m
+                  [33mheight[31m=[32m"14"[31m
+                  [33mstroke[31m=[32m"currentColor"[31m
+                  [33mstroke-linecap[31m=[32m"round"[31m
+                  [33mstroke-linejoin[31m=[32m"round"[31m
+                  [33mstroke-width[31m=[32m"2"[31m
+                  [33mviewBox[31m=[32m"0 0 24 24"[31m
+                  [33mwidth[31m=[32m"14"[31m
+                  [33mxmlns[31m=[32m"http://www.w3.org/2000/svg"[31m
+                [36m>[31m
+                  [36m<path[31m
+                    [33md[31m=[32m"M11.017 2.814a1 1 0 0 1 1.966 0l1.051 5.558a2 2 0 0 0 1.594 1.594l5.558 1.051a1 1 0 0 1 0 1.966l-5.558 1.051a2 2 0 0 0-1.594 1.594l-1.051 5.558a1 1 0 0 1-1.966 0l-1.051-5.558a2 2 0 0 0-1.594-1.594l-5.558-1.051a1 1 0 0 1 0-1.966l5.558-1.051a2 2 0 0 0 1.594-1.594z"[31m
+                  [36m/>[31m
+                  [36m<path[31m
+                    [33md[31m=[32m"M20 2v4"[31m
+                  [36m/>[31m
+                  [36m<path[31m
+                    [33md[31m=[32m"M22 4h-4"[31m
+                  [36m/>[31m
+                  [36m<circle[31m
+                    [33mcx[31m=[32m"4"[31m
+                    [33mcy[31m=[32m"20"[31m
+                    [33mr[31m=[32m"2"[31m
+                  [36m/>[31m
+                [36m</svg>[31m
+                [36m<span>[31m
+                  [0mNationwide 63 Provinces Meteorological Telemetry[0m
+                [36m</span>[31m
+              [36m</div>[31m
+              [36m<h1[31m
+                [33mclass[31m=[32m"_heroTitle_25f627"[31m
+              [36m>[31m
+                [0mVietnam 63 Provinces Weather Directory[0m
+              [36m</h1>[31m
+              [36m<p[31m
+                [33mclass[31m=[32m"_heroSubtitle_25f627"[31m
+              [36m>[31m
+                [0mWeather observations and available forecasts along an interactive timeline[0m
+              [36m</p>[31m
+            [36m</div>[31m
+            [36m<div[31m
+              [33mclass[31m=[32m"_quickActions_25f627"[31m
+            [36m>[31m
+              [36m<a[31m
+                [33mclass[31m=[32m"_actionBtn_25f627 _actionBtnPrimary_25f627"[31m
+                [33mhref[31m=[32m"/map"[31m
+              [36m>[31m
+                [36m<svg[31m
+                  [33maria-hidden[31m=[32m"true"[31m
+                  [33mclass[31m=[32m"lucide lucide-map-pin"[31m
+                  [33mfill[31m=[32m"none"[31m
+                  [33mheight[31m=[32m"16"[31m
+                  [33mstroke[31m=[32m"currentColor"[31m
+                  [33mstroke-linecap[31m=[32m"round"[31m
+                  [33mstroke-linejoin[31m=[32m"round"[31m
+                  [33mstroke-width[31m=[32m"2"[31m
+                  [33mviewBox[31m=[32m"0 0 24 24"[31m
+                  [33mwidth[31m=[32m"16"[31m
+                  [33mxmlns[31m=[32m"http://www.w3.org/2000/svg"[31m
+                [36m>[31m
+                  [36m<path[31m
+                    [33md[31m=[32m"M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"[31m
+                  [36m/>[31m
+                  [36m<circle[31m
+                    [33mcx[31m=[32m"12"[31m
+                    [33mcy[31m=[32m"10"[31m
+                    [33mr[31m=[32m"3"[31m
+                  [36m/>[31m
+                [36m</svg>[31m
+                [36m<span>[31m
+                  [0mOpen Digital Map[0m
+                [36m</span>[31m
+              [36m</a>[31m
+              [36m<a[31m
+                [33mclass[31m=[32m"_actionBtn_25f627 _actionBtnSecondary_25f627"[31m
+                [33mhref[31m=[32m"/route"[31m
+              [36m>[31m
+                [36m<svg[31m
+                  [33maria-hidden[31m=[32m"true"[31m
+                  [33mclass[31m=[32m"lucide lucide-navigation"[31m
+                  [33mfill[31m=[32m"none"[31m
+                  [33mheight[31m=[32m"16"[31m
+                  [33mstroke[31m=[32m"currentColor"[31m
+                  [33mstroke-linecap[31m=[32m"round"[31m
+                  [33mstroke-linejoin[31m=[32m"round"[31m
+                  [33mstroke-width[31m=[32m"2"[31m
+                  [33mviewBox[31m=[32m"0 0 24 24"[31m
+                  [33mwidth[31m=[32m"16"[31m
+                  [33mxmlns[31m=[32m"http://www.w3.org/2000/svg"[31m
+                [36m>[31m
+                  [36m<polygon[31m
+                    [33mpoints[31m=[32m"3 11 22 2 13 21 11 13 3 11"[31m
+                  [36m/>[31m
+                [36m</svg>[31m
+                [36m<span>[31m
+                  [0mPlan Route[0m
+                [36m</span>[31m
+              [36m</a>[31m
+            [36m</div>[31m
+          [36m</div>[31m
+          [36m<div[31m
+            [33mclass[31m=[32m"_statsGrid_25f627"[31m
+          [36m>[31m
+            [36m<div[31m
+              [33mclass[31m=[32m"_statCard_25f627"[31m
+            [36m>[31m
+              [36m<div[31m
+                [33mclass[31m=[32m"_statHeader_25f627"[31m
+              [36m>[31m
+                [36m<svg[31m
+                  [33maria-hidden[31m=[32m"true"[31m
+                  [33mclass[31m=[32m"lucide lucide-thermometer"[31m
+                  [33mfill[31m=[32m"none"[31m
+                  [33mheight[31m=[32m"16"[31m
+                  [33mstroke[31m=[32m"currentColor"[31m
+                  [33mstroke-linecap[31m=[32m"round"[31m
+                  [33mstroke-linejoin[31m=[32m"round"[31m
+                  [33mstroke-width[31m=[32m"2"[31m
+                  [33mviewBox[31m=[32m"0 0 24 24"[31m
+                  [33mwidth[31m=[32m"16"[31m
+                  [33mxmlns[31m=[32m"http://www.w3.org/2000/svg"[31m
+                [36m>[31m
+                  [36m<path[31m
+                    [33md[31m=[32m"M14 4v10.54a4 4 0 1 1-4 0V4a2 2 0 0 1 4 0Z"[31m
+                  [36m/>[31m
+                [36m</svg>[31m
+                [36m<span>[31m
+                  [0...[39m
+[31m   [31m×[31m weather display regressions[2m > [22mrenders hourly rain chance null without a unit on missing data[90m 18[2mms[22m[31m[39m
+[31m     → Unable to find an element with the text: Rain chance (1h). This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+
+Ignored nodes: comments, script, style
+[36m<body>[31m
+  [36m<div>[31m
+    [36m<div[31m
+      [33mclass[31m=[32m"_weatherPage_25f627"[31m
+    [36m>[31m
+      [36m<div[31m
+        [33mclass[31m=[32m"_container_25f627"[31m
+      [36m>[31m
+        [36m<div[31m
+          [33mclass[31m=[32m"_heroSection_25f627"[31m
+        [36m>[31m
+          [36m<div[31m
+            [33mclass[31m=[32m"_heroHeader_25f627"[31m
+          [36m>[31m
+            [36m<div[31m
+              [33mclass[31m=[32m"_heroTitleArea_25f627"[31m
+            [36m>[31m
+              [36m<div[31m
+                [33mclass[31m=[32m"_heroBadge_25f627"[31m
+              [36m>[31m
+                [36m<svg[31m
+                  [33maria-hidden[31m=[32m"true"[31m
+                  [33mclass[31m=[32m"lucide lucide-sparkles"[31m
+                  [33mfill[31m=[32m"none"[31m
+                  [33mheight[31m=[32m"14"[31m
+                  [33mstroke[31m=[32m"currentColor"[31m
+                  [33mstroke-linecap[31m=[32m"round"[31m
+                  [33mstroke-linejoin[31m=[32m"round"[31m
+                  [33mstroke-width[31m=[32m"2"[31m
+                  [33mviewBox[31m=[32m"0 0 24 24"[31m
+                  [33mwidth[31m=[32m"14"[31m
+                  [33mxmlns[31m=[32m"http://www.w3.org/2000/svg"[31m
+                [36m>[31m
+                  [36m<path[31m
+                    [33md[31m=[32m"M11.017 2.814a1 1 0 0 1 1.966 0l1.051 5.558a2 2 0 0 0 1.594 1.594l5.558 1.051a1 1 0 0 1 0 1.966l-5.558 1.051a2 2 0 0 0-1.594 1.594l-1.051 5.558a1 1 0 0 1-1.966 0l-1.051-5.558a2 2 0 0 0-1.594-1.594l-5.558-1.051a1 1 0 0 1 0-1.966l5.558-1.051a2 2 0 0 0 1.594-1.594z"[31m
+                  [36m/>[31m
+                  [36m<path[31m
+                    [33md[31m=[32m"M20 2v4"[31m
+                  [36m/>[31m
+                  [36m<path[31m
+                    [33md[31m=[32m"M22 4h-4"[31m
+                  [36m/>[31m
+                  [36m<circle[31m
+                    [33mcx[31m=[32m"4"[31m
+                    [33mcy[31m=[32m"20"[31m
+                    [33mr[31m=[32m"2"[31m
+                  [36m/>[31m
+                [36m</svg>[31m
+                [36m<span>[31m
+                  [0mNationwide 63 Provinces Meteorological Telemetry[0m
+                [36m</span>[31m
+              [36m</div>[31m
+              [36m<h1[31m
+                [33mclass[31m=[32m"_heroTitle_25f627"[31m
+              [36m>[31m
+                [0mVietnam 63 Provinces Weather Directory[0m
+              [36m</h1>[31m
+              [36m<p[31m
+                [33mclass[31m=[32m"_heroSubtitle_25f627"[31m
+              [36m>[31m
+                [0mWeather observations and available forecasts along an interactive timeline[0m
+              [36m</p>[31m
+            [36m</div>[31m
+            [36m<div[31m
+              [33mclass[31m=[32m"_quickActions_25f627"[31m
+            [36m>[31m
+              [36m<a[31m
+                [33mclass[31m=[32m"_actionBtn_25f627 _actionBtnPrimary_25f627"[31m
+                [33mhref[31m=[32m"/map"[31m
+              [36m>[31m
+                [36m<svg[31m
+                  [33maria-hidden[31m=[32m"true"[31m
+                  [33mclass[31m=[32m"lucide lucide-map-pin"[31m
+                  [33mfill[31m=[32m"none"[31m
+                  [33mheight[31m=[32m"16"[31m
+                  [33mstroke[31m=[32m"currentColor"[31m
+                  [33mstroke-linecap[31m=[32m"round"[31m
+                  [33mstroke-linejoin[31m=[32m"round"[31m
+                  [33mstroke-width[31m=[32m"2"[31m
+                  [33mviewBox[31m=[32m"0 0 24 24"[31m
+                  [33mwidth[31m=[32m"16"[31m
+                  [33mxmlns[31m=[32m"http://www.w3.org/2000/svg"[31m
+                [36m>[31m
+                  [36m<path[31m
+                    [33md[31m=[32m"M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"[31m
+                  [36m/>[31m
+                  [36m<circle[31m
+                    [33mcx[31m=[32m"12"[31m
+                    [33mcy[31m=[32m"10"[31m
+                    [33mr[31m=[32m"3"[31m
+                  [36m/>[31m
+                [36m</svg>[31m
+                [36m<span>[31m
+                  [0mOpen Digital Map[0m
+                [36m</span>[31m
+              [36m</a>[31m
+              [36m<a[31m
+                [33mclass[31m=[32m"_actionBtn_25f627 _actionBtnSecondary_25f627"[31m
+                [33mhref[31m=[32m"/route"[31m
+              [36m>[31m
+                [36m<svg[31m
+                  [33maria-hidden[31m=[32m"true"[31m
+                  [33mclass[31m=[32m"lucide lucide-navigation"[31m
+                  [33mfill[31m=[32m"none"[31m
+                  [33mheight[31m=[32m"16"[31m
+                  [33mstroke[31m=[32m"currentColor"[31m
+                  [33mstroke-linecap[31m=[32m"round"[31m
+                  [33mstroke-linejoin[31m=[32m"round"[31m
+                  [33mstroke-width[31m=[32m"2"[31m
+                  [33mviewBox[31m=[32m"0 0 24 24"[31m
+                  [33mwidth[31m=[32m"16"[31m
+                  [33mxmlns[31m=[32m"http://www.w3.org/2000/svg"[31m
+                [36m>[31m
+                  [36m<polygon[31m
+                    [33mpoints[31m=[32m"3 11 22 2 13 21 11 13 3 11"[31m
+                  [36m/>[31m
+                [36m</svg>[31m
+                [36m<span>[31m
+                  [0mPlan Route[0m
+                [36m</span>[31m
+              [36m</a>[31m
+            [36m</div>[31m
+          [36m</div>[31m
+          [36m<div[31m
+            [33mclass[31m=[32m"_statsGrid_25f627"[31m
+          [36m>[31m
+            [36m<div[31m
+              [33mclass[31m=[32m"_statCard_25f627"[31m
+            [36m>[31m
+              [36m<div[31m
+                [33mclass[31m=[32m"_statHeader_25f627"[31m
+              [36m>[31m
+                [36m<svg[31m
+                  [33maria-hidden[31m=[32m"true"[31m
+                  [33mclass[31m=[32m"lucide lucide-thermometer"[31m
+                  [33mfill[31m=[32m"none"[31m
+                  [33mheight[31m=[32m"16"[31m
+                  [33mstroke[31m=[32m"currentColor"[31m
+                  [33mstroke-linecap[31m=[32m"round"[31m
+                  [33mstroke-linejoin[31m=[32m"round"[31m
+                  [33mstroke-width[31m=[32m"2"[31m
+                  [33mviewBox[31m=[32m"0 0 24 24"[31m
+                  [33mwidth[31m=[32m"16"[31m
+                  [33mxmlns[31m=[32m"http://www.w3.org/2000/svg"[31m
+                [36m>[31m
+                  [36m<path[31m
+                    [33md[31m=[32m"M14 4v10.54a4 4 0 1 1-4 0V4a2 2 0 0 1 4 0Z"[31m
+                  [36m/>[31m
+                [36m</svg>[31m
+                [36m<span>[31m
+                  [0...[39m
+
+[31m⎯⎯⎯⎯⎯⎯⎯[1m[7m Failed Tests 4 [27m[22m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[31m[1m[7m FAIL [27m[22m[39m src/pages/WeatherData.test.tsx[2m > [22mweather display regressions[2m > [22mkeeps fog in the weather banner instead of presenting it as storm evidence
+[31m[1mError[22m: [2mexpect([22m[31melement[31m[2m).not.toBeInTheDocument()[22m
+
+[31mexpected document not to contain element, found <div
+  class="_dimensionValue_e987a0"
+>
+  Fog
+</div> instead[31m[39m
+[36m [2m❯[22m src/pages/WeatherData.test.tsx:[2m135:54[22m[39m
+    [90m133| [39m    [34mrender[39m([33m<[39m[33mProvinceStatusDetail[39m [33mprovince[39m[33m=[39m[33m{[39mprovince[33m}[39m [33monBack[39m[33m=[39m[33m{[39mvi[33m.[39m[34mfn[39m()[33m}[39m …
+    [90m134| [39m    [35mconst[39m stormCard [33m=[39m screen[33m.[39m[34mgetByText[39m([32m"Storm"[39m)[33m.[39mparentElement[33m![39m[33m.[39mparentE…
+    [90m135| [39m    [34mexpect[39m([34mwithin[39m(stormCard)[33m.[39m[34mqueryByText[39m([32m"Fog"[39m))[33m.[39mnot[33m.[39m[34mtoBeInTheDocument[39m…
+    [90m   | [39m                                                     [31m^[39m
+    [90m136| [39m    [34mexpect[39m([34mwithin[39m(stormCard)[33m.[39m[34mgetByText[39m([32m"—"[39m))[33m.[39m[34mtoBeInTheDocument[39m()[33m;[39m
+    [90m137| [39m    [34mexpect[39m([34mwithin[39m(stormCard)[33m.[39m[34mgetByText[39m([32m"Not assessed"[39m))[33m.[39m[34mtoBeInTheDocum[39m…
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/4]⎯[22m[39m
+
+[31m[1m[7m FAIL [27m[22m[39m src/pages/WeatherData.test.tsx[2m > [22mweather display regressions[2m > [22mrenders hourly rain chance 73 without a unit on missing data
+[31m[1m[7m FAIL [27m[22m[39m src/pages/WeatherData.test.tsx[2m > [22mweather display regressions[2m > [22mrenders hourly rain chance 0 without a unit on missing data
+[31m[1m[7m FAIL [27m[22m[39m src/pages/WeatherData.test.tsx[2m > [22mweather display regressions[2m > [22mrenders hourly rain chance null without a unit on missing data
+[31m[1mTestingLibraryElementError[22m[39m: Unable to find an element with the text: Rain chance (1h). This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"_weatherPage_25f627"[39m
+    [36m>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"_container_25f627"[39m
+      [36m>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"_heroSection_25f627"[39m
+        [36m>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"_heroHeader_25f627"[39m
+          [36m>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"_heroTitleArea_25f627"[39m
+            [36m>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"_heroBadge_25f627"[39m
+              [36m>[39m
+                [36m<svg[39m
+                  [33maria-hidden[39m=[32m"true"[39m
+                  [33mclass[39m=[32m"lucide lucide-sparkles"[39m
+                  [33mfill[39m=[32m"none"[39m
+                  [33mheight[39m=[32m"14"[39m
+                  [33mstroke[39m=[32m"currentColor"[39m
+                  [33mstroke-linecap[39m=[32m"round"[39m
+                  [33mstroke-linejoin[39m=[32m"round"[39m
+                  [33mstroke-width[39m=[32m"2"[39m
+                  [33mviewBox[39m=[32m"0 0 24 24"[39m
+                  [33mwidth[39m=[32m"14"[39m
+                  [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+                [36m>[39m
+                  [36m<path[39m
+                    [33md[39m=[32m"M11.017 2.814a1 1 0 0 1 1.966 0l1.051 5.558a2 2 0 0 0 1.594 1.594l5.558 1.051a1 1 0 0 1 0 1.966l-5.558 1.051a2 2 0 0 0-1.594 1.594l-1.051 5.558a1 1 0 0 1-1.966 0l-1.051-5.558a2 2 0 0 0-1.594-1.594l-5.558-1.051a1 1 0 0 1 0-1.966l5.558-1.051a2 2 0 0 0 1.594-1.594z"[39m
+                  [36m/>[39m
+                  [36m<path[39m
+                    [33md[39m=[32m"M20 2v4"[39m
+                  [36m/>[39m
+                  [36m<path[39m
+                    [33md[39m=[32m"M22 4h-4"[39m
+                  [36m/>[39m
+                  [36m<circle[39m
+                    [33mcx[39m=[32m"4"[39m
+                    [33mcy[39m=[32m"20"[39m
+                    [33mr[39m=[32m"2"[39m
+                  [36m/>[39m
+                [36m</svg>[39m
+                [36m<span>[39m
+                  [0mNationwide 63 Provinces Meteorological Telemetry[0m
+                [36m</span>[39m
+              [36m</div>[39m
+              [36m<h1[39m
+                [33mclass[39m=[32m"_heroTitle_25f627"[39m
+              [36m>[39m
+                [0mVietnam 63 Provinces Weather Directory[0m
+              [36m</h1>[39m
+              [36m<p[39m
+                [33mclass[39m=[32m"_heroSubtitle_25f627"[39m
+              [36m>[39m
+                [0mWeather observations and available forecasts along an interactive timeline[0m
+              [36m</p>[39m
+            [36m</div>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"_quickActions_25f627"[39m
+            [36m>[39m
+              [36m<a[39m
+                [33mclass[39m=[32m"_actionBtn_25f627 _actionBtnPrimary_25f627"[39m
+                [33mhref[39m=[32m"/map"[39m
+              [36m>[39m
+                [36m<svg[39m
+                  [33maria-hidden[39m=[32m"true"[39m
+                  [33mclass[39m=[32m"lucide lucide-map-pin"[39m
+                  [33mfill[39m=[32m"none"[39m
+                  [33mheight[39m=[32m"16"[39m
+                  [33mstroke[39m=[32m"currentColor"[39m
+                  [33mstroke-linecap[39m=[32m"round"[39m
+                  [33mstroke-linejoin[39m=[32m"round"[39m
+                  [33mstroke-width[39m=[32m"2"[39m
+                  [33mviewBox[39m=[32m"0 0 24 24"[39m
+                  [33mwidth[39m=[32m"16"[39m
+                  [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+                [36m>[39m
+                  [36m<path[39m
+                    [33md[39m=[32m"M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"[39m
+                  [36m/>[39m
+                  [36m<circle[39m
+                    [33mcx[39m=[32m"12"[39m
+                    [33mcy[39m=[32m"10"[39m
+                    [33mr[39m=[32m"3"[39m
+                  [36m/>[39m
+                [36m</svg>[39m
+                [36m<span>[39m
+                  [0mOpen Digital Map[0m
+                [36m</span>[39m
+              [36m</a>[39m
+              [36m<a[39m
+                [33mclass[39m=[32m"_actionBtn_25f627 _actionBtnSecondary_25f627"[39m
+                [33mhref[39m=[32m"/route"[39m
+              [36m>[39m
+                [36m<svg[39m
+                  [33maria-hidden[39m=[32m"true"[39m
+                  [33mclass[39m=[32m"lucide lucide-navigation"[39m
+                  [33mfill[39m=[32m"none"[39m
+                  [33mheight[39m=[32m"16"[39m
+                  [33mstroke[39m=[32m"currentColor"[39m
+                  [33mstroke-linecap[39m=[32m"round"[39m
+                  [33mstroke-linejoin[39m=[32m"round"[39m
+                  [33mstroke-width[39m=[32m"2"[39m
+                  [33mviewBox[39m=[32m"0 0 24 24"[39m
+                  [33mwidth[39m=[32m"16"[39m
+                  [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+                [36m>[39m
+                  [36m<polygon[39m
+                    [33mpoints[39m=[32m"3 11 22 2 13 21 11 13 3 11"[39m
+                  [36m/>[39m
+                [36m</svg>[39m
+                [36m<span>[39m
+                  [0mPlan Route[0m
+                [36m</span>[39m
+              [36m</a>[39m
+            [36m</div>[39m
+          [36m</div>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"_statsGrid_25f627"[39m
+          [36m>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"_statCard_25f627"[39m
+            [36m>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"_statHeader_25f627"[39m
+              [36m>[39m
+                [36m<svg[39m
+                  [33maria-hidden[39m=[32m"true"[39m
+                  [33mclass[39m=[32m"lucide lucide-thermometer"[39m
+                  [33mfill[39m=[32m"none"[39m
+                  [33mheight[39m=[32m"16"[39m
+                  [33mstroke[39m=[32m"currentColor"[39m
+                  [33mstroke-linecap[39m=[32m"round"[39m
+                  [33mstroke-linejoin[39m=[32m"round"[39m
+                  [33mstroke-width[39m=[32m"2"[39m
+                  [33mviewBox[39m=[32m"0 0 24 24"[39m
+                  [33mwidth[39m=[32m"16"[39m
+                  [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+                [36m>[39m
+                  [36m<path[39m
+                    [33md[39m=[32m"M14 4v10.54a4 4 0 1 1-4 0V4a2 2 0 0 1 4 0Z"[39m
+                  [36m/>[39m
+                [36m</svg>[39m
+                [36m<span>[39m
+                  [0...
+[90m [2m❯[22m Object.getElementError ../../node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/config.js:[2m37:19[22m[39m
+[90m [2m❯[22m ../../node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/query-helpers.js:[2m76:38[22m[39m
+[90m [2m❯[22m ../../node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/query-helpers.js:[2m52:17[22m[39m
+[90m [2m❯[22m ../../node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/query-helpers.js:[2m95:19[22m[39m
+[36m [2m❯[22m src/pages/WeatherData.test.tsx:[2m146:31[22m[39m
+    [90m144| [39m    [34mrender[39m([33m<[39m[33mWeatherPage[39m [33m/[39m[33m>[39m[33m,[39m { wrapper[33m:[39m [34mwrapper[39m() })[33m;[39m
+    [90m145| [39m    [35mconst[39m expected [33m=[39m probability [33m===[39m [35mnull[39m [33m?[39m [32m"—"[39m [33m:[39m probability [33m+[39m [32m"%"[39m[33m;[39m
+    [90m146| [39m    [35mconst[39m cardMetric [33m=[39m screen[33m.[39m[34mgetByText[39m([32m"Rain chance (1h)"[39m)[33m.[39mparentElem…
+    [90m   | [39m                              [31m^[39m
+    [90m147| [39m    [34mexpect[39m([34mwithin[39m(cardMetric)[33m.[39m[34mgetByText[39m(expected))[33m.[39m[34mtoBeInTheDocument[39m()[33m;[39m
+    [90m148| [39m    [34mexpect[39m([34mwithin[39m(cardMetric)[33m.[39m[34mqueryByText[39m([32m"—%"[39m))[33m.[39mnot[33m.[39m[34mtoBeInTheDocument[39m…
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/4]⎯[22m[39m
+
+[2m Test Files [22m [1m[31m1 failed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[31m4 failed[39m[22m[2m | [22m[1m[32m9 passed[39m[22m[90m (13)[39m
+[2m   Start at [22m 04:45:13
+[2m   Duration [22m 3.07s[2m (transform 556ms, setup 268ms, collect 952ms, tests 646ms, environment 641ms, prepare 154ms)[22m
+
+undefined
+C:\Users\dangh\Downloads\VietNameWeatherWithAi\VietNamWeather_Supported_with_ai\apps\web:
+[ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL] Command failed with exit code 1: vitest run src/pages/WeatherData.test.tsx

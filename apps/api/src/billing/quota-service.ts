@@ -164,8 +164,8 @@ export class QuotaService {
     const dateKey = getVietnamDateKey();
     const nextReset = getNextVietnamMidnight().toISOString();
 
-    let searchUsed = 0;
-    let routeUsed = 0;
+    let searchUsed: number;
+    let routeUsed: number;
 
     if (this.redis) {
       try {
@@ -232,7 +232,7 @@ export class QuotaService {
     const dateKey = getVietnamDateKey();
     const nextReset = getNextVietnamMidnight().toISOString();
 
-    let used = 0;
+    let used: number;
     if (this.redis) {
       try {
         const chatKey = `quota:v1:${userId}:${dateKey}:chatMessage`;

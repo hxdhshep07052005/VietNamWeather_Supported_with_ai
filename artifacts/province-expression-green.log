@@ -1,0 +1,10 @@
+
+ RUN  v2.1.9 C:/Users/dangh/Downloads/VietNameWeatherWithAi/VietNamWeather_Supported_with_ai/apps/web
+
+ ✓ src/components/map/provinceOverlay.test.mjs (5 tests) 12ms
+
+ Test Files  1 passed (1)
+      Tests  5 passed (5)
+   Start at  09:39:40
+   Duration  1.80s (transform 368ms, setup 180ms, collect 551ms, tests 12ms, environment 567ms, prepare 177ms)
+

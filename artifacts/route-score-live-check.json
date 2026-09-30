@@ -1,0 +1,85 @@
+{
+  "checked_at": "2026-09-30T02:27:35.487Z",
+  "request": {
+    "origin": "Hà Nội",
+    "destination": "Lào Cai",
+    "vehicle": "car"
+  },
+  "elapsed_ms": 5635,
+  "formula": "100 * (0.5 * R + 0.3 * T / max(T) + 0.2 * D / max(D))",
+  "recommended": "weather_safer",
+  "alternatives": [
+    {
+      "type": "fastest",
+      "distance_km": 289.544,
+      "duration_minutes": 195.7,
+      "strict_level": "unknown",
+      "strict_score": null,
+      "provisional": {
+        "score": 0.3333333333333334,
+        "observed_score": 0.33333333333333337,
+        "coverage_percent": 100,
+        "rule_set_version": "route-weather-provisional-v1"
+      },
+      "checkpoint_levels": {
+        "low": 59
+      },
+      "returned_score": 64.30357236257127,
+      "components": {
+        "weather": 16.66666666666667,
+        "time": 27.6369056959046,
+        "distance": 20
+      },
+      "calculated_score": 64.30357236257127,
+      "delta": 0
+    },
+    {
+      "type": "shortest",
+      "distance_km": 279.708,
+      "duration_minutes": 212.43333333333334,
+      "strict_level": "unknown",
+      "strict_score": null,
+      "provisional": {
+        "score": 0.3333333333333333,
+        "observed_score": 0.3333333333333334,
+        "coverage_percent": 100,
+        "rule_set_version": "route-weather-provisional-v1"
+      },
+      "checkpoint_levels": {
+        "low": 57
+      },
+      "returned_score": 65.98725352047819,
+      "components": {
+        "weather": 16.666666666666664,
+        "time": 30,
+        "distance": 19.32058685381151
+      },
+      "calculated_score": 65.98725352047818,
+      "delta": 1.4210854715202004e-14
+    },
+    {
+      "type": "weather_safer",
+      "distance_km": 289.544,
+      "duration_minutes": 195.7,
+      "strict_level": "unknown",
+      "strict_score": null,
+      "provisional": {
+        "score": 0.3333333333333334,
+        "observed_score": 0.33333333333333337,
+        "coverage_percent": 100,
+        "rule_set_version": "route-weather-provisional-v1"
+      },
+      "checkpoint_levels": {
+        "low": 59
+      },
+      "returned_score": 64.30357236257127,
+      "components": {
+        "weather": 16.66666666666667,
+        "time": 27.6369056959046,
+        "distance": 20
+      },
+      "calculated_score": 64.30357236257127,
+      "delta": 0
+    }
+  ]
+}

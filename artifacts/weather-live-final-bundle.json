@@ -1,0 +1,1905 @@
+{
+  "at": "2026-09-29T20:11:26.587Z",
+  "http": 200,
+  "response": {
+    "data": {
+      "status": "success",
+      "data": {
+        "target": {
+          "locationId": null,
+          "timezone": "Asia/Ho_Chi_Minh"
+        },
+        "units": {
+          "temperature": "celsius",
+          "windSpeed": "metres_per_second",
+          "precipitation": "millimetres",
+          "pressure": "hectopascals",
+          "visibility": "metres",
+          "relativeHumidity": "percent",
+          "probability": "percent",
+          "direction": "degrees"
+        },
+        "providerMixing": false,
+        "attribution": {
+          "name": "WeatherAPI.com",
+          "url": "https://www.weatherapi.com/terms.aspx"
+        },
+        "coverage": {
+          "requested": [
+            "current",
+            "hourly",
+            "daily"
+          ],
+          "effectiveHorizonHours": 69,
+          "datasets": {
+            "current": {
+              "dataset": "current",
+              "status": "complete",
+              "validInterval": {
+                "from": "2026-09-29T20:00:00.000Z",
+                "to": "2026-09-29T20:25:51.000Z"
+              },
+              "expectedIntervals": 1,
+              "returnedIntervals": 1,
+              "gaps": []
+            },
+            "hourly": {
+              "dataset": "hourly",
+              "status": "complete",
+              "validInterval": {
+                "from": "2026-09-29T20:00:00.000Z",
+                "to": "2026-10-02T17:00:00.000Z"
+              },
+              "expectedIntervals": 69,
+              "returnedIntervals": 69,
+              "gaps": []
+            },
+            "daily": {
+              "dataset": "daily",
+              "status": "complete",
+              "validInterval": {
+                "from": "2026-09-29T17:00:00.000Z",
+                "to": "2026-10-02T17:00:00.000Z"
+              },
+              "expectedIntervals": 3,
+              "returnedIntervals": 3,
+              "gaps": []
+            }
+          }
+        },
+        "current": {
+          "provenance": {
+            "provider": "weatherapi",
+            "parserVersion": "weatherapi-forecast-v1",
+            "snapshotId": "08af7413-c3cd-4f2e-b42a-8d17c1d5fdf2",
+            "providerIssuedAt": null,
+            "fetchedAt": "2026-09-29T20:10:51.000Z",
+            "expiresAt": "2026-09-29T20:25:51.000Z"
+          },
+          "freshness": {
+            "state": "fresh",
+            "assessedAt": "2026-09-29T20:11:26.496Z",
+            "freshUntil": "2026-09-29T20:25:51.000Z",
+            "staleUntil": "2026-09-29T21:10:51.000Z",
+            "displayEligible": true,
+            "riskEligible": true,
+            "routeEligible": true
+          },
+          "coverage": {
+            "dataset": "current",
+            "status": "complete",
+            "validInterval": {
+              "from": "2026-09-29T20:00:00.000Z",
+              "to": "2026-09-29T20:25:51.000Z"
+            },
+            "expectedIntervals": 1,
+            "returnedIntervals": 1,
+            "gaps": []
+          },
+          "value": {
+            "kind": "observation",
+            "observedAt": "2026-09-29T20:00:00.000Z",
+            "validInterval": {
+              "from": "2026-09-29T20:00:00.000Z",
+              "to": "2026-09-29T20:25:51.000Z"
+            },
+            "quality": {
+              "state": "complete",
+              "missingFields": []
+            },
+            "temperatureCelsius": 26.3,
+            "apparentTemperatureCelsius": 29.5,
+            "relativeHumidityPercent": 88,
+            "windSpeedMetresPerSecond": 1.889,
+            "windGustMetresPerSecond": 3.306,
+            "windDirectionDegrees": 97,
+            "precipitationMillimetres": 0,
+            "pressureHectopascals": 1009,
+            "visibilityMetres": 10000,
+            "uvIndex": 0,
+            "cloudCoverPercent": 65,
+            "conditionCode": "cloudy"
+          }
+        },
+        "hourly": {
+          "provenance": {
+            "provider": "weatherapi",
+            "parserVersion": "weatherapi-forecast-v1",
+            "snapshotId": "2668fb10-0ec2-4bfd-b612-05592b5714b2",
+            "providerIssuedAt": null,
+            "fetchedAt": "2026-09-29T20:10:51.000Z",
+            "expiresAt": "2026-09-30T02:10:51.000Z"
+          },
+          "freshness": {
+            "state": "fresh",
+            "assessedAt": "2026-09-29T20:11:26.496Z",
+            "freshUntil": "2026-09-30T02:10:51.000Z",
+            "staleUntil": "2026-09-30T20:10:51.000Z",
+            "displayEligible": true,
+            "riskEligible": true,
+            "routeEligible": true
+          },
+          "coverage": {
+            "dataset": "hourly",
+            "status": "complete",
+            "validInterval": {
+              "from": "2026-09-29T20:00:00.000Z",
+              "to": "2026-10-02T17:00:00.000Z"
+            },
+            "expectedIntervals": 69,
+            "returnedIntervals": 69,
+            "gaps": []
+          },
+          "values": [
+            {
+              "kind": "forecast",
+              "validInterval": {
+                "from": "2026-09-29T20:00:00.000Z",
+                "to": "2026-09-29T21:00:00.000Z"
+              },
+              "quality": {
+                "state": "complete",
+                "missingFields": []
+              },
+              "temperatureCelsius": 26.3,
+              "apparentTemperatureCelsius": 29.5,
+              "relativeHumidityPercent": 88,
+              "windSpeedMetresPerSecond": 1.889,
+              "windGustMetresPerSecond": 3.306,
+              "windDirectionDegrees": 97,
+              "precipitationMillimetres": 0,
+              "pressureHectopascals": 1009,
+              "visibilityMetres": 10000,
+              "uvIndex": 0,
+              "cloudCoverPercent": 65,
+              "conditionCode": "cloudy",
+              "precipitationProbabilityPercent": 21
+            },
+            {
+              "kind": "forecast",
+              "validInterval": {
+                "from": "2026-09-29T21:00:00.000Z",
+                "to": "2026-09-29T22:00:00.000Z"
+              },
+              "quality": {
+                "state": "complete",
+                "missingFields": []
+              },
+              "temperatureCelsius": 26.2,
+              "apparentTemperatureCelsius": 29.6,
+              "relativeHumidityPercent": 90,
+              "windSpeedMetresPerSecond": 1.5,
+              "windGustMetresPerSecond": 2.111,
+              "windDirectionDegrees": 78,
+              "precipitationMillimetres": 0.25,
+              "pressureHectopascals": 1009,
+              "visibilityMetres": 9000,
+              "uvIndex": 0,
+              "cloudCoverPercent": 86,
+              "conditionCode": "rain",
+              "precipitationProbabilityPercent": 45
+            },
+            {
+              "kind": "forecast",
+              "validInterval": {
+                "from": "2026-09-29T22:00:00.000Z",
+                "to": "2026-09-29T23:00:00.000Z"
+              },
+              "quality": {
+                "state": "complete",
+                "missingFields": []
+              },
+              "temperatureCelsius": 26.1,
+              "apparentTemperatureCelsius": 29.7,
+              "relativeHumidityPercent": 92,
+              "windSpeedMetresPerSecond": 1.389,
+              "windGustMetresPerSecond": 1.833,
+              "windDirectionDegrees": 42,
+              "precipitationMillimetres": 0,
+              "pressureHectopascals": 1010,
+              "visibilityMetres": 10000,
+              "uvIndex": 0,
+              "cloudCoverPercent": 7,
+              "conditionCode": "clear",
+              "precipitationProbabilityPercent": 14
+            },
+            {
+              "kind": "forecast",
+              "validInterval": {
+                "from": "2026-09-29T23:00:00.000Z",
+                "to": "2026-09-30T00:00:00.000Z"
+              },
+              "quality": {
+                "state": "complete",
+                "missingFields": []
+              },
+              "temperatureCelsius": 25.9,
+              "apparentTemperatureCelsius": 29.6,
+              "relativeHumidityPercent": 92,
+              "windSpeedMetresPerSecond": 1.694,
+              "windGustMetresPerSecond": 2.417,
+              "windDirectionDegrees": 40,
+              "precipitationMillimetres": 0.04,
+              "pressureHectopascals": 1010,
+              "visibilityMetres": 10000,
+              "uvIndex": 0,
+              "cloudCoverPercent": 84,
+              "conditionCode": "rain",
+              "precipitationProbabilityPercent": 31
+            },
+            {
+              "kind": "forecast",
+              "validInterval": {
+                "from": "2026-09-30T00:00:00.000Z",
+                "to": "2026-09-30T01:00:00.000Z"
+              },
+              "quality": {
+                "state": "complete",
+                "missingFields": []
+              },
+              "temperatureCelsius": 27,
+              "apparentTemperatureCelsius": 30.7,
+              "relativeHumidityPercent": 88,
+              "windSpeedMetresPerSecond": 1.889,
+              "windGustMetresPerSecond": 2.528,
+              "windDirectionDegrees": 46,
+              "precipitationMillimetres": 0,
+              "pressureHectopascals": 1011,
+              "visibilityMetres": 10000,
+              "uvIndex": 0.4,
+              "cloudCoverPercent": 33,
+              "conditionCode": "partly_cloudy",
+              "precipitationProbabilityPercent": 15
+            },
+            {
+              "kind": "forecast",
+              "validInterval": {
+                "from": "2026-09-30T01:00:00.000Z",
+                "to": "2026-09-30T02:00:00.000Z"
+              },
+              "quality": {
+                "state": "complete",
+                "missingFields": []
+              },
+              "temperatureCelsius": 28.5,
+              "apparentTemperatureCelsius": 33.7,
+              "relativeHumidityPercent": 82,
+              "windSpeedMetresPerSecond": 2.111,
+              "windGustMetresPerSecond": 2.111,
+              "windDirectionDegrees": 53,
+              "precipitationMillimetres": 0,
+              "pressureHectopascals": 1012,
+              "visibilityMetres": 10000,
+              "uvIndex": 1.7,
+              "cloudCoverPercent": 51,
+              "conditionCode": "partly_cloudy",
+              "precipitationProbabilityPercent": 15
+            },
+            {
+              "kind": "forecast",
+              "validInterval": {
+                "from": "2026-09-30T02:00:00.000Z",
+                "to": "2026-09-30T03:00:00.000Z"
+              },
+              "quality": {
+                "state": "complete",
+                "missingFields": []
+              },
+              "temperatureCelsius": 30.1,
+              "apparentTemperatureCelsius": 36.8,
+              "relativeHumidityPercent": 76,
+              "windSpeedMetresPerSecond": 1.694,
+              "windGustMetresPerSecond": 1.806,
+              "windDirectionDegrees": 52,
+              "precipitationMillimetres": 0,
+              "pressureHectopascals": 1012,
+              "visibilityMetres": 10000,
+              "uvIndex": 3.9,
+              "cloudCoverPercent": 58,
+              "conditionCode": "partly_cloudy",
+              "precipitationProbabilityPercent": 13
+            },
+            {
+              "kind": "forecast",
+              "validInterval": {
+                "from": "2026-09-30T03:00:00.000Z",
+                "to": "2026-09-30T04:00:00.000Z"
+              },
+              "quality": {
+                "state": "complete",
+                "missingFields": []
+              },
+              "temperatureCelsius": 31.9,
+              "apparentTemperatureCelsius": 39.2,
+              "relativeHumidityPercent": 67,
+              "windSpeedMetresPerSecond": 0.889,
+              "windGustMetresPerSecond": 1.528,
+              "windDirectionDegrees": 80,
+              "precipitationMillimetres": 0.02,
+              "pressureHectopascals": 1012,
+              "visibilityMetres": 10000,
+              "uvIndex": 6.5,
+              "cloudCoverPercent": 66,
+              "conditionCode": "rain",
+              "precipitationProbabilityPercent": 12
+            },
+            {
+              "kind": "forecast",
+              "validInterval": {
+                "from": "2026-09-30T04:00:00.000Z",
+                "to": "2026-09-30T05:00:00.000Z"
+              },
+              "quality": {
+                "state": "complete",
+                "missingFields": []
+              },
+              "temperatureCelsius": 33.4,
+              "apparentTemperatureCelsius": 40.5,
+              "relativeHumidityPercent": 60,
+              "windSpeedMetresPerSecond": 0.611,
+              "windGustMetresPerSecond": 1.389,
+              "windDirectionDegrees": 178,
+              "precipitationMillimetres": 0.01,
+              "pressureHectopascals": 1011,
+              "visibilityMetres": 10000,
+              "uvIndex": 8.6,
+              "cloudCoverPercent": 52,
+              "conditionCode": "rain",
+              "precipitationProbabilityPercent": 7
+            },
+            {
+              "kind": "forecast",
+              "validInterval": {
+                "from": "2026-09-30T05:00:00.000Z",
+                "to": "2026-09-30T06:00:00.000Z"
+              },
+              "quality": {
+                "state": "complete",
+                "missingFields": []
+              },
+              "temperatureCelsius": 34.5,
+              "apparentTemperatureCelsius": 41.4,
+              "relativeHumidityPercent": 55,
+              "windSpeedMetresPerSecond": 1.389,
+              "windGustMetresPerSecond": 1.75,
+              "windDirectionDegrees": 216,
+              "precipitationMillimetres": 0.01,
+              "pressureHectopascals": 1010,
+              "visibilityMetres": 10000,
+              "uvIndex": 9.2,
+              "cloudCoverPercent": 85,
+              "conditionCode": "rain",
+              "precipitationProbabilityPercent": 11
+            },
+            {
+              "kind": "forecast",
+              "validInterval": {
+                "from": "2026-09-30T06:00:00.000Z",
+                "to": "2026-09-30T07:00:00.000Z"
+              },
+              "quality": {
+                "state": "complete",
+                "missingFields": []
+              },
+              "temperatureCelsius": 35.2,
+              "apparentTemperatureCelsius": 41.7,
+              "relativeHumidityPercent": 52,
+              "windSpeedMetresPerSecond": 2.111,
+              "windGustMetresPerSecond": 2.222,
+              "windDirectionDegrees": 230,
+              "precipitationMillimetres": 0,
+              "pressureHectopascals": 1009,
+              "visibilityMetres": 10000,
+              "uvIndex": 8.4,
+              "cloudCoverPercent": 8,
+              "conditionCode": "clear",
+              "precipitationProbabilityPercent": 2
+            },
+            {
+              "kind": "forecast",
+              "validInterval": {
+                "from": "2026-09-30T07:00:00.000Z",
+                "to": "2026-09-30T08:00:00.000Z"
+              },
+              "quality": {
+                "state": "complete",
+                "missingFields": []
+              },
+              "temperatureCelsius": 35.5,
+              "apparentTemperatureCelsius": 41.8,
+              "relativeHumidityPercent": 50,
+              "windSpeedMetresPerSecond": 2.389,
+              "windGustMetresPerSecond": 7.389,
+              "windDirectionDegrees": 238,
+              "precipitationMillimetres": 0,
+              "pressureHectopascals": 1007,
+              "visibilityMetres": 10000,
+              "uvIndex": 6.3,
+              "cloudCoverPercent": 8,
+              "conditionCode": "clear",
+              "precipitationProbabilityPercent": 2
+            },
+            {
+              "kind": "forecast",
+              "validInterval": {
+                "from": "2026-09-30T08:00:00.000Z",
+                "to": "2026-09-30T09:00:00.000Z"
+              },
+              "quality": {
+                "state": "complete",
+                "missingFields": []
+              },
+              "temperatureCelsius": 35.4,
+              "apparentTemperatureCelsius": 41.4,
+              "relativeHumidityPercent": 50,
+              "windSpeedMetresPerSecond": 2.111,
+              "windGustMetresPerSecond": 2.222,
+              "windDirectionDegrees": 219,
+              "precipitationMillimetres": 0,
+              "pressureHectopascals": 1007,
+              "visibilityMetres": 10000,
+              "uvIndex": 3.7,
+              "cloudCoverPercent": 20,
+              "conditionCode": "clear",
+              "precipitationProbabilityPercent": 2
+            },
+            {
+              "kind": "forecast",
+              "validInterval": {
+                "from": "2026-09-30T09:00:00.000Z",
+                "to": "2026-09-30T10:00:00.000Z"
+              },
+              "quality": {
+                "state": "complete",
+                "missingFields": []
+              },
+              "temperatureCelsius": 34.9,
+              "apparentTemperatureCelsius": 41,
+              "relativeHumidityPercent": 51,
+              "windSpeedMetresPerSecond": 2,
+              "windGustMetresPerSecond": 2.222,
+              "windDirectionDegrees": 171,
+              "precipitationMillimetres": 0,
+              "pressureHectopascals": 1006,
+              "visibilityMetres": 10000,
+              "uvIndex": 1.4,
+              "cloudCoverPercent": 43,
+              "conditionCode": "fog",
+              "precipitationProbabilityPercent": 4
+            },
+            {
+              "kind": "forecast",
+              "validInterval": {
+                "from": "2026-09-30T10:00:00.000Z",
+                "to": "2026-09-30T11:00:00.000Z"
+              },
+              "quality": {
+                "state": "complete",
+                "missingFields": []
+              },
+              "temperatureCelsius": 33.5,
+              "apparentTemperatureCelsius": 40.4,
+              "relativeHumidityPercent": 59,
+              "windSpeedMetresPerSecond": 2.806,
+              "windGustMetresPerSecond": 4.306,
+              "windDirectionDegrees": 135,
+              "precipitationMillimetres": 0,
+              "pressureHectopascals": 1007,
+              "visibilityMetres": 10000,
+              "uvIndex": 0.3,
+              "cloudCoverPercent": 51,
+              "conditionCode": "fog",
+              "precipitationProbabilityPercent": 7
+            },
+            {
+              "kind": "forecast",
+              "validInterval": {
+                "from": "2026-09-30T11:00:00.000Z",
+                "to": "2026-09-30T12:00:00.000Z"
+              },
+              "quality": {
+                "state": "complete",
+                "missingFields": []
+              },
+              "temperatureCelsius": 30.9,
+              "apparentTemperatureCelsius": 36.3,
+              "relativeHumidityPercent": 66,
+              "windSpeedMetresPerSecond": 4.194,
+              "windGustMetresPerSecond": 7.5,
+              "windDirectionDegrees": 128,
+              "precipitationMillimetres": 0,
+              "pressureHectopascals": 1007,
+              "visibilityMetres": 10000,
+              "uvIndex": 0,
+              "cloudCoverPercent": 73,
+              "conditionCode": "fog",
+              "precipitationProbabilityPercent": 12
+            },
+            {
+              "kind": "forecast",
+              "validInterval": {
+                "from": "2026-09-30T12:00:00.000Z",
+                "to": "2026-09-30T13:00:00.000Z"
+              },
+              "quality": {
+                "state": "complete",
+                "missingFields": []
+              },
+              "temperatureCelsius": 29.4,
+              "apparentTemperatureCelsius": 34.4,
+              "relativeHumidityPercent": 74,
+              "windSpeedMetresPerSecond": 4.694,
+              "windGustMetresPerSecond": 8.306,
+              "windDirectionDegrees": 133,
+              "precipitationMillimetres": 0,
+              "pressureHectopascals": 1009,
+              "visibilityMetres": 7600,
+              "uvIndex": 0,
+              "cloudCoverPercent": 91,
+              "conditionCode": "fog",
+              "precipitationProbabilityPercent": 18
+            },
+            {
+              "kind": "forecast",
+              "validInterval": {
+                "from": "2026-09-30T13:00:00.000Z",
+                "to": "2026-09-30T14:00:00.000Z"
+              },
+              "quality": {
+                "state": "complete",
+                "missingFields": []
+              },
+              "temperatureCelsius": 28.6,
+              "apparentTemperatureCelsius": 33.4,
+              "relativeHumidityPercent": 79,
+              "windSpeedMetresPerSecond": 4.389,
+              "windGustMetresPerSecond": 8.111,
+              "windDirectionDegrees": 140,
+              "precipitationMillimetres": 0,
+              "pressureHectopascals": 1010,
+              "visibilityMetres": 8400,
+              "uvIndex": 0,
+              "cloudCoverPercent": 60,
+              "conditionCode": "fog",
+              "precipitationProbabilityPercent": 15
+            },
+            {
+              "kind": "forecast",
+              "validInterval": {
+                "from": "2026-09-30T14:00:00.000Z",
+                "to": "2026-09-30T15:00:00.000Z"
+              },
+              "quality": {
+                "state": "complete",
+                "missingFields": []
+              },
+              "temperatureCelsius": 28.1,
+              "apparentTemperatureCelsius": 32.6,
+              "relativeHumidityPercent": 81,
+              "windSpeedMetresPerSecond": 3.889,
+              "windGustMetresPerSecond": 7.722,
+              "windDirectionDegrees": 148,
+              "precipitationMillimetres": 0,
+              "pressureHectopascals": 1011,
+              "visibilityMetres": 10000,
+              "uvIndex": 0,
+              "cloudCoverPercent": 9,
+              "conditionCode": "clear",
+              "precipitationProbabilityPercent": 10
+            },
+            {
+              "kind": "forecast",
+              "validInterval": {
+                "from": "2026-09-30T15:00:00.000Z",
+                "to": "2026-09-30T16:00:00.000Z"
+              },
+              "quality": {
+                "state": "complete",
+                "missingFields": []
+              },
+              "temperatureCelsius": 27.8,
+              "apparentTemperatureCelsius": 31.9,
+              "relativeHumidityPercent": 83,
+              "windSpeedMetresPerSecond": 3.806,
+              "windGustMetresPerSecond": 7.611,
+              "windDirectionDegrees": 150,
+              "precipitationMillimetres": 0.18,
+              "pressureHectopascals": 1011,
+              "visibilityMetres": 10000,
+              "uvIndex": 0,
+              "cloudCoverPercent": 88,
+              "conditionCode": "rain",
+              "precipitationProbabilityPercent": 36
+            },
+            {
+              "kind": "forecast",
+              "validInterval": {
+                "from": "2026-09-30T16:00:00.000Z",
+                "to": "2026-09-30T17:00:00.000Z"
+              },
+              "quality": {
+                "state": "complete",
+                "missingFields": []
+              },
+              "temperatureCelsius": 27.5,
+              "apparentTemperatureCelsius": 31.6,
+              "relativeHumidityPercent": 85,
+              "windSpeedMetresPerSecond": 3.306,
+              "windGustMetresPerSecond": 7,
+              "windDirectionDegrees": 149,
+              "precipitationMillimetres": 0,
+              "pressureHectopascals": 1011,
+              "visibilityMetres": 10000,
+              "uvIndex": 0,
+              "cloudCoverPercent": 10,
+              "conditionCode": "clear",
+              "precipitationProbabilityPercent": 11
+            },
+            {
+              "kind": "forecast",
+              "validInterval": {
+                "from": "2026-09-30T17:00:00.000Z",
+                "to": "2026-09-30T18:00:00.000Z"
+              },
+              "quality": {
+                "state": "complete",
+                "missingFields": []
+              },
+              "temperatureCelsius": 27.2,
+              "apparentTemperatureCelsius": 31,
+              "relativeHumidityPercent": 86,
+              "windSpeedMetresPerSecond": 3.111,
+              "windGustMetresPerSecond": 6.611,
+              "windDirectionDegrees": 142,
+              "precipitationMillimetres": 0.13,
+              "pressureHectopascals": 1011,
+              "visibilityMetres": 10000,
+              "uvIndex": 0,
+              "cloudCoverPercent": 91,
+              "conditionCode": "rain",
+              "precipitationProbabilityPercent": 36
+            },
+            {
+              "kind": "forecast",
+              "validInterval": {
+                "from": "2026-09-30T18:00:00.000Z",
+                "to": "2026-09-30T19:00:00.000Z"
+              },
+              "quality": {
+                "state": "complete",
+                "missingFields": []
+              },
+              "temperatureCelsius": 26.9,
+              "apparentTemperatureCelsius": 30.5,
+              "relativeHumidityPercent": 88,
+              "windSpeedMetresPerSecond": 2.889,
+              "windGustMetresPerSecond": 6.111,
+              "windDirectionDegrees": 143,
+              "precipitationMillimetres": 0.02,
+              "pressureHectopascals": 1010,
+              "visibilityMetres": 10000,
+              "uvIndex": 0,
+              "cloudCoverPercent": 100,
+              "conditionCode": "rain",
+              "precipitationProbabilityPercent": 30
+            },
+            {
+              "kind": "forecast",
+              "validInterval": {
+                "from": "2026-09-30T19:00:00.000Z",
+                "to": "2026-09-30T20:00:00.000Z"
+              },
+              "quality": {
+                "state": "complete",
+                "missingFields": []
+              },
+              "temperatureCelsius": 26.7,
+              "apparentTemperatureCelsius": 30.3,
+              "relativeHumidityPercent": 89,
+              "windSpeedMetresPerSecond": 2.694,
+              "windGustMetresPerSecond": 5.611,
+              "windDirectionDegrees": 134,
+              "precipitationMillimetres": 0,
+              "pressureHectopascals": 1010,
+              "visibilityMetres": 10000,
+              "uvIndex": 0,
+              "cloudCoverPercent": 100,
+              "conditionCode": "cloudy",
+              "precipitationProbabilityPercent": 28
+            },
+            {
+              "kind": "forecast",
+              "validInterval": {
+                "from": "2026-09-30T20:00:00.000Z",
+                "to": "2026-09-30T21:00:00.000Z"
+              },
+              "quality": {
+                "state": "complete",
+                "missingFields": []
+              },
+              "temperatureCelsius": 26.6,
+              "apparentTemperatureCelsius": 29.9,
+              "relativeHumidityPercent": 90,
+              "windSpeedMetresPerSecond": 2.194,
+              "windGustMetresPerSecond": 4.611,
+              "windDirectionDegrees": 124,
+              "precipitationMillimetres": 0,
+              "pressureHectopascals": 1010,
+              "visibilityMetres": 10000,
+              "uvIndex": 0,
+              "cloudCoverPercent": 100,
+              "conditionCode": "cloudy",
+              "precipitationProbabilityPercent": 29
+            },
+            {
+              "kind": "forecast",
+              "validInterval": {
+                "from": "2026-09-30T21:00:00.000Z",
+                "to": "2026-09-30T22:00:00.000Z"
+              },
+              "quality": {
+                "state": "complete",
+                "missingFields": []
+              },
+              "temperatureCelsius": 26.4,
+              "apparentTemperatureCelsius": 29.8,
+              "relativeHumidityPercent": 90,
+              "windSpeedMetresPerSecond": 2,
+              "windGustMetresPerSecond": 4,
+              "windDirectionDegrees": 132,
+              "precipitationMillimetres": 0,
+              "pressureHectopascals": 1010,
+              "visibilityMetres": 10000,
+              "uvIndex": 0,
+              "cloudCoverPercent": 100,
+              "conditionCode": "cloudy",
+              "precipitationProbabilityPercent": 30
+            },
+            {
+              "kind": "forecast",
+              "validInterval": {
+                "from": "2026-09-30T22:00:00.000Z",
+                "to": "2026-09-30T23:00:00.000Z"
+              },
+              "quality": {
+                "state": "complete",
+                "missingFields": []
+              },
+              "temperatureCelsius": 26.3,
+              "apparentTemperatureCelsius": 29.7,
+              "relativeHumidityPercent": 91,
+              "windSpeedMetresPerSecond": 1.889,
+              "windGustMetresPerSecond": 3.417,
+              "windDirectionDegrees": 134,
+              "precipitationMillimetres": 0,
+              "pressureHectopascals": 1010,
+              "visibilityMetres": 10000,
+              "uvIndex": 0,
+              "cloudCoverPercent": 100,
+              "conditionCode": "cloudy",
+              "precipitationProbabilityPercent": 30
+            },
+            {
+              "kind": "forecast",
+              "validInterval": {
+                "from": "2026-09-30T23:00:00.000Z",
+                "to": "2026-10-01T00:00:00.000Z"
+              },
+              "quality": {
+                "state": "complete",
+                "missingFields": []
+              },
+              "temperatureCelsius": 26.2,
+              "apparentTemperatureCelsius": 29.8,
+              "relativeHumidityPercent": 92,
+              "windSpeedMetresPerSecond": 1.694,
+              "windGustMetresPerSecond": 3,
+              "windDirectionDegrees": 133,
+              "precipitationMillimetres": 0,
+              "pressureHectopascals": 1011,
+              "visibilityMetres": 10000,
+              "uvIndex": 0,
+              "cloudCoverPercent": 100,
+              "conditionCode": "cloudy",
+              "precipitationProbabilityPercent": 31
+            },
+            {
+              "kind": "forecast",
+              "validInterval": {
+                "from": "2026-10-01T00:00:00.000Z",
+                "to": "2026-10-01T01:00:00.000Z"
+              },
+              "quality": {
+                "state": "complete",
+                "missingFields": []
+              },
+              "temperatureCelsius": 27.3,
+              "apparentTemperatureCelsius": 31.4,
+              "relativeHumidityPercent": 88,
+              "windSpeedMetresPerSecond": 1.889,
+              "windGustMetresPerSecond": 3.306,
+              "windDirectionDegrees": 148,
+              "precipitationMillimetres": 0.01,
+              "pressureHectopascals": 1012,
+              "visibilityMetres": 10000,
+              "uvIndex": 0.4,
+              "cloudCoverPercent": 100,
+              "conditionCode": "rain",
+              "precipitationProbabilityPercent": 28
+            },
+            {
+              "kind": "forecast",
+              "validInterval": {
+                "from": "2026-10-01T01:00:00.000Z",
+                "to": "2026-10-01T02:00:00.000Z"
+              },
+              "quality": {
+                "state": "complete",
+                "missingFields": []
+              },
+              "temperatureCelsius": 29,
+              "apparentTemperatureCelsius": 34.7,
+              "relativeHumidityPercent": 80,
+              "windSpeedMetresPerSecond": 2.306,
+              "windGustMetresPerSecond": 4.028,
+              "windDirectionDegrees": 161,
+              "precipitationMillimetres": 0.03,
+              "pressureHectopascals": 1012,
+              "visibilityMetres": 10000,
+              "uvIndex": 1.7,
+              "cloudCoverPercent": 100,
+              "conditionCode": "rain",
+              "precipitationProbabilityPercent": 26
+            },
+            {
+              "kind": "forecast",
+              "validInterval": {
+                "from": "2026-10-01T02:00:00.000Z",
+                "to": "2026-10-01T03:00:00.000Z"
+              },
+              "quality": {
+                "state": "complete",
+                "missingFields": []
+              },
+              "temperatureCelsius": 30.6,
+              "apparentTemperatureCelsius": 36.6,
+              "relativeHumidityPercent": 70,
+              "windSpeedMetresPerSecond": 3,
+              "windGustMetresPerSecond": 4,
+              "windDirectionDegrees": 165,
+              "precipitationMillimetres": 0.04,
+              "pressureHectopascals": 1013,
+              "visibilityMetres": 10000,
+              "uvIndex": 4,
+              "cloudCoverPercent": 100,
+              "conditionCode": "rain",
+              "precipitationProbabilityPercent": 21
+            },
+            {
+              "kind": "forecast",
+              "validInterval": {
+                "from": "2026-10-01T03:00:00.000Z",
+                "to": "2026-10-01T04:00:00.000Z"
+              },
+              "quality": {
+                "state": "complete",
+                "missingFields": []
+              },
+              "temperatureCelsius": 32,
+              "apparentTemperatureCelsius": 38.2,
+              "relativeHumidityPercent": 64,
+              "windSpeedMetresPerSecond": 3.389,
+              "windGustMetresPerSecond": 4.306,
+              "windDirectionDegrees": 173,
+              "precipitationMillimetres": 0.06,
+              "pressureHectopascals": 1012,
+              "visibilityMetres": 10000,
+              "uvIndex": 6.4,
+              "cloudCoverPercent": 100,
+              "conditionCode": "rain",
+              "precipitationProbabilityPercent": 20
+            },
+            {
+              "kind": "forecast",
+              "validInterval": {
+                "from": "2026-10-01T04:00:00.000Z",
+                "to": "2026-10-01T05:00:00.000Z"
+              },
+              "quality": {
+                "state": "complete",
+                "missingFields": []
+              },
+              "temperatureCelsius": 32.6,
+              "apparentTemperatureCelsius": 38.9,
+              "relativeHumidityPercent": 61,
+              "windSpeedMetresPerSecond": 3.5,
+              "windGustMetresPerSecond": 4.222,
+              "windDirectionDegrees": 172,
+              "precipitationMillimetres": 0.24,
+              "pressureHectopascals": 1012,
+              "visibilityMetres": 10000,
+              "uvIndex": 7.7,
+              "cloudCoverPercent": 99,
+              "conditionCode": "rain",
+              "precipitationProbabilityPercent": 28
+            },
+            {
+              "kind": "forecast",
+              "validInterval": {
+                "from": "2026-10-01T05:00:00.000Z",
+                "to": "2026-10-01T06:00:00.000Z"
+              },
+              "quality": {
+                "state": "complete",
+                "missingFields": []
+              },
+              "temperatureCelsius": 32.5,
+              "apparentTemperatureCelsius": 39,
+              "relativeHumidityPercent": 62,
+              "windSpeedMetresPerSecond": 4,
+              "windGustMetresPerSecond": 4.306,
+              "windDirectionDegrees": 167,
+              "precipitationMillimetres": 0.37,
+              "pressureHectopascals": 1011,
+              "visibilityMetres": 10000,
+              "uvIndex": 5.5,
+              "cloudCoverPercent": 100,
+              "conditionCode": "rain",
+              "precipitationProbabilityPercent": 36
+            },
+            {
+              "kind": "forecast",
+              "validInterval": {
+                "from": "2026-10-01T06:00:00.000Z",
+                "to": "2026-10-01T07:00:00.000Z"
+              },
+              "quality": {
+                "state": "complete",
+                "missingFields": []
+              },
+              "temperatureCelsius": 32.9,
+              "apparentTemperatureCelsius": 39.5,
+              "relativeHumidityPercent": 61,
+              "windSpeedMetresPerSecond": 4.389,
+              "windGustMetresPerSecond": 4.611,
+              "windDirectionDegrees": 158,
+              "precipitationMillimetres": 0.39,
+              "pressureHectopascals": 1010,
+              "visibilityMetres": 10000,
+              "uvIndex": 5.8,
+              "cloudCoverPercent": 100,
+              "conditionCode": "rain",
+              "precipitationProbabilityPercent": 36
+            },
+            {
+              "kind": "forecast",
+              "validInterval": {
+                "from": "2026-10-01T07:00:00.000Z",
+                "to": "2026-10-01T08:00:00.000Z"
+              },
+              "quality": {
+                "state": "complete",
+                "missingFields": []
+              },
+              "temperatureCelsius": 32.7,
+              "apparentTemperatureCelsius": 38.9,
+              "relativeHumidityPercent": 60,
+              "windSpeedMetresPerSecond": 4.889,
+              "windGustMetresPerSecond": 5.222,
+              "windDirectionDegrees": 162,
+              "precipitationMillimetres": 0.07,
+              "pressureHectopascals": 1008,
+              "visibilityMetres": 10000,
+              "uvIndex": 5.4,
+              "cloudCoverPercent": 100,
+              "conditionCode": "rain",
+              "precipitationProbabilityPercent": 19
+            },
+            {
+              "kind": "forecast",
+              "validInterval": {
+                "from": "2026-10-01T08:00:00.000Z",
+                "to": "2026-10-01T09:00:00.000Z"
+              },
+              "quality": {
+                "state": "complete",
+                "missingFields": []
+              },
+              "temperatureCelsius": 32.5,
+              "apparentTemperatureCelsius": 38.9,
+              "relativeHumidityPercent": 62,
+              "windSpeedMetresPerSecond": 4.611,
+              "windGustMetresPerSecond": 5.306,
+              "windDirectionDegrees": 155,
+              "precipitationMillimetres": 0.17,
+              "pressureHectopascals": 1008,
+              "visibilityMetres": 10000,
+              "uvIndex": 2.7,
+              "cloudCoverPercent": 100,
+              "conditionCode": "rain",
+              "precipitationProbabilityPercent": 25
+            },
+            {
+              "kind": "forecast",
+              "validInterval": {
+                "from": "2026-10-01T09:00:00.000Z",
+                "to": "2026-10-01T10:00:00.000Z"
+              },
+              "quality": {
+                "state": "complete",
+                "missingFields": []
+              },
+              "temperatureCelsius": 32.4,
+              "apparentTemperatureCelsius": 38.9,
+              "relativeHumidityPercent": 63,
+              "windSpeedMetresPerSecond": 4.306,
+              "windGustMetresPerSecond": 5.528,
+              "windDirectionDegrees": 157,
+              "precipitationMillimetres": 0.17,
+              "pressureHectopascals": 1008,
+              "visibilityMetres": 10000,
+              "uvIndex": 1.3,
+              "cloudCoverPercent": 83,
+              "conditionCode": "rain",
+              "precipitationProbabilityPercent": 22
+            },
+            {
+              "kind": "forecast",
+              "validInterval": {
+                "from": "2026-10-01T10:00:00.000Z",
+                "to": "2026-10-01T11:00:00.000Z"
+              },
+              "quality": {
+                "state": "complete",
+                "missingFields": []
+              },
+              "temperatureCelsius": 31.1,
+              "apparentTemperatureCelsius": 36.8,
+              "relativeHumidityPercent": 67,
+              "windSpeedMetresPerSecond": 4.806,
+              "windGustMetresPerSecond": 7.306,
+              "windDirectionDegrees": 149,
+              "precipitationMillimetres": 0,
+              "pressureHectopascals": 1009,
+              "visibilityMetres": 10000,
+              "uvIndex": 0.3,
+              "cloudCoverPercent": 19,
+              "conditionCode": "clear",
+              "precipitationProbabilityPercent": 6
+            },
+            {
+              "kind": "forecast",
+              "validInterval": {
+                "from": "2026-10-01T11:00:00.000Z",
+                "to": "2026-10-01T12:00:00.000Z"
+              },
+              "quality": {
+                "state": "complete",
+                "missingFields": []
+              },
+              "temperatureCelsius": 29.5,
+              "apparentTemperatureCelsius": 34.2,
+              "relativeHumidityPercent": 72,
+              "windSpeedMetresPerSecond": 4.611,
+              "windGustMetresPerSecond": 8.639,
+              "windDirectionDegrees": 143,
+              "precipitationMillimetres": 0.12,
+              "pressureHectopascals": 1009,
+              "visibilityMetres": 10000,
+              "uvIndex": 0,
+              "cloudCoverPercent": 81,
+              "conditionCode": "rain",
+              "precipitationProbabilityPercent": 24
+            },
+            {
+              "kind": "forecast",
+              "validInterval": {
+                "from": "2026-10-01T12:00:00.000Z",
+                "to": "2026-10-01T13:00:00.000Z"
+              },
+              "quality": {
+                "state": "complete",
+                "missingFields": []
+              },
+              "temperatureCelsius": 28.6,
+              "apparentTemperatureCelsius": 32.9,
+              "relativeHumidityPercent": 76,
+              "windSpeedMetresPerSecond": 4.694,
+              "windGustMetresPerSecond": 8.806,
+              "windDirectionDegrees": 142,
+              "precipitationMillimetres": 0,
+              "pressureHectopascals": 1010,
+              "visibilityMetres": 6600,
+              "uvIndex": 0,
+              "cloudCoverPercent": 97,
+              "conditionCode": "fog",
+              "precipitationProbabilityPercent": 20
+            },
+            {
+              "kind": "forecast",
+              "validInterval": {
+                "from": "2026-10-01T13:00:00.000Z",
+                "to": "2026-10-01T14:00:00.000Z"
+              },
+              "quality": {
+                "state": "complete",
+                "missingFields": []
+              },
+              "temperatureCelsius": 28,
+              "apparentTemperatureCelsius": 32,
+              "relativeHumidityPercent": 80,
+              "windSpeedMetresPerSecond": 4.194,
+              "windGustMetresPerSecond": 8.417,
+              "windDirectionDegrees": 145,
+              "precipitationMillimetres": 0,
+              "pressureHectopascals": 1012,
+              "visibilityMetres": 5400,
+              "uvIndex": 0,
+              "cloudCoverPercent": 100,
+              "conditionCode": "fog",
+              "precipitationProbabilityPercent": 23
+            },
+            {
+              "kind": "forecast",
+              "validInterval": {
+                "from": "2026-10-01T14:00:00.000Z",
+                "to": "2026-10-01T15:00:00.000Z"
+              },
+              "quality": {
+                "state": "complete",
+                "missingFields": []
+              },
+              "temperatureCelsius": 27.6,
+              "apparentTemperatureCelsius": 31.5,
+              "relativeHumidityPercent": 84,
+              "windSpeedMetresPerSecond": 3.889,
+              "windGustMetresPerSecond": 8,
+              "windDirectionDegrees": 142,
+              "precipitationMillimetres": 0,
+              "pressureHectopascals": 1012,
+              "visibilityMetres": 4400,
+              "uvIndex": 0,
+              "cloudCoverPercent": 100,
+              "conditionCode": "fog",
+              "precipitationProbabilityPercent": 25
+            },
+            {
+              "kind": "forecast",
+              "validInterval": {
+                "from": "2026-10-01T15:00:00.000Z",
+                "to": "2026-10-01T16:00:00.000Z"
+              },
+              "quality": {
+                "state": "complete",
+                "missingFields": []
+              },
+              "temperatureCelsius": 27.3,
+              "apparentTemperatureCelsius": 31.1,
+              "relativeHumidityPercent": 86,
+              "windSpeedMetresPerSecond": 3.806,
+              "windGustMetresPerSecond": 8.111,
+              "windDirectionDegrees": 142,
+              "precipitationMillimetres": 0,
+              "pressureHectopascals": 1012,
+              "visibilityMetres": 4000,
+              "uvIndex": 0,
+              "cloudCoverPercent": 100,
+              "conditionCode": "fog",
+              "precipitationProbabilityPercent": 27
+            },
+            {
+              "kind": "forecast",
+              "validInterval": {
+                "from": "2026-10-01T16:00:00.000Z",
+                "to": "2026-10-01T17:00:00.000Z"
+              },
+              "quality": {
+                "state": "complete",
+                "missingFields": []
+              },
+              "temperatureCelsius": 27.1,
+              "apparentTemperatureCelsius": 30.9,
+              "relativeHumidityPercent": 88,
+              "windSpeedMetresPerSecond": 3.389,
+              "windGustMetresPerSecond": 8.028,
+              "windDirectionDegrees": 147,
+              "precipitationMillimetres": 0,
+              "pressureHectopascals": 1012,
+              "visibilityMetres": 3400,
+              "uvIndex": 0,
+              "cloudCoverPercent": 100,
+              "conditionCode": "fog",
+              "precipitationProbabilityPercent": 28
+            },
+            {
+              "kind": "forecast",
+              "validInterval": {
+                "from": "2026-10-01T17:00:00.000Z",
+                "to": "2026-10-01T18:00:00.000Z"
+              },
+              "quality": {
+                "state": "complete",
+                "missingFields": []
+              },
+              "temperatureCelsius": 26.8,
+              "apparentTemperatureCelsius": 30.5,
+              "relativeHumidityPercent": 90,
+              "windSpeedMetresPerSecond": 2.889,
+              "windGustMetresPerSecond": 7.222,
+              "windDirectionDegrees": 147,
+              "precipitationMillimetres": 0.01,
+              "pressureHectopascals": 1012,
+              "visibilityMetres": 10000,
+              "uvIndex": 0,
+              "cloudCoverPercent": 100,
+              "conditionCode": "rain",
+              "precipitationProbabilityPercent": 30
+            },
+            {
+              "kind": "forecast",
+              "validInterval": {
+                "from": "2026-10-01T18:00:00.000Z",
+                "to": "2026-10-01T19:00:00.000Z"
+              },
+              "quality": {
+                "state": "complete",
+                "missingFields": []
+              },
+              "temperatureCelsius": 26.6,
+              "apparentTemperatureCelsius": 30,
+              "relativeHumidityPercent": 91,
+              "windSpeedMetresPerSecond": 2.806,
+              "windGustMetresPerSecond": 6.694,
+              "windDirectionDegrees": 141,
+              "precipitationMillimetres": 0.03,
+              "pressureHectopascals": 1011,
+              "visibilityMetres": 9000,
+              "uvIndex": 0,
+              "cloudCoverPercent": 100,
+              "conditionCode": "thunderstorm",
+              "precipitationProbabilityPercent": 34
+            },
+            {
+              "kind": "forecast",
+              "validInterval": {
+                "from": "2026-10-01T19:00:00.000Z",
+                "to": "2026-10-01T20:00:00.000Z"
+              },
+              "quality": {
+                "state": "complete",
+                "missingFields": []
+              },
+              "temperatureCelsius": 26.7,
+              "apparentTemperatureCelsius": 30.1,
+              "relativeHumidityPercent": 91,
+              "windSpeedMetresPerSecond": 2.806,
+              "windGustMetresPerSecond": 6.889,
+              "windDirectionDegrees": 137,
+              "precipitationMillimetres": 0.03,
+              "pressureHectopascals": 1011,
+              "visibilityMetres": 9000,
+              "uvIndex": 0,
+              "cloudCoverPercent": 100,
+              "conditionCode": "thunderstorm",
+              "precipitationProbabilityPercent": 33
+            },
+            {
+              "kind": "forecast",
+              "validInterval": {
+                "from": "2026-10-01T20:00:00.000Z",
+                "to": "2026-10-01T21:00:00.000Z"
+              },
+              "quality": {
+                "state": "complete",
+                "missingFields": []
+              },
+              "temperatureCelsius": 26.6,
+              "apparentTemperatureCelsius": 30,
+              "relativeHumidityPercent": 92,
+              "windSpeedMetresPerSecond": 2.694,
+              "windGustMetresPerSecond": 7.194,
+              "windDirectionDegrees": 138,
+              "precipitationMillimetres": 0.06,
+              "pressureHectopascals": 1010,
+              "visibilityMetres": 9000,
+              "uvIndex": 0,
+              "cloudCoverPercent": 98,
+              "conditionCode": "thunderstorm",
+              "precipitationProbabilityPercent": 36
+            },
+            {
+              "kind": "forecast",
+              "validInterval": {
+                "from": "2026-10-01T21:00:00.000Z",
+                "to": "2026-10-01T22:00:00.000Z"
+              },
+              "quality": {
+                "state": "complete",
+                "missingFields": []
+              },
+              "temperatureCelsius": 26.4,
+              "apparentTemperatureCelsius": 29.8,
+              "relativeHumidityPercent": 92,
+              "windSpeedMetresPerSecond": 2.611,
+              "windGustMetresPerSecond": 7.194,
+              "windDirectionDegrees": 148,
+              "precipitationMillimetres": 0.08,
+              "pressureHectopascals": 1010,
+              "visibilityMetres": 10000,
+              "uvIndex": 0,
+              "cloudCoverPercent": 100,
+              "conditionCode": "rain",
+              "precipitationProbabilityPercent": 39
+            },
+            {
+              "kind": "forecast",
+              "validInterval": {
+                "from": "2026-10-01T22:00:00.000Z",
+                "to": "2026-10-01T23:00:00.000Z"
+              },
+              "quality": {
+                "state": "complete",
+                "missingFields": []
+              },
+              "temperatureCelsius": 26.2,
+              "apparentTemperatureCelsius": 29.5,
+              "relativeHumidityPercent": 93,
+              "windSpeedMetresPerSecond": 2.611,
+              "windGustMetresPerSecond": 7,
+              "windDirectionDegrees": 146,
+              "precipitationMillimetres": 0.22,
+              "pressureHectopascals": 1011,
+              "visibilityMetres": 10000,
+              "uvIndex": 0,
+              "cloudCoverPercent": 100,
+              "conditionCode": "rain",
+              "precipitationProbabilityPercent": 48
+            },
+            {
+              "kind": "forecast",
+              "validInterval": {
+                "from": "2026-10-01T23:00:00.000Z",
+                "to": "2026-10-02T00:00:00.000Z"
+              },
+              "quality": {
+                "state": "complete",
+                "missingFields": []
+              },
+              "temperatureCelsius": 25.8,
+              "apparentTemperatureCelsius": 29.4,
+              "relativeHumidityPercent": 94,
+              "windSpeedMetresPerSecond": 2.306,
+              "windGustMetresPerSecond": 6.806,
+              "windDirectionDegrees": 143,
+              "precipitationMillimetres": 3.64,
+              "pressureHectopascals": 1012,
+              "visibilityMetres": 7000,
+              "uvIndex": 0,
+              "cloudCoverPercent": 100,
+              "conditionCode": "heavy_rain",
+              "precipitationProbabilityPercent": 87
+            },
+            {
+              "kind": "forecast",
+              "validInterval": {
+                "from": "2026-10-02T00:00:00.000Z",
+                "to": "2026-10-02T01:00:00.000Z"
+              },
+              "quality": {
+                "state": "complete",
+                "missingFields": []
+              },
+              "temperatureCelsius": 26.6,
+              "apparentTemperatureCelsius": 30,
+              "relativeHumidityPercent": 90,
+              "windSpeedMetresPerSecond": 2.5,
+              "windGustMetresPerSecond": 6.111,
+              "windDirectionDegrees": 142,
+              "precipitationMillimetres": 0.43,
+              "pressureHectopascals": 1013,
+              "visibilityMetres": 10000,
+              "uvIndex": 0.4,
+              "cloudCoverPercent": 100,
+              "conditionCode": "rain",
+              "precipitationProbabilityPercent": 58
+            },
+            {
+              "kind": "forecast",
+              "validInterval": {
+                "from": "2026-10-02T01:00:00.000Z",
+                "to": "2026-10-02T02:00:00.000Z"
+              },
+              "quality": {
+                "state": "complete",
+                "missingFields": []
+              },
+              "temperatureCelsius": 27.5,
+              "apparentTemperatureCelsius": 31.5,
+              "relativeHumidityPercent": 84,
+              "windSpeedMetresPerSecond": 3.389,
+              "windGustMetresPerSecond": 6.306,
+              "windDirectionDegrees": 142,
+              "precipitationMillimetres": 2.13,
+              "pressureHectopascals": 1014,
+              "visibilityMetres": 10000,
+              "uvIndex": 1.7,
+              "cloudCoverPercent": 100,
+              "conditionCode": "rain",
+              "precipitationProbabilityPercent": 77
+            },
+            {
+              "kind": "forecast",
+              "validInterval": {
+                "from": "2026-10-02T02:00:00.000Z",
+                "to": "2026-10-02T03:00:00.000Z"
+              },
+              "quality": {
+                "state": "complete",
+                "missingFields": []
+              },
+              "temperatureCelsius": 28.1,
+              "apparentTemperatureCelsius": 32.6,
+              "relativeHumidityPercent": 81,
+              "windSpeedMetresPerSecond": 3.806,
+              "windGustMetresPerSecond": 6,
+              "windDirectionDegrees": 144,
+              "precipitationMillimetres": 1.46,
+              "pressureHectopascals": 1014,
+              "visibilityMetres": 10000,
+              "uvIndex": 4,
+              "cloudCoverPercent": 100,
+              "conditionCode": "rain",
+              "precipitationProbabilityPercent": 71
+            },
+            {
+              "kind": "forecast",
+              "validInterval": {
+                "from": "2026-10-02T03:00:00.000Z",
+                "to": "2026-10-02T04:00:00.000Z"
+              },
+              "quality": {
+                "state": "complete",
+                "missingFields": []
+              },
+              "temperatureCelsius": 28.9,
+              "apparentTemperatureCelsius": 34,
+              "relativeHumidityPercent": 78,
+              "windSpeedMetresPerSecond": 4.111,
+              "windGustMetresPerSecond": 6.111,
+              "windDirectionDegrees": 153,
+              "precipitationMillimetres": 0,
+              "pressureHectopascals": 1014,
+              "visibilityMetres": 10000,
+              "uvIndex": 6.8,
+              "cloudCoverPercent": 100,
+              "conditionCode": "cloudy",
+              "precipitationProbabilityPercent": 22
+            },
+            {
+              "kind": "forecast",
+              "validInterval": {
+                "from": "2026-10-02T04:00:00.000Z",
+                "to": "2026-10-02T05:00:00.000Z"
+              },
+              "quality": {
+                "state": "complete",
+                "missingFields": []
+              },
+              "temperatureCelsius": 30,
+              "apparentTemperatureCelsius": 35.7,
+              "relativeHumidityPercent": 73,
+              "windSpeedMetresPerSecond": 4.111,
+              "windGustMetresPerSecond": 5.389,
+              "windDirectionDegrees": 156,
+              "precipitationMillimetres": 0.07,
+              "pressureHectopascals": 1013,
+              "visibilityMetres": 10000,
+              "uvIndex": 8.5,
+              "cloudCoverPercent": 100,
+              "conditionCode": "rain",
+              "precipitationProbabilityPercent": 25
+            },
+            {
+              "kind": "forecast",
+              "validInterval": {
+                "from": "2026-10-02T05:00:00.000Z",
+                "to": "2026-10-02T06:00:00.000Z"
+              },
+              "quality": {
+                "state": "complete",
+                "missingFields": []
+              },
+              "temperatureCelsius": 31,
+              "apparentTemperatureCelsius": 37.2,
+              "relativeHumidityPercent": 68,
+              "windSpeedMetresPerSecond": 4.806,
+              "windGustMetresPerSecond": 5.722,
+              "windDirectionDegrees": 153,
+              "precipitationMillimetres": 0.14,
+              "pressureHectopascals": 1012,
+              "visibilityMetres": 9000,
+              "uvIndex": 7.4,
+              "cloudCoverPercent": 100,
+              "conditionCode": "thunderstorm",
+              "precipitationProbabilityPercent": 27
+            },
+            {
+              "kind": "forecast",
+              "validInterval": {
+                "from": "2026-10-02T06:00:00.000Z",
+                "to": "2026-10-02T07:00:00.000Z"
+              },
+              "quality": {
+                "state": "complete",
+                "missingFields": []
+              },
+              "temperatureCelsius": 30.9,
+              "apparentTemperatureCelsius": 36.7,
+              "relativeHumidityPercent": 68,
+              "windSpeedMetresPerSecond": 5.389,
+              "windGustMetresPerSecond": 6.333,
+              "windDirectionDegrees": 151,
+              "precipitationMillimetres": 0.04,
+              "pressureHectopascals": 1011,
+              "visibilityMetres": 9000,
+              "uvIndex": 5.9,
+              "cloudCoverPercent": 100,
+              "conditionCode": "thunderstorm",
+              "precipitationProbabilityPercent": 20
+            },
+            {
+              "kind": "forecast",
+              "validInterval": {
+                "from": "2026-10-02T07:00:00.000Z",
+                "to": "2026-10-02T08:00:00.000Z"
+              },
+              "quality": {
+                "state": "complete",
+                "missingFields": []
+              },
+              "temperatureCelsius": 30.5,
+              "apparentTemperatureCelsius": 36,
+              "relativeHumidityPercent": 69,
+              "windSpeedMetresPerSecond": 4.889,
+              "windGustMetresPerSecond": 6.611,
+              "windDirectionDegrees": 153,
+              "precipitationMillimetres": 0,
+              "pressureHectopascals": 1010,
+              "visibilityMetres": 10000,
+              "uvIndex": 4.3,
+              "cloudCoverPercent": 100,
+              "conditionCode": "cloudy",
+              "precipitationProbabilityPercent": 17
+            },
+            {
+              "kind": "forecast",
+              "validInterval": {
+                "from": "2026-10-02T08:00:00.000Z",
+                "to": "2026-10-02T09:00:00.000Z"
+              },
+              "quality": {
+                "state": "complete",
+                "missingFields": []
+              },
+              "temperatureCelsius": 30.5,
+              "apparentTemperatureCelsius": 36.1,
+              "relativeHumidityPercent": 70,
+              "windSpeedMetresPerSecond": 4.111,
+              "windGustMetresPerSecond": 6.5,
+              "windDirectionDegrees": 153,
+              "precipitationMillimetres": 0.01,
+              "pressureHectopascals": 1010,
+              "visibilityMetres": 9000,
+              "uvIndex": 2.6,
+              "cloudCoverPercent": 100,
+              "conditionCode": "thunderstorm",
+              "precipitationProbabilityPercent": 18
+            },
+            {
+              "kind": "forecast",
+              "validInterval": {
+                "from": "2026-10-02T09:00:00.000Z",
+                "to": "2026-10-02T10:00:00.000Z"
+              },
+              "quality": {
+                "state": "complete",
+                "missingFields": []
+              },
+              "temperatureCelsius": 30.3,
+              "apparentTemperatureCelsius": 36.2,
+              "relativeHumidityPercent": 71,
+              "windSpeedMetresPerSecond": 4,
+              "windGustMetresPerSecond": 6.222,
+              "windDirectionDegrees": 148,
+              "precipitationMillimetres": 0.01,
+              "pressureHectopascals": 1010,
+              "visibilityMetres": 9000,
+              "uvIndex": 1,
+              "cloudCoverPercent": 87,
+              "conditionCode": "thunderstorm",
+              "precipitationProbabilityPercent": 17
+            },
+            {
+              "kind": "forecast",
+              "validInterval": {
+                "from": "2026-10-02T10:00:00.000Z",
+                "to": "2026-10-02T11:00:00.000Z"
+              },
+              "quality": {
+                "state": "complete",
+                "missingFields": []
+              },
+              "temperatureCelsius": 29.2,
+              "apparentTemperatureCelsius": 34.3,
+              "relativeHumidityPercent": 75,
+              "windSpeedMetresPerSecond": 4.389,
+              "windGustMetresPerSecond": 7.333,
+              "windDirectionDegrees": 137,
+              "precipitationMillimetres": 0.01,
+              "pressureHectopascals": 1010,
+              "visibilityMetres": 9000,
+              "uvIndex": 0.2,
+              "cloudCoverPercent": 88,
+              "conditionCode": "thunderstorm",
+              "precipitationProbabilityPercent": 19
+            },
+            {
+              "kind": "forecast",
+              "validInterval": {
+                "from": "2026-10-02T11:00:00.000Z",
+                "to": "2026-10-02T12:00:00.000Z"
+              },
+              "quality": {
+                "state": "complete",
+                "missingFields": []
+              },
+              "temperatureCelsius": 28.2,
+              "apparentTemperatureCelsius": 32.3,
+              "relativeHumidityPercent": 78,
+              "windSpeedMetresPerSecond": 4.111,
+              "windGustMetresPerSecond": 8.389,
+              "windDirectionDegrees": 136,
+              "precipitationMillimetres": 0,
+              "pressureHectopascals": 1011,
+              "visibilityMetres": 7100,
+              "uvIndex": 0,
+              "cloudCoverPercent": 98,
+              "conditionCode": "fog",
+              "precipitationProbabilityPercent": 22
+            },
+            {
+              "kind": "forecast",
+              "validInterval": {
+                "from": "2026-10-02T12:00:00.000Z",
+                "to": "2026-10-02T13:00:00.000Z"
+              },
+              "quality": {
+                "state": "complete",
+                "missingFields": []
+              },
+              "temperatureCelsius": 27.7,
+              "apparentTemperatureCelsius": 31.5,
+              "relativeHumidityPercent": 80,
+              "windSpeedMetresPerSecond": 4.306,
+              "windGustMetresPerSecond": 8.917,
+              "windDirectionDegrees": 137,
+              "precipitationMillimetres": 0,
+              "pressureHectopascals": 1012,
+              "visibilityMetres": 5100,
+              "uvIndex": 0,
+              "cloudCoverPercent": 82,
+              "conditionCode": "fog",
+              "precipitationProbabilityPercent": 20
+            },
+            {
+              "kind": "forecast",
+              "validInterval": {
+                "from": "2026-10-02T13:00:00.000Z",
+                "to": "2026-10-02T14:00:00.000Z"
+              },
+              "quality": {
+                "state": "complete",
+                "missingFields": []
+              },
+              "temperatureCelsius": 27.2,
+              "apparentTemperatureCelsius": 30.6,
+              "relativeHumidityPercent": 83,
+              "windSpeedMetresPerSecond": 4.306,
+              "windGustMetresPerSecond": 9.139,
+              "windDirectionDegrees": 140,
+              "precipitationMillimetres": 0,
+              "pressureHectopascals": 1012,
+              "visibilityMetres": 4700,
+              "uvIndex": 0,
+              "cloudCoverPercent": 100,
+              "conditionCode": "fog",
+              "precipitationProbabilityPercent": 25
+            },
+            {
+              "kind": "forecast",
+              "validInterval": {
+                "from": "2026-10-02T14:00:00.000Z",
+                "to": "2026-10-02T15:00:00.000Z"
+              },
+              "quality": {
+                "state": "complete",
+                "missingFields": []
+              },
+              "temperatureCelsius": 26.9,
+              "apparentTemperatureCelsius": 29.9,
+              "relativeHumidityPercent": 84,
+              "windSpeedMetresPerSecond": 4.194,
+              "windGustMetresPerSecond": 9.222,
+              "windDirectionDegrees": 144,
+              "precipitationMillimetres": 0,
+              "pressureHectopascals": 1013,
+              "visibilityMetres": 5000,
+              "uvIndex": 0,
+              "cloudCoverPercent": 100,
+              "conditionCode": "fog",
+              "precipitationProbabilityPercent": 26
+            },
+            {
+              "kind": "forecast",
+              "validInterval": {
+                "from": "2026-10-02T15:00:00.000Z",
+                "to": "2026-10-02T16:00:00.000Z"
+              },
+              "quality": {
+                "state": "complete",
+                "missingFields": []
+              },
+              "temperatureCelsius": 26.5,
+              "apparentTemperatureCelsius": 29.4,
+              "relativeHumidityPercent": 86,
+              "windSpeedMetresPerSecond": 3.389,
+              "windGustMetresPerSecond": 8.611,
+              "windDirectionDegrees": 147,
+              "precipitationMillimetres": 0,
+              "pressureHectopascals": 1013,
+              "visibilityMetres": 5400,
+              "uvIndex": 0,
+              "cloudCoverPercent": 100,
+              "conditionCode": "fog",
+              "precipitationProbabilityPercent": 27
+            },
+            {
+              "kind": "forecast",
+              "validInterval": {
+                "from": "2026-10-02T16:00:00.000Z",
+                "to": "2026-10-02T17:00:00.000Z"
+              },
+              "quality": {
+                "state": "complete",
+                "missingFields": []
+              },
+              "temperatureCelsius": 26.3,
+              "apparentTemperatureCelsius": 29.2,
+              "relativeHumidityPercent": 88,
+              "windSpeedMetresPerSecond": 2.889,
+              "windGustMetresPerSecond": 7.417,
+              "windDirectionDegrees": 136,
+              "precipitationMillimetres": 0.01,
+              "pressureHectopascals": 1013,
+              "visibilityMetres": 10000,
+              "uvIndex": 0,
+              "cloudCoverPercent": 91,
+              "conditionCode": "rain",
+              "precipitationProbabilityPercent": 27
+            }
+          ]
+        },
+        "daily": {
+          "provenance": {
+            "provider": "weatherapi",
+            "parserVersion": "weatherapi-forecast-v1",
+            "snapshotId": "fa2071cd-3187-4858-bd40-f9eed19868b6",
+            "providerIssuedAt": null,
+            "fetchedAt": "2026-09-29T20:10:51.000Z",
+            "expiresAt": "2026-09-30T02:10:51.000Z"
+          },
+          "freshness": {
+            "state": "fresh",
+            "assessedAt": "2026-09-29T20:11:26.496Z",
+            "freshUntil": "2026-09-30T02:10:51.000Z",
+            "staleUntil": "2026-09-30T20:10:51.000Z",
+            "displayEligible": true,
+            "riskEligible": true,
+            "routeEligible": true
+          },
+          "coverage": {
+            "dataset": "daily",
+            "status": "complete",
+            "validInterval": {
+              "from": "2026-09-29T17:00:00.000Z",
+              "to": "2026-10-02T17:00:00.000Z"
+            },
+            "expectedIntervals": 3,
+            "returnedIntervals": 3,
+            "gaps": []
+          },
+          "values": [
+            {
+              "kind": "forecast",
+              "date": "2026-09-30",
+              "validInterval": {
+                "from": "2026-09-29T17:00:00.000Z",
+                "to": "2026-09-30T17:00:00.000Z"
+              },
+              "quality": {
+                "state": "complete",
+                "missingFields": []
+              },
+              "minimumTemperatureCelsius": 25.9,
+              "maximumTemperatureCelsius": 35.5,
+              "precipitationMillimetres": 0.58,
+              "maximumPrecipitationProbabilityPercent": 39,
+              "maximumWindSpeedMetresPerSecond": 4.694,
+              "averageRelativeHumidityPercent": 74,
+              "conditionCode": "rain"
+            },
+            {
+              "kind": "forecast",
+              "date": "2026-10-01",
+              "validInterval": {
+                "from": "2026-09-30T17:00:00.000Z",
+                "to": "2026-10-01T17:00:00.000Z"
+              },
+              "quality": {
+                "state": "complete",
+                "missingFields": []
+              },
+              "minimumTemperatureCelsius": 26.2,
+              "maximumTemperatureCelsius": 32.9,
+              "precipitationMillimetres": 1.81,
+              "maximumPrecipitationProbabilityPercent": 68,
+              "maximumWindSpeedMetresPerSecond": 4.889,
+              "averageRelativeHumidityPercent": 77,
+              "conditionCode": "fog"
+            },
+            {
+              "kind": "forecast",
+              "date": "2026-10-02",
+              "validInterval": {
+                "from": "2026-10-01T17:00:00.000Z",
+                "to": "2026-10-02T17:00:00.000Z"
+              },
+              "quality": {
+                "state": "complete",
+                "missingFields": []
+              },
+              "minimumTemperatureCelsius": 25.8,
+              "maximumTemperatureCelsius": 31,
+              "precipitationMillimetres": 8.37,
+              "maximumPrecipitationProbabilityPercent": 86,
+              "maximumWindSpeedMetresPerSecond": 5.389,
+              "averageRelativeHumidityPercent": 82,
+              "conditionCode": "thunderstorm"
+            }
+          ]
+        }
+      },
+      "correlationId": "api_70bd877d6c77a622e99c9d1a"
+    }
+  }
+}

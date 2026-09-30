@@ -21,6 +21,7 @@ import {
   User,
 } from "lucide-react";
 import { useAuthStore } from "@/hooks/useAuthStore";
+import { useRequireLoginModal } from "@/hooks/useRequireLoginModal";
 import { chatApi } from "@/api/client";
 import type { ChatCitationDto } from "@vietnam-weather/contracts";
 import styles from "./FloatingChatWidget.module.css";
@@ -44,7 +45,8 @@ const QUICK_SUGGESTIONS = [
 export function FloatingChatWidget() {
   const { i18n } = useTranslation();
   const isEn = i18n?.language === "en" || (typeof window !== "undefined" && localStorage.getItem("vietnam-weather-language") === "en");
-  const { user } = useAuthStore();
+  const { user, isAuthenticated } = useAuthStore();
+  const { openModal } = useRequireLoginModal();
   const isPro = user?.plan === "pro";
   const maxQuota = isPro ? 30 : 3;
 
@@ -133,7 +135,7 @@ export function FloatingChatWidget() {
       }
     } catch (err: unknown) {
       const apiErr = err as { status?: number; code?: string; message?: string };
-      if (apiErr.status === 429 || apiErr.code === "QUOTA_EXCEEDED") {
+      if (apiErr.status === 429 || apiErr.code === "QUOTA_EXCEEDED" || apiErr.code === "CHAT_QUOTA_EXCEEDED") {
         setQuotaExceeded(true);
         setRemainingQuota(0);
         setMessages((prev) => [
@@ -145,15 +147,30 @@ export function FloatingChatWidget() {
             timestamp: new Date().toISOString(),
           },
         ]);
+      } else if (apiErr.status === 401 || apiErr.code === "AUTHENTICATION_REQUIRED" || apiErr.code === "SESSION_REVOKED") {
+        setMessages((prev) => [
+          ...prev,
+          {
+            id: `err_auth_${Date.now()}`,
+            role: "assistant",
+            content: "Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại để tiếp tục trò chuyện cùng Trợ lý AI!",
+            timestamp: new Date().toISOString(),
+          },
+        ]);
+        openModal(
+          isEn ? "Sign In Required" : "Yêu cầu đăng nhập",
+          isEn
+            ? "Your session has expired. Please sign in to continue chatting with our AI Travel Assistant."
+            : "Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập để tiếp tục trò chuyện cùng Trợ lý AI!"
+        );
       } else {
-        // Fallback offline / network error handling
+        const errorText = apiErr.message || "Không thể kết nối đến máy chủ AI lúc này. Vui lòng thử lại sau vài giây.";
         setMessages((prev) => [
           ...prev,
           {
             id: `fallback_${Date.now()}`,
             role: "assistant",
-            content:
-              "Không thể kết nối đến máy chủ AI lúc này. Bạn vẫn có thể xem bản đồ thời tiết trực tiếp và tính toán lộ trình trên hệ thống.",
+            content: errorText,
             timestamp: new Date().toISOString(),
           },
         ]);
@@ -204,7 +221,9 @@ export function FloatingChatWidget() {
               <div>
                 <h4 className={styles.title}>{isEn ? "AI Travel Assistant" : "Trợ Lý Du Lịch AI"}</h4>
                 <span className={styles.quotaBadge}>
-                  {isEn
+                  {!isAuthenticated
+                    ? (isEn ? "Guest Mode • Sign in to chat" : "Chế độ Khách • Đăng nhập để chat")
+                    : isEn
                     ? `${isPro ? "PRO Plan" : "Free Plan"} • ${remainingQuota}/${maxQuota} remaining today`
                     : `${isPro ? "Gói PRO" : "Gói Free"} • Còn ${remainingQuota}/${maxQuota} tin hôm nay`}
                 </span>
@@ -255,7 +274,7 @@ export function FloatingChatWidget() {
                     {m.citations.map((c, idx) => (
                       <span key={idx} className={styles.citationBadge}>
                         <Database size={11} />
-                        <span>{isEn ? "Source: " : "Nguồn: "}{(c as any).stationName || c.source || (isEn ? "Station" : "Trạm quan trắc")}</span>
+                        <span>{isEn ? "Source: " : "Nguồn: "}{c.locationName || c.source || (isEn ? "Station" : "Trạm quan trắc")}</span>
                       </span>
                     ))}
                   </div>

@@ -1,0 +1,549 @@
+
+ RUN  v2.1.9 C:/Users/dangh/Downloads/VietNameWeatherWithAi/VietNamWeather_Supported_with_ai/apps/web
+
+ ❯ src/components/map/RouteInteractiveMap.lifecycle.test.tsx (6 tests | 1 failed) 296ms
+   × route map delayed load lifecycle > preserves keyboard focus across controlled point selection and Escape dismissal 164ms
+     → expect(element).toHaveFocus()
+
+Expected element with focus:
+  <button
+  aria-describedby=":r0:-1"
+  aria-label="Point 1"
+  aria-pressed="true"
+  class="_marker_114d1d"
+  data-popup-open="true"
+  data-risk="low"
+  type="button"
+>
+  <span
+    aria-hidden="true"
+    class="_dot_114d1d"
+  />
+  <span
+    class="_tooltip_114d1d"
+    id=":r0:-1"
+    role="tooltip"
+  >
+    <span
+      class="_heading_114d1d"
+    >
+      <strong
+        class="_name_114d1d"
+      >
+        Point 1
+      </strong>
+      <strong
+        class="_temperature_114d1d"
+      >
+        —
+      </strong>
+    </span>
+    <span
+      class="_arrival_114d1d"
+    >
+      Arrive —
+    </span>
+    <span
+      class="_status_114d1d"
+    >
+      <span
+        class="_risk_114d1d"
+      >
+        Low risk
+      </span>
+    </span>
+  </span>
+</button>
+Received element with focus:
+  <body>
+  <div>
+    <div
+      class="_mapRootContainer_6cd966"
+    >
+      <div
+        class="_mapCanvas_6cd966"
+      />
+      <div
+        class="_topToolbar_6cd966"
+      >
+        <div
+          class="_styleToggleGroup_6cd966"
+        >
+          <button … />
+          <button … />
+          <button … />
+          <button … />
+        </div>
+        <button
+          aria-pressed="true"
+          class="_riskToggleBtn_6cd966 _riskToggleBtnActive_6cd966"
+          title="Disable province risk borders"
+          type="button"
+        >
+          <svg … />
+          <span … />
+        </button>
+        <div
+          class="_routeTypeTag_6cd966"
+        >
+          <svg … />
+          <span … />
+        </div>
+        <div
+          class="_realRoadBadge_6cd966"
+          title="Real road path from OpenStreetMap network"
+        >
+          <svg … />
+          <span … />
+        </div>
+      </div>
+      <div
+        class="_navControls_6cd966"
+      >
+        <button
+          class="_navBtn_6cd966"
+          title="Zoom in (+)"
+          type="button"
+        >
+          <svg … />
+        </button>
+        <button
+          class="_navBtn_6cd966"
+          title="Zoom out (-)"
+          type="button"
+        >
+          <svg … />
+        </button>
+        <button
+          class="_navBtn_6cd966"
+          title="Reset North (Compass)"
+          type="button"
+        >
+          <svg … />
+        </button>
+        <button
+          class="_navBtn_6cd966"
+          title="My GPS Location"
+          type="button"
+        >
+          <svg … />
+        </button>
+        <button
+          class="_navBtn_6cd966"
+          title="Fit Entire Route"
+          type="button"
+        >
+          <svg … />
+        </button>
+      </div>
+      <div
+        class="_legendBar_6cd966"
+      >
+        <span
+          style="color: var(--color-text-secondary); font-size: 11px;"
+        >
+          Route:
+        </span>
+        <div
+          class="_legendItem_6cd966"
+        >
+          <span … />
+          <span … />
+        </div>
+        <div
+          class="_legendItem_6cd966"
+        >
+          <span … />
+          <span … />
+        </div>
+        <div
+          class="_legendItem_6cd966"
+        >
+          <span … />
+          <span … />
+        </div>
+        <div
+          class="_legendItem_6cd966"
+        >
+          <span … />
+          <span … />
+        </div>
+      </div>
+    </div>
+  </div>
+  <div
+    class="origin-marker-pin"
+  >············
+    <div
+      class="origin-marker-chip"
+    >················
+      <span
+        style="font-weight:900; font-size:10px;"
+      >
+        A
+      </span>················
+      <span>
+        A
+      </span>··············
+    </div>············
+    <div
+      class="origin-marker-pointer"
+    />············
+    <div
+      class="origin-marker-dot"
+    />··········
+  </div>
+  <div
+    class="destination-marker-pin"
+  >············
+    <div
+      class="destination-marker-chip"
+    >················
+      <span
+        style="font-weight:900; font-size:10px;"
+      >
+        B
+      </span>················
+      <span>
+        B
+      </span>··············
+    </div>············
+    <div
+      class="destination-marker-pointer"
+    />············
+    <div
+      class="destination-marker-dot"
+    />··········
+  </div>
+  <button
+    aria-describedby=":r0:-1"
+    aria-label="Point 1"
+    aria-pressed="true"
+    class="_marker_114d1d"
+    data-popup-open="true"
+    data-risk="low"
+    type="button"
+  >
+    <span
+      aria-hidden="true"
+      class="_dot_114d1d"
+    />
+    <span
+      class="_tooltip_114d1d"
+      id=":r0:-1"
+      role="tooltip"
+    >
+      <span
+        class="_heading_114d1d"
+      >
+        <strong
+          class="_name_114d1d"
+        >
+          Point 1
+        </strong>
+        <strong
+          class="_temperature_114d1d"
+        >
+          —
+        </strong>
+      </span>
+      <span
+        class="_arrival_114d1d"
+      >
+        Arrive —
+      </span>
+      <span
+        class="_status_114d1d"
+      >
+        <span
+          class="_risk_114d1d"
+        >
+          Low risk
+        </span>
+      </span>
+    </span>
+  </button>
+</body>
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/components/map/RouteInteractiveMap.lifecycle.test.tsx > route map delayed load lifecycle > preserves keyboard focus across controlled point selection and Escape dismissal
+Error: expect(element).toHaveFocus()
+
+Expected element with focus:
+  <button
+  aria-describedby=":r0:-1"
+  aria-label="Point 1"
+  aria-pressed="true"
+  class="_marker_114d1d"
+  data-popup-open="true"
+  data-risk="low"
+  type="button"
+>
+  <span
+    aria-hidden="true"
+    class="_dot_114d1d"
+  />
+  <span
+    class="_tooltip_114d1d"
+    id=":r0:-1"
+    role="tooltip"
+  >
+    <span
+      class="_heading_114d1d"
+    >
+      <strong
+        class="_name_114d1d"
+      >
+        Point 1
+      </strong>
+      <strong
+        class="_temperature_114d1d"
+      >
+        —
+      </strong>
+    </span>
+    <span
+      class="_arrival_114d1d"
+    >
+      Arrive —
+    </span>
+    <span
+      class="_status_114d1d"
+    >
+      <span
+        class="_risk_114d1d"
+      >
+        Low risk
+      </span>
+    </span>
+  </span>
+</button>
+Received element with focus:
+  <body>
+  <div>
+    <div
+      class="_mapRootContainer_6cd966"
+    >
+      <div
+        class="_mapCanvas_6cd966"
+      />
+      <div
+        class="_topToolbar_6cd966"
+      >
+        <div
+          class="_styleToggleGroup_6cd966"
+        >
+          <button … />
+          <button … />
+          <button … />
+          <button … />
+        </div>
+        <button
+          aria-pressed="true"
+          class="_riskToggleBtn_6cd966 _riskToggleBtnActive_6cd966"
+          title="Disable province risk borders"
+          type="button"
+        >
+          <svg … />
+          <span … />
+        </button>
+        <div
+          class="_routeTypeTag_6cd966"
+        >
+          <svg … />
+          <span … />
+        </div>
+        <div
+          class="_realRoadBadge_6cd966"
+          title="Real road path from OpenStreetMap network"
+        >
+          <svg … />
+          <span … />
+        </div>
+      </div>
+      <div
+        class="_navControls_6cd966"
+      >
+        <button
+          class="_navBtn_6cd966"
+          title="Zoom in (+)"
+          type="button"
+        >
+          <svg … />
+        </button>
+        <button
+          class="_navBtn_6cd966"
+          title="Zoom out (-)"
+          type="button"
+        >
+          <svg … />
+        </button>
+        <button
+          class="_navBtn_6cd966"
+          title="Reset North (Compass)"
+          type="button"
+        >
+          <svg … />
+        </button>
+        <button
+          class="_navBtn_6cd966"
+          title="My GPS Location"
+          type="button"
+        >
+          <svg … />
+        </button>
+        <button
+          class="_navBtn_6cd966"
+          title="Fit Entire Route"
+          type="button"
+        >
+          <svg … />
+        </button>
+      </div>
+      <div
+        class="_legendBar_6cd966"
+      >
+        <span
+          style="color: var(--color-text-secondary); font-size: 11px;"
+        >
+          Route:
+        </span>
+        <div
+          class="_legendItem_6cd966"
+        >
+          <span … />
+          <span … />
+        </div>
+        <div
+          class="_legendItem_6cd966"
+        >
+          <span … />
+          <span … />
+        </div>
+        <div
+          class="_legendItem_6cd966"
+        >
+          <span … />
+          <span … />
+        </div>
+        <div
+          class="_legendItem_6cd966"
+        >
+          <span … />
+          <span … />
+        </div>
+      </div>
+    </div>
+  </div>
+  <div
+    class="origin-marker-pin"
+  >············
+    <div
+      class="origin-marker-chip"
+    >················
+      <span
+        style="font-weight:900; font-size:10px;"
+      >
+        A
+      </span>················
+      <span>
+        A
+      </span>··············
+    </div>············
+    <div
+      class="origin-marker-pointer"
+    />············
+    <div
+      class="origin-marker-dot"
+    />··········
+  </div>
+  <div
+    class="destination-marker-pin"
+  >············
+    <div
+      class="destination-marker-chip"
+    >················
+      <span
+        style="font-weight:900; font-size:10px;"
+      >
+        B
+      </span>················
+      <span>
+        B
+      </span>··············
+    </div>············
+    <div
+      class="destination-marker-pointer"
+    />············
+    <div
+      class="destination-marker-dot"
+    />··········
+  </div>
+  <button
+    aria-describedby=":r0:-1"
+    aria-label="Point 1"
+    aria-pressed="true"
+    class="_marker_114d1d"
+    data-popup-open="true"
+    data-risk="low"
+    type="button"
+  >
+    <span
+      aria-hidden="true"
+      class="_dot_114d1d"
+    />
+    <span
+      class="_tooltip_114d1d"
+      id=":r0:-1"
+      role="tooltip"
+    >
+      <span
+        class="_heading_114d1d"
+      >
+        <strong
+          class="_name_114d1d"
+        >
+          Point 1
+        </strong>
+        <strong
+          class="_temperature_114d1d"
+        >
+          —
+        </strong>
+      </span>
+      <span
+        class="_arrival_114d1d"
+      >
+        Arrive —
+      </span>
+      <span
+        class="_status_114d1d"
+      >
+        <span
+          class="_risk_114d1d"
+        >
+          Low risk
+        </span>
+      </span>
+    </span>
+  </button>
+</body>
+ ❯ src/components/map/RouteInteractiveMap.lifecycle.test.tsx:46:61
+     44|     expect(onSelect).toHaveBeenLastCalledWith(1);
+     45|     view.rerender(<RouteInteractiveMap {...props} selectedCheckpointIn…
+     46|     expect(screen.getByRole("button", { name: "Point 1" })).toHaveFocu…
+       |                                                             ^
+     47|     await user.keyboard("{Escape}");
+     48|     expect(screen.queryByRole("tooltip")).not.toBeInTheDocument();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 5 passed (6)
+   Start at  12:06:04
+   Duration  2.56s (transform 577ms, setup 195ms, collect 932ms, tests 296ms, environment 578ms, prepare 215ms)
+
+undefined
+C:\Users\dangh\Downloads\VietNameWeatherWithAi\VietNamWeather_Supported_with_ai\apps\web:
+[ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL] Command failed with exit code 1: vitest run src/components/map/RouteInteractiveMap.lifecycle.test.tsx "--reporter=dot"

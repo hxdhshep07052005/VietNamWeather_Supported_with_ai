@@ -1,0 +1,30 @@
+✔ registry contains exactly 63 unique province IDs, names and sampling keys (1.3541ms)
+✔ original 59 entries retain IDs, names, coordinates and order (0.8192ms)
+✔ the four additions use exact existing GeoJSON property coordinates (0.1696ms)
+✔ every frontend province name resolves to a unique shared weather sampling point (0.2313ms)
+✔ name lookup normalizes accents, case, whitespace, punctuation and city prefixes (1.4632ms)
+file:///C:/Users/dangh/Downloads/VietNameWeatherWithAi/VietNamWeather_Supported_with_ai/packages/contracts/test/weather-v1.test.mjs:6
+  WEATHER_ERROR_CATALOG,
+  ^^^^^^^^^^^^^^^^^^^^^
+SyntaxError: The requested module '../dist/index.js' does not provide an export named 'WEATHER_ERROR_CATALOG'
+    at #asyncInstantiate (node:internal/modules/esm/module_job:327:21)
+    at async ModuleJob.run (node:internal/modules/esm/module_job:431:5)
+    at async node:internal/modules/esm/loader:643:26
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)
+
+Node.js v24.18.0
+✖ packages\contracts\test\weather-v1.test.mjs (60.3726ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 5
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 93.2702
+
+✖ failing tests:
+
+test at packages\contracts\test\weather-v1.test.mjs:1:1
+✖ packages\contracts\test\weather-v1.test.mjs (60.3726ms)
+  'test failed'

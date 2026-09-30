@@ -1,0 +1,17 @@
+src/components/map/RealInteractiveMap.tsx(593,95): error TS2345: Argument of type 'string' is not assignable to parameter of type 'keyof AllPaintProperties'.
+src/components/map/RealInteractiveMap.tsx(596,99): error TS2345: Argument of type 'string' is not assignable to parameter of type 'keyof AllPaintProperties'.
+src/components/map/RouteInteractiveMap.lifecycle.test.tsx(46,75): error TS2322: Type '{ riskLevel: string; riskColor: string; id: string; code: string; name: string; region: VietnamRegion; regionVi: string; regionColor: string; latitude: number; longitude: number; ... 21 more ...; riskText: string; }[]' is not assignable to type 'readonly ProvinceGeoFeatureProperties[]'.
+  Type '{ riskLevel: string; riskColor: string; id: string; code: string; name: string; region: VietnamRegion; regionVi: string; regionColor: string; latitude: number; ... 22 more ...; riskText: string; }' is not assignable to type 'ProvinceGeoFeatureProperties'.
+    Types of property 'riskLevel' are incompatible.
+      Type 'string' is not assignable to type '"low" | "caution" | "high" | "unknown"'.
+src/components/map/RouteInteractiveMap.tsx(255,95): error TS2345: Argument of type 'string' is not assignable to parameter of type 'keyof AllPaintProperties'.
+src/components/map/RouteInteractiveMap.tsx(260,99): error TS2345: Argument of type 'string' is not assignable to parameter of type 'keyof AllPaintProperties'.
+src/pages/RoutePlannerPage.test.tsx(33,57): error TS2345: Argument of type '{ dataState: "ready"; id: string; code: string; name: string; region: VietnamRegion; regionVi: string; regionColor: string; latitude: number; longitude: number; centroidLatitude?: number | undefined; ... 21 more ...; riskText: string; }[]' is not assignable to parameter of type '({ dataState: "error" | "loading"; id: string; code: string; name: string; region: VietnamRegion; regionVi: string; regionColor: string; latitude: number; longitude: number; ... 22 more ...; riskText: string; } | { ...; })[]'.
+  Type '{ dataState: "ready"; id: string; code: string; name: string; region: VietnamRegion; regionVi: string; regionColor: string; latitude: number; longitude: number; ... 22 more ...; riskText: string; }' is not assignable to type '{ dataState: "error" | "loading"; id: string; code: string; name: string; region: VietnamRegion; regionVi: string; regionColor: string; latitude: number; longitude: number; ... 22 more ...; riskText: string; } | { ...; }'.
+    Type '{ dataState: "ready"; id: string; code: string; name: string; region: VietnamRegion; regionVi: string; regionColor: string; latitude: number; longitude: number; ... 22 more ...; riskText: string; }' is not assignable to type '{ assessment: ReportAssessment; freshnessState: ReportFreshness; weatherTargetTime: string | undefined; dataState: "error" | "ready"; riskText: string; ... 26 more ...; confidencePercent: number; }'.
+      Types of property 'assessment' are incompatible.
+        Type 'ReportAssessment | undefined' is not assignable to type 'ReportAssessment'.
+          Type 'undefined' is not assignable to type 'ReportAssessment'.
+undefined
+C:\Users\dangh\Downloads\VietNameWeatherWithAi\VietNamWeather_Supported_with_ai\apps\web:
+[ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL] Command failed with exit code 1: tsc -b

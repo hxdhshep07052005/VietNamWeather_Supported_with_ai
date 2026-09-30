@@ -37,20 +37,6 @@ export function LoginPage() {
     }
   }, [isAuthenticated, navigate]);
 
-  // Prevent browser back navigation away from /login (cannot back to home or register)
-  useEffect(() => {
-    window.history.pushState(null, "", window.location.href);
-
-    const handlePopState = () => {
-      window.history.pushState(null, "", window.location.href);
-    };
-
-    window.addEventListener("popstate", handlePopState);
-    return () => {
-      window.removeEventListener("popstate", handlePopState);
-    };
-  }, []);
-
   // Form state
   const [email, setEmail] = useState(prefillEmail);
   const [password, setPassword] = useState("");

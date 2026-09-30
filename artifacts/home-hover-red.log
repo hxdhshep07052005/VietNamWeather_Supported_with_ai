@@ -1,0 +1,1363 @@
+
+[1m[7m[36m RUN [39m[27m[22m [36mv2.1.9 [39m[90mC:/Users/dangh/Downloads/VietNameWeatherWithAi/VietNamWeather_Supported_with_ai/apps/web[39m
+
+[90mstderr[2m | src/pages/LandingPage.test.tsx[2m > [22m[2mLandingPage Component[2m > [22m[2mrenders Hero headline and eyebrow badge
+[22m[39m⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition.
+⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath.
+
+ [31m❯[39m src/pages/LandingPage.test.tsx [2m([22m[2m6 tests[22m[2m | [22m[31m3 failed[39m[2m)[22m[33m 2305[2mms[22m[39m
+[31m   [31m×[31m LandingPage Component[2m > [22mshows each hovered province's current temperature from one bulk request, regardless of response order[33m 1042[2mms[22m[31m[39m
+[31m     → expected "spy" to be called with arguments: [ …(2) ][90m
+
+Received: 
+
+[31m[90m
+
+Number of calls: [1m0[22m
+[31m
+
+Ignored nodes: comments, script, style
+[36m<html>[31m
+  [36m<head />[31m
+  [36m<body>[31m
+    [36m<div>[31m
+      [36m<div[31m
+        [33mclass[31m=[32m"_page_8e9c6c"[31m
+      [36m>[31m
+        [36m<section[31m
+          [33mclass[31m=[32m"_hero_8e9c6c"[31m
+        [36m>[31m
+          [36m<div[31m
+            [33mclass[31m=[32m"_heroBackground_8e9c6c"[31m
+          [36m/>[31m
+          [36m<div[31m
+            [33mclass[31m=[32m"_heroGlowSphere1_8e9c6c"[31m
+          [36m/>[31m
+          [36m<div[31m
+            [33mclass[31m=[32m"_heroGlowSphere2_8e9c6c"[31m
+          [36m/>[31m
+          [36m<div[31m
+            [33mclass[31m=[32m"_container_8e9c6c"[31m
+          [36m>[31m
+            [36m<div[31m
+              [33mclass[31m=[32m"_heroGrid_8e9c6c"[31m
+            [36m>[31m
+              [36m<div[31m
+                [33mclass[31m=[32m"_heroLeft_8e9c6c"[31m
+              [36m>[31m
+                [36m<div[31m
+                  [33mclass[31m=[32m"_eyebrowBadge_8e9c6c _animHeroText_8e9c6c"[31m
+                [36m>[31m
+                  [36m<span[31m
+                    [33mclass[31m=[32m"_eyebrowPulse_8e9c6c"[31m
+                  [36m/>[31m
+                  [36m<span[31m
+                    [33mclass[31m=[32m"_eyebrowText_8e9c6c"[31m
+                  [36m>[31m
+                    [0mTrợ lý Du lịch Thời tiết Thông minh Việt Nam[0m
+                  [36m</span>[31m
+                [36m</div>[31m
+                [36m<h1[31m
+                  [33mclass[31m=[32m"_heroTitle_8e9c6c _animHeroText_8e9c6c"[31m
+                [36m>[31m
+                  [0mHành trình trọn vẹn với[0m
+                  [0m [0m
+                  [36m<span[31m
+                    [33mclass[31m=[32m"_heroHighlight_8e9c6c"[31m
+                  [36m>[31m
+                    [0mDự báo Thời tiết[0m
+                  [36m</span>[31m
+                  [0m thông minh[0m
+                [36m</h1>[31m
+                [36m<p[31m
+                  [33mclass[31m=[32m"_heroSubtitle_8e9c6c _animHeroText_8e9c6c"[31m
+                [36m>[31m
+                  [0mĐưa ra quyết định du lịch tại Việt Nam dựa trên dữ liệu thời tiết có nguồn[0m
+                [36m</p>[31m
+                [36m<div[31m
+                  [33mclass[31m=[32m"_heroCtaGroup_8e9c6c _animHeroText_8e9c6c"[31m
+                [36m>[31m
+                  [36m<a[31m
+                    [33mclass[31m=[32m"_heroPrimaryBtn_8e9c6c"[31m
+                    [33mhref[31m=[32m"/register"[31m
+                  [36m>[31m
+                    [36m<span>[31m
+                      [0mBắt đầu ngay[0m
+                    [36m</span>[31m
+                    [36m<svg[31m
+                      [33mfill[31m=[32m"none"[31m
+                      [33mheight[31m=[32m"18"[31m
+                      [33mstroke[31m=[32m"currentColor"[31m
+                      [33mstroke-linecap[31m=[32m"round"[31m
+                      [33mstroke-linejoin[31m=[32m"round"[31m
+                      [33mstroke-width[31m=[32m"2"[31m
+                      [33mviewBox[31m=[32m"0 0 24 24"[31m
+                      [33mwidth[31m=[32m"18"[31m
+                    [36m>[31m
+                      [36m<path[31m
+                        [33md[31m=[32m"M5 12h14M12 5l7 7-7 7"[31m
+                      [36m/>[31m
+                    [36m</svg>[31m
+                  [36m</a>[31m
+                  [36m<a[31m
+                    [33mclass[31m=[32m"_heroSecondaryBtn_8e9c6c"[31m
+                    [33mhref[31m=[32m"/login"[31m
+                  [36m>[31m
+                    [36m<span>[31m
+                      [0mĐăng nhập[0m
+                    [36m</span>[31m
+                  [36m</a>[31m
+                [36m</div>[31m
+                [36m<div[31m
+                  [33mclass[31m=[32m"_trustMetrics_8e9c6c _animHeroText_8e9c6c"[31m
+                [36m>[31m
+                  [36m<div[31m
+                    [33mclass[31m=[32m"_trustItem_8e9c6c"[31m
+                  [36m>[31m
+                    [36m<div[31m
+                      [33mclass[31m=[32m"_trustIconOk_8e9c6c"[31m
+                    [36m>[31m
+                      [36m<svg[31m
+                        [33mfill[31m=[32m"none"[31m
+                        [33mheight[31m=[32m"14"[31m
+                        [33mstroke[31m=[32m"currentColor"[31m
+                        [33mstroke-linecap[31m=[32m"round"[31m
+                        [33mstroke-linejoin[31m=[32m"round"[31m
+                        [33mstroke-width[31m=[32m"2"[31m
+                        [33mviewBox[31m=[32m"0 0 24 24"[31m
+                        [33mwidth[31m=[32m"14"[31m
+                      [36m>[31m
+                        [36m<polyline[31m
+                          [33mpoints[31m=[32m"20 6 9 17 4 12"[31m
+                        [36m/>[31m
+                      [36m</svg>[31m
+                    [36m</div>[31m
+                    [36m<span>[31m
+                      [0mlanding.trustMetric1[0m
+                    [36m</span>[31m
+                  [36m</div>[31m
+                  [36m<div[31m
+                    [33mclass[31m=[32m"_trustItem_8e9c6c"[31m
+                  [36m>[31m
+                    [36m<div[31m
+                      [33mclass[31m=[32m"_trustIconOk_8e9c6c"[31m
+                    [36m>[31m
+                      [36m<svg[31m
+                        [33mfill[31m=[32m"none"[31m
+                        [33mheight[31m=[32m"14"[31m
+                        [33mstroke[31m=[32m"currentColor"[31m
+                        [33mstroke-linecap[31m=[32m"round"[31m
+                        [33mstroke-linejoin[31m=[32m"round"[31m
+                        [33mstroke-width[31m=[32m"2"[31m
+                        [33mviewBox[31m=[32m"0 0 24 24"[31m
+                        [33mwidth[31m=[32m"14"[31m
+                      [36m>[31m
+                        [36m<polyline[31m
+                          [33mpoints[31m=[32m"20 6 9 17 4 12"[31m
+                        [36m/>[31m
+                      [36m</svg>[31m
+                    [36m</div>[31m
+                    [36m<span>[31m
+                      [0mlanding.trustMetric2[0m
+                    [36m</span>[31m
+                  [36m</div>[31m
+                  [36m<div[31m
+                    [33mclass[31m=[32m"_trustItem_8e9c6c"[31m
+                  [36m>[31m
+                    [36m<div[31m
+                      [33mclass[31m=[32m"_trustIconOk_8e9c6c"[31m
+                    [36m>[31m
+                      [36m<svg[31m
+                        [33mfill[31m=[32m"none"[31m
+                        [33mheight[31m=[32m"14"[31m
+                        [33mstroke[31m=[32m"currentColor"[31m
+                        [33mstroke-linecap[31m=[32m"round"[31m
+                      ...[39m
+[31m   [31m×[31m LandingPage Component[2m > [22mkeeps Hà Giang selected after mouseleave instead of switching to Hậu Giang with the same short code[90m 47[2mms[22m[31m[39m
+[31m     → Unable to find an element with the text: Hà Giang. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+
+Ignored nodes: comments, script, style
+[36m<body>[31m
+  [36m<div>[31m
+    [36m<div[31m
+      [33mclass[31m=[32m"_page_8e9c6c"[31m
+    [36m>[31m
+      [36m<section[31m
+        [33mclass[31m=[32m"_hero_8e9c6c"[31m
+      [36m>[31m
+        [36m<div[31m
+          [33mclass[31m=[32m"_heroBackground_8e9c6c"[31m
+        [36m/>[31m
+        [36m<div[31m
+          [33mclass[31m=[32m"_heroGlowSphere1_8e9c6c"[31m
+        [36m/>[31m
+        [36m<div[31m
+          [33mclass[31m=[32m"_heroGlowSphere2_8e9c6c"[31m
+        [36m/>[31m
+        [36m<div[31m
+          [33mclass[31m=[32m"_container_8e9c6c"[31m
+        [36m>[31m
+          [36m<div[31m
+            [33mclass[31m=[32m"_heroGrid_8e9c6c"[31m
+          [36m>[31m
+            [36m<div[31m
+              [33mclass[31m=[32m"_heroLeft_8e9c6c"[31m
+            [36m>[31m
+              [36m<div[31m
+                [33mclass[31m=[32m"_eyebrowBadge_8e9c6c _animHeroText_8e9c6c"[31m
+              [36m>[31m
+                [36m<span[31m
+                  [33mclass[31m=[32m"_eyebrowPulse_8e9c6c"[31m
+                [36m/>[31m
+                [36m<span[31m
+                  [33mclass[31m=[32m"_eyebrowText_8e9c6c"[31m
+                [36m>[31m
+                  [0mTrợ lý Du lịch Thời tiết Thông minh Việt Nam[0m
+                [36m</span>[31m
+              [36m</div>[31m
+              [36m<h1[31m
+                [33mclass[31m=[32m"_heroTitle_8e9c6c _animHeroText_8e9c6c"[31m
+              [36m>[31m
+                [0mHành trình trọn vẹn với[0m
+                [0m [0m
+                [36m<span[31m
+                  [33mclass[31m=[32m"_heroHighlight_8e9c6c"[31m
+                [36m>[31m
+                  [0mDự báo Thời tiết[0m
+                [36m</span>[31m
+                [0m thông minh[0m
+              [36m</h1>[31m
+              [36m<p[31m
+                [33mclass[31m=[32m"_heroSubtitle_8e9c6c _animHeroText_8e9c6c"[31m
+              [36m>[31m
+                [0mĐưa ra quyết định du lịch tại Việt Nam dựa trên dữ liệu thời tiết có nguồn[0m
+              [36m</p>[31m
+              [36m<div[31m
+                [33mclass[31m=[32m"_heroCtaGroup_8e9c6c _animHeroText_8e9c6c"[31m
+              [36m>[31m
+                [36m<a[31m
+                  [33mclass[31m=[32m"_heroPrimaryBtn_8e9c6c"[31m
+                  [33mhref[31m=[32m"/register"[31m
+                [36m>[31m
+                  [36m<span>[31m
+                    [0mBắt đầu ngay[0m
+                  [36m</span>[31m
+                  [36m<svg[31m
+                    [33mfill[31m=[32m"none"[31m
+                    [33mheight[31m=[32m"18"[31m
+                    [33mstroke[31m=[32m"currentColor"[31m
+                    [33mstroke-linecap[31m=[32m"round"[31m
+                    [33mstroke-linejoin[31m=[32m"round"[31m
+                    [33mstroke-width[31m=[32m"2"[31m
+                    [33mviewBox[31m=[32m"0 0 24 24"[31m
+                    [33mwidth[31m=[32m"18"[31m
+                  [36m>[31m
+                    [36m<path[31m
+                      [33md[31m=[32m"M5 12h14M12 5l7 7-7 7"[31m
+                    [36m/>[31m
+                  [36m</svg>[31m
+                [36m</a>[31m
+                [36m<a[31m
+                  [33mclass[31m=[32m"_heroSecondaryBtn_8e9c6c"[31m
+                  [33mhref[31m=[32m"/login"[31m
+                [36m>[31m
+                  [36m<span>[31m
+                    [0mĐăng nhập[0m
+                  [36m</span>[31m
+                [36m</a>[31m
+              [36m</div>[31m
+              [36m<div[31m
+                [33mclass[31m=[32m"_trustMetrics_8e9c6c _animHeroText_8e9c6c"[31m
+              [36m>[31m
+                [36m<div[31m
+                  [33mclass[31m=[32m"_trustItem_8e9c6c"[31m
+                [36m>[31m
+                  [36m<div[31m
+                    [33mclass[31m=[32m"_trustIconOk_8e9c6c"[31m
+                  [36m>[31m
+                    [36m<svg[31m
+                      [33mfill[31m=[32m"none"[31m
+                      [33mheight[31m=[32m"14"[31m
+                      [33mstroke[31m=[32m"currentColor"[31m
+                      [33mstroke-linecap[31m=[32m"round"[31m
+                      [33mstroke-linejoin[31m=[32m"round"[31m
+                      [33mstroke-width[31m=[32m"2"[31m
+                      [33mviewBox[31m=[32m"0 0 24 24"[31m
+                      [33mwidth[31m=[32m"14"[31m
+                    [36m>[31m
+                      [36m<polyline[31m
+                        [33mpoints[31m=[32m"20 6 9 17 4 12"[31m
+                      [36m/>[31m
+                    [36m</svg>[31m
+                  [36m</div>[31m
+                  [36m<span>[31m
+                    [0mlanding.trustMetric1[0m
+                  [36m</span>[31m
+                [36m</div>[31m
+                [36m<div[31m
+                  [33mclass[31m=[32m"_trustItem_8e9c6c"[31m
+                [36m>[31m
+                  [36m<div[31m
+                    [33mclass[31m=[32m"_trustIconOk_8e9c6c"[31m
+                  [36m>[31m
+                    [36m<svg[31m
+                      [33mfill[31m=[32m"none"[31m
+                      [33mheight[31m=[32m"14"[31m
+                      [33mstroke[31m=[32m"currentColor"[31m
+                      [33mstroke-linecap[31m=[32m"round"[31m
+                      [33mstroke-linejoin[31m=[32m"round"[31m
+                      [33mstroke-width[31m=[32m"2"[31m
+                      [33mviewBox[31m=[32m"0 0 24 24"[31m
+                      [33mwidth[31m=[32m"14"[31m
+                    [36m>[31m
+                      [36m<polyline[31m
+                        [33mpoints[31m=[32m"20 6 9 17 4 12"[31m
+                      [36m/>[31m
+                    [36m</svg>[31m
+                  [36m</div>[31m
+                  [36m<span>[31m
+                    [0mlanding.trustMetric2[0m
+                  [36m</span>[31m
+                [36m</div>[31m
+                [36m<div[31m
+                  [33mclass[31m=[32m"_trustItem_8e9c6c"[31m
+                [36m>[31m
+                  [36m<div[31m
+                    [33mclass[31m=[32m"_trustIconOk_8e9c6c"[31m
+                  [36m>[31m
+                    [36m<svg[31m
+                      [33mfill[31m=[32m"none"[31m
+                      [33mheight[31m=[32m"14"[31m
+                      [33mstroke[31m=[32m"currentColor"[31m
+                      [33mstroke-linecap[31m=[32m"round"[31m
+                      [33mstroke-linejoin[31m=[32m"round"[31m
+                      [33mstroke-width[31m=[32m"2"[31m
+                      [33mviewBox[31m=[32m"0 0 24 24"[31m
+                      [33mwidth[31m=[32m"14"[31m
+                    [36m>[31m
+                      [36m<polyline[31m
+                        [33mpoints[31m=[32m"20 6 ...[39m
+[31m   [31m×[31m LandingPage Component[2m > [22mupdates a hovered province from the refreshed cache and shows its source time[33m 1040[2mms[22m[31m[39m
+[31m     → Unable to find role="tooltip"
+
+Ignored nodes: comments, script, style
+[36m<body>[31m
+  [36m<div>[31m
+    [36m<div[31m
+      [33mclass[31m=[32m"_page_8e9c6c"[31m
+    [36m>[31m
+      [36m<section[31m
+        [33mclass[31m=[32m"_hero_8e9c6c"[31m
+      [36m>[31m
+        [36m<div[31m
+          [33mclass[31m=[32m"_heroBackground_8e9c6c"[31m
+        [36m/>[31m
+        [36m<div[31m
+          [33mclass[31m=[32m"_heroGlowSphere1_8e9c6c"[31m
+        [36m/>[31m
+        [36m<div[31m
+          [33mclass[31m=[32m"_heroGlowSphere2_8e9c6c"[31m
+        [36m/>[31m
+        [36m<div[31m
+          [33mclass[31m=[32m"_container_8e9c6c"[31m
+        [36m>[31m
+          [36m<div[31m
+            [33mclass[31m=[32m"_heroGrid_8e9c6c"[31m
+          [36m>[31m
+            [36m<div[31m
+              [33mclass[31m=[32m"_heroLeft_8e9c6c"[31m
+            [36m>[31m
+              [36m<div[31m
+                [33mclass[31m=[32m"_eyebrowBadge_8e9c6c _animHeroText_8e9c6c"[31m
+              [36m>[31m
+                [36m<span[31m
+                  [33mclass[31m=[32m"_eyebrowPulse_8e9c6c"[31m
+                [36m/>[31m
+                [36m<span[31m
+                  [33mclass[31m=[32m"_eyebrowText_8e9c6c"[31m
+                [36m>[31m
+                  [0mTrợ lý Du lịch Thời tiết Thông minh Việt Nam[0m
+                [36m</span>[31m
+              [36m</div>[31m
+              [36m<h1[31m
+                [33mclass[31m=[32m"_heroTitle_8e9c6c _animHeroText_8e9c6c"[31m
+              [36m>[31m
+                [0mHành trình trọn vẹn với[0m
+                [0m [0m
+                [36m<span[31m
+                  [33mclass[31m=[32m"_heroHighlight_8e9c6c"[31m
+                [36m>[31m
+                  [0mDự báo Thời tiết[0m
+                [36m</span>[31m
+                [0m thông minh[0m
+              [36m</h1>[31m
+              [36m<p[31m
+                [33mclass[31m=[32m"_heroSubtitle_8e9c6c _animHeroText_8e9c6c"[31m
+              [36m>[31m
+                [0mĐưa ra quyết định du lịch tại Việt Nam dựa trên dữ liệu thời tiết có nguồn[0m
+              [36m</p>[31m
+              [36m<div[31m
+                [33mclass[31m=[32m"_heroCtaGroup_8e9c6c _animHeroText_8e9c6c"[31m
+              [36m>[31m
+                [36m<a[31m
+                  [33mclass[31m=[32m"_heroPrimaryBtn_8e9c6c"[31m
+                  [33mhref[31m=[32m"/register"[31m
+                [36m>[31m
+                  [36m<span>[31m
+                    [0mBắt đầu ngay[0m
+                  [36m</span>[31m
+                  [36m<svg[31m
+                    [33mfill[31m=[32m"none"[31m
+                    [33mheight[31m=[32m"18"[31m
+                    [33mstroke[31m=[32m"currentColor"[31m
+                    [33mstroke-linecap[31m=[32m"round"[31m
+                    [33mstroke-linejoin[31m=[32m"round"[31m
+                    [33mstroke-width[31m=[32m"2"[31m
+                    [33mviewBox[31m=[32m"0 0 24 24"[31m
+                    [33mwidth[31m=[32m"18"[31m
+                  [36m>[31m
+                    [36m<path[31m
+                      [33md[31m=[32m"M5 12h14M12 5l7 7-7 7"[31m
+                    [36m/>[31m
+                  [36m</svg>[31m
+                [36m</a>[31m
+                [36m<a[31m
+                  [33mclass[31m=[32m"_heroSecondaryBtn_8e9c6c"[31m
+                  [33mhref[31m=[32m"/login"[31m
+                [36m>[31m
+                  [36m<span>[31m
+                    [0mĐăng nhập[0m
+                  [36m</span>[31m
+                [36m</a>[31m
+              [36m</div>[31m
+              [36m<div[31m
+                [33mclass[31m=[32m"_trustMetrics_8e9c6c _animHeroText_8e9c6c"[31m
+              [36m>[31m
+                [36m<div[31m
+                  [33mclass[31m=[32m"_trustItem_8e9c6c"[31m
+                [36m>[31m
+                  [36m<div[31m
+                    [33mclass[31m=[32m"_trustIconOk_8e9c6c"[31m
+                  [36m>[31m
+                    [36m<svg[31m
+                      [33mfill[31m=[32m"none"[31m
+                      [33mheight[31m=[32m"14"[31m
+                      [33mstroke[31m=[32m"currentColor"[31m
+                      [33mstroke-linecap[31m=[32m"round"[31m
+                      [33mstroke-linejoin[31m=[32m"round"[31m
+                      [33mstroke-width[31m=[32m"2"[31m
+                      [33mviewBox[31m=[32m"0 0 24 24"[31m
+                      [33mwidth[31m=[32m"14"[31m
+                    [36m>[31m
+                      [36m<polyline[31m
+                        [33mpoints[31m=[32m"20 6 9 17 4 12"[31m
+                      [36m/>[31m
+                    [36m</svg>[31m
+                  [36m</div>[31m
+                  [36m<span>[31m
+                    [0mlanding.trustMetric1[0m
+                  [36m</span>[31m
+                [36m</div>[31m
+                [36m<div[31m
+                  [33mclass[31m=[32m"_trustItem_8e9c6c"[31m
+                [36m>[31m
+                  [36m<div[31m
+                    [33mclass[31m=[32m"_trustIconOk_8e9c6c"[31m
+                  [36m>[31m
+                    [36m<svg[31m
+                      [33mfill[31m=[32m"none"[31m
+                      [33mheight[31m=[32m"14"[31m
+                      [33mstroke[31m=[32m"currentColor"[31m
+                      [33mstroke-linecap[31m=[32m"round"[31m
+                      [33mstroke-linejoin[31m=[32m"round"[31m
+                      [33mstroke-width[31m=[32m"2"[31m
+                      [33mviewBox[31m=[32m"0 0 24 24"[31m
+                      [33mwidth[31m=[32m"14"[31m
+                    [36m>[31m
+                      [36m<polyline[31m
+                        [33mpoints[31m=[32m"20 6 9 17 4 12"[31m
+                      [36m/>[31m
+                    [36m</svg>[31m
+                  [36m</div>[31m
+                  [36m<span>[31m
+                    [0mlanding.trustMetric2[0m
+                  [36m</span>[31m
+                [36m</div>[31m
+                [36m<div[31m
+                  [33mclass[31m=[32m"_trustItem_8e9c6c"[31m
+                [36m>[31m
+                  [36m<div[31m
+                    [33mclass[31m=[32m"_trustIconOk_8e9c6c"[31m
+                  [36m>[31m
+                    [36m<svg[31m
+                      [33mfill[31m=[32m"none"[31m
+                      [33mheight[31m=[32m"14"[31m
+                      [33mstroke[31m=[32m"currentColor"[31m
+                      [33mstroke-linecap[31m=[32m"round"[31m
+                      [33mstroke-linejoin[31m=[32m"round"[31m
+                      [33mstroke-width[31m=[32m"2"[31m
+                      [33mviewBox[31m=[32m"0 0 24 24"[31m
+                      [33mwidth[31m=[32m"14"[31m
+                    [36m>[31m
+                      [36m<polyline[31m
+                        [33mpoints[31m=[32m"20 6 ...
+
+Ignored nodes: comments, script, style
+[36m<html>[31m
+  [36m<head />[31m
+  [36m<body>[31m
+    [36m<div>[31m
+      [36m<div[31m
+        [33mclass[31m=[32m"_page_8e9c6c"[31m
+      [36m>[31m
+        [36m<section[31m
+          [33mclass[31m=[32m"_hero_8e9c6c"[31m
+        [36m>[31m
+          [36m<div[31m
+            [33mclass[31m=[32m"_heroBackground_8e9c6c"[31m
+          [36m/>[31m
+          [36m<div[31m
+            [33mclass[31m=[32m"_heroGlowSphere1_8e9c6c"[31m
+          [36m/>[31m
+          [36m<div[31m
+            [33mclass[31m=[32m"_heroGlowSphere2_8e9c6c"[31m
+          [36m/>[31m
+          [36m<div[31m
+            [33mclass[31m=[32m"_container_8e9c6c"[31m
+          [36m>[31m
+            [36m<div[31m
+              [33mclass[31m=[32m"_heroGrid_8e9c6c"[31m
+            [36m>[31m
+              [36m<div[31m
+                [33mclass[31m=[32m"_heroLeft_8e9c6c"[31m
+              [36m>[31m
+                [36m<div[31m
+                  [33mclass[31m=[32m"_eyebrowBadge_8e9c6c _animHeroText_8e9c6c"[31m
+                [36m>[31m
+                  [36m<span[31m
+                    [33mclass[31m=[32m"_eyebrowPulse_8e9c6c"[31m
+                  [36m/>[31m
+                  [36m<span[31m
+                    [33mclass[31m=[32m"_eyebrowText_8e9c6c"[31m
+                  [36m>[31m
+                    [0mTrợ lý Du lịch Thời tiết Thông minh Việt Nam[0m
+                  [36m</span>[31m
+                [36m</div>[31m
+                [36m<h1[31m
+                  [33mclass[31m=[32m"_heroTitle_8e9c6c _animHeroText_8e9c6c"[31m
+                [36m>[31m
+                  [0mHành trình trọn vẹn với[0m
+                  [0m [0m
+                  [36m<span[31m
+                    [33mclass[31m=[32m"_heroHighlight_8e9c6c"[31m
+                  [36m>[31m
+                    [0mDự báo Thời tiết[0m
+                  [36m</span>[31m
+                  [0m thông minh[0m
+                [36m</h1>[31m
+                [36m<p[31m
+                  [33mclass[31m=[32m"_heroSubtitle_8e9c6c _animHeroText_8e9c6c"[31m
+                [36m>[31m
+                  [0mĐưa ra quyết định du lịch tại Việt Nam dựa trên dữ liệu thời tiết có nguồn[0m
+                [36m</p>[31m
+                [36m<div[31m
+                  [33mclass[31m=[32m"_heroCtaGroup_8e9c6c _animHeroText_8e9c6c"[31m
+                [36m>[31m
+                  [36m<a[31m
+                    [33mclass[31m=[32m"_heroPrimaryBtn_8e9c6c"[31m
+                    [33mhref[31m=[32m"/register"[31m
+                  [36m>[31m
+                    [36m<span>[31m
+                      [0mBắt đầu ngay[0m
+                    [36m</span>[31m
+                    [36m<svg[31m
+                      [33mfill[31m=[32m"none"[31m
+                      [33mheight[31m=[32m"18"[31m
+                      [33mstroke[31m=[32m"currentColor"[31m
+                      [33mstroke-linecap[31m=[32m"round"[31m
+                      [33mstroke-linejoin[31m=[32m"round"[31m
+                      [33mstroke-width[31m=[32m"2"[31m
+                      [33mviewBox[31m=[32m"0 0 24 24"[31m
+                      [33mwidth[31m=[32m"18"[31m
+                    [36m>[31m
+                      [36m<path[31m
+                        [33md[31m=[32m"M5 12h14M12 5l7 7-7 7"[31m
+                      [36m/>[31m
+                    [36m</svg>[31m
+                  [36m</a>[31m
+                  [36m<a[31m
+                    [33mclass[31m=[32m"_heroSecondaryBtn_8e9c6c"[31m
+                    [33mhref[31m=[32m"/login"[31m
+                  [36m>[31m
+                    [36m<span>[31m
+                      [0mĐăng nhập[0m
+                    [36m</span>[31m
+                  [36m</a>[31m
+                [36m</div>[31m
+                [36m<div[31m
+                  [33mclass[31m=[32m"_trustMetrics_8e9c6c _animHeroText_8e9c6c"[31m
+                [36m>[31m
+                  [36m<div[31m
+                    [33mclass[31m=[32m"_trustItem_8e9c6c"[31m
+                  [36m>[31m
+                    [36m<div[31m
+                      [33mclass[31m=[32m"_trustIconOk_8e9c6c"[31m
+                    [36m>[31m
+                      [36m<svg[31m
+                        [33mfill[31m=[32m"none"[31m
+                        [33mheight[31m=[32m"14"[31m
+                        [33mstroke[31m=[32m"currentColor"[31m
+                        [33mstroke-linecap[31m=[32m"round"[31m
+                        [33mstroke-linejoin[31m=[32m"round"[31m
+                        [33mstroke-width[31m=[32m"2"[31m
+                        [33mviewBox[31m=[32m"0 0 24 24"[31m
+                        [33mwidth[31m=[32m"14"[31m
+                      [36m>[31m
+                        [36m<polyline[31m
+                          [33mpoints[31m=[32m"20 6 9 17 4 12"[31m
+                        [36m/>[31m
+                      [36m</svg>[31m
+                    [36m</div>[31m
+                    [36m<span>[31m
+                      [0mlanding.trustMetric1[0m
+                    [36m</span>[31m
+                  [36m</div>[31m
+                  [36m<div[31m
+                    [33mclass[31m=[32m"_trustItem_8e9c6c"[31m
+                  [36m>[31m
+                    [36m<div[31m
+                      [33mclass[31m=[32m"_trustIconOk_8e9c6c"[31m
+                    [36m>[31m
+                      [36m<svg[31m
+                        [33mfill[31m=[32m"none"[31m
+                        [33mheight[31m=[32m"14"[31m
+                        [33mstroke[31m=[32m"currentColor"[31m
+                        [33mstroke-linecap[31m=[32m"round"[31m
+                        [33mstroke-linejoin[31m=[32m"round"[31m
+                        [33mstroke-width[31m=[32m"2"[31m
+                        [33mviewBox[31m=[32m"0 0 24 24"[31m
+                        [33mwidth[31m=[32m"14"[31m
+                      [36m>[31m
+                        [36m<polyline[31m
+                          [33mpoints[31m=[32m"20 6 9 17 4 12"[31m
+                        [36m/>[31m
+                      [36m</svg>[31m
+                    [36m</div>[31m
+                    [36m<span>[31m
+                      [0mlanding.trustMetric2[0m
+                    [36m</span>[31m
+                  [36m</div>[31m
+                  [36m<div[31m
+                    [33mclass[31m=[32m"_trustItem_8e9c6c"[31m
+                  [36m>[31m
+                    [36m<div[31m
+                      [33mclass[31m=[32m"_trustIconOk_8e9c6c"[31m
+                    [36m>[31m
+                      [36m<svg[31m
+                        [33mfill[31m=[32m"none"[31m
+                        [33mheight[31m=[32m"14"[31m
+                        [33mstroke[31m=[32m"currentColor"[31m
+                        [33mstroke-linecap[31m=[32m"round"[31m
+                      ...[39m
+
+[31m⎯⎯⎯⎯⎯⎯⎯[1m[7m Failed Tests 3 [27m[22m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[31m[1m[7m FAIL [27m[22m[39m src/pages/LandingPage.test.tsx[2m > [22mLandingPage Component[2m > [22mshows each hovered province's current temperature from one bulk request, regardless of response order
+[31m[1mAssertionError[22m[39m: expected "spy" to be called with arguments: [ …(2) ][90m
+
+Received: 
+
+[39m[90m
+
+Number of calls: [1m0[22m
+[39m
+
+Ignored nodes: comments, script, style
+[36m<html>[39m
+  [36m<head />[39m
+  [36m<body>[39m
+    [36m<div>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"_page_8e9c6c"[39m
+      [36m>[39m
+        [36m<section[39m
+          [33mclass[39m=[32m"_hero_8e9c6c"[39m
+        [36m>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"_heroBackground_8e9c6c"[39m
+          [36m/>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"_heroGlowSphere1_8e9c6c"[39m
+          [36m/>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"_heroGlowSphere2_8e9c6c"[39m
+          [36m/>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"_container_8e9c6c"[39m
+          [36m>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"_heroGrid_8e9c6c"[39m
+            [36m>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"_heroLeft_8e9c6c"[39m
+              [36m>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"_eyebrowBadge_8e9c6c _animHeroText_8e9c6c"[39m
+                [36m>[39m
+                  [36m<span[39m
+                    [33mclass[39m=[32m"_eyebrowPulse_8e9c6c"[39m
+                  [36m/>[39m
+                  [36m<span[39m
+                    [33mclass[39m=[32m"_eyebrowText_8e9c6c"[39m
+                  [36m>[39m
+                    [0mTrợ lý Du lịch Thời tiết Thông minh Việt Nam[0m
+                  [36m</span>[39m
+                [36m</div>[39m
+                [36m<h1[39m
+                  [33mclass[39m=[32m"_heroTitle_8e9c6c _animHeroText_8e9c6c"[39m
+                [36m>[39m
+                  [0mHành trình trọn vẹn với[0m
+                  [0m [0m
+                  [36m<span[39m
+                    [33mclass[39m=[32m"_heroHighlight_8e9c6c"[39m
+                  [36m>[39m
+                    [0mDự báo Thời tiết[0m
+                  [36m</span>[39m
+                  [0m thông minh[0m
+                [36m</h1>[39m
+                [36m<p[39m
+                  [33mclass[39m=[32m"_heroSubtitle_8e9c6c _animHeroText_8e9c6c"[39m
+                [36m>[39m
+                  [0mĐưa ra quyết định du lịch tại Việt Nam dựa trên dữ liệu thời tiết có nguồn[0m
+                [36m</p>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"_heroCtaGroup_8e9c6c _animHeroText_8e9c6c"[39m
+                [36m>[39m
+                  [36m<a[39m
+                    [33mclass[39m=[32m"_heroPrimaryBtn_8e9c6c"[39m
+                    [33mhref[39m=[32m"/register"[39m
+                  [36m>[39m
+                    [36m<span>[39m
+                      [0mBắt đầu ngay[0m
+                    [36m</span>[39m
+                    [36m<svg[39m
+                      [33mfill[39m=[32m"none"[39m
+                      [33mheight[39m=[32m"18"[39m
+                      [33mstroke[39m=[32m"currentColor"[39m
+                      [33mstroke-linecap[39m=[32m"round"[39m
+                      [33mstroke-linejoin[39m=[32m"round"[39m
+                      [33mstroke-width[39m=[32m"2"[39m
+                      [33mviewBox[39m=[32m"0 0 24 24"[39m
+                      [33mwidth[39m=[32m"18"[39m
+                    [36m>[39m
+                      [36m<path[39m
+                        [33md[39m=[32m"M5 12h14M12 5l7 7-7 7"[39m
+                      [36m/>[39m
+                    [36m</svg>[39m
+                  [36m</a>[39m
+                  [36m<a[39m
+                    [33mclass[39m=[32m"_heroSecondaryBtn_8e9c6c"[39m
+                    [33mhref[39m=[32m"/login"[39m
+                  [36m>[39m
+                    [36m<span>[39m
+                      [0mĐăng nhập[0m
+                    [36m</span>[39m
+                  [36m</a>[39m
+                [36m</div>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"_trustMetrics_8e9c6c _animHeroText_8e9c6c"[39m
+                [36m>[39m
+                  [36m<div[39m
+                    [33mclass[39m=[32m"_trustItem_8e9c6c"[39m
+                  [36m>[39m
+                    [36m<div[39m
+                      [33mclass[39m=[32m"_trustIconOk_8e9c6c"[39m
+                    [36m>[39m
+                      [36m<svg[39m
+                        [33mfill[39m=[32m"none"[39m
+                        [33mheight[39m=[32m"14"[39m
+                        [33mstroke[39m=[32m"currentColor"[39m
+                        [33mstroke-linecap[39m=[32m"round"[39m
+                        [33mstroke-linejoin[39m=[32m"round"[39m
+                        [33mstroke-width[39m=[32m"2"[39m
+                        [33mviewBox[39m=[32m"0 0 24 24"[39m
+                        [33mwidth[39m=[32m"14"[39m
+                      [36m>[39m
+                        [36m<polyline[39m
+                          [33mpoints[39m=[32m"20 6 9 17 4 12"[39m
+                        [36m/>[39m
+                      [36m</svg>[39m
+                    [36m</div>[39m
+                    [36m<span>[39m
+                      [0mlanding.trustMetric1[0m
+                    [36m</span>[39m
+                  [36m</div>[39m
+                  [36m<div[39m
+                    [33mclass[39m=[32m"_trustItem_8e9c6c"[39m
+                  [36m>[39m
+                    [36m<div[39m
+                      [33mclass[39m=[32m"_trustIconOk_8e9c6c"[39m
+                    [36m>[39m
+                      [36m<svg[39m
+                        [33mfill[39m=[32m"none"[39m
+                        [33mheight[39m=[32m"14"[39m
+                        [33mstroke[39m=[32m"currentColor"[39m
+                        [33mstroke-linecap[39m=[32m"round"[39m
+                        [33mstroke-linejoin[39m=[32m"round"[39m
+                        [33mstroke-width[39m=[32m"2"[39m
+                        [33mviewBox[39m=[32m"0 0 24 24"[39m
+                        [33mwidth[39m=[32m"14"[39m
+                      [36m>[39m
+                        [36m<polyline[39m
+                          [33mpoints[39m=[32m"20 6 9 17 4 12"[39m
+                        [36m/>[39m
+                      [36m</svg>[39m
+                    [36m</div>[39m
+                    [36m<span>[39m
+                      [0mlanding.trustMetric2[0m
+                    [36m</span>[39m
+                  [36m</div>[39m
+                  [36m<div[39m
+                    [33mclass[39m=[32m"_trustItem_8e9c6c"[39m
+                  [36m>[39m
+                    [36m<div[39m
+                      [33mclass[39m=[32m"_trustIconOk_8e9c6c"[39m
+                    [36m>[39m
+                      [36m<svg[39m
+                        [33mfill[39m=[32m"none"[39m
+                        [33mheight[39m=[32m"14"[39m
+                        [33mstroke[39m=[32m"currentColor"[39m
+                        [33mstroke-linecap[39m=[32m"round"[39m
+                      ...
+[36m [2m❯[22m src/pages/LandingPage.test.tsx:[2m131:47[22m[39m
+    [90m129| [39m  [34mit[39m([32m"shows each hovered province's current temperature from one bulk [39m…
+    [90m130| [39m    [35mconst[39m { container } [33m=[39m [34mrenderWithRouter[39m()[33m;[39m
+    [90m131| [39m    [35mawait[39m [34mwaitFor[39m(() [33m=>[39m [34mexpect[39m(apiClient[33m.[39m[35mget[39m)[33m.[39m[34mtoHaveBeenCalledWith[39m(
+    [90m   | [39m                                              [31m^[39m
+    [90m132| [39m      [32m"/risk/report-provinces?offset_hours=0"[39m[33m,[39m { signal[33m:[39m expect[33m.[39m[34many[39m([33mAb[39m…
+    [90m133| [39m    ))[33m;[39m
+[90m [2m❯[22m runWithExpensiveErrorDiagnosticsDisabled ../../node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/config.js:[2m47:12[22m[39m
+[90m [2m❯[22m checkCallback ../../node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/wait-for.js:[2m124:77[22m[39m
+[90m [2m❯[22m Timeout.checkRealTimersCallback ../../node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/wait-for.js:[2m118:16[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯[22m[39m
+
+[31m[1m[7m FAIL [27m[22m[39m src/pages/LandingPage.test.tsx[2m > [22mLandingPage Component[2m > [22mkeeps Hà Giang selected after mouseleave instead of switching to Hậu Giang with the same short code
+[31m[1mTestingLibraryElementError[22m[39m: Unable to find an element with the text: Hà Giang. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"_page_8e9c6c"[39m
+    [36m>[39m
+      [36m<section[39m
+        [33mclass[39m=[32m"_hero_8e9c6c"[39m
+      [36m>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"_heroBackground_8e9c6c"[39m
+        [36m/>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"_heroGlowSphere1_8e9c6c"[39m
+        [36m/>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"_heroGlowSphere2_8e9c6c"[39m
+        [36m/>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"_container_8e9c6c"[39m
+        [36m>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"_heroGrid_8e9c6c"[39m
+          [36m>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"_heroLeft_8e9c6c"[39m
+            [36m>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"_eyebrowBadge_8e9c6c _animHeroText_8e9c6c"[39m
+              [36m>[39m
+                [36m<span[39m
+                  [33mclass[39m=[32m"_eyebrowPulse_8e9c6c"[39m
+                [36m/>[39m
+                [36m<span[39m
+                  [33mclass[39m=[32m"_eyebrowText_8e9c6c"[39m
+                [36m>[39m
+                  [0mTrợ lý Du lịch Thời tiết Thông minh Việt Nam[0m
+                [36m</span>[39m
+              [36m</div>[39m
+              [36m<h1[39m
+                [33mclass[39m=[32m"_heroTitle_8e9c6c _animHeroText_8e9c6c"[39m
+              [36m>[39m
+                [0mHành trình trọn vẹn với[0m
+                [0m [0m
+                [36m<span[39m
+                  [33mclass[39m=[32m"_heroHighlight_8e9c6c"[39m
+                [36m>[39m
+                  [0mDự báo Thời tiết[0m
+                [36m</span>[39m
+                [0m thông minh[0m
+              [36m</h1>[39m
+              [36m<p[39m
+                [33mclass[39m=[32m"_heroSubtitle_8e9c6c _animHeroText_8e9c6c"[39m
+              [36m>[39m
+                [0mĐưa ra quyết định du lịch tại Việt Nam dựa trên dữ liệu thời tiết có nguồn[0m
+              [36m</p>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"_heroCtaGroup_8e9c6c _animHeroText_8e9c6c"[39m
+              [36m>[39m
+                [36m<a[39m
+                  [33mclass[39m=[32m"_heroPrimaryBtn_8e9c6c"[39m
+                  [33mhref[39m=[32m"/register"[39m
+                [36m>[39m
+                  [36m<span>[39m
+                    [0mBắt đầu ngay[0m
+                  [36m</span>[39m
+                  [36m<svg[39m
+                    [33mfill[39m=[32m"none"[39m
+                    [33mheight[39m=[32m"18"[39m
+                    [33mstroke[39m=[32m"currentColor"[39m
+                    [33mstroke-linecap[39m=[32m"round"[39m
+                    [33mstroke-linejoin[39m=[32m"round"[39m
+                    [33mstroke-width[39m=[32m"2"[39m
+                    [33mviewBox[39m=[32m"0 0 24 24"[39m
+                    [33mwidth[39m=[32m"18"[39m
+                  [36m>[39m
+                    [36m<path[39m
+                      [33md[39m=[32m"M5 12h14M12 5l7 7-7 7"[39m
+                    [36m/>[39m
+                  [36m</svg>[39m
+                [36m</a>[39m
+                [36m<a[39m
+                  [33mclass[39m=[32m"_heroSecondaryBtn_8e9c6c"[39m
+                  [33mhref[39m=[32m"/login"[39m
+                [36m>[39m
+                  [36m<span>[39m
+                    [0mĐăng nhập[0m
+                  [36m</span>[39m
+                [36m</a>[39m
+              [36m</div>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"_trustMetrics_8e9c6c _animHeroText_8e9c6c"[39m
+              [36m>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"_trustItem_8e9c6c"[39m
+                [36m>[39m
+                  [36m<div[39m
+                    [33mclass[39m=[32m"_trustIconOk_8e9c6c"[39m
+                  [36m>[39m
+                    [36m<svg[39m
+                      [33mfill[39m=[32m"none"[39m
+                      [33mheight[39m=[32m"14"[39m
+                      [33mstroke[39m=[32m"currentColor"[39m
+                      [33mstroke-linecap[39m=[32m"round"[39m
+                      [33mstroke-linejoin[39m=[32m"round"[39m
+                      [33mstroke-width[39m=[32m"2"[39m
+                      [33mviewBox[39m=[32m"0 0 24 24"[39m
+                      [33mwidth[39m=[32m"14"[39m
+                    [36m>[39m
+                      [36m<polyline[39m
+                        [33mpoints[39m=[32m"20 6 9 17 4 12"[39m
+                      [36m/>[39m
+                    [36m</svg>[39m
+                  [36m</div>[39m
+                  [36m<span>[39m
+                    [0mlanding.trustMetric1[0m
+                  [36m</span>[39m
+                [36m</div>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"_trustItem_8e9c6c"[39m
+                [36m>[39m
+                  [36m<div[39m
+                    [33mclass[39m=[32m"_trustIconOk_8e9c6c"[39m
+                  [36m>[39m
+                    [36m<svg[39m
+                      [33mfill[39m=[32m"none"[39m
+                      [33mheight[39m=[32m"14"[39m
+                      [33mstroke[39m=[32m"currentColor"[39m
+                      [33mstroke-linecap[39m=[32m"round"[39m
+                      [33mstroke-linejoin[39m=[32m"round"[39m
+                      [33mstroke-width[39m=[32m"2"[39m
+                      [33mviewBox[39m=[32m"0 0 24 24"[39m
+                      [33mwidth[39m=[32m"14"[39m
+                    [36m>[39m
+                      [36m<polyline[39m
+                        [33mpoints[39m=[32m"20 6 9 17 4 12"[39m
+                      [36m/>[39m
+                    [36m</svg>[39m
+                  [36m</div>[39m
+                  [36m<span>[39m
+                    [0mlanding.trustMetric2[0m
+                  [36m</span>[39m
+                [36m</div>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"_trustItem_8e9c6c"[39m
+                [36m>[39m
+                  [36m<div[39m
+                    [33mclass[39m=[32m"_trustIconOk_8e9c6c"[39m
+                  [36m>[39m
+                    [36m<svg[39m
+                      [33mfill[39m=[32m"none"[39m
+                      [33mheight[39m=[32m"14"[39m
+                      [33mstroke[39m=[32m"currentColor"[39m
+                      [33mstroke-linecap[39m=[32m"round"[39m
+                      [33mstroke-linejoin[39m=[32m"round"[39m
+                      [33mstroke-width[39m=[32m"2"[39m
+                      [33mviewBox[39m=[32m"0 0 24 24"[39m
+                      [33mwidth[39m=[32m"14"[39m
+                    [36m>[39m
+                      [36m<polyline[39m
+                        [33mpoints[39m=[32m"20 6 ...
+[90m [2m❯[22m Object.getElementError ../../node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/config.js:[2m37:19[22m[39m
+[90m [2m❯[22m ../../node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/query-helpers.js:[2m76:38[22m[39m
+[90m [2m❯[22m ../../node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/query-helpers.js:[2m52:17[22m[39m
+[90m [2m❯[22m ../../node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/query-helpers.js:[2m95:19[22m[39m
+[36m [2m❯[22m src/pages/LandingPage.test.tsx:[2m151:19[22m[39m
+    [90m149| [39m    fireEvent[33m.[39m[34mclick[39m(path)[33m;[39m
+    [90m150| [39m    fireEvent[33m.[39m[34mmouseLeave[39m(path)[33m;[39m
+    [90m151| [39m    [34mexpect[39m(screen[33m.[39m[34mgetByText[39m([32m"Hà Giang"[39m))[33m.[39m[34mtoBeInTheDocument[39m()[33m;[39m
+    [90m   | [39m                  [31m^[39m
+    [90m152| [39m    [34mexpect[39m(screen[33m.[39m[34mqueryByText[39m([32m"Hậu Giang"[39m))[33m.[39mnot[33m.[39m[34mtoBeInTheDocument[39m()[33m;[39m
+    [90m153| [39m    [34mexpect[39m(container[33m.[39m[34mquerySelectorAll[39m([32m'path[fill="#FFCD00"]'[39m))[33m.[39m[34mtoHaveL[39m…
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯[22m[39m
+
+[31m[1m[7m FAIL [27m[22m[39m src/pages/LandingPage.test.tsx[2m > [22mLandingPage Component[2m > [22mupdates a hovered province from the refreshed cache and shows its source time
+[31m[1mTestingLibraryElementError[22m[39m: Unable to find role="tooltip"
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"_page_8e9c6c"[39m
+    [36m>[39m
+      [36m<section[39m
+        [33mclass[39m=[32m"_hero_8e9c6c"[39m
+      [36m>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"_heroBackground_8e9c6c"[39m
+        [36m/>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"_heroGlowSphere1_8e9c6c"[39m
+        [36m/>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"_heroGlowSphere2_8e9c6c"[39m
+        [36m/>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"_container_8e9c6c"[39m
+        [36m>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"_heroGrid_8e9c6c"[39m
+          [36m>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"_heroLeft_8e9c6c"[39m
+            [36m>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"_eyebrowBadge_8e9c6c _animHeroText_8e9c6c"[39m
+              [36m>[39m
+                [36m<span[39m
+                  [33mclass[39m=[32m"_eyebrowPulse_8e9c6c"[39m
+                [36m/>[39m
+                [36m<span[39m
+                  [33mclass[39m=[32m"_eyebrowText_8e9c6c"[39m
+                [36m>[39m
+                  [0mTrợ lý Du lịch Thời tiết Thông minh Việt Nam[0m
+                [36m</span>[39m
+              [36m</div>[39m
+              [36m<h1[39m
+                [33mclass[39m=[32m"_heroTitle_8e9c6c _animHeroText_8e9c6c"[39m
+              [36m>[39m
+                [0mHành trình trọn vẹn với[0m
+                [0m [0m
+                [36m<span[39m
+                  [33mclass[39m=[32m"_heroHighlight_8e9c6c"[39m
+                [36m>[39m
+                  [0mDự báo Thời tiết[0m
+                [36m</span>[39m
+                [0m thông minh[0m
+              [36m</h1>[39m
+              [36m<p[39m
+                [33mclass[39m=[32m"_heroSubtitle_8e9c6c _animHeroText_8e9c6c"[39m
+              [36m>[39m
+                [0mĐưa ra quyết định du lịch tại Việt Nam dựa trên dữ liệu thời tiết có nguồn[0m
+              [36m</p>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"_heroCtaGroup_8e9c6c _animHeroText_8e9c6c"[39m
+              [36m>[39m
+                [36m<a[39m
+                  [33mclass[39m=[32m"_heroPrimaryBtn_8e9c6c"[39m
+                  [33mhref[39m=[32m"/register"[39m
+                [36m>[39m
+                  [36m<span>[39m
+                    [0mBắt đầu ngay[0m
+                  [36m</span>[39m
+                  [36m<svg[39m
+                    [33mfill[39m=[32m"none"[39m
+                    [33mheight[39m=[32m"18"[39m
+                    [33mstroke[39m=[32m"currentColor"[39m
+                    [33mstroke-linecap[39m=[32m"round"[39m
+                    [33mstroke-linejoin[39m=[32m"round"[39m
+                    [33mstroke-width[39m=[32m"2"[39m
+                    [33mviewBox[39m=[32m"0 0 24 24"[39m
+                    [33mwidth[39m=[32m"18"[39m
+                  [36m>[39m
+                    [36m<path[39m
+                      [33md[39m=[32m"M5 12h14M12 5l7 7-7 7"[39m
+                    [36m/>[39m
+                  [36m</svg>[39m
+                [36m</a>[39m
+                [36m<a[39m
+                  [33mclass[39m=[32m"_heroSecondaryBtn_8e9c6c"[39m
+                  [33mhref[39m=[32m"/login"[39m
+                [36m>[39m
+                  [36m<span>[39m
+                    [0mĐăng nhập[0m
+                  [36m</span>[39m
+                [36m</a>[39m
+              [36m</div>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"_trustMetrics_8e9c6c _animHeroText_8e9c6c"[39m
+              [36m>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"_trustItem_8e9c6c"[39m
+                [36m>[39m
+                  [36m<div[39m
+                    [33mclass[39m=[32m"_trustIconOk_8e9c6c"[39m
+                  [36m>[39m
+                    [36m<svg[39m
+                      [33mfill[39m=[32m"none"[39m
+                      [33mheight[39m=[32m"14"[39m
+                      [33mstroke[39m=[32m"currentColor"[39m
+                      [33mstroke-linecap[39m=[32m"round"[39m
+                      [33mstroke-linejoin[39m=[32m"round"[39m
+                      [33mstroke-width[39m=[32m"2"[39m
+                      [33mviewBox[39m=[32m"0 0 24 24"[39m
+                      [33mwidth[39m=[32m"14"[39m
+                    [36m>[39m
+                      [36m<polyline[39m
+                        [33mpoints[39m=[32m"20 6 9 17 4 12"[39m
+                      [36m/>[39m
+                    [36m</svg>[39m
+                  [36m</div>[39m
+                  [36m<span>[39m
+                    [0mlanding.trustMetric1[0m
+                  [36m</span>[39m
+                [36m</div>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"_trustItem_8e9c6c"[39m
+                [36m>[39m
+                  [36m<div[39m
+                    [33mclass[39m=[32m"_trustIconOk_8e9c6c"[39m
+                  [36m>[39m
+                    [36m<svg[39m
+                      [33mfill[39m=[32m"none"[39m
+                      [33mheight[39m=[32m"14"[39m
+                      [33mstroke[39m=[32m"currentColor"[39m
+                      [33mstroke-linecap[39m=[32m"round"[39m
+                      [33mstroke-linejoin[39m=[32m"round"[39m
+                      [33mstroke-width[39m=[32m"2"[39m
+                      [33mviewBox[39m=[32m"0 0 24 24"[39m
+                      [33mwidth[39m=[32m"14"[39m
+                    [36m>[39m
+                      [36m<polyline[39m
+                        [33mpoints[39m=[32m"20 6 9 17 4 12"[39m
+                      [36m/>[39m
+                    [36m</svg>[39m
+                  [36m</div>[39m
+                  [36m<span>[39m
+                    [0mlanding.trustMetric2[0m
+                  [36m</span>[39m
+                [36m</div>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"_trustItem_8e9c6c"[39m
+                [36m>[39m
+                  [36m<div[39m
+                    [33mclass[39m=[32m"_trustIconOk_8e9c6c"[39m
+                  [36m>[39m
+                    [36m<svg[39m
+                      [33mfill[39m=[32m"none"[39m
+                      [33mheight[39m=[32m"14"[39m
+                      [33mstroke[39m=[32m"currentColor"[39m
+                      [33mstroke-linecap[39m=[32m"round"[39m
+                      [33mstroke-linejoin[39m=[32m"round"[39m
+                      [33mstroke-width[39m=[32m"2"[39m
+                      [33mviewBox[39m=[32m"0 0 24 24"[39m
+                      [33mwidth[39m=[32m"14"[39m
+                    [36m>[39m
+                      [36m<polyline[39m
+                        [33mpoints[39m=[32m"20 6 ...
+
+Ignored nodes: comments, script, style
+[36m<html>[39m
+  [36m<head />[39m
+  [36m<body>[39m
+    [36m<div>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"_page_8e9c6c"[39m
+      [36m>[39m
+        [36m<section[39m
+          [33mclass[39m=[32m"_hero_8e9c6c"[39m
+        [36m>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"_heroBackground_8e9c6c"[39m
+          [36m/>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"_heroGlowSphere1_8e9c6c"[39m
+          [36m/>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"_heroGlowSphere2_8e9c6c"[39m
+          [36m/>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"_container_8e9c6c"[39m
+          [36m>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"_heroGrid_8e9c6c"[39m
+            [36m>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"_heroLeft_8e9c6c"[39m
+              [36m>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"_eyebrowBadge_8e9c6c _animHeroText_8e9c6c"[39m
+                [36m>[39m
+                  [36m<span[39m
+                    [33mclass[39m=[32m"_eyebrowPulse_8e9c6c"[39m
+                  [36m/>[39m
+                  [36m<span[39m
+                    [33mclass[39m=[32m"_eyebrowText_8e9c6c"[39m
+                  [36m>[39m
+                    [0mTrợ lý Du lịch Thời tiết Thông minh Việt Nam[0m
+                  [36m</span>[39m
+                [36m</div>[39m
+                [36m<h1[39m
+                  [33mclass[39m=[32m"_heroTitle_8e9c6c _animHeroText_8e9c6c"[39m
+                [36m>[39m
+                  [0mHành trình trọn vẹn với[0m
+                  [0m [0m
+                  [36m<span[39m
+                    [33mclass[39m=[32m"_heroHighlight_8e9c6c"[39m
+                  [36m>[39m
+                    [0mDự báo Thời tiết[0m
+                  [36m</span>[39m
+                  [0m thông minh[0m
+                [36m</h1>[39m
+                [36m<p[39m
+                  [33mclass[39m=[32m"_heroSubtitle_8e9c6c _animHeroText_8e9c6c"[39m
+                [36m>[39m
+                  [0mĐưa ra quyết định du lịch tại Việt Nam dựa trên dữ liệu thời tiết có nguồn[0m
+                [36m</p>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"_heroCtaGroup_8e9c6c _animHeroText_8e9c6c"[39m
+                [36m>[39m
+                  [36m<a[39m
+                    [33mclass[39m=[32m"_heroPrimaryBtn_8e9c6c"[39m
+                    [33mhref[39m=[32m"/register"[39m
+                  [36m>[39m
+                    [36m<span>[39m
+                      [0mBắt đầu ngay[0m
+                    [36m</span>[39m
+                    [36m<svg[39m
+                      [33mfill[39m=[32m"none"[39m
+                      [33mheight[39m=[32m"18"[39m
+                      [33mstroke[39m=[32m"currentColor"[39m
+                      [33mstroke-linecap[39m=[32m"round"[39m
+                      [33mstroke-linejoin[39m=[32m"round"[39m
+                      [33mstroke-width[39m=[32m"2"[39m
+                      [33mviewBox[39m=[32m"0 0 24 24"[39m
+                      [33mwidth[39m=[32m"18"[39m
+                    [36m>[39m
+                      [36m<path[39m
+                        [33md[39m=[32m"M5 12h14M12 5l7 7-7 7"[39m
+                      [36m/>[39m
+                    [36m</svg>[39m
+                  [36m</a>[39m
+                  [36m<a[39m
+                    [33mclass[39m=[32m"_heroSecondaryBtn_8e9c6c"[39m
+                    [33mhref[39m=[32m"/login"[39m
+                  [36m>[39m
+                    [36m<span>[39m
+                      [0mĐăng nhập[0m
+                    [36m</span>[39m
+                  [36m</a>[39m
+                [36m</div>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"_trustMetrics_8e9c6c _animHeroText_8e9c6c"[39m
+                [36m>[39m
+                  [36m<div[39m
+                    [33mclass[39m=[32m"_trustItem_8e9c6c"[39m
+                  [36m>[39m
+                    [36m<div[39m
+                      [33mclass[39m=[32m"_trustIconOk_8e9c6c"[39m
+                    [36m>[39m
+                      [36m<svg[39m
+                        [33mfill[39m=[32m"none"[39m
+                        [33mheight[39m=[32m"14"[39m
+                        [33mstroke[39m=[32m"currentColor"[39m
+                        [33mstroke-linecap[39m=[32m"round"[39m
+                        [33mstroke-linejoin[39m=[32m"round"[39m
+                        [33mstroke-width[39m=[32m"2"[39m
+                        [33mviewBox[39m=[32m"0 0 24 24"[39m
+                        [33mwidth[39m=[32m"14"[39m
+                      [36m>[39m
+                        [36m<polyline[39m
+                          [33mpoints[39m=[32m"20 6 9 17 4 12"[39m
+                        [36m/>[39m
+                      [36m</svg>[39m
+                    [36m</div>[39m
+                    [36m<span>[39m
+                      [0mlanding.trustMetric1[0m
+                    [36m</span>[39m
+                  [36m</div>[39m
+                  [36m<div[39m
+                    [33mclass[39m=[32m"_trustItem_8e9c6c"[39m
+                  [36m>[39m
+                    [36m<div[39m
+                      [33mclass[39m=[32m"_trustIconOk_8e9c6c"[39m
+                    [36m>[39m
+                      [36m<svg[39m
+                        [33mfill[39m=[32m"none"[39m
+                        [33mheight[39m=[32m"14"[39m
+                        [33mstroke[39m=[32m"currentColor"[39m
+                        [33mstroke-linecap[39m=[32m"round"[39m
+                        [33mstroke-linejoin[39m=[32m"round"[39m
+                        [33mstroke-width[39m=[32m"2"[39m
+                        [33mviewBox[39m=[32m"0 0 24 24"[39m
+                        [33mwidth[39m=[32m"14"[39m
+                      [36m>[39m
+                        [36m<polyline[39m
+                          [33mpoints[39m=[32m"20 6 9 17 4 12"[39m
+                        [36m/>[39m
+                      [36m</svg>[39m
+                    [36m</div>[39m
+                    [36m<span>[39m
+                      [0mlanding.trustMetric2[0m
+                    [36m</span>[39m
+                  [36m</div>[39m
+                  [36m<div[39m
+                    [33mclass[39m=[32m"_trustItem_8e9c6c"[39m
+                  [36m>[39m
+                    [36m<div[39m
+                      [33mclass[39m=[32m"_trustIconOk_8e9c6c"[39m
+                    [36m>[39m
+                      [36m<svg[39m
+                        [33mfill[39m=[32m"none"[39m
+                        [33mheight[39m=[32m"14"[39m
+                        [33mstroke[39m=[32m"currentColor"[39m
+                        [33mstroke-linecap[39m=[32m"round"[39m
+                      ...
+[90m [2m❯[22m Proxy.waitForWrapper ../../node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/wait-for.js:[2m163:27[22m[39m
+[36m [2m❯[22m src/pages/LandingPage.test.tsx:[2m159:11[22m[39m
+    [90m157| [39m    [35mconst[39m { container[33m,[39m client } [33m=[39m [34mrenderWithRouter[39m()[33m;[39m
+    [90m158| [39m    fireEvent[33m.[39m[34mmouseEnter[39m([34mprovincePath[39m(container[33m,[39m [32m"vn-hg"[39m))[33m;[39m
+    [90m159| [39m    [35mawait[39m [34mwaitFor[39m(() [33m=>[39m [34mexpect[39m(screen[33m.[39m[34mgetByRole[39m([32m"tooltip"[39m)[33m.[39m[34mquerySelect[39m…
+    [90m   | [39m          [31m^[39m
+    [90m160| [39m    [34mexpect[39m(screen[33m.[39m[34mgetByRole[39m([32m"tooltip"[39m))[33m.[39m[34mtoHaveTextContent[39m([32m"08:15"[39m)[33m;[39m
+    [90m161| [39m    [35mconst[39m refreshed [33m=[39m [34mweatherOverview[39m()[33m;[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/3]⎯[22m[39m
+
+[2m Test Files [22m [1m[31m1 failed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[31m3 failed[39m[22m[2m | [22m[1m[32m3 passed[39m[22m[90m (6)[39m
+[2m   Start at [22m 08:42:24
+[2m   Duration [22m 4.25s[2m (transform 456ms, setup 182ms, collect 755ms, tests 2.31s, environment 475ms, prepare 192ms)[22m
+
+undefined
+C:\Users\dangh\Downloads\VietNameWeatherWithAi\VietNamWeather_Supported_with_ai\apps\web:
+[ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL] Command failed with exit code 1: vitest run src/pages/LandingPage.test.tsx "--reporter=dot"

@@ -1,0 +1,40 @@
+
+ RUN  v2.1.9 C:/Users/dangh/Downloads/VietNameWeatherWithAi/VietNamWeather_Supported_with_ai/apps/web
+
+ ❯ src/components/map/checkpointMarker.test.ts (8 tests | 2 failed) 204ms
+   × compact route checkpoint tooltip > keeps the popup inside the map at marker position +0,60 48ms
+     → expected 94 to be 116 // Object.is equality
+   × compact route checkpoint tooltip > keeps the popup inside the map at marker position 356,60 6ms
+     → expected 94 to be 116 // Object.is equality
+ ✓ src/components/map/RouteInteractiveMap.lifecycle.test.tsx (6 tests) 363ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/components/map/checkpointMarker.test.ts > compact route checkpoint tooltip > keeps the popup inside the map at marker position +0,60
+ FAIL  src/components/map/checkpointMarker.test.ts > compact route checkpoint tooltip > keeps the popup inside the map at marker position 356,60
+AssertionError: expected 94 to be 116 // Object.is equality
+
+- Expected
++ Received
+
+- 116
++ 94
+
+ ❯ src/components/map/checkpointMarker.test.ts:33:59
+     31|     marker.reposition();
+     32|     expect(x + parseFloat(tooltip.style.insetInlineStart)).toBe(expect…
+     33|     expect(y + parseFloat(tooltip.style.insetBlockStart)).toBe(expecte…
+       |                                                           ^
+     34|     expect(tooltip.style.maxInlineSize).toBe("384px");
+     35|     expect(tooltip.style.maxBlockSize).toBe("384px");
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ Test Files  1 failed | 1 passed (2)
+      Tests  2 failed | 12 passed (14)
+   Start at  12:11:20
+   Duration  2.29s (transform 573ms, setup 345ms, collect 1.09s, tests 567ms, environment 921ms, prepare 335ms)
+
+undefined
+C:\Users\dangh\Downloads\VietNameWeatherWithAi\VietNamWeather_Supported_with_ai\apps\web:
+[ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL] Command failed with exit code 1: vitest run src/components/map/checkpointMarker.test.ts src/components/map/RouteInteractiveMap.lifecycle.test.tsx "--reporter=dot"

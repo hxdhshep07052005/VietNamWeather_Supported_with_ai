@@ -1,0 +1,151 @@
+[
+  {
+    "offset": 0,
+    "http": 200,
+    "ms": 578,
+    "count": 63,
+    "missing": {
+      "temperature_c": 0,
+      "gust_kmh": 0,
+      "visibility_m": 0,
+      "precipitation_mm": 0,
+      "rain_mm_per_hour": 0,
+      "humidity_percent": 0,
+      "condition_code": 0
+    },
+    "notFresh": [],
+    "notExact": [
+      {
+        "name": "Điện Biên",
+        "distance": 31.03372226
+      },
+      {
+        "name": "Lai Châu",
+        "distance": 54.01738545
+      },
+      {
+        "name": "Sơn La",
+        "distance": 44.28793741
+      },
+      {
+        "name": "Hà Nam",
+        "distance": 15.20907564
+      }
+    ],
+    "unknownConditions": [
+      "Tuyên Quang",
+      "Yên Bái",
+      "Phú Thọ",
+      "Vĩnh Phúc"
+    ],
+    "forecastRain": 63
+  },
+  {
+    "offset": 1,
+    "http": 200,
+    "ms": 370,
+    "count": 63,
+    "missing": {
+      "temperature_c": 0,
+      "gust_kmh": 0,
+      "visibility_m": 0,
+      "precipitation_mm": 0,
+      "rain_mm_per_hour": 0,
+      "humidity_percent": 0,
+      "condition_code": 0
+    },
+    "notFresh": [],
+    "notExact": [
+      {
+        "name": "Điện Biên",
+        "distance": 31.03372226
+      },
+      {
+        "name": "Lai Châu",
+        "distance": 54.01738545
+      },
+      {
+        "name": "Sơn La",
+        "distance": 44.28793741
+      },
+      {
+        "name": "Hà Nam",
+        "distance": 15.20907564
+      }
+    ],
+    "unknownConditions": [],
+    "forecastRain": 63
+  },
+  {
+    "offset": 24,
+    "http": 200,
+    "ms": 312,
+    "count": 63,
+    "missing": {
+      "temperature_c": 0,
+      "gust_kmh": 0,
+      "visibility_m": 0,
+      "precipitation_mm": 0,
+      "rain_mm_per_hour": 0,
+      "humidity_percent": 0,
+      "condition_code": 0
+    },
+    "notFresh": [],
+    "notExact": [
+      {
+        "name": "Điện Biên",
+        "distance": 31.03372226
+      },
+      {
+        "name": "Lai Châu",
+        "distance": 54.01738545
+      },
+      {
+        "name": "Sơn La",
+        "distance": 44.28793741
+      },
+      {
+        "name": "Hà Nam",
+        "distance": 15.20907564
+      }
+    ],
+    "unknownConditions": [],
+    "forecastRain": 63
+  },
+  {
+    "offset": 48,
+    "http": 200,
+    "ms": 171,
+    "count": 63,
+    "missing": {
+      "temperature_c": 0,
+      "gust_kmh": 0,
+      "visibility_m": 0,
+      "precipitation_mm": 0,
+      "rain_mm_per_hour": 0,
+      "humidity_percent": 0,
+      "condition_code": 0
+    },
+    "notFresh": [],
+    "notExact": [
+      {
+        "name": "Điện Biên",
+        "distance": 31.03372226
+      },
+      {
+        "name": "Lai Châu",
+        "distance": 54.01738545
+      },
+      {
+        "name": "Sơn La",
+        "distance": 44.28793741
+      },
+      {
+        "name": "Hà Nam",
+        "distance": 15.20907564
+      }
+    ],
+    "unknownConditions": [],
+    "forecastRain": 63
+  }
+]

@@ -1,0 +1,59 @@
+$ node --test test/*.test.mjs
+✔ maps only exact SQL-whitelisted normalized fields with deterministic row identity (5.6074ms)
+✔ mapping retains current/hourly measurements: reported values (0.6481ms)
+✔ mapping retains current/hourly measurements: zero (0.4518ms)
+✔ mapping retains current/hourly measurements: missing (0.4574ms)
+✔ persists daily average humidity without replacing 75 (0.3592ms)
+✔ persists daily average humidity without replacing 0 (0.2255ms)
+✔ persists daily average humidity without replacing null (0.3509ms)
+✔ restored measurements affect checksums without changing logical snapshot identity (1.4483ms)
+✔ measurement migration retains every mapped field through SQL persistence and fetch projections (9.3225ms)
+✔ parses bounded runtime policy and resolves only the injected WeatherAPI secret (1.1289ms)
+✔ Postgres store delegates every durable transition to the Phase 5 SQL functions (1.6116ms)
+✔ persists a successful run, heartbeats its lease, and exposes graceful readiness (39.9904ms)
+✔ completes partial normalized persistence with sanitized status details (16.4354ms)
+▶ uses bounded exponential backoff and delegates retry/dead-letter decisions
+  ✔ retry (2.5161ms)
+  ✔ final attempt (11.2801ms)
+✔ uses bounded exponential backoff and delegates retry/dead-letter decisions (15.6314ms)
+▶ auth, schema, and non-allowlisted provider configuration are terminal
+  ✔ auth (2.4714ms)
+  ✔ schema (11.7776ms)
+  ✔ provider key (14.5587ms)
+  ✔ provider URL (15.5076ms)
+  ✔ credential reference (1.6266ms)
+✔ auth, schema, and non-allowlisted provider configuration are terminal (47.393ms)
+✔ recovers durable polling when PostgreSQL and optional wake coordination fail (44.2126ms)
+✔ never leaks secrets, target, URL, raw fields, or unsafe error text (15.5335ms)
+✔ separates restored persistence fields from legacy snapshot identities (0.554ms)
+✔ persistence conflicts produce failure messages accepted by SQL sanitization (14.5168ms)
+✔ worker exposes live and ready health endpoints (59.459ms)
+✔ normalizes sanitized current, 72 hourly, and 3 daily records (19.0829ms)
+✔ preserves Vietnam local-day coverage while emitting UTC instants and metric units (2.9634ms)
+✔ unit conversion covers zero, exact values, and invalid boundaries (0.5942ms)
+✔ keeps local midnight boundaries when the provider returns a partial day (1.8723ms)
+✔ rejects inconsistent provider days instead of silently dropping forecast hours (1.2731ms)
+✔ checksum is deterministic over the complete normalized payload (8.1754ms)
+✔ rejects malformed, missing, and out-of-range data with stable unknown conditions (5.9999ms)
+✔ does not retain raw provider fields or provider condition text (2.5773ms)
+✔ calls only the exact HTTPS allowlisted WeatherAPI forecast URL (43.723ms)
+✔ rejects non-allowlisted origin, protocol, path, credentials, query, and fragment (1.8047ms)
+✔ never exposes the query key through network or provider errors and logs (1.7224ms)
+▶ classifies timeout, rate limit, server, auth, hard quota, and schema errors
+  ✔ timeout is retryable (5.8872ms)
+  ✔ 429 is retryable (1.3106ms)
+  ✔ 5xx is retryable (0.7382ms)
+  ✔ auth is not retryable (1.2979ms)
+  ✔ hard quota is not retryable (0.8443ms)
+  ✔ schema failure is not retryable (1.0423ms)
+✔ classifies timeout, rate limit, server, auth, hard quota, and schema errors (14.0154ms)
+✔ distinguishes caller abort from retryable timeout (1.0382ms)
+✔ rejects invalid coordinates and capability requests before fetch (0.6477ms)
+ℹ tests 47
+ℹ suites 0
+ℹ pass 47
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 324.8636

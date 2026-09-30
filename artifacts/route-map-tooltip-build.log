@@ -1,0 +1,19 @@
+$ tsc -b && vite build
+vite v5.4.21 building for production...
+transforming...
+✓ 2181 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                                  0.82 kB │ gzip:   0.45 kB
+dist/assets/maplibre-gl-worker-nfnkSQvL.mjs     18.59 kB
+dist/assets/index-C8iUN51f.css                 276.89 kB │ gzip:  44.33 kB
+dist/assets/charts-DrcoVK5j.js                   0.94 kB │ gzip:   0.54 kB
+dist/assets/react-DuL1aYnv.js                  163.03 kB │ gzip:  53.24 kB
+dist/assets/maplibre-EeZCcsc_.js               946.56 kB │ gzip: 248.85 kB
+dist/assets/index-9mz3XVlp.js                1,274.47 kB │ gzip: 365.49 kB
+
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+✓ built in 6.81s

@@ -1,0 +1,15 @@
+{
+  "method": "Source CSS contrast calculation, not rendered evidence",
+  "results": [
+    {
+      "surface": "1e293b",
+      "foreground": "#60a5fa",
+      "ratio": 5.75
+    },
+    {
+      "surface": "0f172a",
+      "foreground": "#60a5fa",
+      "ratio": 7.02
+    }
+  ]
+}

@@ -35,6 +35,13 @@ export interface ApiError {
   status?: number;
 }
 
+export interface LoginResponseData {
+  data: {
+    user: { id: string };
+    csrfToken: string;
+  };
+}
+
 class ApiClient {
   private baseUrl: string;
 
@@ -42,40 +49,64 @@ class ApiClient {
     this.baseUrl = baseUrl;
   }
 
-  private getHeaders(hasBody: boolean): HeadersInit {
-    const headers: HeadersInit = {
-      ...(hasBody ? { "Content-Type": "application/json" } : {}),
+  async ensureCsrfToken(forceFresh = false): Promise<string> {
+    if (!forceFresh) {
+      const existing = localStorage.getItem("csrf_token");
+      if (existing) return existing;
+    }
+
+    try {
+      const res = await fetch(`${this.baseUrl}/auth/csrf`, {
+        method: "GET",
+        credentials: "include",
+      });
+      if (res.ok) {
+        const body = await res.json();
+        const token = body?.data?.csrfToken;
+        if (token) {
+          localStorage.setItem("csrf_token", token);
+          return token;
+        }
+      }
+    } catch {
+      // ignore
+    }
+    return "";
+  }
+
+  private async request<T>(
+    endpoint: string,
+    options?: RequestInit,
+    isRetry = false
+  ): Promise<T> {
+    const url = `${this.baseUrl}${endpoint}`;
+    const method = (options?.method || "GET").toUpperCase();
+    const isMutating = ["POST", "PUT", "DELETE", "PATCH"].includes(method);
+
+    let csrfToken = localStorage.getItem("csrf_token");
+    if (isMutating && !csrfToken && !endpoint.includes("/auth/csrf")) {
+      csrfToken = await this.ensureCsrfToken();
+    }
+
+    const headers: Record<string, string> = {
+      ...(options?.body == null ? {} : { "Content-Type": "application/json" }),
       Accept: "application/json",
+      ...((options?.headers as Record<string, string>) || {}),
     };
 
-    // Add auth token if available
     const token = localStorage.getItem("access_token");
     if (token) {
       headers.Authorization = `Bearer ${token}`;
     }
 
-    // Add CSRF token if available
-    const csrfToken = localStorage.getItem("csrf_token");
-    if (csrfToken) {
-      (headers as Record<string, string>)["x-csrf-token"] = csrfToken;
+    if (isMutating && csrfToken && !headers["x-csrf-token"]) {
+      headers["x-csrf-token"] = csrfToken;
     }
-
-    return headers;
-  }
-
-  private async request<T>(
-    endpoint: string,
-    options?: RequestInit
-  ): Promise<T> {
-    const url = `${this.baseUrl}${endpoint}`;
 
     const response = await fetch(url, {
       ...options,
       credentials: "include", // Include cookies for session auth
-      headers: {
-        ...this.getHeaders(options?.body != null),
-        ...options?.headers,
-      },
+      headers,
     });
 
     if (!response.ok) {
@@ -85,17 +116,29 @@ class ApiClient {
           ? (errorData as { error: ApiError }).error
           : (errorData as ApiError);
 
+      // If CSRF validation failed and not a retry, refresh token & retry once
+      if (!isRetry && errPayload?.code === "CSRF_REJECTED" && !endpoint.includes("/auth/csrf")) {
+        const freshCsrfToken = await this.ensureCsrfToken(true);
+        if (freshCsrfToken) {
+          const retryOptions = { ...options };
+          const retryHeaders = { ...((retryOptions.headers as Record<string, string>) || {}) };
+          retryHeaders["x-csrf-token"] = freshCsrfToken;
+          retryOptions.headers = retryHeaders;
+          return this.request<T>(endpoint, retryOptions, true);
+        }
+      }
+
       const err = Object.assign(
         new Error(errPayload?.message || "An unexpected error occurred"),
         {
           code: errPayload?.code || "UNKNOWN_ERROR",
-          status: response.status,
-          retryAfterSeconds: (() => {
-            const header = response.headers.get("retry-after");
-            if (!header) return undefined;
-            const seconds = Number(header);
-            return Number.isFinite(seconds) ? Math.max(1, seconds) : Math.max(1, (Date.parse(header) - Date.now()) / 1000);
-          })(),
+           status: response.status,
+           retryAfterSeconds: (() => {
+             const header = response.headers.get("retry-after");
+             if (!header) return undefined;
+             const seconds = Number(header);
+             return Number.isFinite(seconds) ? Math.max(1, seconds) : Math.max(1, (Date.parse(header) - Date.now()) / 1000);
+           })(),
           correlation_id: errPayload?.correlation_id,
         }
       );
@@ -264,11 +307,13 @@ export const authApi = {
   /**
    * Login
    */
-  login: (params: { email: string; password: string }) =>
-    apiClient.post<{ access_token: string; refresh_token: string; expires: number }>(
-      "/auth/login",
-      params
-    ),
+  login: async (params: { email: string; password: string }) => {
+    const res = await apiClient.post<LoginResponseData>("/auth/login", params);
+    if (res?.data?.csrfToken) {
+      localStorage.setItem("csrf_token", res.data.csrfToken);
+    }
+    return res;
+  },
 
   /**
    * Register
@@ -279,16 +324,26 @@ export const authApi = {
   /**
    * Refresh token
    */
-  refreshToken: (params: { refresh_token: string }) =>
-    apiClient.post<{ access_token: string; refresh_token: string; expires: number }>(
-      "/auth/refresh",
-      params
-    ),
+  refreshToken: async (params?: { refresh_token?: string }) => {
+    const res = await apiClient.post<LoginResponseData>("/auth/refresh", params);
+    if (res?.data?.csrfToken) {
+      localStorage.setItem("csrf_token", res.data.csrfToken);
+    }
+    return res;
+  },
 
   /**
    * Logout
    */
-  logout: () => apiClient.post<void>("/auth/logout"),
+  logout: async () => {
+    try {
+      await apiClient.post<void>("/auth/logout");
+    } finally {
+      localStorage.removeItem("csrf_token");
+      localStorage.removeItem("access_token");
+      localStorage.removeItem("refresh_token");
+    }
+  },
 
   /**
    * Verify email

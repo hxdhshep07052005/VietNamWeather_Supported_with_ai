@@ -52,6 +52,9 @@ services:
       - "127.0.0.1:${MAILPIT_UI_HOST_PORT:?MAILPIT_UI_HOST_PORT is required}:8025"
     networks:
       - application
+      - data
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     healthcheck:
       test: ["CMD", "/mailpit", "readyz"]
       interval: 5s
@@ -218,6 +221,11 @@ services:
       API_SESSION_ENCRYPTION_KEY: ${API_SESSION_ENCRYPTION_KEY:?API_SESSION_ENCRYPTION_KEY is required}
       API_CSRF_SIGNING_KEY: ${API_CSRF_SIGNING_KEY:?API_CSRF_SIGNING_KEY is required}
       WEATHERAPI_API_KEY: ${WEATHERAPI_API_KEY:?WEATHERAPI_API_KEY is required}
+      GEOAPIFY_SERVER_API_KEY: ${GEOAPIFY_SERVER_API_KEY:-be16ae38ed18448fa841abe646187725}
+      GEOAPIFY_API_KEY: ${GEOAPIFY_SERVER_API_KEY:-be16ae38ed18448fa841abe646187725}
+      GEMINI_BASE_URL: ${GEMINI_BASE_URL:-http://host.docker.internal:20128/v1}
+      GEMINI_API_KEY: ${GEMINI_API_KEY:-sk-d2e45af9b966ac7a-hjw8ib-346cb898}
+      GEMINI_MODEL: ${GEMINI_MODEL:-ag/gemini-3.8-flash-high}
       DB_HOST: database
       DB_PORT: 5432
       DB_DATABASE: ${DB_DATABASE:?DB_DATABASE is required}

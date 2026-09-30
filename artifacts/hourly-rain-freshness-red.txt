@@ -1,0 +1,41 @@
+✖ current weather retains observed rainfall while rain risk uses labeled matching hourly forecast (3.7845ms)
+✔ missing hourly rain keeps the known accumulation and never assumes mm means mm/hour (0.2697ms)
+✔ rain supplement failure cannot discard valid current temperature and wind (0.1952ms)
+✔ eligible closest source is selected before newest nearby source for current and forecast (0.2201ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 3
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 81.6968
+
+✖ failing tests:
+
+test at apps\api\test\weather-evidence-sources.test.mjs:13:1
+✖ current weather retains observed rainfall while rain risk uses labeled matching hourly forecast (3.7845ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /provider_issued_at >= \$4::timestamptz - INTERVAL '24 hours'/. Input:
+  
+  '\n' +
+    '      SELECT (precipitation_mm / NULLIF(EXTRACT(EPOCH FROM (valid_to-valid_from))/3600, 0))::float AS rain_mm_per_hour,\n' +
+    '        provider_id::text AS source, provider_issued_at AS source_time, fetched_at, valid_from, valid_to\n' +
+    '      FROM public.weather_forecasts\n' +
+    "      WHERE horizon_kind = 'hourly' AND valid_from <= $3 AND valid_to > $3\n" +
+    '        AND ST_DWithin(coordinates::geography, ST_SetSRID(ST_MakePoint($1,$2),4326)::geography,1)\n' +
+    "        AND provider_id::text = $5 AND status = 'valid' AND expires_at > $4\n" +
+    "        AND fetched_at <= $4 AND fetched_at >= $4::timestamptz - INTERVAL '24 hours'\n" +
+    '        AND (provider_issued_at IS NULL OR provider_issued_at <= $4)\n' +
+    '        AND precipitation_mm IS NOT NULL\n' +
+    '      ORDER BY fetched_at DESC LIMIT 1'
+  
+      at TestContext.<anonymous> (file:///C:/Users/dangh/Downloads/VietNameWeatherWithAi/VietNamWeather_Supported_with_ai/apps/api/test/weather-evidence-sources.test.mjs:29:10)
+      at async Test.run (node:internal/test_runner/test:1332:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:385:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: "\n      SELECT (precipitation_mm / NULLIF(EXTRACT(EPOCH FROM (valid_to-valid_from))/3600, 0))::float AS rain_mm_per_hour,\n        provider_id::text AS source, provider_issued_at AS source_time, fetched_at, valid_from, valid_to\n      FROM public.weather_forecasts\n      WHERE horizon_kind = 'hourly' AND valid_from <= $3 AND valid_to > $3\n        AND ST_DWithin(coordinates::geography, ST_SetSRID(ST_MakePoint($1,$2),4326)::geography,1)\n        AND provider_id::text = $5 AND status = 'valid' AND expires_at > $4\n        AND fetched_at <= $4 AND fetched_at >= $4::timestamptz - INTERVAL '24 hours'\n        AND (provider_issued_at IS NULL OR provider_issued_at <= $4)\n        AND precipitation_mm IS NOT NULL\n      ORDER BY fetched_at DESC LIMIT 1",
+    expected: /provider_issued_at >= \$4::timestamptz - INTERVAL '24 hours'/,
+    operator: 'match',
+    diff: 'simple'
+  }

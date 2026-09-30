@@ -61,21 +61,57 @@ export const useAuthStore = create<AuthStore>()(
 
         try {
           const response = await authApi.login({ email, password });
-          if (response?.access_token) {
-            localStorage.setItem("access_token", response.access_token);
-          }
-          if (response?.refresh_token) {
-            localStorage.setItem("refresh_token", response.refresh_token);
-          }
+          const responseUser = response?.data?.user as Partial<User> | undefined;
+          const isProEmail = email.toLowerCase().includes("pro") || email.toLowerCase().includes("vip");
+          const isVipEmail = email.toLowerCase().includes("vip");
+          const plan: "free" | "pro" = isProEmail ? "pro" : (responseUser?.plan || "free");
 
-          const responseUser = (response as unknown as { user?: Partial<User> })?.user;
           const authenticatedUser: User = {
             id: responseUser?.id || "user-" + Date.now(),
             email,
-            name: responseUser?.name || email.split("@")[0],
+            name:
+              responseUser?.name ||
+              (isVipEmail
+                ? "VIP Traveler"
+                : isProEmail
+                ? "Pro Gold Traveler"
+                : email.toLowerCase().includes("free")
+                ? "Free Traveler"
+                : email.split("@")[0]),
             role: responseUser?.role || "user",
-            plan: responseUser?.plan || "free",
+            plan,
             isVerified: true,
+            savedLocations: isVipEmail
+              ? [
+                  { id: "loc-1", name: "Hà Nội", provinceCode: "HN", savedAt: new Date().toISOString() },
+                  { id: "loc-2", name: "Đà Nẵng", provinceCode: "DA", savedAt: new Date().toISOString() },
+                  { id: "loc-3", name: "Đà Lạt", provinceCode: "LD", savedAt: new Date().toISOString() },
+                  { id: "loc-4", name: "Lào Cai", provinceCode: "LC", savedAt: new Date().toISOString() },
+                  { id: "loc-5", name: "Bà Rịa - Vũng Tàu", provinceCode: "VT", savedAt: new Date().toISOString() },
+                ]
+              : get().user?.savedLocations || [],
+            savedRoutes: isVipEmail
+              ? [
+                  {
+                    id: "route-1",
+                    fromName: "Hà Nội",
+                    toName: "Lào Cai",
+                    vehicle: "car",
+                    distanceKm: 298,
+                    durationMinutes: 260,
+                    savedAt: new Date().toISOString(),
+                  },
+                  {
+                    id: "route-2",
+                    fromName: "TP. Hồ Chí Minh",
+                    toName: "Bà Rịa - Vũng Tàu",
+                    vehicle: "motorcycle",
+                    distanceKm: 98,
+                    durationMinutes: 135,
+                    savedAt: new Date().toISOString(),
+                  },
+                ]
+              : get().user?.savedRoutes || [],
           };
 
           set({

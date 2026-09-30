@@ -1,0 +1,150 @@
+[
+  {
+    "offset": 0,
+    "status": 200,
+    "total": 63,
+    "missingProbability": 0,
+    "withoutSource": 0,
+    "intervalMismatch": 0,
+    "examples": [
+      {
+        "id": "an-giang",
+        "humidity": 79,
+        "wind": 8.6004,
+        "gust": 17.3988,
+        "uv": 0,
+        "rainChance": 19,
+        "condition": "haze"
+      },
+      {
+        "id": "tien-giang",
+        "humidity": 95,
+        "wind": 4.2984,
+        "gust": 4.3992,
+        "uv": 0,
+        "rainChance": 34,
+        "condition": "fog"
+      },
+      {
+        "id": "long-an",
+        "humidity": 95,
+        "wind": 4.2984,
+        "gust": 4.3992,
+        "uv": 0,
+        "rainChance": 34,
+        "condition": "fog"
+      }
+    ]
+  },
+  {
+    "offset": 1,
+    "status": 200,
+    "total": 63,
+    "missingProbability": 0,
+    "withoutSource": 0,
+    "intervalMismatch": 0,
+    "examples": [
+      {
+        "id": "an-giang",
+        "humidity": 80,
+        "wind": 7.5996,
+        "gust": 14.9004,
+        "uv": 0,
+        "rainChance": 22,
+        "condition": "rain"
+      },
+      {
+        "id": "tien-giang",
+        "humidity": 95,
+        "wind": 3.9996,
+        "gust": 4.1004,
+        "uv": 0,
+        "rainChance": 21,
+        "condition": "fog"
+      },
+      {
+        "id": "long-an",
+        "humidity": 95,
+        "wind": 3.9996,
+        "gust": 4.1004,
+        "uv": 0,
+        "rainChance": 21,
+        "condition": "fog"
+      }
+    ]
+  },
+  {
+    "offset": 24,
+    "status": 200,
+    "total": 63,
+    "missingProbability": 0,
+    "withoutSource": 0,
+    "intervalMismatch": 0,
+    "examples": [
+      {
+        "id": "an-giang",
+        "humidity": 90,
+        "wind": 7.5996,
+        "gust": 12.2004,
+        "uv": 0,
+        "rainChance": 35,
+        "condition": "rain"
+      },
+      {
+        "id": "tien-giang",
+        "humidity": 95,
+        "wind": 5.7996,
+        "gust": 9.3996,
+        "uv": 0,
+        "rainChance": 71,
+        "condition": "rain"
+      },
+      {
+        "id": "long-an",
+        "humidity": 95,
+        "wind": 5.7996,
+        "gust": 9.3996,
+        "uv": 0,
+        "rainChance": 71,
+        "condition": "rain"
+      }
+    ]
+  },
+  {
+    "offset": 48,
+    "status": 200,
+    "total": 63,
+    "missingProbability": 0,
+    "withoutSource": 0,
+    "intervalMismatch": 0,
+    "examples": [
+      {
+        "id": "an-giang",
+        "humidity": 89,
+        "wind": 4.7016,
+        "gust": 4.7988,
+        "uv": 0,
+        "rainChance": 28,
+        "condition": "cloudy"
+      },
+      {
+        "id": "long-an",
+        "humidity": 96,
+        "wind": 2.4984,
+        "gust": 2.5992,
+        "uv": 0,
+        "rainChance": 39,
+        "condition": "fog"
+      },
+      {
+        "id": "tien-giang",
+        "humidity": 96,
+        "wind": 2.4984,
+        "gust": 2.5992,
+        "uv": 0,
+        "rainChance": 39,
+        "condition": "fog"
+      }
+    ]
+  }
+]

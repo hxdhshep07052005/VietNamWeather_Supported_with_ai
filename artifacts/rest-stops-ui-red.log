@@ -1,0 +1,1575 @@
+
+ RUN  v2.1.9 C:/Users/dangh/Downloads/VietNameWeatherWithAi/VietNamWeather_Supported_with_ai/apps/web
+
+stderr | src/pages/RoutePlannerPage.test.tsx > route request inputs > uses the same current general-weather province overlay as Map
+⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition.
+⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath.
+
+ ❯ src/pages/RoutePlannerPage.test.tsx (17 tests | 3 failed) 950ms
+   × route request inputs > shows provisional scores and coverage while strict risk stays unknown 92ms
+     → Unable to find an element with the text: Low risk · provisional. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"_page_e8a340"[39m
+    [36m>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"_header_e8a340"[39m
+      [36m>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"_titleArea_e8a340"[39m
+        [36m>[39m
+          [36m<h1[39m
+            [33mclass[39m=[32m"_title_e8a340"[39m
+          [36m>[39m
+            [36m<span>[39m
+              [0mWeather-Aware Safe Route Planner[0m
+            [36m</span>[39m
+          [36m</h1>[39m
+          [36m<p[39m
+            [33mclass[39m=[32m"_subtitle_e8a340"[39m
+          [36m>[39m
+            [0mReal-time meteorological analytics at ETA checkpoints along transit corridors across Vietnam[0m
+          [36m</p>[39m
+        [36m</div>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"_headerMeta_e8a340"[39m
+        [36m>[39m
+          [36m<span[39m
+            [33mclass[39m=[32m"_planBadgePro_e8a340"[39m
+          [36m>[39m
+            [36m<svg[39m
+              [33maria-hidden[39m=[32m"true"[39m
+              [33mclass[39m=[32m"lucide lucide-crown"[39m
+              [33mfill[39m=[32m"none"[39m
+              [33mheight[39m=[32m"12"[39m
+              [33mstroke[39m=[32m"currentColor"[39m
+              [33mstroke-linecap[39m=[32m"round"[39m
+              [33mstroke-linejoin[39m=[32m"round"[39m
+              [33mstroke-width[39m=[32m"2.5"[39m
+              [33mviewBox[39m=[32m"0 0 24 24"[39m
+              [33mwidth[39m=[32m"12"[39m
+              [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+            [36m>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M11.562 3.266a.5.5 0 0 1 .876 0L15.39 8.87a1 1 0 0 0 1.516.294L21.183 5.5a.5.5 0 0 1 .798.519l-2.834 10.246a1 1 0 0 1-.956.734H5.81a1 1 0 0 1-.957-.734L2.02 6.02a.5.5 0 0 1 .798-.519l4.276 3.664a1 1 0 0 0 1.516-.294z"[39m
+              [36m/>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M5 21h14"[39m
+              [36m/>[39m
+            [36m</svg>[39m
+            [36m<span>[39m
+              [0mPRO GOLD TIER[0m
+            [36m</span>[39m
+          [36m</span>[39m
+          [36m<span[39m
+            [33mclass[39m=[32m"_quotaCounter_e8a340"[39m
+          [36m>[39m
+            [0mToday's quota:[0m
+            [0m [0m
+            [36m<strong>[39m
+              [0m30[0m
+            [36m</strong>[39m
+            [0m / [0m
+            [0m30[0m
+          [36m</span>[39m
+        [36m</div>[39m
+      [36m</div>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"_splitLayout_e8a340"[39m
+      [36m>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"_leftSidebar_e8a340"[39m
+        [36m>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"_plannerFormCard_e8a340"[39m
+          [36m>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"_routeInputsWrap_e8a340"[39m
+            [36m>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"_inputGroup_e8a340"[39m
+              [36m>[39m
+                [36m<label[39m
+                  [33mclass[39m=[32m"_inputLabel_e8a340"[39m
+                [36m>[39m
+                  [36m<span[39m
+                    [33mclass[39m=[32m"_inputLabelWithDot_e8a340"[39m
+                  [36m>[39m
+                    [36m<span[39m
+                      [33mclass[39m=[32m"_originDot_e8a340"[39m
+                    [36m/>[39m
+                    [0mOrigin Location[0m
+                  [36m</span>[39m
+                  [36m<button[39m
+                    [33mclass[39m=[32m"_gpsBtn_e8a340"[39m
+                    [33mtype[39m=[32m"button"[39m
+                  [36m>[39m
+                    [36m<svg[39m
+                      [33maria-hidden[39m=[32m"true"[39m
+                      [33mclass[39m=[32m"lucide lucide-navigation"[39m
+                      [33mfill[39m=[32m"none"[39m
+                      [33mheight[39m=[32m"12"[39m
+                      [33mstroke[39m=[32m"currentColor"[39m
+                      [33mstroke-linecap[39m=[32m"round"[39m
+                      [33mstroke-linejoin[39m=[32m"round"[39m
+                      [33mstroke-width[39m=[32m"2"[39m
+                      [33mviewBox[39m=[32m"0 0 24 24"[39m
+                      [33mwidth[39m=[32m"12"[39m
+                      [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+                    [36m>[39m
+                      [36m<polygon[39m
+                        [33mpoints[39m=[32m"3 11 22 2 13 21 11 13 3 11"[39m
+                      [36m/>[39m
+                    [36m</svg>[39m
+                    [36m<span>[39m
+                      [0mMy GPS[0m
+                    [36m</span>[39m
+                  [36m</button>[39m
+                [36m</label>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"_inputBox_e8a340"[39m
+                [36m>[39m
+                  [36m<input[39m
+                    [33mclass[39m=[32m"_inputField_e8a340"[39m
+                    [33mlist[39m=[32m"provinces-list"[39m
+                    [33mplaceholder[39m=[32m"Enter origin (e.g., Hanoi)..."[39m
+                    [33mtype[39m=[32m"text"[39m
+                    [33mvalue[39m=[32m"Hà Nội"[39m
+                  [36m/>[39m
+                [36m</div>[39m
+              [36m</div>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"_swapRow_e8a340"[39m
+              [36m>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"_swapLine_e8a340"[39m
+                [36m/>[39m
+                [36m<button[39m
+                  [33mclass[39m=[32m"_swapBtn_e8a340"[39m
+                  [33mtitle[39m=[32m"Swap origin and destination"[39m
+                  [33mtype[39m=[32m"button"[39m
+                [36m>[39m
+                  [36m<svg[39m
+                    [33mfill[39m=[32m"none"[39m
+                    [33mheight[39m=[32m"18"[39m
+                    [33mstroke[39m=[32m"currentColor"[39m
+                    [33mstroke-width[39m=[32m"2"[39m
+                    [33mviewBox[39m=[32m"0 0 24 24"[39m
+                    [33mwidth[39m=[32m"18"[39m
+                  [36m>[39m
+                    [36m<path[39m
+                      [33md[39m=[32m"M7 16V4M7 4L3 8M7 4L11 8M17 8V20M17 20L21 16M17 20L13 16"[39m
+                    [36m/>[39m
+                  [36m</svg>[39m
+                [36m</button>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"_swapLine_e8a340"[39m
+                [36m/>[39m
+              [36m</div>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"_inputGroup_e8a340"[39m
+              [36m>[39m
+                [36m<label[39m
+                  [33mclass[39m=...
+   × route request inputs > shows checkpoint risk, readable evidence gaps and exact Vietnam ETA 182ms
+     → Unable to find an accessible element with the role "region" and name "Weather checkpoints"
+
+Here are the accessible roles:
+
+  heading:
+
+  Name "Weather-Aware Safe Route Planner":
+  [36m<h1[39m
+    [33mclass[39m=[32m"_title_e8a340"[39m
+  [36m/>[39m
+
+  Name "Travel Alternatives":
+  [36m<h2[39m
+    [33mclass[39m=[32m"_resultsTitle_e8a340"[39m
+    [33mid[39m=[32m"travel-alternatives-title"[39m
+  [36m/>[39m
+
+  --------------------------------------------------
+  paragraph:
+
+  Name "":
+  [36m<p[39m
+    [33mclass[39m=[32m"_subtitle_e8a340"[39m
+  [36m/>[39m
+
+  Name "":
+  [36m<p[39m
+    [33mclass[39m=[32m"_resultsMetaText_e8a340"[39m
+  [36m/>[39m
+
+  Name "":
+  [36m<p />[39m
+
+  Name "":
+  [36m<p />[39m
+
+  --------------------------------------------------
+  strong:
+
+  Name "":
+  [36m<strong />[39m
+
+  Name "":
+  [36m<strong />[39m
+
+  Name "":
+  [36m<strong />[39m
+
+  --------------------------------------------------
+  button:
+
+  Name "Origin Location":
+  [36m<button[39m
+    [33mclass[39m=[32m"_gpsBtn_e8a340"[39m
+    [33mtype[39m=[32m"button"[39m
+  [36m/>[39m
+
+  Name "Swap origin and destination":
+  [36m<button[39m
+    [33mclass[39m=[32m"_swapBtn_e8a340"[39m
+    [33mtitle[39m=[32m"Swap origin and destination"[39m
+    [33mtype[39m=[32m"button"[39m
+  [36m/>[39m
+
+  Name "Hanoi → Sa Pa":
+  [36m<button[39m
+    [33mclass[39m=[32m"_presetChip_e8a340"[39m
+    [33mtype[39m=[32m"button"[39m
+  [36m/>[39m
+
+  Name "Da Nang → Hue":
+  [36m<button[39m
+    [33mclass[39m=[32m"_presetChip_e8a340"[39m
+    [33mtype[39m=[32m"button"[39m
+  [36m/>[39m
+
+  Name "HCMC → Da Lat":
+  [36m<button[39m
+    [33mclass[39m=[32m"_presetChip_e8a340"[39m
+    [33mtype[39m=[32m"button"[39m
+  [36m/>[39m
+
+  Name "HCMC → Vung Tau":
+  [36m<button[39m
+    [33mclass[39m=[32m"_presetChip_e8a340"[39m
+    [33mtype[39m=[32m"button"[39m
+  [36m/>[39m
+
+  Name "Car":
+  [36m<button[39m
+    [33mclass[39m=[32m"_vehicleBtn_e8a340 _vehicleBtnActive_e8a340"[39m
+    [33mtype[39m=[32m"button"[39m
+  [36m/>[39m
+
+  Name "Motorbike":
+  [36m<button[39m
+    [33mclass[39m=[32m"_vehicleBtn_e8a340 "[39m
+    [33mtype[39m=[32m"button"[39m
+  [36m/>[39m
+
+  Name "Find Safe Route":
+  [36m<button[39m
+    [33mclass[39m=[32m"_planActionBtn_e8a340"[39m
+    [33mtype[39m=[32m"button"[39m
+  [36m/>[39m
+
+  Name "Clear Route":
+  [36m<button[39m
+    [33mclass[39m=[32m"_clearRouteBtn_e8a340"[39m
+    [33mtitle[39m=[32m"Clear route and reset map"[39m
+    [33mtype[39m=[32m"button"[39m
+  [36m/>[39m
+
+  Name "Select Fastest route":
+  [36m<button[39m
+    [33maria-describedby[39m=[32m"alt-fastest-metrics"[39m
+    [33maria-label[39m=[32m"Select Fastest route"[39m
+    [33maria-pressed[39m=[32m"true"[39m
+    [33mclass[39m=[32m"_altBadge_e8a340"[39m
+    [33mtype[39m=[32m"button"[39m
+  [36m/>[39m
+
+  Name "Save route":
+  [36m<button[39m
+    [33mclass[39m=[32m"_saveBtn_e8a340"[39m
+    [33mtype[39m=[32m"button"[39m
+  [36m/>[39m
+
+  --------------------------------------------------
+  combobox:
+
+  Name "":
+  [36m<input[39m
+    [33mclass[39m=[32m"_inputField_e8a340"[39m
+    [33mlist[39m=[32m"provinces-list"[39m
+    [33mplaceholder[39m=[32m"Enter origin (e.g., Hanoi)..."[39m
+    [33mtype[39m=[32m"text"[39m
+    [33mvalue[39m=[32m"Hà Nội"[39m
+  [36m/>[39m
+
+  Name "":
+  [36m<input[39m
+    [33mclass[39m=[32m"_inputField_e8a340"[39m
+    [33mlist[39m=[32m"provinces-list"[39m
+    [33mplaceholder[39m=[32m"Enter destination (e.g., Lao Cai)..."[39m
+    [33mtype[39m=[32m"text"[39m
+    [33mvalue[39m=[32m"Lào Cai"[39m
+  [36m/>[39m
+
+  Name "":
+  [36m<select[39m
+    [33mclass[39m=[32m"_departureSelect_e8a340"[39m
+  [36m/>[39m
+
+  --------------------------------------------------
+  option:
+
+  Name "Leave Now":
+  [36m<option[39m
+    [33mvalue[39m=[32m"now"[39m
+  [36m/>[39m
+
+  Name "In 1 hour":
+  [36m<option[39m
+    [33mvalue[39m=[32m"in-1h"[39m
+  [36m/>[39m
+
+  Name "In 2 hours":
+  [36m<option[39m
+    [33mvalue[39m=[32m"in-2h"[39m
+  [36m/>[39m
+
+  Name "Tomorrow morning (06:00)":
+  [36m<option[39m
+    [33mvalue[39m=[32m"morning"[39m
+  [36m/>[39m
+
+  --------------------------------------------------
+  region:
+
+  Name "Travel Alternatives":
+  [36m<section[39m
+    [33maria-labelledby[39m=[32m"travel-alternatives-title"[39m
+    [33mclass[39m=[32m"_alternativesCard_e8a340"[39m
+  [36m/>[39m
+
+  Name "Rest stops near the fastest route":
+  [36m<section[39m
+    [33maria-label[39m=[32m"Rest stops near the fastest route"[39m
+  [36m/>[39m
+
+  --------------------------------------------------
+  status:
+
+  Name "":
+  [36m<p[39m
+    [33mclass[39m=[32m"_resultsMetaText_e8a340"[39m
+    [33mrole[39m=[32m"status"[39m
+  [36m/>[39m
+
+  --------------------------------------------------
+  article:
+
+  Name "Insufficient data":
+  [36m<article[39m
+    [33mclass[39m=[32m"_altCard_e8a340 _altCardSelected_e8a340"[39m
+    [33mdata-route-type[39m=[32m"fastest"[39m
+    [33mtitle[39m=[32m"Insufficient data"[39m
+  [36m/>[39m
+
+  --------------------------------------------------
+  group:
+
+  Name "ETA score":
+  [36m<div[39m
+    [33maria-label[39m=[32m"ETA score"[39m
+    [33mclass[39m=[32m"_panel_ff038d"[39m
+    [33mdata-risk-level[39m=[32m"unknown"[39m
+    [33mid[39m=[32m"alt-fastest-score"[39m
+    [33mrole[39m=[32m"group"[39m
+  [36m/>[39m
+
+  Name "":
+  [36m<details />[39m
+
+  --------------------------------------------------
+  link:
+
+  Name "Compare routes":
+  [36m<a[39m
+    [33mhref[39m=[32m"#comparison-matrix"[39m
+    [33mstyle[39m=[32m"font-size: 12px; color: var(--color-primary, #0066cc); text-decoration: none; font-weight: 600;"[39m
+  [36m/>[39m
+
+  Name "Example Rest Area":
+  [36m<a[39m
+    [33mhref[39m=[32m"https://www.openstreetmap.org/node/123"[39m
+    [33mrel[39m=[32m"noopener noreferrer"[39m
+    [33mtarget[39m=[32m"_blank"[39m
+  [36m/>[39m
+
+  --------------------------------------------------
+  list:
+
+  Name "":
+  [36m<ul />[39m
+
+  --------------------------------------------------
+  listitem:
+
+  Name "":
+  [36m<li />[39m
+
+  --------------------------------------------------
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"_page_e8a340"[39m
+    [36m>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"_header_e8a340"[39m
+      [36m>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"_titleArea_e8a340"[39m
+        [36m>[39m
+          [36m<h1[39m
+            [33mclass[39m=[32m"_title_e8a340"[39m
+          [36m>[39m
+            [36m<span>[39m
+              [0mWeather-Aware Safe Route Planner[0m
+            [36m</span>[39m
+          [36m</h1>[39m
+          [36m<p[39m
+            [33mclass[39m=[32m"_subtitle_e8a340"[39m
+          [36m>[39m
+            [0mReal-time meteorological analytics at ETA checkpoints along transit corridors across Vietnam[0m
+          [36m</p>[39m
+        [36m</div>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"_headerMeta_e8a340"[39m
+        [36m>[39m
+          [36m<span[39m
+            [33mclass[39m=[32m"_planBadgePro_e8a340"[39m
+          [36m>[39m
+            [36m<svg[39m
+              [33maria-hidden[39m=[32m"true"[39m
+              [33mclass[39m=[32m"lucide lucide-crown"[39m
+              [33mfill[39m=[32m"none"[39m
+              [33mheight[39m=[32m"12"[39m
+              [33mstroke[39m=[32m"currentColor"[39m
+              [33mstroke-linecap[39m=[32m"round"[39m
+              [33mstroke-linejoin[39m=[32m"round"[39m
+              [33mstroke-width[39m=[32m"2.5"[39m
+              [33mviewBox[39m=[32m"0 0 24 24"[39m
+              [33mwidth[39m=[32m"12"[39m
+              [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+            [36m>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M11.562 3.266a.5.5 0 0 1 .876 0L15.39 8.87a1 1 0 0 0 1.516.294L21.183 5.5a.5.5 0 0 1 .798.519l-2.834 10.246a1 1 0 0 1-.956.734H5.81a1 1 0 0 1-.957-.734L2.02 6.02a.5.5 0 0 1 .798-.519l4.276 3.664a1 1 0 0 0 1.516-.294z"[39m
+              [36m/>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M5 21h14"[39m
+              [36m/>[39m
+            [36m</svg>[39m
+            [36m<span>[39m
+              [0mPRO GOLD TIER[0m
+            [36m</span>[39m
+          [36m</span>[39m
+          [36m<span[39m
+            [33mclass[39m=[32m"_quotaCounter_e8a340"[39m
+          [36m>[39m
+            [0mToday's quota:[0m
+            [0m [0m
+            [36m<strong>[39m
+              [0m30[0m
+            [36m</strong>[39m
+            [0m / [0m
+            [0m30[0m
+          [36m</span>[39m
+        [36m</div>[39m
+      [36m</div>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"_splitLayout_e8a340"[39m
+      [36m>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"_leftSidebar_e8a340"[39m
+        [36m>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"_plannerFormCard_e8a340"[39m
+          [36m>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"_routeInputsWrap_e8a340"[39m
+            [36m>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"_inputGroup_e8a340"[39m
+              [36m>[39m
+                [36m<label[39m
+                  [33mclass[39m=[32m"_inputLabel_e8a340"[39m
+                [36m>[39m
+                  [36m<span[39m
+                    [33mclass[39m=[32m"_inputLabelWithDot_e8a340"[39m
+                  [36m>[39m
+                    [36m<span[39m
+                      [33mclass[39m=[32m"_originDot_e8a340"[39m
+                    [36m/>[39m
+                    [0mOrigin Location[0m
+                  [36m</span>[39m
+                  [36m<button[39m
+                    [33mclass[39m=[32m"_gpsBtn_e8a340"[39m
+                    [33mtype[39m=[32m"button"[39m
+                  [36m>[39m
+                    [36m<svg[39m
+                      [33maria-hidden[39m=[32m"true"[39m
+                      [33mclass[39m=[32m"lucide lucide-navigation"[39m
+                      [33mfill[39m=[32m"none"[39m
+                      [33mheight[39m=[32m"12"[39m
+                      [33mstroke[39m=[32m"currentColor"[39m
+                      [33mstroke-linecap[39m=[32m"round"[39m
+                      [33mstroke-linejoin[39m=[32m"round"[39m
+                      [33mstroke-width[39m=[32m"2"[39m
+                      [33mviewBox[39m=[32m"0 0 24 24"[39m
+                      [33mwidth[39m=[32m"12"[39m
+                      [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+                    [36m>[39m
+                      [36m<polygon[39m
+                        [33mpoints[39m=[32m"3 11 22 2 13 21 11 13 3 11"[39m
+                      [36m/>[39m
+                    [36m</svg>[39m
+                    [36m<span>[39m
+                      [0mMy GPS[0m
+                    [36m</span>[39m
+                  [36m</button>[39m
+                [36m</label>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"_inputBox_e8a340"[39m
+                [36m>[39m
+                  [36m<input[39m
+                    [33mclass[39m=[32m"_inputField_e8a340"[39m
+                    [33mlist[39m=[32m"provinces-list"[39m
+                    [33mplaceholder[39m=[32m"Enter origin (e.g., Hanoi)..."[39m
+                    [33mtype[39m=[32m"text"[39m
+                    [33mvalue[39m=[32m"Hà Nội"[39m
+                  [36m/>[39m
+                [36m</div>[39m
+              [36m</div>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"_swapRow_e8a340"[39m
+              [36m>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"_swapLine_e8a340"[39m
+                [36m/>[39m
+                [36m<button[39m
+                  [33mclass[39m=[32m"_swapBtn_e8a340"[39m
+                  [33mtitle[39m=[32m"Swap origin and destination"[39m
+                  [33mtype[39m=[32m"button"[39m
+                [36m>[39m
+                  [36m<svg[39m
+                    [33mfill[39m=[32m"none"[39m
+                    [33mheight[39m=[32m"18"[39m
+                    [33mstroke[39m=[32m"currentColor"[39m
+                    [33mstroke-width[39m=[32m"2"[39m
+                    [33mviewBox[39m=[32m"0 0 24 24"[39m
+                    [33mwidth[39m=[32m"18"[39m
+                  [36m>[39m
+                    [36m<path[39m
+                      [33md[39m=[32m"M7 16V4M7 4L3 8M7 4L11 8M17 8V20M17 20L21 16M17 20L13 16"[39m
+                    [36m/>[39m
+                  [36m</svg>[39m
+                [36m</button>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"_swapLine_e8a340"[39m
+                [36m/>[39m
+              [36m</div>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"_inputGroup_e8a340"[39m
+              [36m>[39m
+                [36m<label[39m
+                  [33mclass[39m=...
+   × route request inputs > shows the returned alternative count and explains unavailable weather ranking 45ms
+     → Unable to find an element with the text: Rest-stop locations are unavailable right now.. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"_page_e8a340"[39m
+    [36m>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"_header_e8a340"[39m
+      [36m>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"_titleArea_e8a340"[39m
+        [36m>[39m
+          [36m<h1[39m
+            [33mclass[39m=[32m"_title_e8a340"[39m
+          [36m>[39m
+            [36m<span>[39m
+              [0mWeather-Aware Safe Route Planner[0m
+            [36m</span>[39m
+          [36m</h1>[39m
+          [36m<p[39m
+            [33mclass[39m=[32m"_subtitle_e8a340"[39m
+          [36m>[39m
+            [0mReal-time meteorological analytics at ETA checkpoints along transit corridors across Vietnam[0m
+          [36m</p>[39m
+        [36m</div>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"_headerMeta_e8a340"[39m
+        [36m>[39m
+          [36m<span[39m
+            [33mclass[39m=[32m"_planBadgePro_e8a340"[39m
+          [36m>[39m
+            [36m<svg[39m
+              [33maria-hidden[39m=[32m"true"[39m
+              [33mclass[39m=[32m"lucide lucide-crown"[39m
+              [33mfill[39m=[32m"none"[39m
+              [33mheight[39m=[32m"12"[39m
+              [33mstroke[39m=[32m"currentColor"[39m
+              [33mstroke-linecap[39m=[32m"round"[39m
+              [33mstroke-linejoin[39m=[32m"round"[39m
+              [33mstroke-width[39m=[32m"2.5"[39m
+              [33mviewBox[39m=[32m"0 0 24 24"[39m
+              [33mwidth[39m=[32m"12"[39m
+              [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+            [36m>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M11.562 3.266a.5.5 0 0 1 .876 0L15.39 8.87a1 1 0 0 0 1.516.294L21.183 5.5a.5.5 0 0 1 .798.519l-2.834 10.246a1 1 0 0 1-.956.734H5.81a1 1 0 0 1-.957-.734L2.02 6.02a.5.5 0 0 1 .798-.519l4.276 3.664a1 1 0 0 0 1.516-.294z"[39m
+              [36m/>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M5 21h14"[39m
+              [36m/>[39m
+            [36m</svg>[39m
+            [36m<span>[39m
+              [0mPRO GOLD TIER[0m
+            [36m</span>[39m
+          [36m</span>[39m
+          [36m<span[39m
+            [33mclass[39m=[32m"_quotaCounter_e8a340"[39m
+          [36m>[39m
+            [0mToday's quota:[0m
+            [0m [0m
+            [36m<strong>[39m
+              [0m30[0m
+            [36m</strong>[39m
+            [0m / [0m
+            [0m30[0m
+          [36m</span>[39m
+        [36m</div>[39m
+      [36m</div>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"_splitLayout_e8a340"[39m
+      [36m>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"_leftSidebar_e8a340"[39m
+        [36m>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"_plannerFormCard_e8a340"[39m
+          [36m>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"_routeInputsWrap_e8a340"[39m
+            [36m>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"_inputGroup_e8a340"[39m
+              [36m>[39m
+                [36m<label[39m
+                  [33mclass[39m=[32m"_inputLabel_e8a340"[39m
+                [36m>[39m
+                  [36m<span[39m
+                    [33mclass[39m=[32m"_inputLabelWithDot_e8a340"[39m
+                  [36m>[39m
+                    [36m<span[39m
+                      [33mclass[39m=[32m"_originDot_e8a340"[39m
+                    [36m/>[39m
+                    [0mOrigin Location[0m
+                  [36m</span>[39m
+                  [36m<button[39m
+                    [33mclass[39m=[32m"_gpsBtn_e8a340"[39m
+                    [33mtype[39m=[32m"button"[39m
+                  [36m>[39m
+                    [36m<svg[39m
+                      [33maria-hidden[39m=[32m"true"[39m
+                      [33mclass[39m=[32m"lucide lucide-navigation"[39m
+                      [33mfill[39m=[32m"none"[39m
+                      [33mheight[39m=[32m"12"[39m
+                      [33mstroke[39m=[32m"currentColor"[39m
+                      [33mstroke-linecap[39m=[32m"round"[39m
+                      [33mstroke-linejoin[39m=[32m"round"[39m
+                      [33mstroke-width[39m=[32m"2"[39m
+                      [33mviewBox[39m=[32m"0 0 24 24"[39m
+                      [33mwidth[39m=[32m"12"[39m
+                      [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+                    [36m>[39m
+                      [36m<polygon[39m
+                        [33mpoints[39m=[32m"3 11 22 2 13 21 11 13 3 11"[39m
+                      [36m/>[39m
+                    [36m</svg>[39m
+                    [36m<span>[39m
+                      [0mMy GPS[0m
+                    [36m</span>[39m
+                  [36m</button>[39m
+                [36m</label>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"_inputBox_e8a340"[39m
+                [36m>[39m
+                  [36m<input[39m
+                    [33mclass[39m=[32m"_inputField_e8a340"[39m
+                    [33mlist[39m=[32m"provinces-list"[39m
+                    [33mplaceholder[39m=[32m"Enter origin (e.g., Hanoi)..."[39m
+                    [33mtype[39m=[32m"text"[39m
+                    [33mvalue[39m=[32m"Hà Nội"[39m
+                  [36m/>[39m
+                [36m</div>[39m
+              [36m</div>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"_swapRow_e8a340"[39m
+              [36m>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"_swapLine_e8a340"[39m
+                [36m/>[39m
+                [36m<button[39m
+                  [33mclass[39m=[32m"_swapBtn_e8a340"[39m
+                  [33mtitle[39m=[32m"Swap origin and destination"[39m
+                  [33mtype[39m=[32m"button"[39m
+                [36m>[39m
+                  [36m<svg[39m
+                    [33mfill[39m=[32m"none"[39m
+                    [33mheight[39m=[32m"18"[39m
+                    [33mstroke[39m=[32m"currentColor"[39m
+                    [33mstroke-width[39m=[32m"2"[39m
+                    [33mviewBox[39m=[32m"0 0 24 24"[39m
+                    [33mwidth[39m=[32m"18"[39m
+                  [36m>[39m
+                    [36m<path[39m
+                      [33md[39m=[32m"M7 16V4M7 4L3 8M7 4L11 8M17 8V20M17 20L21 16M17 20L13 16"[39m
+                    [36m/>[39m
+                  [36m</svg>[39m
+                [36m</button>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"_swapLine_e8a340"[39m
+                [36m/>[39m
+              [36m</div>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"_inputGroup_e8a340"[39m
+              [36m>[39m
+                [36m<label[39m
+                  [33mclass[39m=...
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/pages/RoutePlannerPage.test.tsx > route request inputs > shows provisional scores and coverage while strict risk stays unknown
+TestingLibraryElementError: Unable to find an element with the text: Low risk · provisional. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"_page_e8a340"[39m
+    [36m>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"_header_e8a340"[39m
+      [36m>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"_titleArea_e8a340"[39m
+        [36m>[39m
+          [36m<h1[39m
+            [33mclass[39m=[32m"_title_e8a340"[39m
+          [36m>[39m
+            [36m<span>[39m
+              [0mWeather-Aware Safe Route Planner[0m
+            [36m</span>[39m
+          [36m</h1>[39m
+          [36m<p[39m
+            [33mclass[39m=[32m"_subtitle_e8a340"[39m
+          [36m>[39m
+            [0mReal-time meteorological analytics at ETA checkpoints along transit corridors across Vietnam[0m
+          [36m</p>[39m
+        [36m</div>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"_headerMeta_e8a340"[39m
+        [36m>[39m
+          [36m<span[39m
+            [33mclass[39m=[32m"_planBadgePro_e8a340"[39m
+          [36m>[39m
+            [36m<svg[39m
+              [33maria-hidden[39m=[32m"true"[39m
+              [33mclass[39m=[32m"lucide lucide-crown"[39m
+              [33mfill[39m=[32m"none"[39m
+              [33mheight[39m=[32m"12"[39m
+              [33mstroke[39m=[32m"currentColor"[39m
+              [33mstroke-linecap[39m=[32m"round"[39m
+              [33mstroke-linejoin[39m=[32m"round"[39m
+              [33mstroke-width[39m=[32m"2.5"[39m
+              [33mviewBox[39m=[32m"0 0 24 24"[39m
+              [33mwidth[39m=[32m"12"[39m
+              [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+            [36m>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M11.562 3.266a.5.5 0 0 1 .876 0L15.39 8.87a1 1 0 0 0 1.516.294L21.183 5.5a.5.5 0 0 1 .798.519l-2.834 10.246a1 1 0 0 1-.956.734H5.81a1 1 0 0 1-.957-.734L2.02 6.02a.5.5 0 0 1 .798-.519l4.276 3.664a1 1 0 0 0 1.516-.294z"[39m
+              [36m/>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M5 21h14"[39m
+              [36m/>[39m
+            [36m</svg>[39m
+            [36m<span>[39m
+              [0mPRO GOLD TIER[0m
+            [36m</span>[39m
+          [36m</span>[39m
+          [36m<span[39m
+            [33mclass[39m=[32m"_quotaCounter_e8a340"[39m
+          [36m>[39m
+            [0mToday's quota:[0m
+            [0m [0m
+            [36m<strong>[39m
+              [0m30[0m
+            [36m</strong>[39m
+            [0m / [0m
+            [0m30[0m
+          [36m</span>[39m
+        [36m</div>[39m
+      [36m</div>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"_splitLayout_e8a340"[39m
+      [36m>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"_leftSidebar_e8a340"[39m
+        [36m>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"_plannerFormCard_e8a340"[39m
+          [36m>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"_routeInputsWrap_e8a340"[39m
+            [36m>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"_inputGroup_e8a340"[39m
+              [36m>[39m
+                [36m<label[39m
+                  [33mclass[39m=[32m"_inputLabel_e8a340"[39m
+                [36m>[39m
+                  [36m<span[39m
+                    [33mclass[39m=[32m"_inputLabelWithDot_e8a340"[39m
+                  [36m>[39m
+                    [36m<span[39m
+                      [33mclass[39m=[32m"_originDot_e8a340"[39m
+                    [36m/>[39m
+                    [0mOrigin Location[0m
+                  [36m</span>[39m
+                  [36m<button[39m
+                    [33mclass[39m=[32m"_gpsBtn_e8a340"[39m
+                    [33mtype[39m=[32m"button"[39m
+                  [36m>[39m
+                    [36m<svg[39m
+                      [33maria-hidden[39m=[32m"true"[39m
+                      [33mclass[39m=[32m"lucide lucide-navigation"[39m
+                      [33mfill[39m=[32m"none"[39m
+                      [33mheight[39m=[32m"12"[39m
+                      [33mstroke[39m=[32m"currentColor"[39m
+                      [33mstroke-linecap[39m=[32m"round"[39m
+                      [33mstroke-linejoin[39m=[32m"round"[39m
+                      [33mstroke-width[39m=[32m"2"[39m
+                      [33mviewBox[39m=[32m"0 0 24 24"[39m
+                      [33mwidth[39m=[32m"12"[39m
+                      [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+                    [36m>[39m
+                      [36m<polygon[39m
+                        [33mpoints[39m=[32m"3 11 22 2 13 21 11 13 3 11"[39m
+                      [36m/>[39m
+                    [36m</svg>[39m
+                    [36m<span>[39m
+                      [0mMy GPS[0m
+                    [36m</span>[39m
+                  [36m</button>[39m
+                [36m</label>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"_inputBox_e8a340"[39m
+                [36m>[39m
+                  [36m<input[39m
+                    [33mclass[39m=[32m"_inputField_e8a340"[39m
+                    [33mlist[39m=[32m"provinces-list"[39m
+                    [33mplaceholder[39m=[32m"Enter origin (e.g., Hanoi)..."[39m
+                    [33mtype[39m=[32m"text"[39m
+                    [33mvalue[39m=[32m"Hà Nội"[39m
+                  [36m/>[39m
+                [36m</div>[39m
+              [36m</div>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"_swapRow_e8a340"[39m
+              [36m>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"_swapLine_e8a340"[39m
+                [36m/>[39m
+                [36m<button[39m
+                  [33mclass[39m=[32m"_swapBtn_e8a340"[39m
+                  [33mtitle[39m=[32m"Swap origin and destination"[39m
+                  [33mtype[39m=[32m"button"[39m
+                [36m>[39m
+                  [36m<svg[39m
+                    [33mfill[39m=[32m"none"[39m
+                    [33mheight[39m=[32m"18"[39m
+                    [33mstroke[39m=[32m"currentColor"[39m
+                    [33mstroke-width[39m=[32m"2"[39m
+                    [33mviewBox[39m=[32m"0 0 24 24"[39m
+                    [33mwidth[39m=[32m"18"[39m
+                  [36m>[39m
+                    [36m<path[39m
+                      [33md[39m=[32m"M7 16V4M7 4L3 8M7 4L11 8M17 8V20M17 20L21 16M17 20L13 16"[39m
+                    [36m/>[39m
+                  [36m</svg>[39m
+                [36m</button>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"_swapLine_e8a340"[39m
+                [36m/>[39m
+              [36m</div>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"_inputGroup_e8a340"[39m
+              [36m>[39m
+                [36m<label[39m
+                  [33mclass[39m=...
+ ❯ Object.getElementError ../../node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/config.js:37:19
+ ❯ ../../node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/query-helpers.js:76:38
+ ❯ ../../node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/query-helpers.js:52:17
+ ❯ ../../node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/query-helpers.js:95:19
+ ❯ src/pages/RoutePlannerPage.test.tsx:109:19
+    107|     expect(alternatives.getByText("Combined score: lower is better. Co…
+    108|     expect(alternatives.queryByText(/42\/100/)).not.toBeInTheDocument(…
+    109|     expect(screen.getByText("Low risk · provisional")).toBeInTheDocume…
+       |                   ^
+    110|     expect(screen.queryByText("Risk at ETA: Safe")).not.toBeInTheDocum…
+    111|     const fastest = alternatives.getByRole("button", { name: "Select F…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+ FAIL  src/pages/RoutePlannerPage.test.tsx > route request inputs > shows checkpoint risk, readable evidence gaps and exact Vietnam ETA
+TestingLibraryElementError: Unable to find an accessible element with the role "region" and name "Weather checkpoints"
+
+Here are the accessible roles:
+
+  heading:
+
+  Name "Weather-Aware Safe Route Planner":
+  [36m<h1[39m
+    [33mclass[39m=[32m"_title_e8a340"[39m
+  [36m/>[39m
+
+  Name "Travel Alternatives":
+  [36m<h2[39m
+    [33mclass[39m=[32m"_resultsTitle_e8a340"[39m
+    [33mid[39m=[32m"travel-alternatives-title"[39m
+  [36m/>[39m
+
+  --------------------------------------------------
+  paragraph:
+
+  Name "":
+  [36m<p[39m
+    [33mclass[39m=[32m"_subtitle_e8a340"[39m
+  [36m/>[39m
+
+  Name "":
+  [36m<p[39m
+    [33mclass[39m=[32m"_resultsMetaText_e8a340"[39m
+  [36m/>[39m
+
+  Name "":
+  [36m<p />[39m
+
+  Name "":
+  [36m<p />[39m
+
+  --------------------------------------------------
+  strong:
+
+  Name "":
+  [36m<strong />[39m
+
+  Name "":
+  [36m<strong />[39m
+
+  Name "":
+  [36m<strong />[39m
+
+  --------------------------------------------------
+  button:
+
+  Name "Origin Location":
+  [36m<button[39m
+    [33mclass[39m=[32m"_gpsBtn_e8a340"[39m
+    [33mtype[39m=[32m"button"[39m
+  [36m/>[39m
+
+  Name "Swap origin and destination":
+  [36m<button[39m
+    [33mclass[39m=[32m"_swapBtn_e8a340"[39m
+    [33mtitle[39m=[32m"Swap origin and destination"[39m
+    [33mtype[39m=[32m"button"[39m
+  [36m/>[39m
+
+  Name "Hanoi → Sa Pa":
+  [36m<button[39m
+    [33mclass[39m=[32m"_presetChip_e8a340"[39m
+    [33mtype[39m=[32m"button"[39m
+  [36m/>[39m
+
+  Name "Da Nang → Hue":
+  [36m<button[39m
+    [33mclass[39m=[32m"_presetChip_e8a340"[39m
+    [33mtype[39m=[32m"button"[39m
+  [36m/>[39m
+
+  Name "HCMC → Da Lat":
+  [36m<button[39m
+    [33mclass[39m=[32m"_presetChip_e8a340"[39m
+    [33mtype[39m=[32m"button"[39m
+  [36m/>[39m
+
+  Name "HCMC → Vung Tau":
+  [36m<button[39m
+    [33mclass[39m=[32m"_presetChip_e8a340"[39m
+    [33mtype[39m=[32m"button"[39m
+  [36m/>[39m
+
+  Name "Car":
+  [36m<button[39m
+    [33mclass[39m=[32m"_vehicleBtn_e8a340 _vehicleBtnActive_e8a340"[39m
+    [33mtype[39m=[32m"button"[39m
+  [36m/>[39m
+
+  Name "Motorbike":
+  [36m<button[39m
+    [33mclass[39m=[32m"_vehicleBtn_e8a340 "[39m
+    [33mtype[39m=[32m"button"[39m
+  [36m/>[39m
+
+  Name "Find Safe Route":
+  [36m<button[39m
+    [33mclass[39m=[32m"_planActionBtn_e8a340"[39m
+    [33mtype[39m=[32m"button"[39m
+  [36m/>[39m
+
+  Name "Clear Route":
+  [36m<button[39m
+    [33mclass[39m=[32m"_clearRouteBtn_e8a340"[39m
+    [33mtitle[39m=[32m"Clear route and reset map"[39m
+    [33mtype[39m=[32m"button"[39m
+  [36m/>[39m
+
+  Name "Select Fastest route":
+  [36m<button[39m
+    [33maria-describedby[39m=[32m"alt-fastest-metrics"[39m
+    [33maria-label[39m=[32m"Select Fastest route"[39m
+    [33maria-pressed[39m=[32m"true"[39m
+    [33mclass[39m=[32m"_altBadge_e8a340"[39m
+    [33mtype[39m=[32m"button"[39m
+  [36m/>[39m
+
+  Name "Save route":
+  [36m<button[39m
+    [33mclass[39m=[32m"_saveBtn_e8a340"[39m
+    [33mtype[39m=[32m"button"[39m
+  [36m/>[39m
+
+  --------------------------------------------------
+  combobox:
+
+  Name "":
+  [36m<input[39m
+    [33mclass[39m=[32m"_inputField_e8a340"[39m
+    [33mlist[39m=[32m"provinces-list"[39m
+    [33mplaceholder[39m=[32m"Enter origin (e.g., Hanoi)..."[39m
+    [33mtype[39m=[32m"text"[39m
+    [33mvalue[39m=[32m"Hà Nội"[39m
+  [36m/>[39m
+
+  Name "":
+  [36m<input[39m
+    [33mclass[39m=[32m"_inputField_e8a340"[39m
+    [33mlist[39m=[32m"provinces-list"[39m
+    [33mplaceholder[39m=[32m"Enter destination (e.g., Lao Cai)..."[39m
+    [33mtype[39m=[32m"text"[39m
+    [33mvalue[39m=[32m"Lào Cai"[39m
+  [36m/>[39m
+
+  Name "":
+  [36m<select[39m
+    [33mclass[39m=[32m"_departureSelect_e8a340"[39m
+  [36m/>[39m
+
+  --------------------------------------------------
+  option:
+
+  Name "Leave Now":
+  [36m<option[39m
+    [33mvalue[39m=[32m"now"[39m
+  [36m/>[39m
+
+  Name "In 1 hour":
+  [36m<option[39m
+    [33mvalue[39m=[32m"in-1h"[39m
+  [36m/>[39m
+
+  Name "In 2 hours":
+  [36m<option[39m
+    [33mvalue[39m=[32m"in-2h"[39m
+  [36m/>[39m
+
+  Name "Tomorrow morning (06:00)":
+  [36m<option[39m
+    [33mvalue[39m=[32m"morning"[39m
+  [36m/>[39m
+
+  --------------------------------------------------
+  region:
+
+  Name "Travel Alternatives":
+  [36m<section[39m
+    [33maria-labelledby[39m=[32m"travel-alternatives-title"[39m
+    [33mclass[39m=[32m"_alternativesCard_e8a340"[39m
+  [36m/>[39m
+
+  Name "Rest stops near the fastest route":
+  [36m<section[39m
+    [33maria-label[39m=[32m"Rest stops near the fastest route"[39m
+  [36m/>[39m
+
+  --------------------------------------------------
+  status:
+
+  Name "":
+  [36m<p[39m
+    [33mclass[39m=[32m"_resultsMetaText_e8a340"[39m
+    [33mrole[39m=[32m"status"[39m
+  [36m/>[39m
+
+  --------------------------------------------------
+  article:
+
+  Name "Insufficient data":
+  [36m<article[39m
+    [33mclass[39m=[32m"_altCard_e8a340 _altCardSelected_e8a340"[39m
+    [33mdata-route-type[39m=[32m"fastest"[39m
+    [33mtitle[39m=[32m"Insufficient data"[39m
+  [36m/>[39m
+
+  --------------------------------------------------
+  group:
+
+  Name "ETA score":
+  [36m<div[39m
+    [33maria-label[39m=[32m"ETA score"[39m
+    [33mclass[39m=[32m"_panel_ff038d"[39m
+    [33mdata-risk-level[39m=[32m"unknown"[39m
+    [33mid[39m=[32m"alt-fastest-score"[39m
+    [33mrole[39m=[32m"group"[39m
+  [36m/>[39m
+
+  Name "":
+  [36m<details />[39m
+
+  --------------------------------------------------
+  link:
+
+  Name "Compare routes":
+  [36m<a[39m
+    [33mhref[39m=[32m"#comparison-matrix"[39m
+    [33mstyle[39m=[32m"font-size: 12px; color: var(--color-primary, #0066cc); text-decoration: none; font-weight: 600;"[39m
+  [36m/>[39m
+
+  Name "Example Rest Area":
+  [36m<a[39m
+    [33mhref[39m=[32m"https://www.openstreetmap.org/node/123"[39m
+    [33mrel[39m=[32m"noopener noreferrer"[39m
+    [33mtarget[39m=[32m"_blank"[39m
+  [36m/>[39m
+
+  --------------------------------------------------
+  list:
+
+  Name "":
+  [36m<ul />[39m
+
+  --------------------------------------------------
+  listitem:
+
+  Name "":
+  [36m<li />[39m
+
+  --------------------------------------------------
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"_page_e8a340"[39m
+    [36m>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"_header_e8a340"[39m
+      [36m>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"_titleArea_e8a340"[39m
+        [36m>[39m
+          [36m<h1[39m
+            [33mclass[39m=[32m"_title_e8a340"[39m
+          [36m>[39m
+            [36m<span>[39m
+              [0mWeather-Aware Safe Route Planner[0m
+            [36m</span>[39m
+          [36m</h1>[39m
+          [36m<p[39m
+            [33mclass[39m=[32m"_subtitle_e8a340"[39m
+          [36m>[39m
+            [0mReal-time meteorological analytics at ETA checkpoints along transit corridors across Vietnam[0m
+          [36m</p>[39m
+        [36m</div>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"_headerMeta_e8a340"[39m
+        [36m>[39m
+          [36m<span[39m
+            [33mclass[39m=[32m"_planBadgePro_e8a340"[39m
+          [36m>[39m
+            [36m<svg[39m
+              [33maria-hidden[39m=[32m"true"[39m
+              [33mclass[39m=[32m"lucide lucide-crown"[39m
+              [33mfill[39m=[32m"none"[39m
+              [33mheight[39m=[32m"12"[39m
+              [33mstroke[39m=[32m"currentColor"[39m
+              [33mstroke-linecap[39m=[32m"round"[39m
+              [33mstroke-linejoin[39m=[32m"round"[39m
+              [33mstroke-width[39m=[32m"2.5"[39m
+              [33mviewBox[39m=[32m"0 0 24 24"[39m
+              [33mwidth[39m=[32m"12"[39m
+              [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+            [36m>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M11.562 3.266a.5.5 0 0 1 .876 0L15.39 8.87a1 1 0 0 0 1.516.294L21.183 5.5a.5.5 0 0 1 .798.519l-2.834 10.246a1 1 0 0 1-.956.734H5.81a1 1 0 0 1-.957-.734L2.02 6.02a.5.5 0 0 1 .798-.519l4.276 3.664a1 1 0 0 0 1.516-.294z"[39m
+              [36m/>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M5 21h14"[39m
+              [36m/>[39m
+            [36m</svg>[39m
+            [36m<span>[39m
+              [0mPRO GOLD TIER[0m
+            [36m</span>[39m
+          [36m</span>[39m
+          [36m<span[39m
+            [33mclass[39m=[32m"_quotaCounter_e8a340"[39m
+          [36m>[39m
+            [0mToday's quota:[0m
+            [0m [0m
+            [36m<strong>[39m
+              [0m30[0m
+            [36m</strong>[39m
+            [0m / [0m
+            [0m30[0m
+          [36m</span>[39m
+        [36m</div>[39m
+      [36m</div>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"_splitLayout_e8a340"[39m
+      [36m>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"_leftSidebar_e8a340"[39m
+        [36m>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"_plannerFormCard_e8a340"[39m
+          [36m>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"_routeInputsWrap_e8a340"[39m
+            [36m>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"_inputGroup_e8a340"[39m
+              [36m>[39m
+                [36m<label[39m
+                  [33mclass[39m=[32m"_inputLabel_e8a340"[39m
+                [36m>[39m
+                  [36m<span[39m
+                    [33mclass[39m=[32m"_inputLabelWithDot_e8a340"[39m
+                  [36m>[39m
+                    [36m<span[39m
+                      [33mclass[39m=[32m"_originDot_e8a340"[39m
+                    [36m/>[39m
+                    [0mOrigin Location[0m
+                  [36m</span>[39m
+                  [36m<button[39m
+                    [33mclass[39m=[32m"_gpsBtn_e8a340"[39m
+                    [33mtype[39m=[32m"button"[39m
+                  [36m>[39m
+                    [36m<svg[39m
+                      [33maria-hidden[39m=[32m"true"[39m
+                      [33mclass[39m=[32m"lucide lucide-navigation"[39m
+                      [33mfill[39m=[32m"none"[39m
+                      [33mheight[39m=[32m"12"[39m
+                      [33mstroke[39m=[32m"currentColor"[39m
+                      [33mstroke-linecap[39m=[32m"round"[39m
+                      [33mstroke-linejoin[39m=[32m"round"[39m
+                      [33mstroke-width[39m=[32m"2"[39m
+                      [33mviewBox[39m=[32m"0 0 24 24"[39m
+                      [33mwidth[39m=[32m"12"[39m
+                      [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+                    [36m>[39m
+                      [36m<polygon[39m
+                        [33mpoints[39m=[32m"3 11 22 2 13 21 11 13 3 11"[39m
+                      [36m/>[39m
+                    [36m</svg>[39m
+                    [36m<span>[39m
+                      [0mMy GPS[0m
+                    [36m</span>[39m
+                  [36m</button>[39m
+                [36m</label>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"_inputBox_e8a340"[39m
+                [36m>[39m
+                  [36m<input[39m
+                    [33mclass[39m=[32m"_inputField_e8a340"[39m
+                    [33mlist[39m=[32m"provinces-list"[39m
+                    [33mplaceholder[39m=[32m"Enter origin (e.g., Hanoi)..."[39m
+                    [33mtype[39m=[32m"text"[39m
+                    [33mvalue[39m=[32m"Hà Nội"[39m
+                  [36m/>[39m
+                [36m</div>[39m
+              [36m</div>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"_swapRow_e8a340"[39m
+              [36m>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"_swapLine_e8a340"[39m
+                [36m/>[39m
+                [36m<button[39m
+                  [33mclass[39m=[32m"_swapBtn_e8a340"[39m
+                  [33mtitle[39m=[32m"Swap origin and destination"[39m
+                  [33mtype[39m=[32m"button"[39m
+                [36m>[39m
+                  [36m<svg[39m
+                    [33mfill[39m=[32m"none"[39m
+                    [33mheight[39m=[32m"18"[39m
+                    [33mstroke[39m=[32m"currentColor"[39m
+                    [33mstroke-width[39m=[32m"2"[39m
+                    [33mviewBox[39m=[32m"0 0 24 24"[39m
+                    [33mwidth[39m=[32m"18"[39m
+                  [36m>[39m
+                    [36m<path[39m
+                      [33md[39m=[32m"M7 16V4M7 4L3 8M7 4L11 8M17 8V20M17 20L21 16M17 20L13 16"[39m
+                    [36m/>[39m
+                  [36m</svg>[39m
+                [36m</button>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"_swapLine_e8a340"[39m
+                [36m/>[39m
+              [36m</div>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"_inputGroup_e8a340"[39m
+              [36m>[39m
+                [36m<label[39m
+                  [33mclass[39m=...
+ ❯ Object.getElementError ../../node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/config.js:37:19
+ ❯ ../../node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/query-helpers.js:76:38
+ ❯ ../../node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/query-helpers.js:52:17
+ ❯ ../../node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/query-helpers.js:95:19
+ ❯ src/pages/RoutePlannerPage.test.tsx:147:35
+    145|     vi.mocked(routeApi.calculateRoutes).mockResolvedValue(response);
+    146|     await mountRoute();
+    147|     const weather = within(screen.getByRole("region", { name: "Weather…
+       |                                   ^
+    148|     expect(weather.getByText("Insufficient data")).toBeVisible();
+    149|     expect(weather.getByText("25 km")).toBeInTheDocument();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯
+
+ FAIL  src/pages/RoutePlannerPage.test.tsx > route request inputs > shows the returned alternative count and explains unavailable weather ranking
+TestingLibraryElementError: Unable to find an element with the text: Rest-stop locations are unavailable right now.. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"_page_e8a340"[39m
+    [36m>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"_header_e8a340"[39m
+      [36m>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"_titleArea_e8a340"[39m
+        [36m>[39m
+          [36m<h1[39m
+            [33mclass[39m=[32m"_title_e8a340"[39m
+          [36m>[39m
+            [36m<span>[39m
+              [0mWeather-Aware Safe Route Planner[0m
+            [36m</span>[39m
+          [36m</h1>[39m
+          [36m<p[39m
+            [33mclass[39m=[32m"_subtitle_e8a340"[39m
+          [36m>[39m
+            [0mReal-time meteorological analytics at ETA checkpoints along transit corridors across Vietnam[0m
+          [36m</p>[39m
+        [36m</div>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"_headerMeta_e8a340"[39m
+        [36m>[39m
+          [36m<span[39m
+            [33mclass[39m=[32m"_planBadgePro_e8a340"[39m
+          [36m>[39m
+            [36m<svg[39m
+              [33maria-hidden[39m=[32m"true"[39m
+              [33mclass[39m=[32m"lucide lucide-crown"[39m
+              [33mfill[39m=[32m"none"[39m
+              [33mheight[39m=[32m"12"[39m
+              [33mstroke[39m=[32m"currentColor"[39m
+              [33mstroke-linecap[39m=[32m"round"[39m
+              [33mstroke-linejoin[39m=[32m"round"[39m
+              [33mstroke-width[39m=[32m"2.5"[39m
+              [33mviewBox[39m=[32m"0 0 24 24"[39m
+              [33mwidth[39m=[32m"12"[39m
+              [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+            [36m>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M11.562 3.266a.5.5 0 0 1 .876 0L15.39 8.87a1 1 0 0 0 1.516.294L21.183 5.5a.5.5 0 0 1 .798.519l-2.834 10.246a1 1 0 0 1-.956.734H5.81a1 1 0 0 1-.957-.734L2.02 6.02a.5.5 0 0 1 .798-.519l4.276 3.664a1 1 0 0 0 1.516-.294z"[39m
+              [36m/>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M5 21h14"[39m
+              [36m/>[39m
+            [36m</svg>[39m
+            [36m<span>[39m
+              [0mPRO GOLD TIER[0m
+            [36m</span>[39m
+          [36m</span>[39m
+          [36m<span[39m
+            [33mclass[39m=[32m"_quotaCounter_e8a340"[39m
+          [36m>[39m
+            [0mToday's quota:[0m
+            [0m [0m
+            [36m<strong>[39m
+              [0m30[0m
+            [36m</strong>[39m
+            [0m / [0m
+            [0m30[0m
+          [36m</span>[39m
+        [36m</div>[39m
+      [36m</div>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"_splitLayout_e8a340"[39m
+      [36m>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"_leftSidebar_e8a340"[39m
+        [36m>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"_plannerFormCard_e8a340"[39m
+          [36m>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"_routeInputsWrap_e8a340"[39m
+            [36m>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"_inputGroup_e8a340"[39m
+              [36m>[39m
+                [36m<label[39m
+                  [33mclass[39m=[32m"_inputLabel_e8a340"[39m
+                [36m>[39m
+                  [36m<span[39m
+                    [33mclass[39m=[32m"_inputLabelWithDot_e8a340"[39m
+                  [36m>[39m
+                    [36m<span[39m
+                      [33mclass[39m=[32m"_originDot_e8a340"[39m
+                    [36m/>[39m
+                    [0mOrigin Location[0m
+                  [36m</span>[39m
+                  [36m<button[39m
+                    [33mclass[39m=[32m"_gpsBtn_e8a340"[39m
+                    [33mtype[39m=[32m"button"[39m
+                  [36m>[39m
+                    [36m<svg[39m
+                      [33maria-hidden[39m=[32m"true"[39m
+                      [33mclass[39m=[32m"lucide lucide-navigation"[39m
+                      [33mfill[39m=[32m"none"[39m
+                      [33mheight[39m=[32m"12"[39m
+                      [33mstroke[39m=[32m"currentColor"[39m
+                      [33mstroke-linecap[39m=[32m"round"[39m
+                      [33mstroke-linejoin[39m=[32m"round"[39m
+                      [33mstroke-width[39m=[32m"2"[39m
+                      [33mviewBox[39m=[32m"0 0 24 24"[39m
+                      [33mwidth[39m=[32m"12"[39m
+                      [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+                    [36m>[39m
+                      [36m<polygon[39m
+                        [33mpoints[39m=[32m"3 11 22 2 13 21 11 13 3 11"[39m
+                      [36m/>[39m
+                    [36m</svg>[39m
+                    [36m<span>[39m
+                      [0mMy GPS[0m
+                    [36m</span>[39m
+                  [36m</button>[39m
+                [36m</label>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"_inputBox_e8a340"[39m
+                [36m>[39m
+                  [36m<input[39m
+                    [33mclass[39m=[32m"_inputField_e8a340"[39m
+                    [33mlist[39m=[32m"provinces-list"[39m
+                    [33mplaceholder[39m=[32m"Enter origin (e.g., Hanoi)..."[39m
+                    [33mtype[39m=[32m"text"[39m
+                    [33mvalue[39m=[32m"Hà Nội"[39m
+                  [36m/>[39m
+                [36m</div>[39m
+              [36m</div>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"_swapRow_e8a340"[39m
+              [36m>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"_swapLine_e8a340"[39m
+                [36m/>[39m
+                [36m<button[39m
+                  [33mclass[39m=[32m"_swapBtn_e8a340"[39m
+                  [33mtitle[39m=[32m"Swap origin and destination"[39m
+                  [33mtype[39m=[32m"button"[39m
+                [36m>[39m
+                  [36m<svg[39m
+                    [33mfill[39m=[32m"none"[39m
+                    [33mheight[39m=[32m"18"[39m
+                    [33mstroke[39m=[32m"currentColor"[39m
+                    [33mstroke-width[39m=[32m"2"[39m
+                    [33mviewBox[39m=[32m"0 0 24 24"[39m
+                    [33mwidth[39m=[32m"18"[39m
+                  [36m>[39m
+                    [36m<path[39m
+                      [33md[39m=[32m"M7 16V4M7 4L3 8M7 4L11 8M17 8V20M17 20L21 16M17 20L13 16"[39m
+                    [36m/>[39m
+                  [36m</svg>[39m
+                [36m</button>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"_swapLine_e8a340"[39m
+                [36m/>[39m
+              [36m</div>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"_inputGroup_e8a340"[39m
+              [36m>[39m
+                [36m<label[39m
+                  [33mclass[39m=...
+ ❯ Object.getElementError ../../node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/config.js:37:19
+ ❯ ../../node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/query-helpers.js:76:38
+ ❯ ../../node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/query-helpers.js:52:17
+ ❯ ../../node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/query-helpers.js:95:19
+ ❯ src/pages/RoutePlannerPage.test.tsx:173:19
+    171|     await mountRoute();
+    172|     expect(screen.getByText("2 alternatives")).toBeInTheDocument();
+    173|     expect(screen.getByText("Rest-stop locations are unavailable right…
+       |                   ^
+    174|     expect(screen.getByRole("status")).toHaveTextContent("weather cove…
+    175|     expect(screen.getByText("Weather sample · km 15")).toBeInTheDocume…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/3]⎯
+
+ Test Files  1 failed (1)
+      Tests  3 failed | 14 passed (17)
+   Start at  09:55:20
+   Duration  2.70s (transform 417ms, setup 174ms, collect 700ms, tests 950ms, environment 444ms, prepare 148ms)
+
+undefined
+C:\Users\dangh\Downloads\VietNameWeatherWithAi\VietNamWeather_Supported_with_ai\apps\web:
+[ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL] Command failed with exit code 1: vitest run src/pages/RoutePlannerPage.test.tsx "--reporter=dot"

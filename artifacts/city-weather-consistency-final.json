@@ -1,0 +1,511 @@
+{
+  "cities": 63,
+  "fieldChecks": 3024,
+  "mismatches": [],
+  "comparisons": [
+    {
+      "id": "lao-cai",
+      "status": 200,
+      "bundleStatus": "success",
+      "checks": 48,
+      "dailyCount": 3,
+      "hourlyCount": 68
+    },
+    {
+      "id": "bac-kan",
+      "status": 200,
+      "bundleStatus": "success",
+      "checks": 48,
+      "dailyCount": 3,
+      "hourlyCount": 68
+    },
+    {
+      "id": "cao-bang",
+      "status": 200,
+      "bundleStatus": "success",
+      "checks": 48,
+      "dailyCount": 3,
+      "hourlyCount": 68
+    },
+    {
+      "id": "ha-giang",
+      "status": 200,
+      "bundleStatus": "success",
+      "checks": 48,
+      "dailyCount": 3,
+      "hourlyCount": 68
+    },
+    {
+      "id": "tuyen-quang",
+      "status": 200,
+      "bundleStatus": "success",
+      "checks": 48,
+      "dailyCount": 3,
+      "hourlyCount": 68
+    },
+    {
+      "id": "yen-bai",
+      "status": 200,
+      "bundleStatus": "success",
+      "checks": 48,
+      "dailyCount": 3,
+      "hourlyCount": 68
+    },
+    {
+      "id": "lang-son",
+      "status": 200,
+      "bundleStatus": "success",
+      "checks": 48,
+      "dailyCount": 3,
+      "hourlyCount": 68
+    },
+    {
+      "id": "thai-nguyen",
+      "status": 200,
+      "bundleStatus": "success",
+      "checks": 48,
+      "dailyCount": 3,
+      "hourlyCount": 68
+    },
+    {
+      "id": "quang-ninh",
+      "status": 200,
+      "bundleStatus": "success",
+      "checks": 48,
+      "dailyCount": 3,
+      "hourlyCount": 68
+    },
+    {
+      "id": "bac-giang",
+      "status": 200,
+      "bundleStatus": "success",
+      "checks": 48,
+      "dailyCount": 3,
+      "hourlyCount": 68
+    },
+    {
+      "id": "phu-tho",
+      "status": 200,
+      "bundleStatus": "success",
+      "checks": 48,
+      "dailyCount": 3,
+      "hourlyCount": 68
+    },
+    {
+      "id": "vinh-phuc",
+      "status": 200,
+      "bundleStatus": "success",
+      "checks": 48,
+      "dailyCount": 3,
+      "hourlyCount": 68
+    },
+    {
+      "id": "bac-ninh",
+      "status": 200,
+      "bundleStatus": "success",
+      "checks": 48,
+      "dailyCount": 3,
+      "hourlyCount": 68
+    },
+    {
+      "id": "hung-yen",
+      "status": 200,
+      "bundleStatus": "success",
+      "checks": 48,
+      "dailyCount": 3,
+      "hourlyCount": 68
+    },
+    {
+      "id": "hai-duong",
+      "status": 200,
+      "bundleStatus": "success",
+      "checks": 48,
+      "dailyCount": 3,
+      "hourlyCount": 68
+    },
+    {
+      "id": "hoa-binh",
+      "status": 200,
+      "bundleStatus": "success",
+      "checks": 48,
+      "dailyCount": 3,
+      "hourlyCount": 68
+    },
+    {
+      "id": "ha-noi",
+      "status": 200,
+      "bundleStatus": "success",
+      "checks": 48,
+      "dailyCount": 3,
+      "hourlyCount": 68
+    },
+    {
+      "id": "ninh-binh",
+      "status": 200,
+      "checks": 48,
+      "bundleStatus": "success",
+      "dailyCount": 3,
+      "hourlyCount": 68
+    },
+    {
+      "id": "thanh-hoa",
+      "status": 200,
+      "checks": 48,
+      "bundleStatus": "success",
+      "dailyCount": 3,
+      "hourlyCount": 68
+    },
+    {
+      "id": "nghe-an",
+      "status": 200,
+      "checks": 48,
+      "bundleStatus": "success",
+      "dailyCount": 3,
+      "hourlyCount": 68
+    },
+    {
+      "id": "thai-binh",
+      "status": 200,
+      "bundleStatus": "success",
+      "checks": 48,
+      "dailyCount": 3,
+      "hourlyCount": 68
+    },
+    {
+      "id": "ha-tinh",
+      "status": 200,
+      "checks": 48,
+      "bundleStatus": "success",
+      "dailyCount": 3,
+      "hourlyCount": 68
+    },
+    {
+      "id": "haiphong",
+      "status": 200,
+      "bundleStatus": "success",
+      "checks": 48,
+      "dailyCount": 3,
+      "hourlyCount": 68
+    },
+    {
+      "id": "quang-binh",
+      "status": 200,
+      "checks": 48,
+      "bundleStatus": "success",
+      "dailyCount": 3,
+      "hourlyCount": 68
+    },
+    {
+      "id": "thua-thien-hue",
+      "status": 200,
+      "checks": 48,
+      "bundleStatus": "success",
+      "dailyCount": 3,
+      "hourlyCount": 68
+    },
+    {
+      "id": "quang-tri",
+      "status": 200,
+      "checks": 48,
+      "bundleStatus": "success",
+      "dailyCount": 3,
+      "hourlyCount": 68
+    },
+    {
+      "id": "da-nang",
+      "status": 200,
+      "checks": 48,
+      "bundleStatus": "success",
+      "dailyCount": 3,
+      "hourlyCount": 68
+    },
+    {
+      "id": "nam-dinh",
+      "status": 200,
+      "bundleStatus": "success",
+      "checks": 48,
+      "dailyCount": 3,
+      "hourlyCount": 68
+    },
+    {
+      "id": "quang-ngai",
+      "status": 200,
+      "checks": 48,
+      "bundleStatus": "success",
+      "dailyCount": 3,
+      "hourlyCount": 68
+    },
+    {
+      "id": "quang-nam",
+      "status": 200,
+      "checks": 48,
+      "bundleStatus": "success",
+      "dailyCount": 3,
+      "hourlyCount": 68
+    },
+    {
+      "id": "phu-yen",
+      "status": 200,
+      "checks": 48,
+      "bundleStatus": "success",
+      "dailyCount": 3,
+      "hourlyCount": 68
+    },
+    {
+      "id": "binh-dinh",
+      "status": 200,
+      "checks": 48,
+      "bundleStatus": "success",
+      "dailyCount": 3,
+      "hourlyCount": 68
+    },
+    {
+      "id": "khanh-hoa",
+      "status": 200,
+      "checks": 48,
+      "bundleStatus": "success",
+      "dailyCount": 3,
+      "hourlyCount": 68
+    },
+    {
+      "id": "ninh-thuan",
+      "status": 200,
+      "checks": 48,
+      "bundleStatus": "success",
+      "dailyCount": 3,
+      "hourlyCount": 68
+    },
+    {
+      "id": "kon-tum",
+      "status": 200,
+      "checks": 48,
+      "bundleStatus": "success",
+      "dailyCount": 3,
+      "hourlyCount": 68
+    },
+    {
+      "id": "binh-thuan",
+      "status": 200,
+      "checks": 48,
+      "bundleStatus": "success",
+      "dailyCount": 3,
+      "hourlyCount": 68
+    },
+    {
+      "id": "gia-lai",
+      "status": 200,
+      "checks": 48,
+      "bundleStatus": "success",
+      "dailyCount": 3,
+      "hourlyCount": 68
+    },
+    {
+      "id": "dak-lak",
+      "status": 200,
+      "checks": 48,
+      "bundleStatus": "success",
+      "dailyCount": 3,
+      "hourlyCount": 68
+    },
+    {
+      "id": "lam-dong",
+      "status": 200,
+      "checks": 48,
+      "bundleStatus": "success",
+      "dailyCount": 3,
+      "hourlyCount": 68
+    },
+    {
+      "id": "dak-nong",
+      "status": 200,
+      "checks": 48,
+      "bundleStatus": "success",
+      "dailyCount": 3,
+      "hourlyCount": 68
+    },
+    {
+      "id": "binh-phuoc",
+      "status": 200,
+      "checks": 48,
+      "bundleStatus": "success",
+      "dailyCount": 3,
+      "hourlyCount": 68
+    },
+    {
+      "id": "tay-ninh",
+      "status": 200,
+      "checks": 48,
+      "bundleStatus": "success",
+      "dailyCount": 3,
+      "hourlyCount": 68
+    },
+    {
+      "id": "binh-duong",
+      "status": 200,
+      "checks": 48,
+      "bundleStatus": "success",
+      "dailyCount": 3,
+      "hourlyCount": 68
+    },
+    {
+      "id": "dong-nai",
+      "status": 200,
+      "checks": 48,
+      "bundleStatus": "success",
+      "dailyCount": 3,
+      "hourlyCount": 68
+    },
+    {
+      "id": "ba-ria-vung-tau",
+      "status": 200,
+      "checks": 48,
+      "bundleStatus": "success",
+      "dailyCount": 3,
+      "hourlyCount": 68
+    },
+    {
+      "id": "an-giang",
+      "status": 200,
+      "checks": 48,
+      "bundleStatus": "success",
+      "dailyCount": 3,
+      "hourlyCount": 68
+    },
+    {
+      "id": "dong-thap",
+      "status": 200,
+      "checks": 48,
+      "bundleStatus": "success",
+      "dailyCount": 3,
+      "hourlyCount": 68
+    },
+    {
+      "id": "ho-chi-minh",
+      "status": 200,
+      "checks": 48,
+      "bundleStatus": "success",
+      "dailyCount": 3,
+      "hourlyCount": 68
+    },
+    {
+      "id": "kien-giang",
+      "status": 200,
+      "checks": 48,
+      "bundleStatus": "success",
+      "dailyCount": 3,
+      "hourlyCount": 68
+    },
+    {
+      "id": "can-tho",
+      "status": 200,
+      "checks": 48,
+      "bundleStatus": "success",
+      "dailyCount": 3,
+      "hourlyCount": 68
+    },
+    {
+      "id": "hau-giang",
+      "status": 200,
+      "checks": 48,
+      "bundleStatus": "success",
+      "dailyCount": 3,
+      "hourlyCount": 68
+    },
+    {
+      "id": "tra-vinh",
+      "status": 200,
+      "checks": 48,
+      "bundleStatus": "success",
+      "dailyCount": 3,
+      "hourlyCount": 68
+    },
+    {
+      "id": "soc-trang",
+      "status": 200,
+      "checks": 48,
+      "bundleStatus": "success",
+      "dailyCount": 3,
+      "hourlyCount": 68
+    },
+    {
+      "id": "bac-lieu",
+      "status": 200,
+      "checks": 48,
+      "bundleStatus": "success",
+      "dailyCount": 3,
+      "hourlyCount": 68
+    },
+    {
+      "id": "ca-mau",
+      "status": 200,
+      "checks": 48,
+      "bundleStatus": "success",
+      "dailyCount": 3,
+      "hourlyCount": 68
+    },
+    {
+      "id": "ben-tre",
+      "status": 200,
+      "checks": 48,
+      "bundleStatus": "success",
+      "dailyCount": 3,
+      "hourlyCount": 68
+    },
+    {
+      "id": "dien-bien",
+      "status": 200,
+      "checks": 48,
+      "bundleStatus": "success",
+      "dailyCount": 3,
+      "hourlyCount": 68
+    },
+    {
+      "id": "lai-chau",
+      "status": 200,
+      "checks": 48,
+      "bundleStatus": "success",
+      "dailyCount": 3,
+      "hourlyCount": 68
+    },
+    {
+      "id": "vinh-long",
+      "status": 200,
+      "checks": 48,
+      "bundleStatus": "success",
+      "dailyCount": 3,
+      "hourlyCount": 68
+    },
+    {
+      "id": "tien-giang",
+      "status": 200,
+      "checks": 48,
+      "bundleStatus": "success",
+      "dailyCount": 3,
+      "hourlyCount": 68
+    },
+    {
+      "id": "long-an",
+      "status": 200,
+      "checks": 48,
+      "bundleStatus": "success",
+      "dailyCount": 3,
+      "hourlyCount": 68
+    },
+    {
+      "id": "son-la",
+      "status": 200,
+      "checks": 48,
+      "bundleStatus": "success",
+      "dailyCount": 3,
+      "hourlyCount": 68
+    },
+    {
+      "id": "ha-nam",
+      "status": 200,
+      "checks": 48,
+      "bundleStatus": "success",
+      "dailyCount": 3,
+      "hourlyCount": 68
+    }
+  ]
+}

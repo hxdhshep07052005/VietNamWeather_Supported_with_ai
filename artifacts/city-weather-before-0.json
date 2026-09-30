@@ -1,0 +1,5425 @@
+{
+  "data": {
+    "target_time": "2026-09-29T21:05:53.876Z",
+    "provinces": [
+      {
+        "id": "lao-cai",
+        "name": "Lào Cai",
+        "weather": {
+          "uv_index": 0,
+          "cloud_cover_percent": 42,
+          "precipitation_probability_percent": null,
+          "fetched_at": "2026-09-29T21:05:08.870Z",
+          "humidity_percent": 85,
+          "wind_kmh": 3.6,
+          "feels_like_c": 26.8,
+          "pressure_hpa": 1011,
+          "precipitation_mm": 0,
+          "condition_code": "partly_cloudy",
+          "rain_mm_per_hour": null,
+          "gust_kmh": 10.8,
+          "temperature_c": 23.3,
+          "visibility_m": 10000,
+          "storm": null,
+          "official_alert_level": null,
+          "freshness": "fresh",
+          "coverage": "covered",
+          "source": "6e34f8ae-5d75-4a64-97db-cb8c9e478624",
+          "source_time": "2026-09-29T21:00:00.000Z",
+          "valid_from": "2026-09-29T21:00:00.000Z",
+          "valid_to": null,
+          "reasons": [
+            "official_alert_source_not_integrated",
+            "storm_classification_unavailable",
+            "observation_precipitation_interval_unspecified"
+          ]
+        },
+        "assessment": {
+          "level": "low",
+          "severity": 1,
+          "score": 0.3333333333333333,
+          "display_score": 33,
+          "vehicle": null,
+          "rule_set_version": "general-weather-v1",
+          "freshness": "fresh",
+          "coverage": "covered",
+          "source": "6e34f8ae-5d75-4a64-97db-cb8c9e478624",
+          "source_time": "2026-09-29T21:00:00.000Z",
+          "evidence": [
+            {
+              "dimension": "rain",
+              "value": null,
+              "severity": 0
+            },
+            {
+              "dimension": "wind",
+              "value": 10.8,
+              "severity": 1
+            },
+            {
+              "dimension": "temperature",
+              "value": 23.3,
+              "severity": 1
+            },
+            {
+              "dimension": "visibility",
+              "value": 10000,
+              "severity": 1
+            },
+            {
+              "dimension": "storm",
+              "value": null,
+              "severity": 0
+            },
+            {
+              "dimension": "alert",
+              "value": null,
+              "severity": 0
+            }
+          ],
+          "reasons": [
+            "official_alert_source_not_integrated",
+            "storm_classification_unavailable",
+            "observation_precipitation_interval_unspecified",
+            "rain_unavailable",
+            "storm_unavailable",
+            "alert_unavailable",
+            "general_weather_partial_evidence"
+          ]
+        }
+      },
+      {
+        "id": "tuyen-quang",
+        "name": "Tuyên Quang",
+        "weather": {
+          "uv_index": 0,
+          "cloud_cover_percent": 71,
+          "precipitation_probability_percent": null,
+          "fetched_at": "2026-09-29T21:05:09.405Z",
+          "humidity_percent": 89,
+          "wind_kmh": 5.0004,
+          "feels_like_c": 29.3,
+          "pressure_hpa": 1010,
+          "precipitation_mm": 0,
+          "condition_code": "unknown",
+          "rain_mm_per_hour": null,
+          "gust_kmh": 7.3008,
+          "temperature_c": 25.4,
+          "visibility_m": 2700,
+          "storm": null,
+          "official_alert_level": null,
+          "freshness": "fresh",
+          "coverage": "covered",
+          "source": "6e34f8ae-5d75-4a64-97db-cb8c9e478624",
+          "source_time": "2026-09-29T21:00:00.000Z",
+          "valid_from": "2026-09-29T21:00:00.000Z",
+          "valid_to": null,
+          "reasons": [
+            "official_alert_source_not_integrated",
+            "storm_classification_unavailable",
+            "observation_precipitation_interval_unspecified"
+          ]
+        },
+        "assessment": {
+          "level": "low",
+          "severity": 1,
+          "score": 0.3333333333333333,
+          "display_score": 33,
+          "vehicle": null,
+          "rule_set_version": "general-weather-v1",
+          "freshness": "fresh",
+          "coverage": "covered",
+          "source": "6e34f8ae-5d75-4a64-97db-cb8c9e478624",
+          "source_time": "2026-09-29T21:00:00.000Z",
+          "evidence": [
+            {
+              "dimension": "rain",
+              "value": null,
+              "severity": 0
+            },
+            {
+              "dimension": "wind",
+              "value": 7.3008,
+              "severity": 1
+            },
+            {
+              "dimension": "temperature",
+              "value": 25.4,
+              "severity": 1
+            },
+            {
+              "dimension": "visibility",
+              "value": 2700,
+              "severity": 1
+            },
+            {
+              "dimension": "storm",
+              "value": null,
+              "severity": 0
+            },
+            {
+              "dimension": "alert",
+              "value": null,
+              "severity": 0
+            }
+          ],
+          "reasons": [
+            "official_alert_source_not_integrated",
+            "storm_classification_unavailable",
+            "observation_precipitation_interval_unspecified",
+            "rain_unavailable",
+            "storm_unavailable",
+            "alert_unavailable",
+            "general_weather_partial_evidence"
+          ]
+        }
+      },
+      {
+        "id": "cao-bang",
+        "name": "Cao Bằng",
+        "weather": {
+          "uv_index": 0,
+          "cloud_cover_percent": 18,
+          "precipitation_probability_percent": null,
+          "fetched_at": "2026-09-29T21:05:09.683Z",
+          "humidity_percent": 98,
+          "wind_kmh": 3.6,
+          "feels_like_c": 28.3,
+          "pressure_hpa": 1011,
+          "precipitation_mm": 0,
+          "condition_code": "fog",
+          "rain_mm_per_hour": null,
+          "gust_kmh": 10.8,
+          "temperature_c": 23.1,
+          "visibility_m": 3800,
+          "storm": null,
+          "official_alert_level": null,
+          "freshness": "fresh",
+          "coverage": "covered",
+          "source": "6e34f8ae-5d75-4a64-97db-cb8c9e478624",
+          "source_time": "2026-09-29T21:00:00.000Z",
+          "valid_from": "2026-09-29T21:00:00.000Z",
+          "valid_to": null,
+          "reasons": [
+            "official_alert_source_not_integrated",
+            "storm_classification_unavailable",
+            "observation_precipitation_interval_unspecified"
+          ]
+        },
+        "assessment": {
+          "level": "low",
+          "severity": 1,
+          "score": 0.3333333333333333,
+          "display_score": 33,
+          "vehicle": null,
+          "rule_set_version": "general-weather-v1",
+          "freshness": "fresh",
+          "coverage": "covered",
+          "source": "6e34f8ae-5d75-4a64-97db-cb8c9e478624",
+          "source_time": "2026-09-29T21:00:00.000Z",
+          "evidence": [
+            {
+              "dimension": "rain",
+              "value": null,
+              "severity": 0
+            },
+            {
+              "dimension": "wind",
+              "value": 10.8,
+              "severity": 1
+            },
+            {
+              "dimension": "temperature",
+              "value": 23.1,
+              "severity": 1
+            },
+            {
+              "dimension": "visibility",
+              "value": 3800,
+              "severity": 1
+            },
+            {
+              "dimension": "storm",
+              "value": null,
+              "severity": 0
+            },
+            {
+              "dimension": "alert",
+              "value": null,
+              "severity": 0
+            }
+          ],
+          "reasons": [
+            "official_alert_source_not_integrated",
+            "storm_classification_unavailable",
+            "observation_precipitation_interval_unspecified",
+            "rain_unavailable",
+            "storm_unavailable",
+            "alert_unavailable",
+            "general_weather_partial_evidence"
+          ]
+        }
+      },
+      {
+        "id": "ha-giang",
+        "name": "Hà Giang",
+        "weather": {
+          "uv_index": 0,
+          "cloud_cover_percent": 97,
+          "precipitation_probability_percent": null,
+          "fetched_at": "2026-09-29T21:05:09.967Z",
+          "humidity_percent": 93,
+          "wind_kmh": 3.6,
+          "feels_like_c": 27.4,
+          "pressure_hpa": 1011,
+          "precipitation_mm": 0,
+          "condition_code": "cloudy",
+          "rain_mm_per_hour": null,
+          "gust_kmh": 12.6,
+          "temperature_c": 23.1,
+          "visibility_m": 10000,
+          "storm": null,
+          "official_alert_level": null,
+          "freshness": "fresh",
+          "coverage": "covered",
+          "source": "6e34f8ae-5d75-4a64-97db-cb8c9e478624",
+          "source_time": "2026-09-29T21:00:00.000Z",
+          "valid_from": "2026-09-29T21:00:00.000Z",
+          "valid_to": null,
+          "reasons": [
+            "official_alert_source_not_integrated",
+            "storm_classification_unavailable",
+            "observation_precipitation_interval_unspecified"
+          ]
+        },
+        "assessment": {
+          "level": "low",
+          "severity": 1,
+          "score": 0.3333333333333333,
+          "display_score": 33,
+          "vehicle": null,
+          "rule_set_version": "general-weather-v1",
+          "freshness": "fresh",
+          "coverage": "covered",
+          "source": "6e34f8ae-5d75-4a64-97db-cb8c9e478624",
+          "source_time": "2026-09-29T21:00:00.000Z",
+          "evidence": [
+            {
+              "dimension": "rain",
+              "value": null,
+              "severity": 0
+            },
+            {
+              "dimension": "wind",
+              "value": 12.6,
+              "severity": 1
+            },
+            {
+              "dimension": "temperature",
+              "value": 23.1,
+              "severity": 1
+            },
+            {
+              "dimension": "visibility",
+              "value": 10000,
+              "severity": 1
+            },
+            {
+              "dimension": "storm",
+              "value": null,
+              "severity": 0
+            },
+            {
+              "dimension": "alert",
+              "value": null,
+              "severity": 0
+            }
+          ],
+          "reasons": [
+            "official_alert_source_not_integrated",
+            "storm_classification_unavailable",
+            "observation_precipitation_interval_unspecified",
+            "rain_unavailable",
+            "storm_unavailable",
+            "alert_unavailable",
+            "general_weather_partial_evidence"
+          ]
+        }
+      },
+      {
+        "id": "bac-kan",
+        "name": "Bắc Kạn",
+        "weather": {
+          "uv_index": 0,
+          "cloud_cover_percent": 59,
+          "precipitation_probability_percent": null,
+          "fetched_at": "2026-09-29T20:55:10.407Z",
+          "humidity_percent": 96,
+          "wind_kmh": 3.6,
+          "feels_like_c": 27.4,
+          "pressure_hpa": 1011,
+          "precipitation_mm": 0,
+          "condition_code": "fog",
+          "rain_mm_per_hour": null,
+          "gust_kmh": 10.8,
+          "temperature_c": 23,
+          "visibility_m": 2000,
+          "storm": null,
+          "official_alert_level": null,
+          "freshness": "fresh",
+          "coverage": "covered",
+          "source": "6e34f8ae-5d75-4a64-97db-cb8c9e478624",
+          "source_time": "2026-09-29T20:45:00.000Z",
+          "valid_from": "2026-09-29T20:45:00.000Z",
+          "valid_to": null,
+          "reasons": [
+            "official_alert_source_not_integrated",
+            "storm_classification_unavailable",
+            "observation_precipitation_interval_unspecified"
+          ]
+        },
+        "assessment": {
+          "level": "low",
+          "severity": 1,
+          "score": 0.3333333333333333,
+          "display_score": 33,
+          "vehicle": null,
+          "rule_set_version": "general-weather-v1",
+          "freshness": "fresh",
+          "coverage": "covered",
+          "source": "6e34f8ae-5d75-4a64-97db-cb8c9e478624",
+          "source_time": "2026-09-29T20:45:00.000Z",
+          "evidence": [
+            {
+              "dimension": "rain",
+              "value": null,
+              "severity": 0
+            },
+            {
+              "dimension": "wind",
+              "value": 10.8,
+              "severity": 1
+            },
+            {
+              "dimension": "temperature",
+              "value": 23,
+              "severity": 1
+            },
+            {
+              "dimension": "visibility",
+              "value": 2000,
+              "severity": 1
+            },
+            {
+              "dimension": "storm",
+              "value": null,
+              "severity": 0
+            },
+            {
+              "dimension": "alert",
+              "value": null,
+              "severity": 0
+            }
+          ],
+          "reasons": [
+            "official_alert_source_not_integrated",
+            "storm_classification_unavailable",
+            "observation_precipitation_interval_unspecified",
+            "rain_unavailable",
+            "storm_unavailable",
+            "alert_unavailable",
+            "general_weather_partial_evidence"
+          ]
+        }
+      },
+      {
+        "id": "yen-bai",
+        "name": "Yên Bái",
+        "weather": {
+          "uv_index": 0,
+          "cloud_cover_percent": 71,
+          "precipitation_probability_percent": null,
+          "fetched_at": "2026-09-29T21:05:10.254Z",
+          "humidity_percent": 89,
+          "wind_kmh": 5.0004,
+          "feels_like_c": 29.3,
+          "pressure_hpa": 1010,
+          "precipitation_mm": 0,
+          "condition_code": "unknown",
+          "rain_mm_per_hour": null,
+          "gust_kmh": 7.3008,
+          "temperature_c": 25.4,
+          "visibility_m": 2700,
+          "storm": null,
+          "official_alert_level": null,
+          "freshness": "fresh",
+          "coverage": "covered",
+          "source": "6e34f8ae-5d75-4a64-97db-cb8c9e478624",
+          "source_time": "2026-09-29T21:00:00.000Z",
+          "valid_from": "2026-09-29T21:00:00.000Z",
+          "valid_to": null,
+          "reasons": [
+            "official_alert_source_not_integrated",
+            "storm_classification_unavailable",
+            "observation_precipitation_interval_unspecified"
+          ]
+        },
+        "assessment": {
+          "level": "low",
+          "severity": 1,
+          "score": 0.3333333333333333,
+          "display_score": 33,
+          "vehicle": null,
+          "rule_set_version": "general-weather-v1",
+          "freshness": "fresh",
+          "coverage": "covered",
+          "source": "6e34f8ae-5d75-4a64-97db-cb8c9e478624",
+          "source_time": "2026-09-29T21:00:00.000Z",
+          "evidence": [
+            {
+              "dimension": "rain",
+              "value": null,
+              "severity": 0
+            },
+            {
+              "dimension": "wind",
+              "value": 7.3008,
+              "severity": 1
+            },
+            {
+              "dimension": "temperature",
+              "value": 25.4,
+              "severity": 1
+            },
+            {
+              "dimension": "visibility",
+              "value": 2700,
+              "severity": 1
+            },
+            {
+              "dimension": "storm",
+              "value": null,
+              "severity": 0
+            },
+            {
+              "dimension": "alert",
+              "value": null,
+              "severity": 0
+            }
+          ],
+          "reasons": [
+            "official_alert_source_not_integrated",
+            "storm_classification_unavailable",
+            "observation_precipitation_interval_unspecified",
+            "rain_unavailable",
+            "storm_unavailable",
+            "alert_unavailable",
+            "general_weather_partial_evidence"
+          ]
+        }
+      },
+      {
+        "id": "thai-nguyen",
+        "name": "Thái Nguyên",
+        "weather": {
+          "uv_index": 0,
+          "cloud_cover_percent": 27,
+          "precipitation_probability_percent": null,
+          "fetched_at": "2026-09-29T21:05:10.537Z",
+          "humidity_percent": 91,
+          "wind_kmh": 3.6,
+          "feels_like_c": 29.9,
+          "pressure_hpa": 1010,
+          "precipitation_mm": 0,
+          "condition_code": "partly_cloudy",
+          "rain_mm_per_hour": null,
+          "gust_kmh": 10.8,
+          "temperature_c": 25,
+          "visibility_m": 10000,
+          "storm": null,
+          "official_alert_level": null,
+          "freshness": "fresh",
+          "coverage": "covered",
+          "source": "6e34f8ae-5d75-4a64-97db-cb8c9e478624",
+          "source_time": "2026-09-29T21:00:00.000Z",
+          "valid_from": "2026-09-29T21:00:00.000Z",
+          "valid_to": null,
+          "reasons": [
+            "official_alert_source_not_integrated",
+            "storm_classification_unavailable",
+            "observation_precipitation_interval_unspecified"
+          ]
+        },
+        "assessment": {
+          "level": "low",
+          "severity": 1,
+          "score": 0.3333333333333333,
+          "display_score": 33,
+          "vehicle": null,
+          "rule_set_version": "general-weather-v1",
+          "freshness": "fresh",
+          "coverage": "covered",
+          "source": "6e34f8ae-5d75-4a64-97db-cb8c9e478624",
+          "source_time": "2026-09-29T21:00:00.000Z",
+          "evidence": [
+            {
+              "dimension": "rain",
+              "value": null,
+              "severity": 0
+            },
+            {
+              "dimension": "wind",
+              "value": 10.8,
+              "severity": 1
+            },
+            {
+              "dimension": "temperature",
+              "value": 25,
+              "severity": 1
+            },
+            {
+              "dimension": "visibility",
+              "value": 10000,
+              "severity": 1
+            },
+            {
+              "dimension": "storm",
+              "value": null,
+              "severity": 0
+            },
+            {
+              "dimension": "alert",
+              "value": null,
+              "severity": 0
+            }
+          ],
+          "reasons": [
+            "official_alert_source_not_integrated",
+            "storm_classification_unavailable",
+            "observation_precipitation_interval_unspecified",
+            "rain_unavailable",
+            "storm_unavailable",
+            "alert_unavailable",
+            "general_weather_partial_evidence"
+          ]
+        }
+      },
+      {
+        "id": "lang-son",
+        "name": "Lạng Sơn",
+        "weather": {
+          "uv_index": 0,
+          "cloud_cover_percent": 5,
+          "precipitation_probability_percent": null,
+          "fetched_at": "2026-09-29T21:05:11.095Z",
+          "humidity_percent": 88,
+          "wind_kmh": 3.6,
+          "feels_like_c": 28.8,
+          "pressure_hpa": 1011,
+          "precipitation_mm": 0,
+          "condition_code": "clear",
+          "rain_mm_per_hour": null,
+          "gust_kmh": 10.8,
+          "temperature_c": 24.5,
+          "visibility_m": 10000,
+          "storm": null,
+          "official_alert_level": null,
+          "freshness": "fresh",
+          "coverage": "covered",
+          "source": "6e34f8ae-5d75-4a64-97db-cb8c9e478624",
+          "source_time": "2026-09-29T21:00:00.000Z",
+          "valid_from": "2026-09-29T21:00:00.000Z",
+          "valid_to": null,
+          "reasons": [
+            "official_alert_source_not_integrated",
+            "storm_classification_unavailable",
+            "observation_precipitation_interval_unspecified"
+          ]
+        },
+        "assessment": {
+          "level": "low",
+          "severity": 1,
+          "score": 0.3333333333333333,
+          "display_score": 33,
+          "vehicle": null,
+          "rule_set_version": "general-weather-v1",
+          "freshness": "fresh",
+          "coverage": "covered",
+          "source": "6e34f8ae-5d75-4a64-97db-cb8c9e478624",
+          "source_time": "2026-09-29T21:00:00.000Z",
+          "evidence": [
+            {
+              "dimension": "rain",
+              "value": null,
+              "severity": 0
+            },
+            {
+              "dimension": "wind",
+              "value": 10.8,
+              "severity": 1
+            },
+            {
+              "dimension": "temperature",
+              "value": 24.5,
+              "severity": 1
+            },
+            {
+              "dimension": "visibility",
+              "value": 10000,
+              "severity": 1
+            },
+            {
+              "dimension": "storm",
+              "value": null,
+              "severity": 0
+            },
+            {
+              "dimension": "alert",
+              "value": null,
+              "severity": 0
+            }
+          ],
+          "reasons": [
+            "official_alert_source_not_integrated",
+            "storm_classification_unavailable",
+            "observation_precipitation_interval_unspecified",
+            "rain_unavailable",
+            "storm_unavailable",
+            "alert_unavailable",
+            "general_weather_partial_evidence"
+          ]
+        }
+      },
+      {
+        "id": "quang-ninh",
+        "name": "Quảng Ninh",
+        "weather": {
+          "uv_index": 0,
+          "cloud_cover_percent": 30,
+          "precipitation_probability_percent": null,
+          "fetched_at": "2026-09-29T21:05:10.814Z",
+          "humidity_percent": 92,
+          "wind_kmh": 5.4,
+          "feels_like_c": 29.6,
+          "pressure_hpa": 1010,
+          "precipitation_mm": 0,
+          "condition_code": "partly_cloudy",
+          "rain_mm_per_hour": null,
+          "gust_kmh": 6.9012,
+          "temperature_c": 25.8,
+          "visibility_m": 10000,
+          "storm": null,
+          "official_alert_level": null,
+          "freshness": "fresh",
+          "coverage": "covered",
+          "source": "6e34f8ae-5d75-4a64-97db-cb8c9e478624",
+          "source_time": "2026-09-29T21:00:00.000Z",
+          "valid_from": "2026-09-29T21:00:00.000Z",
+          "valid_to": null,
+          "reasons": [
+            "official_alert_source_not_integrated",
+            "storm_classification_unavailable",
+            "observation_precipitation_interval_unspecified"
+          ]
+        },
+        "assessment": {
+          "level": "low",
+          "severity": 1,
+          "score": 0.3333333333333333,
+          "display_score": 33,
+          "vehicle": null,
+          "rule_set_version": "general-weather-v1",
+          "freshness": "fresh",
+          "coverage": "covered",
+          "source": "6e34f8ae-5d75-4a64-97db-cb8c9e478624",
+          "source_time": "2026-09-29T21:00:00.000Z",
+          "evidence": [
+            {
+              "dimension": "rain",
+              "value": null,
+              "severity": 0
+            },
+            {
+              "dimension": "wind",
+              "value": 6.9012,
+              "severity": 1
+            },
+            {
+              "dimension": "temperature",
+              "value": 25.8,
+              "severity": 1
+            },
+            {
+              "dimension": "visibility",
+              "value": 10000,
+              "severity": 1
+            },
+            {
+              "dimension": "storm",
+              "value": null,
+              "severity": 0
+            },
+            {
+              "dimension": "alert",
+              "value": null,
+              "severity": 0
+            }
+          ],
+          "reasons": [
+            "official_alert_source_not_integrated",
+            "storm_classification_unavailable",
+            "observation_precipitation_interval_unspecified",
+            "rain_unavailable",
+            "storm_unavailable",
+            "alert_unavailable",
+            "general_weather_partial_evidence"
+          ]
+        }
+      },
+      {
+        "id": "bac-giang",
+        "name": "Bắc Giang",
+        "weather": {
+          "uv_index": 0,
+          "cloud_cover_percent": 5,
+          "precipitation_probability_percent": null,
+          "fetched_at": "2026-09-29T20:55:12.000Z",
+          "humidity_percent": 86,
+          "wind_kmh": 6.8004,
+          "feels_like_c": 28.9,
+          "pressure_hpa": 1010,
+          "precipitation_mm": 0,
+          "condition_code": "clear",
+          "rain_mm_per_hour": null,
+          "gust_kmh": 9,
+          "temperature_c": 25.8,
+          "visibility_m": 10000,
+          "storm": null,
+          "official_alert_level": null,
+          "freshness": "fresh",
+          "coverage": "covered",
+          "source": "6e34f8ae-5d75-4a64-97db-cb8c9e478624",
+          "source_time": "2026-09-29T20:45:00.000Z",
+          "valid_from": "2026-09-29T20:45:00.000Z",
+          "valid_to": null,
+          "reasons": [
+            "official_alert_source_not_integrated",
+            "storm_classification_unavailable",
+            "observation_precipitation_interval_unspecified"
+          ]
+        },
+        "assessment": {
+          "level": "low",
+          "severity": 1,
+          "score": 0.3333333333333333,
+          "display_score": 33,
+          "vehicle": null,
+          "rule_set_version": "general-weather-v1",
+          "freshness": "fresh",
+          "coverage": "covered",
+          "source": "6e34f8ae-5d75-4a64-97db-cb8c9e478624",
+          "source_time": "2026-09-29T20:45:00.000Z",
+          "evidence": [
+            {
+              "dimension": "rain",
+              "value": null,
+              "severity": 0
+            },
+            {
+              "dimension": "wind",
+              "value": 9,
+              "severity": 1
+            },
+            {
+              "dimension": "temperature",
+              "value": 25.8,
+              "severity": 1
+            },
+            {
+              "dimension": "visibility",
+              "value": 10000,
+              "severity": 1
+            },
+            {
+              "dimension": "storm",
+              "value": null,
+              "severity": 0
+            },
+            {
+              "dimension": "alert",
+              "value": null,
+              "severity": 0
+            }
+          ],
+          "reasons": [
+            "official_alert_source_not_integrated",
+            "storm_classification_unavailable",
+            "observation_precipitation_interval_unspecified",
+            "rain_unavailable",
+            "storm_unavailable",
+            "alert_unavailable",
+            "general_weather_partial_evidence"
+          ]
+        }
+      },
+      {
+        "id": "phu-tho",
+        "name": "Phú Thọ",
+        "weather": {
+          "uv_index": 0,
+          "cloud_cover_percent": 76,
+          "precipitation_probability_percent": null,
+          "fetched_at": "2026-09-29T21:05:11.649Z",
+          "humidity_percent": 89,
+          "wind_kmh": 7.8984,
+          "feels_like_c": 29,
+          "pressure_hpa": 1009,
+          "precipitation_mm": 0,
+          "condition_code": "unknown",
+          "rain_mm_per_hour": null,
+          "gust_kmh": 15.5988,
+          "temperature_c": 25.8,
+          "visibility_m": 4900,
+          "storm": null,
+          "official_alert_level": null,
+          "freshness": "fresh",
+          "coverage": "covered",
+          "source": "6e34f8ae-5d75-4a64-97db-cb8c9e478624",
+          "source_time": "2026-09-29T21:00:00.000Z",
+          "valid_from": "2026-09-29T21:00:00.000Z",
+          "valid_to": null,
+          "reasons": [
+            "official_alert_source_not_integrated",
+            "storm_classification_unavailable",
+            "observation_precipitation_interval_unspecified"
+          ]
+        },
+        "assessment": {
+          "level": "low",
+          "severity": 1,
+          "score": 0.3333333333333333,
+          "display_score": 33,
+          "vehicle": null,
+          "rule_set_version": "general-weather-v1",
+          "freshness": "fresh",
+          "coverage": "covered",
+          "source": "6e34f8ae-5d75-4a64-97db-cb8c9e478624",
+          "source_time": "2026-09-29T21:00:00.000Z",
+          "evidence": [
+            {
+              "dimension": "rain",
+              "value": null,
+              "severity": 0
+            },
+            {
+              "dimension": "wind",
+              "value": 15.5988,
+              "severity": 1
+            },
+            {
+              "dimension": "temperature",
+              "value": 25.8,
+              "severity": 1
+            },
+            {
+              "dimension": "visibility",
+              "value": 4900,
+              "severity": 1
+            },
+            {
+              "dimension": "storm",
+              "value": null,
+              "severity": 0
+            },
+            {
+              "dimension": "alert",
+              "value": null,
+              "severity": 0
+            }
+          ],
+          "reasons": [
+            "official_alert_source_not_integrated",
+            "storm_classification_unavailable",
+            "observation_precipitation_interval_unspecified",
+            "rain_unavailable",
+            "storm_unavailable",
+            "alert_unavailable",
+            "general_weather_partial_evidence"
+          ]
+        }
+      },
+      {
+        "id": "bac-ninh",
+        "name": "Bắc Ninh",
+        "weather": {
+          "uv_index": 0,
+          "cloud_cover_percent": 5,
+          "precipitation_probability_percent": null,
+          "fetched_at": "2026-09-29T21:05:12.205Z",
+          "humidity_percent": 84,
+          "wind_kmh": 7.5996,
+          "feels_like_c": 28.8,
+          "pressure_hpa": 1010,
+          "precipitation_mm": 0,
+          "condition_code": "clear",
+          "rain_mm_per_hour": null,
+          "gust_kmh": 10.5012,
+          "temperature_c": 25.9,
+          "visibility_m": 10000,
+          "storm": null,
+          "official_alert_level": null,
+          "freshness": "fresh",
+          "coverage": "covered",
+          "source": "6e34f8ae-5d75-4a64-97db-cb8c9e478624",
+          "source_time": "2026-09-29T21:00:00.000Z",
+          "valid_from": "2026-09-29T21:00:00.000Z",
+          "valid_to": null,
+          "reasons": [
+            "official_alert_source_not_integrated",
+            "storm_classification_unavailable",
+            "observation_precipitation_interval_unspecified"
+          ]
+        },
+        "assessment": {
+          "level": "low",
+          "severity": 1,
+          "score": 0.3333333333333333,
+          "display_score": 33,
+          "vehicle": null,
+          "rule_set_version": "general-weather-v1",
+          "freshness": "fresh",
+          "coverage": "covered",
+          "source": "6e34f8ae-5d75-4a64-97db-cb8c9e478624",
+          "source_time": "2026-09-29T21:00:00.000Z",
+          "evidence": [
+            {
+              "dimension": "rain",
+              "value": null,
+              "severity": 0
+            },
+            {
+              "dimension": "wind",
+              "value": 10.5012,
+              "severity": 1
+            },
+            {
+              "dimension": "temperature",
+              "value": 25.9,
+              "severity": 1
+            },
+            {
+              "dimension": "visibility",
+              "value": 10000,
+              "severity": 1
+            },
+            {
+              "dimension": "storm",
+              "value": null,
+              "severity": 0
+            },
+            {
+              "dimension": "alert",
+              "value": null,
+              "severity": 0
+            }
+          ],
+          "reasons": [
+            "official_alert_source_not_integrated",
+            "storm_classification_unavailable",
+            "observation_precipitation_interval_unspecified",
+            "rain_unavailable",
+            "storm_unavailable",
+            "alert_unavailable",
+            "general_weather_partial_evidence"
+          ]
+        }
+      },
+      {
+        "id": "vinh-phuc",
+        "name": "Vĩnh Phúc",
+        "weather": {
+          "uv_index": 0,
+          "cloud_cover_percent": 76,
+          "precipitation_probability_percent": null,
+          "fetched_at": "2026-09-29T21:05:11.933Z",
+          "humidity_percent": 89,
+          "wind_kmh": 7.8984,
+          "feels_like_c": 29,
+          "pressure_hpa": 1009,
+          "precipitation_mm": 0,
+          "condition_code": "unknown",
+          "rain_mm_per_hour": null,
+          "gust_kmh": 15.5988,
+          "temperature_c": 25.8,
+          "visibility_m": 4900,
+          "storm": null,
+          "official_alert_level": null,
+          "freshness": "fresh",
+          "coverage": "covered",
+          "source": "6e34f8ae-5d75-4a64-97db-cb8c9e478624",
+          "source_time": "2026-09-29T21:00:00.000Z",
+          "valid_from": "2026-09-29T21:00:00.000Z",
+          "valid_to": null,
+          "reasons": [
+            "official_alert_source_not_integrated",
+            "storm_classification_unavailable",
+            "observation_precipitation_interval_unspecified"
+          ]
+        },
+        "assessment": {
+          "level": "low",
+          "severity": 1,
+          "score": 0.3333333333333333,
+          "display_score": 33,
+          "vehicle": null,
+          "rule_set_version": "general-weather-v1",
+          "freshness": "fresh",
+          "coverage": "covered",
+          "source": "6e34f8ae-5d75-4a64-97db-cb8c9e478624",
+          "source_time": "2026-09-29T21:00:00.000Z",
+          "evidence": [
+            {
+              "dimension": "rain",
+              "value": null,
+              "severity": 0
+            },
+            {
+              "dimension": "wind",
+              "value": 15.5988,
+              "severity": 1
+            },
+            {
+              "dimension": "temperature",
+              "value": 25.8,
+              "severity": 1
+            },
+            {
+              "dimension": "visibility",
+              "value": 4900,
+              "severity": 1
+            },
+            {
+              "dimension": "storm",
+              "value": null,
+              "severity": 0
+            },
+            {
+              "dimension": "alert",
+              "value": null,
+              "severity": 0
+            }
+          ],
+          "reasons": [
+            "official_alert_source_not_integrated",
+            "storm_classification_unavailable",
+            "observation_precipitation_interval_unspecified",
+            "rain_unavailable",
+            "storm_unavailable",
+            "alert_unavailable",
+            "general_weather_partial_evidence"
+          ]
+        }
+      },
+      {
+        "id": "hung-yen",
+        "name": "Hưng Yên",
+        "weather": {
+          "uv_index": 0,
+          "cloud_cover_percent": 14,
+          "precipitation_probability_percent": null,
+          "fetched_at": "2026-09-29T21:05:12.483Z",
+          "humidity_percent": 94,
+          "wind_kmh": 8.3016,
+          "feels_like_c": 32.6,
+          "pressure_hpa": 1009,
+          "precipitation_mm": 0,
+          "condition_code": "clear",
+          "rain_mm_per_hour": null,
+          "gust_kmh": 16.9992,
+          "temperature_c": 27.3,
+          "visibility_m": 10000,
+          "storm": null,
+          "official_alert_level": null,
+          "freshness": "fresh",
+          "coverage": "covered",
+          "source": "6e34f8ae-5d75-4a64-97db-cb8c9e478624",
+          "source_time": "2026-09-29T21:00:00.000Z",
+          "valid_from": "2026-09-29T21:00:00.000Z",
+          "valid_to": null,
+          "reasons": [
+            "official_alert_source_not_integrated",
+            "storm_classification_unavailable",
+            "observation_precipitation_interval_unspecified"
+          ]
+        },
+        "assessment": {
+          "level": "low",
+          "severity": 1,
+          "score": 0.3333333333333333,
+          "display_score": 33,
+          "vehicle": null,
+          "rule_set_version": "general-weather-v1",
+          "freshness": "fresh",
+          "coverage": "covered",
+          "source": "6e34f8ae-5d75-4a64-97db-cb8c9e478624",
+          "source_time": "2026-09-29T21:00:00.000Z",
+          "evidence": [
+            {
+              "dimension": "rain",
+              "value": null,
+              "severity": 0
+            },
+            {
+              "dimension": "wind",
+              "value": 16.9992,
+              "severity": 1
+            },
+            {
+              "dimension": "temperature",
+              "value": 27.3,
+              "severity": 1
+            },
+            {
+              "dimension": "visibility",
+              "value": 10000,
+              "severity": 1
+            },
+            {
+              "dimension": "storm",
+              "value": null,
+              "severity": 0
+            },
+            {
+              "dimension": "alert",
+              "value": null,
+              "severity": 0
+            }
+          ],
+          "reasons": [
+            "official_alert_source_not_integrated",
+            "storm_classification_unavailable",
+            "observation_precipitation_interval_unspecified",
+            "rain_unavailable",
+            "storm_unavailable",
+            "alert_unavailable",
+            "general_weather_partial_evidence"
+          ]
+        }
+      },
+      {
+        "id": "hai-duong",
+        "name": "Hải Dương",
+        "weather": {
+          "uv_index": 0,
+          "cloud_cover_percent": 48,
+          "precipitation_probability_percent": null,
+          "fetched_at": "2026-09-29T21:05:13.339Z",
+          "humidity_percent": 90,
+          "wind_kmh": 10.4004,
+          "feels_like_c": 33,
+          "pressure_hpa": 1010,
+          "precipitation_mm": 0,
+          "condition_code": "partly_cloudy",
+          "rain_mm_per_hour": null,
+          "gust_kmh": 18.1008,
+          "temperature_c": 27.7,
+          "visibility_m": 10000,
+          "storm": null,
+          "official_alert_level": null,
+          "freshness": "fresh",
+          "coverage": "covered",
+          "source": "6e34f8ae-5d75-4a64-97db-cb8c9e478624",
+          "source_time": "2026-09-29T21:00:00.000Z",
+          "valid_from": "2026-09-29T21:00:00.000Z",
+          "valid_to": null,
+          "reasons": [
+            "official_alert_source_not_integrated",
+            "storm_classification_unavailable",
+            "observation_precipitation_interval_unspecified"
+          ]
+        },
+        "assessment": {
+          "level": "low",
+          "severity": 1,
+          "score": 0.3333333333333333,
+          "display_score": 33,
+          "vehicle": null,
+          "rule_set_version": "general-weather-v1",
+          "freshness": "fresh",
+          "coverage": "covered",
+          "source": "6e34f8ae-5d75-4a64-97db-cb8c9e478624",
+          "source_time": "2026-09-29T21:00:00.000Z",
+          "evidence": [
+            {
+              "dimension": "rain",
+              "value": null,
+              "severity": 0
+            },
+            {
+              "dimension": "wind",
+              "value": 18.1008,
+              "severity": 1
+            },
+            {
+              "dimension": "temperature",
+              "value": 27.7,
+              "severity": 1
+            },
+            {
+              "dimension": "visibility",
+              "value": 10000,
+              "severity": 1
+            },
+            {
+              "dimension": "storm",
+              "value": null,
+              "severity": 0
+            },
+            {
+              "dimension": "alert",
+              "value": null,
+              "severity": 0
+            }
+          ],
+          "reasons": [
+            "official_alert_source_not_integrated",
+            "storm_classification_unavailable",
+            "observation_precipitation_interval_unspecified",
+            "rain_unavailable",
+            "storm_unavailable",
+            "alert_unavailable",
+            "general_weather_partial_evidence"
+          ]
+        }
+      },
+      {
+        "id": "hoa-binh",
+        "name": "Hòa Bình",
+        "weather": {
+          "uv_index": 0,
+          "cloud_cover_percent": 75,
+          "precipitation_probability_percent": null,
+          "fetched_at": "2026-09-29T21:05:12.757Z",
+          "humidity_percent": 96,
+          "wind_kmh": 3.6,
+          "feels_like_c": 28.5,
+          "pressure_hpa": 1010,
+          "precipitation_mm": 0,
+          "condition_code": "fog",
+          "rain_mm_per_hour": null,
+          "gust_kmh": 10.8,
+          "temperature_c": 23.6,
+          "visibility_m": 2000,
+          "storm": null,
+          "official_alert_level": null,
+          "freshness": "fresh",
+          "coverage": "covered",
+          "source": "6e34f8ae-5d75-4a64-97db-cb8c9e478624",
+          "source_time": "2026-09-29T21:00:00.000Z",
+          "valid_from": "2026-09-29T21:00:00.000Z",
+          "valid_to": null,
+          "reasons": [
+            "official_alert_source_not_integrated",
+            "storm_classification_unavailable",
+            "observation_precipitation_interval_unspecified"
+          ]
+        },
+        "assessment": {
+          "level": "low",
+          "severity": 1,
+          "score": 0.3333333333333333,
+          "display_score": 33,
+          "vehicle": null,
+          "rule_set_version": "general-weather-v1",
+          "freshness": "fresh",
+          "coverage": "covered",
+          "source": "6e34f8ae-5d75-4a64-97db-cb8c9e478624",
+          "source_time": "2026-09-29T21:00:00.000Z",
+          "evidence": [
+            {
+              "dimension": "rain",
+              "value": null,
+              "severity": 0
+            },
+            {
+              "dimension": "wind",
+              "value": 10.8,
+              "severity": 1
+            },
+            {
+              "dimension": "temperature",
+              "value": 23.6,
+              "severity": 1
+            },
+            {
+              "dimension": "visibility",
+              "value": 2000,
+              "severity": 1
+            },
+            {
+              "dimension": "storm",
+              "value": null,
+              "severity": 0
+            },
+            {
+              "dimension": "alert",
+              "value": null,
+              "severity": 0
+            }
+          ],
+          "reasons": [
+            "official_alert_source_not_integrated",
+            "storm_classification_unavailable",
+            "observation_precipitation_interval_unspecified",
+            "rain_unavailable",
+            "storm_unavailable",
+            "alert_unavailable",
+            "general_weather_partial_evidence"
+          ]
+        }
+      },
+      {
+        "id": "ha-noi",
+        "name": "Hà Nội",
+        "weather": {
+          "uv_index": 0,
+          "cloud_cover_percent": 5,
+          "precipitation_probability_percent": null,
+          "fetched_at": "2026-09-29T21:05:13.620Z",
+          "humidity_percent": 87,
+          "wind_kmh": 6.8004,
+          "feels_like_c": 29.6,
+          "pressure_hpa": 1009,
+          "precipitation_mm": 0,
+          "condition_code": "clear",
+          "rain_mm_per_hour": null,
+          "gust_kmh": 10.9008,
+          "temperature_c": 26.5,
+          "visibility_m": 10000,
+          "storm": null,
+          "official_alert_level": null,
+          "freshness": "fresh",
+          "coverage": "covered",
+          "source": "6e34f8ae-5d75-4a64-97db-cb8c9e478624",
+          "source_time": "2026-09-29T21:00:00.000Z",
+          "valid_from": "2026-09-29T21:00:00.000Z",
+          "valid_to": null,
+          "reasons": [
+            "official_alert_source_not_integrated",
+            "storm_classification_unavailable",
+            "observation_precipitation_interval_unspecified"
+          ]
+        },
+        "assessment": {
+          "level": "low",
+          "severity": 1,
+          "score": 0.3333333333333333,
+          "display_score": 33,
+          "vehicle": null,
+          "rule_set_version": "general-weather-v1",
+          "freshness": "fresh",
+          "coverage": "covered",
+          "source": "6e34f8ae-5d75-4a64-97db-cb8c9e478624",
+          "source_time": "2026-09-29T21:00:00.000Z",
+          "evidence": [
+            {
+              "dimension": "rain",
+              "value": null,
+              "severity": 0
+            },
+            {
+              "dimension": "wind",
+              "value": 10.9008,
+              "severity": 1
+            },
+            {
+              "dimension": "temperature",
+              "value": 26.5,
+              "severity": 1
+            },
+            {
+              "dimension": "visibility",
+              "value": 10000,
+              "severity": 1
+            },
+            {
+              "dimension": "storm",
+              "value": null,
+              "severity": 0
+            },
+            {
+              "dimension": "alert",
+              "value": null,
+              "severity": 0
+            }
+          ],
+          "reasons": [
+            "official_alert_source_not_integrated",
+            "storm_classification_unavailable",
+            "observation_precipitation_interval_unspecified",
+            "rain_unavailable",
+            "storm_unavailable",
+            "alert_unavailable",
+            "general_weather_partial_evidence"
+          ]
+        }
+      },
+      {
+        "id": "haiphong",
+        "name": "Hải Phòng",
+        "weather": {
+          "uv_index": 0,
+          "cloud_cover_percent": 48,
+          "precipitation_probability_percent": null,
+          "fetched_at": "2026-09-29T21:05:14.171Z",
+          "humidity_percent": 90,
+          "wind_kmh": 10.4004,
+          "feels_like_c": 33.3,
+          "pressure_hpa": 1010,
+          "precipitation_mm": 0,
+          "condition_code": "partly_cloudy",
+          "rain_mm_per_hour": null,
+          "gust_kmh": 18.1008,
+          "temperature_c": 27.8,
+          "visibility_m": 10000,
+          "storm": null,
+          "official_alert_level": null,
+          "freshness": "fresh",
+          "coverage": "covered",
+          "source": "6e34f8ae-5d75-4a64-97db-cb8c9e478624",
+          "source_time": "2026-09-29T21:00:00.000Z",
+          "valid_from": "2026-09-29T21:00:00.000Z",
+          "valid_to": null,
+          "reasons": [
+            "official_alert_source_not_integrated",
+            "storm_classification_unavailable",
+            "observation_precipitation_interval_unspecified"
+          ]
+        },
+        "assessment": {
+          "level": "low",
+          "severity": 1,
+          "score": 0.3333333333333333,
+          "display_score": 33,
+          "vehicle": null,
+          "rule_set_version": "general-weather-v1",
+          "freshness": "fresh",
+          "coverage": "covered",
+          "source": "6e34f8ae-5d75-4a64-97db-cb8c9e478624",
+          "source_time": "2026-09-29T21:00:00.000Z",
+          "evidence": [
+            {
+              "dimension": "rain",
+              "value": null,
+              "severity": 0
+            },
+            {
+              "dimension": "wind",
+              "value": 18.1008,
+              "severity": 1
+            },
+            {
+              "dimension": "temperature",
+              "value": 27.8,
+              "severity": 1
+            },
+            {
+              "dimension": "visibility",
+              "value": 10000,
+              "severity": 1
+            },
+            {
+              "dimension": "storm",
+              "value": null,
+              "severity": 0
+            },
+            {
+              "dimension": "alert",
+              "value": null,
+              "severity": 0
+            }
+          ],
+          "reasons": [
+            "official_alert_source_not_integrated",
+            "storm_classification_unavailable",
+            "observation_precipitation_interval_unspecified",
+            "rain_unavailable",
+            "storm_unavailable",
+            "alert_unavailable",
+            "general_weather_partial_evidence"
+          ]
+        }
+      },
+      {
+        "id": "thai-binh",
+        "name": "Thái Bình",
+        "weather": {
+          "uv_index": 0,
+          "cloud_cover_percent": 14,
+          "precipitation_probability_percent": null,
+          "fetched_at": "2026-09-29T21:05:13.895Z",
+          "humidity_percent": 94,
+          "wind_kmh": 8.3016,
+          "feels_like_c": 32.6,
+          "pressure_hpa": 1009,
+          "precipitation_mm": 0,
+          "condition_code": "clear",
+          "rain_mm_per_hour": null,
+          "gust_kmh": 16.9992,
+          "temperature_c": 27.3,
+          "visibility_m": 10000,
+          "storm": null,
+          "official_alert_level": null,
+          "freshness": "fresh",
+          "coverage": "covered",
+          "source": "6e34f8ae-5d75-4a64-97db-cb8c9e478624",
+          "source_time": "2026-09-29T21:00:00.000Z",
+          "valid_from": "2026-09-29T21:00:00.000Z",
+          "valid_to": null,
+          "reasons": [
+            "official_alert_source_not_integrated",
+            "storm_classification_unavailable",
+            "observation_precipitation_interval_unspecified"
+          ]
+        },
+        "assessment": {
+          "level": "low",
+          "severity": 1,
+          "score": 0.3333333333333333,
+          "display_score": 33,
+          "vehicle": null,
+          "rule_set_version": "general-weather-v1",
+          "freshness": "fresh",
+          "coverage": "covered",
+          "source": "6e34f8ae-5d75-4a64-97db-cb8c9e478624",
+          "source_time": "2026-09-29T21:00:00.000Z",
+          "evidence": [
+            {
+              "dimension": "rain",
+              "value": null,
+              "severity": 0
+            },
+            {
+              "dimension": "wind",
+              "value": 16.9992,
+              "severity": 1
+            },
+            {
+              "dimension": "temperature",
+              "value": 27.3,
+              "severity": 1
+            },
+            {
+              "dimension": "visibility",
+              "value": 10000,
+              "severity": 1
+            },
+            {
+              "dimension": "storm",
+              "value": null,
+              "severity": 0
+            },
+            {
+              "dimension": "alert",
+              "value": null,
+              "severity": 0
+            }
+          ],
+          "reasons": [
+            "official_alert_source_not_integrated",
+            "storm_classification_unavailable",
+            "observation_precipitation_interval_unspecified",
+            "rain_unavailable",
+            "storm_unavailable",
+            "alert_unavailable",
+            "general_weather_partial_evidence"
+          ]
+        }
+      },
+      {
+        "id": "nam-dinh",
+        "name": "Nam Định",
+        "weather": {
+          "uv_index": 0,
+          "cloud_cover_percent": 14,
+          "precipitation_probability_percent": null,
+          "fetched_at": "2026-09-29T21:05:13.060Z",
+          "humidity_percent": 94,
+          "wind_kmh": 8.3016,
+          "feels_like_c": 32.6,
+          "pressure_hpa": 1009,
+          "precipitation_mm": 0,
+          "condition_code": "clear",
+          "rain_mm_per_hour": null,
+          "gust_kmh": 16.9992,
+          "temperature_c": 27.3,
+          "visibility_m": 10000,
+          "storm": null,
+          "official_alert_level": null,
+          "freshness": "fresh",
+          "coverage": "covered",
+          "source": "6e34f8ae-5d75-4a64-97db-cb8c9e478624",
+          "source_time": "2026-09-29T21:00:00.000Z",
+          "valid_from": "2026-09-29T21:00:00.000Z",
+          "valid_to": null,
+          "reasons": [
+            "official_alert_source_not_integrated",
+            "storm_classification_unavailable",
+            "observation_precipitation_interval_unspecified"
+          ]
+        },
+        "assessment": {
+          "level": "low",
+          "severity": 1,
+          "score": 0.3333333333333333,
+          "display_score": 33,
+          "vehicle": null,
+          "rule_set_version": "general-weather-v1",
+          "freshness": "fresh",
+          "coverage": "covered",
+          "source": "6e34f8ae-5d75-4a64-97db-cb8c9e478624",
+          "source_time": "2026-09-29T21:00:00.000Z",
+          "evidence": [
+            {
+              "dimension": "rain",
+              "value": null,
+              "severity": 0
+            },
+            {
+              "dimension": "wind",
+              "value": 16.9992,
+              "severity": 1
+            },
+            {
+              "dimension": "temperature",
+              "value": 27.3,
+              "severity": 1
+            },
+            {
+              "dimension": "visibility",
+              "value": 10000,
+              "severity": 1
+            },
+            {
+              "dimension": "storm",
+              "value": null,
+              "severity": 0
+            },
+            {
+              "dimension": "alert",
+              "value": null,
+              "severity": 0
+            }
+          ],
+          "reasons": [
+            "official_alert_source_not_integrated",
+            "storm_classification_unavailable",
+            "observation_precipitation_interval_unspecified",
+            "rain_unavailable",
+            "storm_unavailable",
+            "alert_unavailable",
+            "general_weather_partial_evidence"
+          ]
+        }
+      },
+      {
+        "id": "ninh-binh",
+        "name": "Ninh Bình",
+        "weather": {
+          "uv_index": 0,
+          "cloud_cover_percent": 14,
+          "precipitation_probability_percent": null,
+          "fetched_at": "2026-09-29T21:05:14.444Z",
+          "humidity_percent": 94,
+          "wind_kmh": 8.3016,
+          "feels_like_c": 32.6,
+          "pressure_hpa": 1009,
+          "precipitation_mm": 0,
+          "condition_code": "clear",
+          "rain_mm_per_hour": null,
+          "gust_kmh": 16.9992,
+          "temperature_c": 27.3,
+          "visibility_m": 10000,
+          "storm": null,
+          "official_alert_level": null,
+          "freshness": "fresh",
+          "coverage": "covered",
+          "source": "6e34f8ae-5d75-4a64-97db-cb8c9e478624",
+          "source_time": "2026-09-29T21:00:00.000Z",
+          "valid_from": "2026-09-29T21:00:00.000Z",
+          "valid_to": null,
+          "reasons": [
+            "official_alert_source_not_integrated",
+            "storm_classification_unavailable",
+            "observation_precipitation_interval_unspecified"
+          ]
+        },
+        "assessment": {
+          "level": "low",
+          "severity": 1,
+          "score": 0.3333333333333333,
+          "display_score": 33,
+          "vehicle": null,
+          "rule_set_version": "general-weather-v1",
+          "freshness": "fresh",
+          "coverage": "covered",
+          "source": "6e34f8ae-5d75-4a64-97db-cb8c9e478624",
+          "source_time": "2026-09-29T21:00:00.000Z",
+          "evidence": [
+            {
+              "dimension": "rain",
+              "value": null,
+              "severity": 0
+            },
+            {
+              "dimension": "wind",
+              "value": 16.9992,
+              "severity": 1
+            },
+            {
+              "dimension": "temperature",
+              "value": 27.3,
+              "severity": 1
+            },
+            {
+              "dimension": "visibility",
+              "value": 10000,
+              "severity": 1
+            },
+            {
+              "dimension": "storm",
+              "value": null,
+              "severity": 0
+            },
+            {
+              "dimension": "alert",
+              "value": null,
+              "severity": 0
+            }
+          ],
+          "reasons": [
+            "official_alert_source_not_integrated",
+            "storm_classification_unavailable",
+            "observation_precipitation_interval_unspecified",
+            "rain_unavailable",
+            "storm_unavailable",
+            "alert_unavailable",
+            "general_weather_partial_evidence"
+          ]
+        }
+      },
+      {
+        "id": "thanh-hoa",
+        "name": "Thanh Hóa",
+        "weather": {
+          "uv_index": 0,
+          "cloud_cover_percent": 99,
+          "precipitation_probability_percent": null,
+          "fetched_at": "2026-09-29T21:05:14.728Z",
+          "humidity_percent": 83,
+          "wind_kmh": 3.9996,
+          "feels_like_c": 29,
+          "pressure_hpa": 1010,
+          "precipitation_mm": 0,
+          "condition_code": "cloudy",
+          "rain_mm_per_hour": null,
+          "gust_kmh": 18.3996,
+          "temperature_c": 25.1,
+          "visibility_m": 10000,
+          "storm": null,
+          "official_alert_level": null,
+          "freshness": "fresh",
+          "coverage": "covered",
+          "source": "6e34f8ae-5d75-4a64-97db-cb8c9e478624",
+          "source_time": "2026-09-29T21:00:00.000Z",
+          "valid_from": "2026-09-29T21:00:00.000Z",
+          "valid_to": null,
+          "reasons": [
+            "official_alert_source_not_integrated",
+            "storm_classification_unavailable",
+            "observation_precipitation_interval_unspecified"
+          ]
+        },
+        "assessment": {
+          "level": "low",
+          "severity": 1,
+          "score": 0.3333333333333333,
+          "display_score": 33,
+          "vehicle": null,
+          "rule_set_version": "general-weather-v1",
+          "freshness": "fresh",
+          "coverage": "covered",
+          "source": "6e34f8ae-5d75-4a64-97db-cb8c9e478624",
+          "source_time": "2026-09-29T21:00:00.000Z",
+          "evidence": [
+            {
+              "dimension": "rain",
+              "value": null,
+              "severity": 0
+            },
+            {
+              "dimension": "wind",
+              "value": 18.3996,
+              "severity": 1
+            },
+            {
+              "dimension": "temperature",
+              "value": 25.1,
+              "severity": 1
+            },
+            {
+              "dimension": "visibility",
+              "value": 10000,
+              "severity": 1
+            },
+            {
+              "dimension": "storm",
+              "value": null,
+              "severity": 0
+            },
+            {
+              "dimension": "alert",
+              "value": null,
+              "severity": 0
+            }
+          ],
+          "reasons": [
+            "official_alert_source_not_integrated",
+            "storm_classification_unavailable",
+            "observation_precipitation_interval_unspecified",
+            "rain_unavailable",
+            "storm_unavailable",
+            "alert_unavailable",
+            "general_weather_partial_evidence"
+          ]
+        }
+      },
+      {
+        "id": "nghe-an",
+        "name": "Nghệ An",
+        "weather": {
+          "uv_index": 0,
+          "cloud_cover_percent": 100,
+          "precipitation_probability_percent": null,
+          "fetched_at": "2026-09-29T21:05:15.010Z",
+          "humidity_percent": 81,
+          "wind_kmh": 6.8004,
+          "feels_like_c": 27.4,
+          "pressure_hpa": 1010,
+          "precipitation_mm": 0,
+          "condition_code": "cloudy",
+          "rain_mm_per_hour": null,
+          "gust_kmh": 6.9012,
+          "temperature_c": 24.5,
+          "visibility_m": 10000,
+          "storm": null,
+          "official_alert_level": null,
+          "freshness": "fresh",
+          "coverage": "covered",
+          "source": "6e34f8ae-5d75-4a64-97db-cb8c9e478624",
+          "source_time": "2026-09-29T21:00:00.000Z",
+          "valid_from": "2026-09-29T21:00:00.000Z",
+          "valid_to": null,
+          "reasons": [
+            "official_alert_source_not_integrated",
+            "storm_classification_unavailable",
+            "observation_precipitation_interval_unspecified"
+          ]
+        },
+        "assessment": {
+          "level": "low",
+          "severity": 1,
+          "score": 0.3333333333333333,
+          "display_score": 33,
+          "vehicle": null,
+          "rule_set_version": "general-weather-v1",
+          "freshness": "fresh",
+          "coverage": "covered",
+          "source": "6e34f8ae-5d75-4a64-97db-cb8c9e478624",
+          "source_time": "2026-09-29T21:00:00.000Z",
+          "evidence": [
+            {
+              "dimension": "rain",
+              "value": null,
+              "severity": 0
+            },
+            {
+              "dimension": "wind",
+              "value": 6.9012,
+              "severity": 1
+            },
+            {
+              "dimension": "temperature",
+              "value": 24.5,
+              "severity": 1
+            },
+            {
+              "dimension": "visibility",
+              "value": 10000,
+              "severity": 1
+            },
+            {
+              "dimension": "storm",
+              "value": null,
+              "severity": 0
+            },
+            {
+              "dimension": "alert",
+              "value": null,
+              "severity": 0
+            }
+          ],
+          "reasons": [
+            "official_alert_source_not_integrated",
+            "storm_classification_unavailable",
+            "observation_precipitation_interval_unspecified",
+            "rain_unavailable",
+            "storm_unavailable",
+            "alert_unavailable",
+            "general_weather_partial_evidence"
+          ]
+        }
+      },
+      {
+        "id": "ha-tinh",
+        "name": "Hà Tĩnh",
+        "weather": {
+          "uv_index": 0,
+          "cloud_cover_percent": 82,
+          "precipitation_probability_percent": null,
+          "fetched_at": "2026-09-29T21:05:15.418Z",
+          "humidity_percent": 84,
+          "wind_kmh": 6.0984,
+          "feels_like_c": 28.2,
+          "pressure_hpa": 1010,
+          "precipitation_mm": 0,
+          "condition_code": "cloudy",
+          "rain_mm_per_hour": null,
+          "gust_kmh": 6.1992,
+          "temperature_c": 24.7,
+          "visibility_m": 10000,
+          "storm": null,
+          "official_alert_level": null,
+          "freshness": "fresh",
+          "coverage": "covered",
+          "source": "6e34f8ae-5d75-4a64-97db-cb8c9e478624",
+          "source_time": "2026-09-29T21:00:00.000Z",
+          "valid_from": "2026-09-29T21:00:00.000Z",
+          "valid_to": null,
+          "reasons": [
+            "official_alert_source_not_integrated",
+            "storm_classification_unavailable",
+            "observation_precipitation_interval_unspecified"
+          ]
+        },
+        "assessment": {
+          "level": "low",
+          "severity": 1,
+          "score": 0.3333333333333333,
+          "display_score": 33,
+          "vehicle": null,
+          "rule_set_version": "general-weather-v1",
+          "freshness": "fresh",
+          "coverage": "covered",
+          "source": "6e34f8ae-5d75-4a64-97db-cb8c9e478624",
+          "source_time": "2026-09-29T21:00:00.000Z",
+          "evidence": [
+            {
+              "dimension": "rain",
+              "value": null,
+              "severity": 0
+            },
+            {
+              "dimension": "wind",
+              "value": 6.1992,
+              "severity": 1
+            },
+            {
+              "dimension": "temperature",
+              "value": 24.7,
+              "severity": 1
+            },
+            {
+              "dimension": "visibility",
+              "value": 10000,
+              "severity": 1
+            },
+            {
+              "dimension": "storm",
+              "value": null,
+              "severity": 0
+            },
+            {
+              "dimension": "alert",
+              "value": null,
+              "severity": 0
+            }
+          ],
+          "reasons": [
+            "official_alert_source_not_integrated",
+            "storm_classification_unavailable",
+            "observation_precipitation_interval_unspecified",
+            "rain_unavailable",
+            "storm_unavailable",
+            "alert_unavailable",
+            "general_weather_partial_evidence"
+          ]
+        }
+      },
+      {
+        "id": "quang-binh",
+        "name": "Quảng Bình",
+        "weather": {
+          "uv_index": 0,
+          "cloud_cover_percent": 77,
+          "precipitation_probability_percent": null,
+          "fetched_at": "2026-09-29T21:05:15.697Z",
+          "humidity_percent": 77,
+          "wind_kmh": 18.3996,
+          "feels_like_c": 30.8,
+          "pressure_hpa": 1010,
+          "precipitation_mm": 0,
+          "condition_code": "cloudy",
+          "rain_mm_per_hour": null,
+          "gust_kmh": 27.3996,
+          "temperature_c": 27.7,
+          "visibility_m": 10000,
+          "storm": null,
+          "official_alert_level": null,
+          "freshness": "fresh",
+          "coverage": "covered",
+          "source": "6e34f8ae-5d75-4a64-97db-cb8c9e478624",
+          "source_time": "2026-09-29T21:00:00.000Z",
+          "valid_from": "2026-09-29T21:00:00.000Z",
+          "valid_to": null,
+          "reasons": [
+            "official_alert_source_not_integrated",
+            "storm_classification_unavailable",
+            "observation_precipitation_interval_unspecified"
+          ]
+        },
+        "assessment": {
+          "level": "caution",
+          "severity": 2,
+          "score": 0.6666666666666666,
+          "display_score": 67,
+          "vehicle": null,
+          "rule_set_version": "general-weather-v1",
+          "freshness": "fresh",
+          "coverage": "covered",
+          "source": "6e34f8ae-5d75-4a64-97db-cb8c9e478624",
+          "source_time": "2026-09-29T21:00:00.000Z",
+          "evidence": [
+            {
+              "dimension": "rain",
+              "value": null,
+              "severity": 0
+            },
+            {
+              "dimension": "wind",
+              "value": 27.3996,
+              "severity": 2
+            },
+            {
+              "dimension": "temperature",
+              "value": 27.7,
+              "severity": 1
+            },
+            {
+              "dimension": "visibility",
+              "value": 10000,
+              "severity": 1
+            },
+            {
+              "dimension": "storm",
+              "value": null,
+              "severity": 0
+            },
+            {
+              "dimension": "alert",
+              "value": null,
+              "severity": 0
+            }
+          ],
+          "reasons": [
+            "official_alert_source_not_integrated",
+            "storm_classification_unavailable",
+            "observation_precipitation_interval_unspecified",
+            "rain_unavailable",
+            "storm_unavailable",
+            "alert_unavailable",
+            "general_weather_partial_evidence"
+          ]
+        }
+      },
+      {
+        "id": "quang-tri",
+        "name": "Quảng Trị",
+        "weather": {
+          "uv_index": 0,
+          "cloud_cover_percent": 97,
+          "precipitation_probability_percent": null,
+          "fetched_at": "2026-09-29T21:05:15.970Z",
+          "humidity_percent": 83,
+          "wind_kmh": 6.8004,
+          "feels_like_c": 28.5,
+          "pressure_hpa": 1011,
+          "precipitation_mm": 0,
+          "condition_code": "cloudy",
+          "rain_mm_per_hour": null,
+          "gust_kmh": 7.5996,
+          "temperature_c": 25.3,
+          "visibility_m": 10000,
+          "storm": null,
+          "official_alert_level": null,
+          "freshness": "fresh",
+          "coverage": "covered",
+          "source": "6e34f8ae-5d75-4a64-97db-cb8c9e478624",
+          "source_time": "2026-09-29T21:00:00.000Z",
+          "valid_from": "2026-09-29T21:00:00.000Z",
+          "valid_to": null,
+          "reasons": [
+            "official_alert_source_not_integrated",
+            "storm_classification_unavailable",
+            "observation_precipitation_interval_unspecified"
+          ]
+        },
+        "assessment": {
+          "level": "low",
+          "severity": 1,
+          "score": 0.3333333333333333,
+          "display_score": 33,
+          "vehicle": null,
+          "rule_set_version": "general-weather-v1",
+          "freshness": "fresh",
+          "coverage": "covered",
+          "source": "6e34f8ae-5d75-4a64-97db-cb8c9e478624",
+          "source_time": "2026-09-29T21:00:00.000Z",
+          "evidence": [
+            {
+              "dimension": "rain",
+              "value": null,
+              "severity": 0
+            },
+            {
+              "dimension": "wind",
+              "value": 7.5996,
+              "severity": 1
+            },
+            {
+              "dimension": "temperature",
+              "value": 25.3,
+              "severity": 1
+            },
+            {
+              "dimension": "visibility",
+              "value": 10000,
+              "severity": 1
+            },
+            {
+              "dimension": "storm",
+              "value": null,
+              "severity": 0
+            },
+            {
+              "dimension": "alert",
+              "value": null,
+              "severity": 0
+            }
+          ],
+          "reasons": [
+            "official_alert_source_not_integrated",
+            "storm_classification_unavailable",
+            "observation_precipitation_interval_unspecified",
+            "rain_unavailable",
+            "storm_unavailable",
+            "alert_unavailable",
+            "general_weather_partial_evidence"
+          ]
+        }
+      },
+      {
+        "id": "thua-thien-hue",
+        "name": "Thừa Thiên Huế",
+        "weather": {
+          "uv_index": 0,
+          "cloud_cover_percent": 45,
+          "precipitation_probability_percent": null,
+          "fetched_at": "2026-09-29T21:05:16.238Z",
+          "humidity_percent": 86,
+          "wind_kmh": 5.4,
+          "feels_like_c": 28.2,
+          "pressure_hpa": 1011,
+          "precipitation_mm": 0,
+          "condition_code": "partly_cloudy",
+          "rain_mm_per_hour": null,
+          "gust_kmh": 5.5008,
+          "temperature_c": 24.5,
+          "visibility_m": 10000,
+          "storm": null,
+          "official_alert_level": null,
+          "freshness": "fresh",
+          "coverage": "covered",
+          "source": "6e34f8ae-5d75-4a64-97db-cb8c9e478624",
+          "source_time": "2026-09-29T21:00:00.000Z",
+          "valid_from": "2026-09-29T21:00:00.000Z",
+          "valid_to": null,
+          "reasons": [
+            "official_alert_source_not_integrated",
+            "storm_classification_unavailable",
+            "observation_precipitation_interval_unspecified"
+          ]
+        },
+        "assessment": {
+          "level": "low",
+          "severity": 1,
+          "score": 0.3333333333333333,
+          "display_score": 33,
+          "vehicle": null,
+          "rule_set_version": "general-weather-v1",
+          "freshness": "fresh",
+          "coverage": "covered",
+          "source": "6e34f8ae-5d75-4a64-97db-cb8c9e478624",
+          "source_time": "2026-09-29T21:00:00.000Z",
+          "evidence": [
+            {
+              "dimension": "rain",
+              "value": null,
+              "severity": 0
+            },
+            {
+              "dimension": "wind",
+              "value": 5.5008,
+              "severity": 1
+            },
+            {
+              "dimension": "temperature",
+              "value": 24.5,
+              "severity": 1
+            },
+            {
+              "dimension": "visibility",
+              "value": 10000,
+              "severity": 1
+            },
+            {
+              "dimension": "storm",
+              "value": null,
+              "severity": 0
+            },
+            {
+              "dimension": "alert",
+              "value": null,
+              "severity": 0
+            }
+          ],
+          "reasons": [
+            "official_alert_source_not_integrated",
+            "storm_classification_unavailable",
+            "observation_precipitation_interval_unspecified",
+            "rain_unavailable",
+            "storm_unavailable",
+            "alert_unavailable",
+            "general_weather_partial_evidence"
+          ]
+        }
+      },
+      {
+        "id": "da-nang",
+        "name": "Đà Nẵng",
+        "weather": {
+          "uv_index": 0,
+          "cloud_cover_percent": 8,
+          "precipitation_probability_percent": null,
+          "fetched_at": "2026-09-29T21:05:16.515Z",
+          "humidity_percent": 81,
+          "wind_kmh": 11.4984,
+          "feels_like_c": 27.4,
+          "pressure_hpa": 1011,
+          "precipitation_mm": 0,
+          "condition_code": "clear",
+          "rain_mm_per_hour": null,
+          "gust_kmh": 12.9996,
+          "temperature_c": 25.2,
+          "visibility_m": 10000,
+          "storm": null,
+          "official_alert_level": null,
+          "freshness": "fresh",
+          "coverage": "covered",
+          "source": "6e34f8ae-5d75-4a64-97db-cb8c9e478624",
+          "source_time": "2026-09-29T21:00:00.000Z",
+          "valid_from": "2026-09-29T21:00:00.000Z",
+          "valid_to": null,
+          "reasons": [
+            "official_alert_source_not_integrated",
+            "storm_classification_unavailable",
+            "observation_precipitation_interval_unspecified"
+          ]
+        },
+        "assessment": {
+          "level": "low",
+          "severity": 1,
+          "score": 0.3333333333333333,
+          "display_score": 33,
+          "vehicle": null,
+          "rule_set_version": "general-weather-v1",
+          "freshness": "fresh",
+          "coverage": "covered",
+          "source": "6e34f8ae-5d75-4a64-97db-cb8c9e478624",
+          "source_time": "2026-09-29T21:00:00.000Z",
+          "evidence": [
+            {
+              "dimension": "rain",
+              "value": null,
+              "severity": 0
+            },
+            {
+              "dimension": "wind",
+              "value": 12.9996,
+              "severity": 1
+            },
+            {
+              "dimension": "temperature",
+              "value": 25.2,
+              "severity": 1
+            },
+            {
+              "dimension": "visibility",
+              "value": 10000,
+              "severity": 1
+            },
+            {
+              "dimension": "storm",
+              "value": null,
+              "severity": 0
+            },
+            {
+              "dimension": "alert",
+              "value": null,
+              "severity": 0
+            }
+          ],
+          "reasons": [
+            "official_alert_source_not_integrated",
+            "storm_classification_unavailable",
+            "observation_precipitation_interval_unspecified",
+            "rain_unavailable",
+            "storm_unavailable",
+            "alert_unavailable",
+            "general_weather_partial_evidence"
+          ]
+        }
+      },
+      {
+        "id": "quang-nam",
+        "name": "Quảng Nam",
+        "weather": {
+          "uv_index": 0,
+          "cloud_cover_percent": 29,
+          "precipitation_probability_percent": null,
+          "fetched_at": "2026-09-29T21:05:16.788Z",
+          "humidity_percent": 87,
+          "wind_kmh": 4.7016,
+          "feels_like_c": 27.2,
+          "pressure_hpa": 1011,
+          "precipitation_mm": 0,
+          "condition_code": "fog",
+          "rain_mm_per_hour": null,
+          "gust_kmh": 22.7016,
+          "temperature_c": 23.7,
+          "visibility_m": 5400,
+          "storm": null,
+          "official_alert_level": null,
+          "freshness": "fresh",
+          "coverage": "covered",
+          "source": "6e34f8ae-5d75-4a64-97db-cb8c9e478624",
+          "source_time": "2026-09-29T21:00:00.000Z",
+          "valid_from": "2026-09-29T21:00:00.000Z",
+          "valid_to": null,
+          "reasons": [
+            "official_alert_source_not_integrated",
+            "storm_classification_unavailable",
+            "observation_precipitation_interval_unspecified"
+          ]
+        },
+        "assessment": {
+          "level": "low",
+          "severity": 1,
+          "score": 0.3333333333333333,
+          "display_score": 33,
+          "vehicle": null,
+          "rule_set_version": "general-weather-v1",
+          "freshness": "fresh",
+          "coverage": "covered",
+          "source": "6e34f8ae-5d75-4a64-97db-cb8c9e478624",
+          "source_time": "2026-09-29T21:00:00.000Z",
+          "evidence": [
+            {
+              "dimension": "rain",
+              "value": null,
+              "severity": 0
+            },
+            {
+              "dimension": "wind",
+              "value": 22.7016,
+              "severity": 1
+            },
+            {
+              "dimension": "temperature",
+              "value": 23.7,
+              "severity": 1
+            },
+            {
+              "dimension": "visibility",
+              "value": 5400,
+              "severity": 1
+            },
+            {
+              "dimension": "storm",
+              "value": null,
+              "severity": 0
+            },
+            {
+              "dimension": "alert",
+              "value": null,
+              "severity": 0
+            }
+          ],
+          "reasons": [
+            "official_alert_source_not_integrated",
+            "storm_classification_unavailable",
+            "observation_precipitation_interval_unspecified",
+            "rain_unavailable",
+            "storm_unavailable",
+            "alert_unavailable",
+            "general_weather_partial_evidence"
+          ]
+        }
+      },
+      {
+        "id": "quang-ngai",
+        "name": "Quảng Ngãi",
+        "weather": {
+          "uv_index": 0,
+          "cloud_cover_percent": 51,
+          "precipitation_probability_percent": null,
+          "fetched_at": "2026-09-29T20:55:17.308Z",
+          "humidity_percent": 85,
+          "wind_kmh": 3.9996,
+          "feels_like_c": 27.5,
+          "pressure_hpa": 1011,
+          "precipitation_mm": 0,
+          "condition_code": "partly_cloudy",
+          "rain_mm_per_hour": null,
+          "gust_kmh": 18.3996,
+          "temperature_c": 23.9,
+          "visibility_m": 10000,
+          "storm": null,
+          "official_alert_level": null,
+          "freshness": "fresh",
+          "coverage": "covered",
+          "source": "6e34f8ae-5d75-4a64-97db-cb8c9e478624",
+          "source_time": "2026-09-29T20:45:00.000Z",
+          "valid_from": "2026-09-29T20:45:00.000Z",
+          "valid_to": null,
+          "reasons": [
+            "official_alert_source_not_integrated",
+            "storm_classification_unavailable",
+            "observation_precipitation_interval_unspecified"
+          ]
+        },
+        "assessment": {
+          "level": "low",
+          "severity": 1,
+          "score": 0.3333333333333333,
+          "display_score": 33,
+          "vehicle": null,
+          "rule_set_version": "general-weather-v1",
+          "freshness": "fresh",
+          "coverage": "covered",
+          "source": "6e34f8ae-5d75-4a64-97db-cb8c9e478624",
+          "source_time": "2026-09-29T20:45:00.000Z",
+          "evidence": [
+            {
+              "dimension": "rain",
+              "value": null,
+              "severity": 0
+            },
+            {
+              "dimension": "wind",
+              "value": 18.3996,
+              "severity": 1
+            },
+            {
+              "dimension": "temperature",
+              "value": 23.9,
+              "severity": 1
+            },
+            {
+              "dimension": "visibility",
+              "value": 10000,
+              "severity": 1
+            },
+            {
+              "dimension": "storm",
+              "value": null,
+              "severity": 0
+            },
+            {
+              "dimension": "alert",
+              "value": null,
+              "severity": 0
+            }
+          ],
+          "reasons": [
+            "official_alert_source_not_integrated",
+            "storm_classification_unavailable",
+            "observation_precipitation_interval_unspecified",
+            "rain_unavailable",
+            "storm_unavailable",
+            "alert_unavailable",
+            "general_weather_partial_evidence"
+          ]
+        }
+      },
+      {
+        "id": "binh-dinh",
+        "name": "Bình Định",
+        "weather": {
+          "uv_index": 0,
+          "cloud_cover_percent": 79,
+          "precipitation_probability_percent": null,
+          "fetched_at": "2026-09-29T21:05:17.341Z",
+          "humidity_percent": 94,
+          "wind_kmh": 3.9996,
+          "feels_like_c": 27.6,
+          "pressure_hpa": 1012,
+          "precipitation_mm": 0,
+          "condition_code": "fog",
+          "rain_mm_per_hour": null,
+          "gust_kmh": 21.9996,
+          "temperature_c": 23.4,
+          "visibility_m": 2000,
+          "storm": null,
+          "official_alert_level": null,
+          "freshness": "fresh",
+          "coverage": "covered",
+          "source": "6e34f8ae-5d75-4a64-97db-cb8c9e478624",
+          "source_time": "2026-09-29T21:00:00.000Z",
+          "valid_from": "2026-09-29T21:00:00.000Z",
+          "valid_to": null,
+          "reasons": [
+            "official_alert_source_not_integrated",
+            "storm_classification_unavailable",
+            "observation_precipitation_interval_unspecified"
+          ]
+        },
+        "assessment": {
+          "level": "low",
+          "severity": 1,
+          "score": 0.3333333333333333,
+          "display_score": 33,
+          "vehicle": null,
+          "rule_set_version": "general-weather-v1",
+          "freshness": "fresh",
+          "coverage": "covered",
+          "source": "6e34f8ae-5d75-4a64-97db-cb8c9e478624",
+          "source_time": "2026-09-29T21:00:00.000Z",
+          "evidence": [
+            {
+              "dimension": "rain",
+              "value": null,
+              "severity": 0
+            },
+            {
+              "dimension": "wind",
+              "value": 21.9996,
+              "severity": 1
+            },
+            {
+              "dimension": "temperature",
+              "value": 23.4,
+              "severity": 1
+            },
+            {
+              "dimension": "visibility",
+              "value": 2000,
+              "severity": 1
+            },
+            {
+              "dimension": "storm",
+              "value": null,
+              "severity": 0
+            },
+            {
+              "dimension": "alert",
+              "value": null,
+              "severity": 0
+            }
+          ],
+          "reasons": [
+            "official_alert_source_not_integrated",
+            "storm_classification_unavailable",
+            "observation_precipitation_interval_unspecified",
+            "rain_unavailable",
+            "storm_unavailable",
+            "alert_unavailable",
+            "general_weather_partial_evidence"
+          ]
+        }
+      },
+      {
+        "id": "phu-yen",
+        "name": "Phú Yên",
+        "weather": {
+          "uv_index": 0,
+          "cloud_cover_percent": 6,
+          "precipitation_probability_percent": null,
+          "fetched_at": "2026-09-29T21:05:17.622Z",
+          "humidity_percent": 93,
+          "wind_kmh": 5.7996,
+          "feels_like_c": 27.2,
+          "pressure_hpa": 1012,
+          "precipitation_mm": 0,
+          "condition_code": "clear",
+          "rain_mm_per_hour": null,
+          "gust_kmh": 5.7996,
+          "temperature_c": 23.4,
+          "visibility_m": 10000,
+          "storm": null,
+          "official_alert_level": null,
+          "freshness": "fresh",
+          "coverage": "covered",
+          "source": "6e34f8ae-5d75-4a64-97db-cb8c9e478624",
+          "source_time": "2026-09-29T21:00:00.000Z",
+          "valid_from": "2026-09-29T21:00:00.000Z",
+          "valid_to": null,
+          "reasons": [
+            "official_alert_source_not_integrated",
+            "storm_classification_unavailable",
+            "observation_precipitation_interval_unspecified"
+          ]
+        },
+        "assessment": {
+          "level": "low",
+          "severity": 1,
+          "score": 0.3333333333333333,
+          "display_score": 33,
+          "vehicle": null,
+          "rule_set_version": "general-weather-v1",
+          "freshness": "fresh",
+          "coverage": "covered",
+          "source": "6e34f8ae-5d75-4a64-97db-cb8c9e478624",
+          "source_time": "2026-09-29T21:00:00.000Z",
+          "evidence": [
+            {
+              "dimension": "rain",
+              "value": null,
+              "severity": 0
+            },
+            {
+              "dimension": "wind",
+              "value": 5.7996,
+              "severity": 1
+            },
+            {
+              "dimension": "temperature",
+              "value": 23.4,
+              "severity": 1
+            },
+            {
+              "dimension": "visibility",
+              "value": 10000,
+              "severity": 1
+            },
+            {
+              "dimension": "storm",
+              "value": null,
+              "severity": 0
+            },
+            {
+              "dimension": "alert",
+              "value": null,
+              "severity": 0
+            }
+          ],
+          "reasons": [
+            "official_alert_source_not_integrated",
+            "storm_classification_unavailable",
+            "observation_precipitation_interval_unspecified",
+            "rain_unavailable",
+            "storm_unavailable",
+            "alert_unavailable",
+            "general_weather_partial_evidence"
+          ]
+        }
+      },
+      {
+        "id": "ninh-thuan",
+        "name": "Ninh Thuận",
+        "weather": {
+          "uv_index": 0,
+          "cloud_cover_percent": 5,
+          "precipitation_probability_percent": null,
+          "fetched_at": "2026-09-29T21:05:18.295Z",
+          "humidity_percent": 80,
+          "wind_kmh": 3.9996,
+          "feels_like_c": 29,
+          "pressure_hpa": 1011,
+          "precipitation_mm": 0,
+          "condition_code": "clear",
+          "rain_mm_per_hour": null,
+          "gust_kmh": 21.9996,
+          "temperature_c": 26.2,
+          "visibility_m": 10000,
+          "storm": null,
+          "official_alert_level": null,
+          "freshness": "fresh",
+          "coverage": "covered",
+          "source": "6e34f8ae-5d75-4a64-97db-cb8c9e478624",
+          "source_time": "2026-09-29T21:00:00.000Z",
+          "valid_from": "2026-09-29T21:00:00.000Z",
+          "valid_to": null,
+          "reasons": [
+            "official_alert_source_not_integrated",
+            "storm_classification_unavailable",
+            "observation_precipitation_interval_unspecified"
+          ]
+        },
+        "assessment": {
+          "level": "low",
+          "severity": 1,
+          "score": 0.3333333333333333,
+          "display_score": 33,
+          "vehicle": null,
+          "rule_set_version": "general-weather-v1",
+          "freshness": "fresh",
+          "coverage": "covered",
+          "source": "6e34f8ae-5d75-4a64-97db-cb8c9e478624",
+          "source_time": "2026-09-29T21:00:00.000Z",
+          "evidence": [
+            {
+              "dimension": "rain",
+              "value": null,
+              "severity": 0
+            },
+            {
+              "dimension": "wind",
+              "value": 21.9996,
+              "severity": 1
+            },
+            {
+              "dimension": "temperature",
+              "value": 26.2,
+              "severity": 1
+            },
+            {
+              "dimension": "visibility",
+              "value": 10000,
+              "severity": 1
+            },
+            {
+              "dimension": "storm",
+              "value": null,
+              "severity": 0
+            },
+            {
+              "dimension": "alert",
+              "value": null,
+              "severity": 0
+            }
+          ],
+          "reasons": [
+            "official_alert_source_not_integrated",
+            "storm_classification_unavailable",
+            "observation_precipitation_interval_unspecified",
+            "rain_unavailable",
+            "storm_unavailable",
+            "alert_unavailable",
+            "general_weather_partial_evidence"
+          ]
+        }
+      },
+      {
+        "id": "binh-thuan",
+        "name": "Bình Thuận",
+        "weather": {
+          "uv_index": 0,
+          "cloud_cover_percent": 0,
+          "precipitation_probability_percent": null,
+          "fetched_at": "2026-09-29T21:05:18.690Z",
+          "humidity_percent": 93,
+          "wind_kmh": 3.9996,
+          "feels_like_c": 27.9,
+          "pressure_hpa": 1012,
+          "precipitation_mm": 0,
+          "condition_code": "clear",
+          "rain_mm_per_hour": null,
+          "gust_kmh": 3.9996,
+          "temperature_c": 23.7,
+          "visibility_m": 10000,
+          "storm": null,
+          "official_alert_level": null,
+          "freshness": "fresh",
+          "coverage": "covered",
+          "source": "6e34f8ae-5d75-4a64-97db-cb8c9e478624",
+          "source_time": "2026-09-29T21:00:00.000Z",
+          "valid_from": "2026-09-29T21:00:00.000Z",
+          "valid_to": null,
+          "reasons": [
+            "official_alert_source_not_integrated",
+            "storm_classification_unavailable",
+            "observation_precipitation_interval_unspecified"
+          ]
+        },
+        "assessment": {
+          "level": "low",
+          "severity": 1,
+          "score": 0.3333333333333333,
+          "display_score": 33,
+          "vehicle": null,
+          "rule_set_version": "general-weather-v1",
+          "freshness": "fresh",
+          "coverage": "covered",
+          "source": "6e34f8ae-5d75-4a64-97db-cb8c9e478624",
+          "source_time": "2026-09-29T21:00:00.000Z",
+          "evidence": [
+            {
+              "dimension": "rain",
+              "value": null,
+              "severity": 0
+            },
+            {
+              "dimension": "wind",
+              "value": 3.9996,
+              "severity": 1
+            },
+            {
+              "dimension": "temperature",
+              "value": 23.7,
+              "severity": 1
+            },
+            {
+              "dimension": "visibility",
+              "value": 10000,
+              "severity": 1
+            },
+            {
+              "dimension": "storm",
+              "value": null,
+              "severity": 0
+            },
+            {
+              "dimension": "alert",
+              "value": null,
+              "severity": 0
+            }
+          ],
+          "reasons": [
+            "official_alert_source_not_integrated",
+            "storm_classification_unavailable",
+            "observation_precipitation_interval_unspecified",
+            "rain_unavailable",
+            "storm_unavailable",
+            "alert_unavailable",
+            "general_weather_partial_evidence"
+          ]
+        }
+      },
+      {
+        "id": "khanh-hoa",
+        "name": "Khánh Hòa",
+        "weather": {
+          "uv_index": 0,
+          "cloud_cover_percent": 5,
+          "precipitation_probability_percent": null,
+          "fetched_at": "2026-09-29T21:05:18.024Z",
+          "humidity_percent": 87,
+          "wind_kmh": 7.2,
+          "feels_like_c": 28.7,
+          "pressure_hpa": 1012,
+          "precipitation_mm": 0,
+          "condition_code": "clear",
+          "rain_mm_per_hour": null,
+          "gust_kmh": 18,
+          "temperature_c": 25,
+          "visibility_m": 10000,
+          "storm": null,
+          "official_alert_level": null,
+          "freshness": "fresh",
+          "coverage": "covered",
+          "source": "6e34f8ae-5d75-4a64-97db-cb8c9e478624",
+          "source_time": "2026-09-29T21:00:00.000Z",
+          "valid_from": "2026-09-29T21:00:00.000Z",
+          "valid_to": null,
+          "reasons": [
+            "official_alert_source_not_integrated",
+            "storm_classification_unavailable",
+            "observation_precipitation_interval_unspecified"
+          ]
+        },
+        "assessment": {
+          "level": "low",
+          "severity": 1,
+          "score": 0.3333333333333333,
+          "display_score": 33,
+          "vehicle": null,
+          "rule_set_version": "general-weather-v1",
+          "freshness": "fresh",
+          "coverage": "covered",
+          "source": "6e34f8ae-5d75-4a64-97db-cb8c9e478624",
+          "source_time": "2026-09-29T21:00:00.000Z",
+          "evidence": [
+            {
+              "dimension": "rain",
+              "value": null,
+              "severity": 0
+            },
+            {
+              "dimension": "wind",
+              "value": 18,
+              "severity": 1
+            },
+            {
+              "dimension": "temperature",
+              "value": 25,
+              "severity": 1
+            },
+            {
+              "dimension": "visibility",
+              "value": 10000,
+              "severity": 1
+            },
+            {
+              "dimension": "storm",
+              "value": null,
+              "severity": 0
+            },
+            {
+              "dimension": "alert",
+              "value": null,
+              "severity": 0
+            }
+          ],
+          "reasons": [
+            "official_alert_source_not_integrated",
+            "storm_classification_unavailable",
+            "observation_precipitation_interval_unspecified",
+            "rain_unavailable",
+            "storm_unavailable",
+            "alert_unavailable",
+            "general_weather_partial_evidence"
+          ]
+        }
+      },
+      {
+        "id": "kon-tum",
+        "name": "Kon Tum",
+        "weather": {
+          "uv_index": 0,
+          "cloud_cover_percent": 31,
+          "precipitation_probability_percent": null,
+          "fetched_at": "2026-09-29T21:05:19.011Z",
+          "humidity_percent": 96,
+          "wind_kmh": 3.6,
+          "feels_like_c": 28.9,
+          "pressure_hpa": 1014,
+          "precipitation_mm": 0,
+          "condition_code": "fog",
+          "rain_mm_per_hour": null,
+          "gust_kmh": 14.0004,
+          "temperature_c": 24.1,
+          "visibility_m": 2000,
+          "storm": null,
+          "official_alert_level": null,
+          "freshness": "fresh",
+          "coverage": "covered",
+          "source": "6e34f8ae-5d75-4a64-97db-cb8c9e478624",
+          "source_time": "2026-09-29T21:00:00.000Z",
+          "valid_from": "2026-09-29T21:00:00.000Z",
+          "valid_to": null,
+          "reasons": [
+            "official_alert_source_not_integrated",
+            "storm_classification_unavailable",
+            "observation_precipitation_interval_unspecified"
+          ]
+        },
+        "assessment": {
+          "level": "low",
+          "severity": 1,
+          "score": 0.3333333333333333,
+          "display_score": 33,
+          "vehicle": null,
+          "rule_set_version": "general-weather-v1",
+          "freshness": "fresh",
+          "coverage": "covered",
+          "source": "6e34f8ae-5d75-4a64-97db-cb8c9e478624",
+          "source_time": "2026-09-29T21:00:00.000Z",
+          "evidence": [
+            {
+              "dimension": "rain",
+              "value": null,
+              "severity": 0
+            },
+            {
+              "dimension": "wind",
+              "value": 14.0004,
+              "severity": 1
+            },
+            {
+              "dimension": "temperature",
+              "value": 24.1,
+              "severity": 1
+            },
+            {
+              "dimension": "visibility",
+              "value": 2000,
+              "severity": 1
+            },
+            {
+              "dimension": "storm",
+              "value": null,
+              "severity": 0
+            },
+            {
+              "dimension": "alert",
+              "value": null,
+              "severity": 0
+            }
+          ],
+          "reasons": [
+            "official_alert_source_not_integrated",
+            "storm_classification_unavailable",
+            "observation_precipitation_interval_unspecified",
+            "rain_unavailable",
+            "storm_unavailable",
+            "alert_unavailable",
+            "general_weather_partial_evidence"
+          ]
+        }
+      },
+      {
+        "id": "gia-lai",
+        "name": "Gia Lai",
+        "weather": {
+          "uv_index": 0,
+          "cloud_cover_percent": 31,
+          "precipitation_probability_percent": null,
+          "fetched_at": "2026-09-29T21:05:19.279Z",
+          "humidity_percent": 96,
+          "wind_kmh": 3.6,
+          "feels_like_c": 29.1,
+          "pressure_hpa": 1014,
+          "precipitation_mm": 0,
+          "condition_code": "fog",
+          "rain_mm_per_hour": null,
+          "gust_kmh": 17.6004,
+          "temperature_c": 24.2,
+          "visibility_m": 2000,
+          "storm": null,
+          "official_alert_level": null,
+          "freshness": "fresh",
+          "coverage": "covered",
+          "source": "6e34f8ae-5d75-4a64-97db-cb8c9e478624",
+          "source_time": "2026-09-29T21:00:00.000Z",
+          "valid_from": "2026-09-29T21:00:00.000Z",
+          "valid_to": null,
+          "reasons": [
+            "official_alert_source_not_integrated",
+            "storm_classification_unavailable",
+            "observation_precipitation_interval_unspecified"
+          ]
+        },
+        "assessment": {
+          "level": "low",
+          "severity": 1,
+          "score": 0.3333333333333333,
+          "display_score": 33,
+          "vehicle": null,
+          "rule_set_version": "general-weather-v1",
+          "freshness": "fresh",
+          "coverage": "covered",
+          "source": "6e34f8ae-5d75-4a64-97db-cb8c9e478624",
+          "source_time": "2026-09-29T21:00:00.000Z",
+          "evidence": [
+            {
+              "dimension": "rain",
+              "value": null,
+              "severity": 0
+            },
+            {
+              "dimension": "wind",
+              "value": 17.6004,
+              "severity": 1
+            },
+            {
+              "dimension": "temperature",
+              "value": 24.2,
+              "severity": 1
+            },
+            {
+              "dimension": "visibility",
+              "value": 2000,
+              "severity": 1
+            },
+            {
+              "dimension": "storm",
+              "value": null,
+              "severity": 0
+            },
+            {
+              "dimension": "alert",
+              "value": null,
+              "severity": 0
+            }
+          ],
+          "reasons": [
+            "official_alert_source_not_integrated",
+            "storm_classification_unavailable",
+            "observation_precipitation_interval_unspecified",
+            "rain_unavailable",
+            "storm_unavailable",
+            "alert_unavailable",
+            "general_weather_partial_evidence"
+          ]
+        }
+      },
+      {
+        "id": "dak-lak",
+        "name": "Đắk Lắk",
+        "weather": {
+          "uv_index": 0,
+          "cloud_cover_percent": 100,
+          "precipitation_probability_percent": null,
+          "fetched_at": "2026-09-29T21:05:19.824Z",
+          "humidity_percent": 98,
+          "wind_kmh": 4.2984,
+          "feels_like_c": 28.4,
+          "pressure_hpa": 1013,
+          "precipitation_mm": 0.1,
+          "condition_code": "fog",
+          "rain_mm_per_hour": null,
+          "gust_kmh": 4.3992,
+          "temperature_c": 23.7,
+          "visibility_m": 0,
+          "storm": null,
+          "official_alert_level": null,
+          "freshness": "fresh",
+          "coverage": "covered",
+          "source": "6e34f8ae-5d75-4a64-97db-cb8c9e478624",
+          "source_time": "2026-09-29T21:00:00.000Z",
+          "valid_from": "2026-09-29T21:00:00.000Z",
+          "valid_to": null,
+          "reasons": [
+            "official_alert_source_not_integrated",
+            "storm_classification_unavailable",
+            "observation_precipitation_interval_unspecified"
+          ]
+        },
+        "assessment": {
+          "level": "high",
+          "severity": 3,
+          "score": 1,
+          "display_score": 100,
+          "vehicle": null,
+          "rule_set_version": "general-weather-v1",
+          "freshness": "fresh",
+          "coverage": "covered",
+          "source": "6e34f8ae-5d75-4a64-97db-cb8c9e478624",
+          "source_time": "2026-09-29T21:00:00.000Z",
+          "evidence": [
+            {
+              "dimension": "rain",
+              "value": null,
+              "severity": 0
+            },
+            {
+              "dimension": "wind",
+              "value": 4.3992,
+              "severity": 1
+            },
+            {
+              "dimension": "temperature",
+              "value": 23.7,
+              "severity": 1
+            },
+            {
+              "dimension": "visibility",
+              "value": 0,
+              "severity": 3
+            },
+            {
+              "dimension": "storm",
+              "value": null,
+              "severity": 0
+            },
+            {
+              "dimension": "alert",
+              "value": null,
+              "severity": 0
+            }
+          ],
+          "reasons": [
+            "official_alert_source_not_integrated",
+            "storm_classification_unavailable",
+            "observation_precipitation_interval_unspecified",
+            "rain_unavailable",
+            "storm_unavailable",
+            "alert_unavailable",
+            "general_weather_partial_evidence"
+          ]
+        }
+      },
+      {
+        "id": "dak-nong",
+        "name": "Đắk Nông",
+        "weather": {
+          "uv_index": 0,
+          "cloud_cover_percent": 73,
+          "precipitation_probability_percent": null,
+          "fetched_at": "2026-09-29T21:05:19.549Z",
+          "humidity_percent": 98,
+          "wind_kmh": 3.6,
+          "feels_like_c": 22.5,
+          "pressure_hpa": 1014,
+          "precipitation_mm": 2.18,
+          "condition_code": "rain",
+          "rain_mm_per_hour": null,
+          "gust_kmh": 10.8,
+          "temperature_c": 19.4,
+          "visibility_m": 9000,
+          "storm": null,
+          "official_alert_level": null,
+          "freshness": "fresh",
+          "coverage": "covered",
+          "source": "6e34f8ae-5d75-4a64-97db-cb8c9e478624",
+          "source_time": "2026-09-29T21:00:00.000Z",
+          "valid_from": "2026-09-29T21:00:00.000Z",
+          "valid_to": null,
+          "reasons": [
+            "official_alert_source_not_integrated",
+            "storm_classification_unavailable",
+            "observation_precipitation_interval_unspecified"
+          ]
+        },
+        "assessment": {
+          "level": "low",
+          "severity": 1,
+          "score": 0.3333333333333333,
+          "display_score": 33,
+          "vehicle": null,
+          "rule_set_version": "general-weather-v1",
+          "freshness": "fresh",
+          "coverage": "covered",
+          "source": "6e34f8ae-5d75-4a64-97db-cb8c9e478624",
+          "source_time": "2026-09-29T21:00:00.000Z",
+          "evidence": [
+            {
+              "dimension": "rain",
+              "value": null,
+              "severity": 0
+            },
+            {
+              "dimension": "wind",
+              "value": 10.8,
+              "severity": 1
+            },
+            {
+              "dimension": "temperature",
+              "value": 19.4,
+              "severity": 1
+            },
+            {
+              "dimension": "visibility",
+              "value": 9000,
+              "severity": 1
+            },
+            {
+              "dimension": "storm",
+              "value": null,
+              "severity": 0
+            },
+            {
+              "dimension": "alert",
+              "value": null,
+              "severity": 0
+            }
+          ],
+          "reasons": [
+            "official_alert_source_not_integrated",
+            "storm_classification_unavailable",
+            "observation_precipitation_interval_unspecified",
+            "rain_unavailable",
+            "storm_unavailable",
+            "alert_unavailable",
+            "general_weather_partial_evidence"
+          ]
+        }
+      },
+      {
+        "id": "binh-phuoc",
+        "name": "Bình Phước",
+        "weather": {
+          "uv_index": 0,
+          "cloud_cover_percent": 7,
+          "precipitation_probability_percent": null,
+          "fetched_at": "2026-09-29T21:05:20.369Z",
+          "humidity_percent": 97,
+          "wind_kmh": 3.6,
+          "feels_like_c": 28.5,
+          "pressure_hpa": 1012,
+          "precipitation_mm": 0,
+          "condition_code": "fog",
+          "rain_mm_per_hour": null,
+          "gust_kmh": 3.9996,
+          "temperature_c": 23.8,
+          "visibility_m": 2000,
+          "storm": null,
+          "official_alert_level": null,
+          "freshness": "fresh",
+          "coverage": "covered",
+          "source": "6e34f8ae-5d75-4a64-97db-cb8c9e478624",
+          "source_time": "2026-09-29T21:00:00.000Z",
+          "valid_from": "2026-09-29T21:00:00.000Z",
+          "valid_to": null,
+          "reasons": [
+            "official_alert_source_not_integrated",
+            "storm_classification_unavailable",
+            "observation_precipitation_interval_unspecified"
+          ]
+        },
+        "assessment": {
+          "level": "low",
+          "severity": 1,
+          "score": 0.3333333333333333,
+          "display_score": 33,
+          "vehicle": null,
+          "rule_set_version": "general-weather-v1",
+          "freshness": "fresh",
+          "coverage": "covered",
+          "source": "6e34f8ae-5d75-4a64-97db-cb8c9e478624",
+          "source_time": "2026-09-29T21:00:00.000Z",
+          "evidence": [
+            {
+              "dimension": "rain",
+              "value": null,
+              "severity": 0
+            },
+            {
+              "dimension": "wind",
+              "value": 3.9996,
+              "severity": 1
+            },
+            {
+              "dimension": "temperature",
+              "value": 23.8,
+              "severity": 1
+            },
+            {
+              "dimension": "visibility",
+              "value": 2000,
+              "severity": 1
+            },
+            {
+              "dimension": "storm",
+              "value": null,
+              "severity": 0
+            },
+            {
+              "dimension": "alert",
+              "value": null,
+              "severity": 0
+            }
+          ],
+          "reasons": [
+            "official_alert_source_not_integrated",
+            "storm_classification_unavailable",
+            "observation_precipitation_interval_unspecified",
+            "rain_unavailable",
+            "storm_unavailable",
+            "alert_unavailable",
+            "general_weather_partial_evidence"
+          ]
+        }
+      },
+      {
+        "id": "lam-dong",
+        "name": "Lâm Đồng",
+        "weather": {
+          "uv_index": 0,
+          "cloud_cover_percent": 100,
+          "precipitation_probability_percent": null,
+          "fetched_at": "2026-09-29T21:05:20.097Z",
+          "humidity_percent": 98,
+          "wind_kmh": 3.6,
+          "feels_like_c": 21.9,
+          "pressure_hpa": 1014,
+          "precipitation_mm": 0,
+          "condition_code": "fog",
+          "rain_mm_per_hour": null,
+          "gust_kmh": 10.8,
+          "temperature_c": 19.3,
+          "visibility_m": 0,
+          "storm": null,
+          "official_alert_level": null,
+          "freshness": "fresh",
+          "coverage": "covered",
+          "source": "6e34f8ae-5d75-4a64-97db-cb8c9e478624",
+          "source_time": "2026-09-29T21:00:00.000Z",
+          "valid_from": "2026-09-29T21:00:00.000Z",
+          "valid_to": null,
+          "reasons": [
+            "official_alert_source_not_integrated",
+            "storm_classification_unavailable",
+            "observation_precipitation_interval_unspecified"
+          ]
+        },
+        "assessment": {
+          "level": "high",
+          "severity": 3,
+          "score": 1,
+          "display_score": 100,
+          "vehicle": null,
+          "rule_set_version": "general-weather-v1",
+          "freshness": "fresh",
+          "coverage": "covered",
+          "source": "6e34f8ae-5d75-4a64-97db-cb8c9e478624",
+          "source_time": "2026-09-29T21:00:00.000Z",
+          "evidence": [
+            {
+              "dimension": "rain",
+              "value": null,
+              "severity": 0
+            },
+            {
+              "dimension": "wind",
+              "value": 10.8,
+              "severity": 1
+            },
+            {
+              "dimension": "temperature",
+              "value": 19.3,
+              "severity": 1
+            },
+            {
+              "dimension": "visibility",
+              "value": 0,
+              "severity": 3
+            },
+            {
+              "dimension": "storm",
+              "value": null,
+              "severity": 0
+            },
+            {
+              "dimension": "alert",
+              "value": null,
+              "severity": 0
+            }
+          ],
+          "reasons": [
+            "official_alert_source_not_integrated",
+            "storm_classification_unavailable",
+            "observation_precipitation_interval_unspecified",
+            "rain_unavailable",
+            "storm_unavailable",
+            "alert_unavailable",
+            "general_weather_partial_evidence"
+          ]
+        }
+      },
+      {
+        "id": "tay-ninh",
+        "name": "Tây Ninh",
+        "weather": {
+          "uv_index": 0,
+          "cloud_cover_percent": 99,
+          "precipitation_probability_percent": null,
+          "fetched_at": "2026-09-29T21:05:20.648Z",
+          "humidity_percent": 89,
+          "wind_kmh": 3.6,
+          "feels_like_c": 29.6,
+          "pressure_hpa": 1011,
+          "precipitation_mm": 2.28,
+          "condition_code": "rain",
+          "rain_mm_per_hour": null,
+          "gust_kmh": 3.9996,
+          "temperature_c": 25.8,
+          "visibility_m": 10000,
+          "storm": null,
+          "official_alert_level": null,
+          "freshness": "fresh",
+          "coverage": "covered",
+          "source": "6e34f8ae-5d75-4a64-97db-cb8c9e478624",
+          "source_time": "2026-09-29T21:00:00.000Z",
+          "valid_from": "2026-09-29T21:00:00.000Z",
+          "valid_to": null,
+          "reasons": [
+            "official_alert_source_not_integrated",
+            "storm_classification_unavailable",
+            "observation_precipitation_interval_unspecified"
+          ]
+        },
+        "assessment": {
+          "level": "low",
+          "severity": 1,
+          "score": 0.3333333333333333,
+          "display_score": 33,
+          "vehicle": null,
+          "rule_set_version": "general-weather-v1",
+          "freshness": "fresh",
+          "coverage": "covered",
+          "source": "6e34f8ae-5d75-4a64-97db-cb8c9e478624",
+          "source_time": "2026-09-29T21:00:00.000Z",
+          "evidence": [
+            {
+              "dimension": "rain",
+              "value": null,
+              "severity": 0
+            },
+            {
+              "dimension": "wind",
+              "value": 3.9996,
+              "severity": 1
+            },
+            {
+              "dimension": "temperature",
+              "value": 25.8,
+              "severity": 1
+            },
+            {
+              "dimension": "visibility",
+              "value": 10000,
+              "severity": 1
+            },
+            {
+              "dimension": "storm",
+              "value": null,
+              "severity": 0
+            },
+            {
+              "dimension": "alert",
+              "value": null,
+              "severity": 0
+            }
+          ],
+          "reasons": [
+            "official_alert_source_not_integrated",
+            "storm_classification_unavailable",
+            "observation_precipitation_interval_unspecified",
+            "rain_unavailable",
+            "storm_unavailable",
+            "alert_unavailable",
+            "general_weather_partial_evidence"
+          ]
+        }
+      },
+      {
+        "id": "binh-duong",
+        "name": "Bình Dương",
+        "weather": {
+          "uv_index": 0,
+          "cloud_cover_percent": 4,
+          "precipitation_probability_percent": null,
+          "fetched_at": "2026-09-29T21:05:21.018Z",
+          "humidity_percent": 92,
+          "wind_kmh": 6.0984,
+          "feels_like_c": 29.4,
+          "pressure_hpa": 1011,
+          "precipitation_mm": 0,
+          "condition_code": "clear",
+          "rain_mm_per_hour": null,
+          "gust_kmh": 6.9012,
+          "temperature_c": 25.5,
+          "visibility_m": 10000,
+          "storm": null,
+          "official_alert_level": null,
+          "freshness": "fresh",
+          "coverage": "covered",
+          "source": "6e34f8ae-5d75-4a64-97db-cb8c9e478624",
+          "source_time": "2026-09-29T21:00:00.000Z",
+          "valid_from": "2026-09-29T21:00:00.000Z",
+          "valid_to": null,
+          "reasons": [
+            "official_alert_source_not_integrated",
+            "storm_classification_unavailable",
+            "observation_precipitation_interval_unspecified"
+          ]
+        },
+        "assessment": {
+          "level": "low",
+          "severity": 1,
+          "score": 0.3333333333333333,
+          "display_score": 33,
+          "vehicle": null,
+          "rule_set_version": "general-weather-v1",
+          "freshness": "fresh",
+          "coverage": "covered",
+          "source": "6e34f8ae-5d75-4a64-97db-cb8c9e478624",
+          "source_time": "2026-09-29T21:00:00.000Z",
+          "evidence": [
+            {
+              "dimension": "rain",
+              "value": null,
+              "severity": 0
+            },
+            {
+              "dimension": "wind",
+              "value": 6.9012,
+              "severity": 1
+            },
+            {
+              "dimension": "temperature",
+              "value": 25.5,
+              "severity": 1
+            },
+            {
+              "dimension": "visibility",
+              "value": 10000,
+              "severity": 1
+            },
+            {
+              "dimension": "storm",
+              "value": null,
+              "severity": 0
+            },
+            {
+              "dimension": "alert",
+              "value": null,
+              "severity": 0
+            }
+          ],
+          "reasons": [
+            "official_alert_source_not_integrated",
+            "storm_classification_unavailable",
+            "observation_precipitation_interval_unspecified",
+            "rain_unavailable",
+            "storm_unavailable",
+            "alert_unavailable",
+            "general_weather_partial_evidence"
+          ]
+        }
+      },
+      {
+        "id": "ba-ria-vung-tau",
+        "name": "Bà Rịa - Vũng Tàu",
+        "weather": {
+          "uv_index": 0,
+          "cloud_cover_percent": 87,
+          "precipitation_probability_percent": null,
+          "fetched_at": "2026-09-29T21:05:22.117Z",
+          "humidity_percent": 77,
+          "wind_kmh": 9,
+          "feels_like_c": 32.3,
+          "pressure_hpa": 1011,
+          "precipitation_mm": 0.57,
+          "condition_code": "rain",
+          "rain_mm_per_hour": null,
+          "gust_kmh": 9.1008,
+          "temperature_c": 28.3,
+          "visibility_m": 10000,
+          "storm": null,
+          "official_alert_level": null,
+          "freshness": "fresh",
+          "coverage": "covered",
+          "source": "6e34f8ae-5d75-4a64-97db-cb8c9e478624",
+          "source_time": "2026-09-29T21:00:00.000Z",
+          "valid_from": "2026-09-29T21:00:00.000Z",
+          "valid_to": null,
+          "reasons": [
+            "official_alert_source_not_integrated",
+            "storm_classification_unavailable",
+            "observation_precipitation_interval_unspecified"
+          ]
+        },
+        "assessment": {
+          "level": "low",
+          "severity": 1,
+          "score": 0.3333333333333333,
+          "display_score": 33,
+          "vehicle": null,
+          "rule_set_version": "general-weather-v1",
+          "freshness": "fresh",
+          "coverage": "covered",
+          "source": "6e34f8ae-5d75-4a64-97db-cb8c9e478624",
+          "source_time": "2026-09-29T21:00:00.000Z",
+          "evidence": [
+            {
+              "dimension": "rain",
+              "value": null,
+              "severity": 0
+            },
+            {
+              "dimension": "wind",
+              "value": 9.1008,
+              "severity": 1
+            },
+            {
+              "dimension": "temperature",
+              "value": 28.3,
+              "severity": 1
+            },
+            {
+              "dimension": "visibility",
+              "value": 10000,
+              "severity": 1
+            },
+            {
+              "dimension": "storm",
+              "value": null,
+              "severity": 0
+            },
+            {
+              "dimension": "alert",
+              "value": null,
+              "severity": 0
+            }
+          ],
+          "reasons": [
+            "official_alert_source_not_integrated",
+            "storm_classification_unavailable",
+            "observation_precipitation_interval_unspecified",
+            "rain_unavailable",
+            "storm_unavailable",
+            "alert_unavailable",
+            "general_weather_partial_evidence"
+          ]
+        }
+      },
+      {
+        "id": "dong-nai",
+        "name": "Đồng Nai",
+        "weather": {
+          "uv_index": 0,
+          "cloud_cover_percent": 70,
+          "precipitation_probability_percent": null,
+          "fetched_at": "2026-09-29T21:05:21.290Z",
+          "humidity_percent": 97,
+          "wind_kmh": 3.6,
+          "feels_like_c": 28.9,
+          "pressure_hpa": 1012,
+          "precipitation_mm": 2.01,
+          "condition_code": "rain",
+          "rain_mm_per_hour": null,
+          "gust_kmh": 10.8,
+          "temperature_c": 23.9,
+          "visibility_m": 9000,
+          "storm": null,
+          "official_alert_level": null,
+          "freshness": "fresh",
+          "coverage": "covered",
+          "source": "6e34f8ae-5d75-4a64-97db-cb8c9e478624",
+          "source_time": "2026-09-29T21:00:00.000Z",
+          "valid_from": "2026-09-29T21:00:00.000Z",
+          "valid_to": null,
+          "reasons": [
+            "official_alert_source_not_integrated",
+            "storm_classification_unavailable",
+            "observation_precipitation_interval_unspecified"
+          ]
+        },
+        "assessment": {
+          "level": "low",
+          "severity": 1,
+          "score": 0.3333333333333333,
+          "display_score": 33,
+          "vehicle": null,
+          "rule_set_version": "general-weather-v1",
+          "freshness": "fresh",
+          "coverage": "covered",
+          "source": "6e34f8ae-5d75-4a64-97db-cb8c9e478624",
+          "source_time": "2026-09-29T21:00:00.000Z",
+          "evidence": [
+            {
+              "dimension": "rain",
+              "value": null,
+              "severity": 0
+            },
+            {
+              "dimension": "wind",
+              "value": 10.8,
+              "severity": 1
+            },
+            {
+              "dimension": "temperature",
+              "value": 23.9,
+              "severity": 1
+            },
+            {
+              "dimension": "visibility",
+              "value": 9000,
+              "severity": 1
+            },
+            {
+              "dimension": "storm",
+              "value": null,
+              "severity": 0
+            },
+            {
+              "dimension": "alert",
+              "value": null,
+              "severity": 0
+            }
+          ],
+          "reasons": [
+            "official_alert_source_not_integrated",
+            "storm_classification_unavailable",
+            "observation_precipitation_interval_unspecified",
+            "rain_unavailable",
+            "storm_unavailable",
+            "alert_unavailable",
+            "general_weather_partial_evidence"
+          ]
+        }
+      },
+      {
+        "id": "dong-thap",
+        "name": "Đồng Tháp",
+        "weather": {
+          "uv_index": 0,
+          "cloud_cover_percent": 8,
+          "precipitation_probability_percent": null,
+          "fetched_at": "2026-09-29T21:05:21.836Z",
+          "humidity_percent": 87,
+          "wind_kmh": 6.0984,
+          "feels_like_c": 29.4,
+          "pressure_hpa": 1011,
+          "precipitation_mm": 0,
+          "condition_code": "fog",
+          "rain_mm_per_hour": null,
+          "gust_kmh": 6.5988,
+          "temperature_c": 26.2,
+          "visibility_m": 3500,
+          "storm": null,
+          "official_alert_level": null,
+          "freshness": "fresh",
+          "coverage": "covered",
+          "source": "6e34f8ae-5d75-4a64-97db-cb8c9e478624",
+          "source_time": "2026-09-29T21:00:00.000Z",
+          "valid_from": "2026-09-29T21:00:00.000Z",
+          "valid_to": null,
+          "reasons": [
+            "official_alert_source_not_integrated",
+            "storm_classification_unavailable",
+            "observation_precipitation_interval_unspecified"
+          ]
+        },
+        "assessment": {
+          "level": "low",
+          "severity": 1,
+          "score": 0.3333333333333333,
+          "display_score": 33,
+          "vehicle": null,
+          "rule_set_version": "general-weather-v1",
+          "freshness": "fresh",
+          "coverage": "covered",
+          "source": "6e34f8ae-5d75-4a64-97db-cb8c9e478624",
+          "source_time": "2026-09-29T21:00:00.000Z",
+          "evidence": [
+            {
+              "dimension": "rain",
+              "value": null,
+              "severity": 0
+            },
+            {
+              "dimension": "wind",
+              "value": 6.5988,
+              "severity": 1
+            },
+            {
+              "dimension": "temperature",
+              "value": 26.2,
+              "severity": 1
+            },
+            {
+              "dimension": "visibility",
+              "value": 3500,
+              "severity": 1
+            },
+            {
+              "dimension": "storm",
+              "value": null,
+              "severity": 0
+            },
+            {
+              "dimension": "alert",
+              "value": null,
+              "severity": 0
+            }
+          ],
+          "reasons": [
+            "official_alert_source_not_integrated",
+            "storm_classification_unavailable",
+            "observation_precipitation_interval_unspecified",
+            "rain_unavailable",
+            "storm_unavailable",
+            "alert_unavailable",
+            "general_weather_partial_evidence"
+          ]
+        }
+      },
+      {
+        "id": "ho-chi-minh",
+        "name": "TP. Hồ Chí Minh",
+        "weather": {
+          "uv_index": 0,
+          "cloud_cover_percent": 14,
+          "precipitation_probability_percent": null,
+          "fetched_at": "2026-09-29T20:55:21.615Z",
+          "humidity_percent": 91,
+          "wind_kmh": 4.7016,
+          "feels_like_c": 29.6,
+          "pressure_hpa": 1011,
+          "precipitation_mm": 0,
+          "condition_code": "clear",
+          "rain_mm_per_hour": null,
+          "gust_kmh": 5.4,
+          "temperature_c": 25.9,
+          "visibility_m": 10000,
+          "storm": null,
+          "official_alert_level": null,
+          "freshness": "fresh",
+          "coverage": "covered",
+          "source": "6e34f8ae-5d75-4a64-97db-cb8c9e478624",
+          "source_time": "2026-09-29T20:45:00.000Z",
+          "valid_from": "2026-09-29T20:45:00.000Z",
+          "valid_to": null,
+          "reasons": [
+            "official_alert_source_not_integrated",
+            "storm_classification_unavailable",
+            "observation_precipitation_interval_unspecified"
+          ]
+        },
+        "assessment": {
+          "level": "low",
+          "severity": 1,
+          "score": 0.3333333333333333,
+          "display_score": 33,
+          "vehicle": null,
+          "rule_set_version": "general-weather-v1",
+          "freshness": "fresh",
+          "coverage": "covered",
+          "source": "6e34f8ae-5d75-4a64-97db-cb8c9e478624",
+          "source_time": "2026-09-29T20:45:00.000Z",
+          "evidence": [
+            {
+              "dimension": "rain",
+              "value": null,
+              "severity": 0
+            },
+            {
+              "dimension": "wind",
+              "value": 5.4,
+              "severity": 1
+            },
+            {
+              "dimension": "temperature",
+              "value": 25.9,
+              "severity": 1
+            },
+            {
+              "dimension": "visibility",
+              "value": 10000,
+              "severity": 1
+            },
+            {
+              "dimension": "storm",
+              "value": null,
+              "severity": 0
+            },
+            {
+              "dimension": "alert",
+              "value": null,
+              "severity": 0
+            }
+          ],
+          "reasons": [
+            "official_alert_source_not_integrated",
+            "storm_classification_unavailable",
+            "observation_precipitation_interval_unspecified",
+            "rain_unavailable",
+            "storm_unavailable",
+            "alert_unavailable",
+            "general_weather_partial_evidence"
+          ]
+        }
+      },
+      {
+        "id": "an-giang",
+        "name": "An Giang",
+        "weather": {
+          "uv_index": 0,
+          "cloud_cover_percent": 84,
+          "precipitation_probability_percent": null,
+          "fetched_at": "2026-09-29T21:05:22.395Z",
+          "humidity_percent": 79,
+          "wind_kmh": 8.6004,
+          "feels_like_c": 30.1,
+          "pressure_hpa": 1011,
+          "precipitation_mm": 0,
+          "condition_code": "fog",
+          "rain_mm_per_hour": null,
+          "gust_kmh": 17.3988,
+          "temperature_c": 27.2,
+          "visibility_m": 6700,
+          "storm": null,
+          "official_alert_level": null,
+          "freshness": "fresh",
+          "coverage": "covered",
+          "source": "6e34f8ae-5d75-4a64-97db-cb8c9e478624",
+          "source_time": "2026-09-29T21:00:00.000Z",
+          "valid_from": "2026-09-29T21:00:00.000Z",
+          "valid_to": null,
+          "reasons": [
+            "official_alert_source_not_integrated",
+            "storm_classification_unavailable",
+            "observation_precipitation_interval_unspecified"
+          ]
+        },
+        "assessment": {
+          "level": "low",
+          "severity": 1,
+          "score": 0.3333333333333333,
+          "display_score": 33,
+          "vehicle": null,
+          "rule_set_version": "general-weather-v1",
+          "freshness": "fresh",
+          "coverage": "covered",
+          "source": "6e34f8ae-5d75-4a64-97db-cb8c9e478624",
+          "source_time": "2026-09-29T21:00:00.000Z",
+          "evidence": [
+            {
+              "dimension": "rain",
+              "value": null,
+              "severity": 0
+            },
+            {
+              "dimension": "wind",
+              "value": 17.3988,
+              "severity": 1
+            },
+            {
+              "dimension": "temperature",
+              "value": 27.2,
+              "severity": 1
+            },
+            {
+              "dimension": "visibility",
+              "value": 6700,
+              "severity": 1
+            },
+            {
+              "dimension": "storm",
+              "value": null,
+              "severity": 0
+            },
+            {
+              "dimension": "alert",
+              "value": null,
+              "severity": 0
+            }
+          ],
+          "reasons": [
+            "official_alert_source_not_integrated",
+            "storm_classification_unavailable",
+            "observation_precipitation_interval_unspecified",
+            "rain_unavailable",
+            "storm_unavailable",
+            "alert_unavailable",
+            "general_weather_partial_evidence"
+          ]
+        }
+      },
+      {
+        "id": "kien-giang",
+        "name": "Kiên Giang",
+        "weather": {
+          "uv_index": 0,
+          "cloud_cover_percent": 100,
+          "precipitation_probability_percent": null,
+          "fetched_at": "2026-09-29T21:05:22.937Z",
+          "humidity_percent": 75,
+          "wind_kmh": 8.3016,
+          "feels_like_c": 32,
+          "pressure_hpa": 1011,
+          "precipitation_mm": 0,
+          "condition_code": "fog",
+          "rain_mm_per_hour": null,
+          "gust_kmh": 10.9008,
+          "temperature_c": 28.3,
+          "visibility_m": 5500,
+          "storm": null,
+          "official_alert_level": null,
+          "freshness": "fresh",
+          "coverage": "covered",
+          "source": "6e34f8ae-5d75-4a64-97db-cb8c9e478624",
+          "source_time": "2026-09-29T21:00:00.000Z",
+          "valid_from": "2026-09-29T21:00:00.000Z",
+          "valid_to": null,
+          "reasons": [
+            "official_alert_source_not_integrated",
+            "storm_classification_unavailable",
+            "observation_precipitation_interval_unspecified"
+          ]
+        },
+        "assessment": {
+          "level": "low",
+          "severity": 1,
+          "score": 0.3333333333333333,
+          "display_score": 33,
+          "vehicle": null,
+          "rule_set_version": "general-weather-v1",
+          "freshness": "fresh",
+          "coverage": "covered",
+          "source": "6e34f8ae-5d75-4a64-97db-cb8c9e478624",
+          "source_time": "2026-09-29T21:00:00.000Z",
+          "evidence": [
+            {
+              "dimension": "rain",
+              "value": null,
+              "severity": 0
+            },
+            {
+              "dimension": "wind",
+              "value": 10.9008,
+              "severity": 1
+            },
+            {
+              "dimension": "temperature",
+              "value": 28.3,
+              "severity": 1
+            },
+            {
+              "dimension": "visibility",
+              "value": 5500,
+              "severity": 1
+            },
+            {
+              "dimension": "storm",
+              "value": null,
+              "severity": 0
+            },
+            {
+              "dimension": "alert",
+              "value": null,
+              "severity": 0
+            }
+          ],
+          "reasons": [
+            "official_alert_source_not_integrated",
+            "storm_classification_unavailable",
+            "observation_precipitation_interval_unspecified",
+            "rain_unavailable",
+            "storm_unavailable",
+            "alert_unavailable",
+            "general_weather_partial_evidence"
+          ]
+        }
+      },
+      {
+        "id": "hau-giang",
+        "name": "Hậu Giang",
+        "weather": {
+          "uv_index": 0,
+          "cloud_cover_percent": 71,
+          "precipitation_probability_percent": null,
+          "fetched_at": "2026-09-29T21:05:23.498Z",
+          "humidity_percent": 91,
+          "wind_kmh": 5.7996,
+          "feels_like_c": 29.4,
+          "pressure_hpa": 1012,
+          "precipitation_mm": 0.67,
+          "condition_code": "rain",
+          "rain_mm_per_hour": null,
+          "gust_kmh": 5.7996,
+          "temperature_c": 25.4,
+          "visibility_m": 9000,
+          "storm": null,
+          "official_alert_level": null,
+          "freshness": "fresh",
+          "coverage": "covered",
+          "source": "6e34f8ae-5d75-4a64-97db-cb8c9e478624",
+          "source_time": "2026-09-29T21:00:00.000Z",
+          "valid_from": "2026-09-29T21:00:00.000Z",
+          "valid_to": null,
+          "reasons": [
+            "official_alert_source_not_integrated",
+            "storm_classification_unavailable",
+            "observation_precipitation_interval_unspecified"
+          ]
+        },
+        "assessment": {
+          "level": "low",
+          "severity": 1,
+          "score": 0.3333333333333333,
+          "display_score": 33,
+          "vehicle": null,
+          "rule_set_version": "general-weather-v1",
+          "freshness": "fresh",
+          "coverage": "covered",
+          "source": "6e34f8ae-5d75-4a64-97db-cb8c9e478624",
+          "source_time": "2026-09-29T21:00:00.000Z",
+          "evidence": [
+            {
+              "dimension": "rain",
+              "value": null,
+              "severity": 0
+            },
+            {
+              "dimension": "wind",
+              "value": 5.7996,
+              "severity": 1
+            },
+            {
+              "dimension": "temperature",
+              "value": 25.4,
+              "severity": 1
+            },
+            {
+              "dimension": "visibility",
+              "value": 9000,
+              "severity": 1
+            },
+            {
+              "dimension": "storm",
+              "value": null,
+              "severity": 0
+            },
+            {
+              "dimension": "alert",
+              "value": null,
+              "severity": 0
+            }
+          ],
+          "reasons": [
+            "official_alert_source_not_integrated",
+            "storm_classification_unavailable",
+            "observation_precipitation_interval_unspecified",
+            "rain_unavailable",
+            "storm_unavailable",
+            "alert_unavailable",
+            "general_weather_partial_evidence"
+          ]
+        }
+      },
+      {
+        "id": "can-tho",
+        "name": "Cần Thơ",
+        "weather": {
+          "uv_index": 0,
+          "cloud_cover_percent": 82,
+          "precipitation_probability_percent": null,
+          "fetched_at": "2026-09-29T21:05:23.220Z",
+          "humidity_percent": 90,
+          "wind_kmh": 3.9996,
+          "feels_like_c": 29.6,
+          "pressure_hpa": 1011,
+          "precipitation_mm": 1.49,
+          "condition_code": "rain",
+          "rain_mm_per_hour": null,
+          "gust_kmh": 4.3992,
+          "temperature_c": 25.7,
+          "visibility_m": 9000,
+          "storm": null,
+          "official_alert_level": null,
+          "freshness": "fresh",
+          "coverage": "covered",
+          "source": "6e34f8ae-5d75-4a64-97db-cb8c9e478624",
+          "source_time": "2026-09-29T21:00:00.000Z",
+          "valid_from": "2026-09-29T21:00:00.000Z",
+          "valid_to": null,
+          "reasons": [
+            "official_alert_source_not_integrated",
+            "storm_classification_unavailable",
+            "observation_precipitation_interval_unspecified"
+          ]
+        },
+        "assessment": {
+          "level": "low",
+          "severity": 1,
+          "score": 0.3333333333333333,
+          "display_score": 33,
+          "vehicle": null,
+          "rule_set_version": "general-weather-v1",
+          "freshness": "fresh",
+          "coverage": "covered",
+          "source": "6e34f8ae-5d75-4a64-97db-cb8c9e478624",
+          "source_time": "2026-09-29T21:00:00.000Z",
+          "evidence": [
+            {
+              "dimension": "rain",
+              "value": null,
+              "severity": 0
+            },
+            {
+              "dimension": "wind",
+              "value": 4.3992,
+              "severity": 1
+            },
+            {
+              "dimension": "temperature",
+              "value": 25.7,
+              "severity": 1
+            },
+            {
+              "dimension": "visibility",
+              "value": 9000,
+              "severity": 1
+            },
+            {
+              "dimension": "storm",
+              "value": null,
+              "severity": 0
+            },
+            {
+              "dimension": "alert",
+              "value": null,
+              "severity": 0
+            }
+          ],
+          "reasons": [
+            "official_alert_source_not_integrated",
+            "storm_classification_unavailable",
+            "observation_precipitation_interval_unspecified",
+            "rain_unavailable",
+            "storm_unavailable",
+            "alert_unavailable",
+            "general_weather_partial_evidence"
+          ]
+        }
+      },
+      {
+        "id": "tra-vinh",
+        "name": "Trà Vinh",
+        "weather": {
+          "uv_index": 0,
+          "cloud_cover_percent": 15,
+          "precipitation_probability_percent": null,
+          "fetched_at": "2026-09-29T21:05:23.795Z",
+          "humidity_percent": 92,
+          "wind_kmh": 4.2984,
+          "feels_like_c": 29.7,
+          "pressure_hpa": 1011,
+          "precipitation_mm": 0,
+          "condition_code": "fog",
+          "rain_mm_per_hour": null,
+          "gust_kmh": 4.3992,
+          "temperature_c": 25.4,
+          "visibility_m": 2700,
+          "storm": null,
+          "official_alert_level": null,
+          "freshness": "fresh",
+          "coverage": "covered",
+          "source": "6e34f8ae-5d75-4a64-97db-cb8c9e478624",
+          "source_time": "2026-09-29T21:00:00.000Z",
+          "valid_from": "2026-09-29T21:00:00.000Z",
+          "valid_to": null,
+          "reasons": [
+            "official_alert_source_not_integrated",
+            "storm_classification_unavailable",
+            "observation_precipitation_interval_unspecified"
+          ]
+        },
+        "assessment": {
+          "level": "low",
+          "severity": 1,
+          "score": 0.3333333333333333,
+          "display_score": 33,
+          "vehicle": null,
+          "rule_set_version": "general-weather-v1",
+          "freshness": "fresh",
+          "coverage": "covered",
+          "source": "6e34f8ae-5d75-4a64-97db-cb8c9e478624",
+          "source_time": "2026-09-29T21:00:00.000Z",
+          "evidence": [
+            {
+              "dimension": "rain",
+              "value": null,
+              "severity": 0
+            },
+            {
+              "dimension": "wind",
+              "value": 4.3992,
+              "severity": 1
+            },
+            {
+              "dimension": "temperature",
+              "value": 25.4,
+              "severity": 1
+            },
+            {
+              "dimension": "visibility",
+              "value": 2700,
+              "severity": 1
+            },
+            {
+              "dimension": "storm",
+              "value": null,
+              "severity": 0
+            },
+            {
+              "dimension": "alert",
+              "value": null,
+              "severity": 0
+            }
+          ],
+          "reasons": [
+            "official_alert_source_not_integrated",
+            "storm_classification_unavailable",
+            "observation_precipitation_interval_unspecified",
+            "rain_unavailable",
+            "storm_unavailable",
+            "alert_unavailable",
+            "general_weather_partial_evidence"
+          ]
+        }
+      },
+      {
+        "id": "bac-lieu",
+        "name": "Bạc Liêu",
+        "weather": {
+          "uv_index": 0,
+          "cloud_cover_percent": 85,
+          "precipitation_probability_percent": null,
+          "fetched_at": "2026-09-29T21:05:24.359Z",
+          "humidity_percent": 82,
+          "wind_kmh": 3.6,
+          "feels_like_c": 29.6,
+          "pressure_hpa": 1011,
+          "precipitation_mm": 1.45,
+          "condition_code": "rain",
+          "rain_mm_per_hour": null,
+          "gust_kmh": 10.8,
+          "temperature_c": 26.7,
+          "visibility_m": 9000,
+          "storm": null,
+          "official_alert_level": null,
+          "freshness": "fresh",
+          "coverage": "covered",
+          "source": "6e34f8ae-5d75-4a64-97db-cb8c9e478624",
+          "source_time": "2026-09-29T21:00:00.000Z",
+          "valid_from": "2026-09-29T21:00:00.000Z",
+          "valid_to": null,
+          "reasons": [
+            "official_alert_source_not_integrated",
+            "storm_classification_unavailable",
+            "observation_precipitation_interval_unspecified"
+          ]
+        },
+        "assessment": {
+          "level": "low",
+          "severity": 1,
+          "score": 0.3333333333333333,
+          "display_score": 33,
+          "vehicle": null,
+          "rule_set_version": "general-weather-v1",
+          "freshness": "fresh",
+          "coverage": "covered",
+          "source": "6e34f8ae-5d75-4a64-97db-cb8c9e478624",
+          "source_time": "2026-09-29T21:00:00.000Z",
+          "evidence": [
+            {
+              "dimension": "rain",
+              "value": null,
+              "severity": 0
+            },
+            {
+              "dimension": "wind",
+              "value": 10.8,
+              "severity": 1
+            },
+            {
+              "dimension": "temperature",
+              "value": 26.7,
+              "severity": 1
+            },
+            {
+              "dimension": "visibility",
+              "value": 9000,
+              "severity": 1
+            },
+            {
+              "dimension": "storm",
+              "value": null,
+              "severity": 0
+            },
+            {
+              "dimension": "alert",
+              "value": null,
+              "severity": 0
+            }
+          ],
+          "reasons": [
+            "official_alert_source_not_integrated",
+            "storm_classification_unavailable",
+            "observation_precipitation_interval_unspecified",
+            "rain_unavailable",
+            "storm_unavailable",
+            "alert_unavailable",
+            "general_weather_partial_evidence"
+          ]
+        }
+      },
+      {
+        "id": "soc-trang",
+        "name": "Sóc Trăng",
+        "weather": {
+          "uv_index": 0,
+          "cloud_cover_percent": 81,
+          "precipitation_probability_percent": null,
+          "fetched_at": "2026-09-29T21:05:24.070Z",
+          "humidity_percent": 88,
+          "wind_kmh": 3.6,
+          "feels_like_c": 29.6,
+          "pressure_hpa": 1011,
+          "precipitation_mm": 0.19,
+          "condition_code": "rain",
+          "rain_mm_per_hour": null,
+          "gust_kmh": 10.8,
+          "temperature_c": 25.8,
+          "visibility_m": 10000,
+          "storm": null,
+          "official_alert_level": null,
+          "freshness": "fresh",
+          "coverage": "covered",
+          "source": "6e34f8ae-5d75-4a64-97db-cb8c9e478624",
+          "source_time": "2026-09-29T21:00:00.000Z",
+          "valid_from": "2026-09-29T21:00:00.000Z",
+          "valid_to": null,
+          "reasons": [
+            "official_alert_source_not_integrated",
+            "storm_classification_unavailable",
+            "observation_precipitation_interval_unspecified"
+          ]
+        },
+        "assessment": {
+          "level": "low",
+          "severity": 1,
+          "score": 0.3333333333333333,
+          "display_score": 33,
+          "vehicle": null,
+          "rule_set_version": "general-weather-v1",
+          "freshness": "fresh",
+          "coverage": "covered",
+          "source": "6e34f8ae-5d75-4a64-97db-cb8c9e478624",
+          "source_time": "2026-09-29T21:00:00.000Z",
+          "evidence": [
+            {
+              "dimension": "rain",
+              "value": null,
+              "severity": 0
+            },
+            {
+              "dimension": "wind",
+              "value": 10.8,
+              "severity": 1
+            },
+            {
+              "dimension": "temperature",
+              "value": 25.8,
+              "severity": 1
+            },
+            {
+              "dimension": "visibility",
+              "value": 10000,
+              "severity": 1
+            },
+            {
+              "dimension": "storm",
+              "value": null,
+              "severity": 0
+            },
+            {
+              "dimension": "alert",
+              "value": null,
+              "severity": 0
+            }
+          ],
+          "reasons": [
+            "official_alert_source_not_integrated",
+            "storm_classification_unavailable",
+            "observation_precipitation_interval_unspecified",
+            "rain_unavailable",
+            "storm_unavailable",
+            "alert_unavailable",
+            "general_weather_partial_evidence"
+          ]
+        }
+      },
+      {
+        "id": "ca-mau",
+        "name": "Cà Mau",
+        "weather": {
+          "uv_index": 0,
+          "cloud_cover_percent": 79,
+          "precipitation_probability_percent": null,
+          "fetched_at": "2026-09-29T21:05:24.630Z",
+          "humidity_percent": 91,
+          "wind_kmh": 3.6,
+          "feels_like_c": 29.7,
+          "pressure_hpa": 1012,
+          "precipitation_mm": 0,
+          "condition_code": "cloudy",
+          "rain_mm_per_hour": null,
+          "gust_kmh": 3.7008,
+          "temperature_c": 25.3,
+          "visibility_m": 10000,
+          "storm": null,
+          "official_alert_level": null,
+          "freshness": "fresh",
+          "coverage": "covered",
+          "source": "6e34f8ae-5d75-4a64-97db-cb8c9e478624",
+          "source_time": "2026-09-29T21:00:00.000Z",
+          "valid_from": "2026-09-29T21:00:00.000Z",
+          "valid_to": null,
+          "reasons": [
+            "official_alert_source_not_integrated",
+            "storm_classification_unavailable",
+            "observation_precipitation_interval_unspecified"
+          ]
+        },
+        "assessment": {
+          "level": "low",
+          "severity": 1,
+          "score": 0.3333333333333333,
+          "display_score": 33,
+          "vehicle": null,
+          "rule_set_version": "general-weather-v1",
+          "freshness": "fresh",
+          "coverage": "covered",
+          "source": "6e34f8ae-5d75-4a64-97db-cb8c9e478624",
+          "source_time": "2026-09-29T21:00:00.000Z",
+          "evidence": [
+            {
+              "dimension": "rain",
+              "value": null,
+              "severity": 0
+            },
+            {
+              "dimension": "wind",
+              "value": 3.7008,
+              "severity": 1
+            },
+            {
+              "dimension": "temperature",
+              "value": 25.3,
+              "severity": 1
+            },
+            {
+              "dimension": "visibility",
+              "value": 10000,
+              "severity": 1
+            },
+            {
+              "dimension": "storm",
+              "value": null,
+              "severity": 0
+            },
+            {
+              "dimension": "alert",
+              "value": null,
+              "severity": 0
+            }
+          ],
+          "reasons": [
+            "official_alert_source_not_integrated",
+            "storm_classification_unavailable",
+            "observation_precipitation_interval_unspecified",
+            "rain_unavailable",
+            "storm_unavailable",
+            "alert_unavailable",
+            "general_weather_partial_evidence"
+          ]
+        }
+      },
+      {
+        "id": "ben-tre",
+        "name": "Bến Tre",
+        "weather": {
+          "uv_index": 0,
+          "cloud_cover_percent": 15,
+          "precipitation_probability_percent": null,
+          "fetched_at": "2026-09-29T21:05:25.742Z",
+          "humidity_percent": 92,
+          "wind_kmh": 4.2984,
+          "feels_like_c": 29.7,
+          "pressure_hpa": 1011,
+          "precipitation_mm": 0,
+          "condition_code": "fog",
+          "rain_mm_per_hour": null,
+          "gust_kmh": 4.3992,
+          "temperature_c": 25.4,
+          "visibility_m": 2700,
+          "storm": null,
+          "official_alert_level": null,
+          "freshness": "fresh",
+          "coverage": "covered",
+          "source": "6e34f8ae-5d75-4a64-97db-cb8c9e478624",
+          "source_time": "2026-09-29T21:00:00.000Z",
+          "valid_from": "2026-09-29T21:00:00.000Z",
+          "valid_to": null,
+          "reasons": [
+            "official_alert_source_not_integrated",
+            "storm_classification_unavailable",
+            "observation_precipitation_interval_unspecified"
+          ]
+        },
+        "assessment": {
+          "level": "low",
+          "severity": 1,
+          "score": 0.3333333333333333,
+          "display_score": 33,
+          "vehicle": null,
+          "rule_set_version": "general-weather-v1",
+          "freshness": "fresh",
+          "coverage": "covered",
+          "source": "6e34f8ae-5d75-4a64-97db-cb8c9e478624",
+          "source_time": "2026-09-29T21:00:00.000Z",
+          "evidence": [
+            {
+              "dimension": "rain",
+              "value": null,
+              "severity": 0
+            },
+            {
+              "dimension": "wind",
+              "value": 4.3992,
+              "severity": 1
+            },
+            {
+              "dimension": "temperature",
+              "value": 25.4,
+              "severity": 1
+            },
+            {
+              "dimension": "visibility",
+              "value": 2700,
+              "severity": 1
+            },
+            {
+              "dimension": "storm",
+              "value": null,
+              "severity": 0
+            },
+            {
+              "dimension": "alert",
+              "value": null,
+              "severity": 0
+            }
+          ],
+          "reasons": [
+            "official_alert_source_not_integrated",
+            "storm_classification_unavailable",
+            "observation_precipitation_interval_unspecified",
+            "rain_unavailable",
+            "storm_unavailable",
+            "alert_unavailable",
+            "general_weather_partial_evidence"
+          ]
+        }
+      },
+      {
+        "id": "tien-giang",
+        "name": "Tiền Giang",
+        "weather": {
+          "uv_index": 0,
+          "cloud_cover_percent": 83,
+          "precipitation_probability_percent": null,
+          "fetched_at": "2026-09-29T21:05:26.021Z",
+          "humidity_percent": 95,
+          "wind_kmh": 4.2984,
+          "feels_like_c": 30.1,
+          "pressure_hpa": 1011,
+          "precipitation_mm": 0,
+          "condition_code": "fog",
+          "rain_mm_per_hour": null,
+          "gust_kmh": 4.3992,
+          "temperature_c": 25,
+          "visibility_m": 2000,
+          "storm": null,
+          "official_alert_level": null,
+          "freshness": "fresh",
+          "coverage": "covered",
+          "source": "6e34f8ae-5d75-4a64-97db-cb8c9e478624",
+          "source_time": "2026-09-29T21:00:00.000Z",
+          "valid_from": "2026-09-29T21:00:00.000Z",
+          "valid_to": null,
+          "reasons": [
+            "official_alert_source_not_integrated",
+            "storm_classification_unavailable",
+            "observation_precipitation_interval_unspecified"
+          ]
+        },
+        "assessment": {
+          "level": "low",
+          "severity": 1,
+          "score": 0.3333333333333333,
+          "display_score": 33,
+          "vehicle": null,
+          "rule_set_version": "general-weather-v1",
+          "freshness": "fresh",
+          "coverage": "covered",
+          "source": "6e34f8ae-5d75-4a64-97db-cb8c9e478624",
+          "source_time": "2026-09-29T21:00:00.000Z",
+          "evidence": [
+            {
+              "dimension": "rain",
+              "value": null,
+              "severity": 0
+            },
+            {
+              "dimension": "wind",
+              "value": 4.3992,
+              "severity": 1
+            },
+            {
+              "dimension": "temperature",
+              "value": 25,
+              "severity": 1
+            },
+            {
+              "dimension": "visibility",
+              "value": 2000,
+              "severity": 1
+            },
+            {
+              "dimension": "storm",
+              "value": null,
+              "severity": 0
+            },
+            {
+              "dimension": "alert",
+              "value": null,
+              "severity": 0
+            }
+          ],
+          "reasons": [
+            "official_alert_source_not_integrated",
+            "storm_classification_unavailable",
+            "observation_precipitation_interval_unspecified",
+            "rain_unavailable",
+            "storm_unavailable",
+            "alert_unavailable",
+            "general_weather_partial_evidence"
+          ]
+        }
+      },
+      {
+        "id": "vinh-long",
+        "name": "Vĩnh Long",
+        "weather": {
+          "uv_index": 0,
+          "cloud_cover_percent": 14,
+          "precipitation_probability_percent": null,
+          "fetched_at": "2026-09-29T21:05:25.192Z",
+          "humidity_percent": 90,
+          "wind_kmh": 5.0004,
+          "feels_like_c": 29.4,
+          "pressure_hpa": 1011,
+          "precipitation_mm": 0,
+          "condition_code": "fog",
+          "rain_mm_per_hour": null,
+          "gust_kmh": 5.1012,
+          "temperature_c": 25.5,
+          "visibility_m": 3000,
+          "storm": null,
+          "official_alert_level": null,
+          "freshness": "fresh",
+          "coverage": "covered",
+          "source": "6e34f8ae-5d75-4a64-97db-cb8c9e478624",
+          "source_time": "2026-09-29T21:00:00.000Z",
+          "valid_from": "2026-09-29T21:00:00.000Z",
+          "valid_to": null,
+          "reasons": [
+            "official_alert_source_not_integrated",
+            "storm_classification_unavailable",
+            "observation_precipitation_interval_unspecified"
+          ]
+        },
+        "assessment": {
+          "level": "low",
+          "severity": 1,
+          "score": 0.3333333333333333,
+          "display_score": 33,
+          "vehicle": null,
+          "rule_set_version": "general-weather-v1",
+          "freshness": "fresh",
+          "coverage": "covered",
+          "source": "6e34f8ae-5d75-4a64-97db-cb8c9e478624",
+          "source_time": "2026-09-29T21:00:00.000Z",
+          "evidence": [
+            {
+              "dimension": "rain",
+              "value": null,
+              "severity": 0
+            },
+            {
+              "dimension": "wind",
+              "value": 5.1012,
+              "severity": 1
+            },
+            {
+              "dimension": "temperature",
+              "value": 25.5,
+              "severity": 1
+            },
+            {
+              "dimension": "visibility",
+              "value": 3000,
+              "severity": 1
+            },
+            {
+              "dimension": "storm",
+              "value": null,
+              "severity": 0
+            },
+            {
+              "dimension": "alert",
+              "value": null,
+              "severity": 0
+            }
+          ],
+          "reasons": [
+            "official_alert_source_not_integrated",
+            "storm_classification_unavailable",
+            "observation_precipitation_interval_unspecified",
+            "rain_unavailable",
+            "storm_unavailable",
+            "alert_unavailable",
+            "general_weather_partial_evidence"
+          ]
+        }
+      },
+      {
+        "id": "long-an",
+        "name": "Long An",
+        "weather": {
+          "uv_index": 0,
+          "cloud_cover_percent": 83,
+          "precipitation_probability_percent": null,
+          "fetched_at": "2026-09-29T21:05:25.466Z",
+          "humidity_percent": 95,
+          "wind_kmh": 4.2984,
+          "feels_like_c": 30.1,
+          "pressure_hpa": 1011,
+          "precipitation_mm": 0,
+          "condition_code": "fog",
+          "rain_mm_per_hour": null,
+          "gust_kmh": 4.3992,
+          "temperature_c": 25,
+          "visibility_m": 2000,
+          "storm": null,
+          "official_alert_level": null,
+          "freshness": "fresh",
+          "coverage": "covered",
+          "source": "6e34f8ae-5d75-4a64-97db-cb8c9e478624",
+          "source_time": "2026-09-29T21:00:00.000Z",
+          "valid_from": "2026-09-29T21:00:00.000Z",
+          "valid_to": null,
+          "reasons": [
+            "official_alert_source_not_integrated",
+            "storm_classification_unavailable",
+            "observation_precipitation_interval_unspecified"
+          ]
+        },
+        "assessment": {
+          "level": "low",
+          "severity": 1,
+          "score": 0.3333333333333333,
+          "display_score": 33,
+          "vehicle": null,
+          "rule_set_version": "general-weather-v1",
+          "freshness": "fresh",
+          "coverage": "covered",
+          "source": "6e34f8ae-5d75-4a64-97db-cb8c9e478624",
+          "source_time": "2026-09-29T21:00:00.000Z",
+          "evidence": [
+            {
+              "dimension": "rain",
+              "value": null,
+              "severity": 0
+            },
+            {
+              "dimension": "wind",
+              "value": 4.3992,
+              "severity": 1
+            },
+            {
+              "dimension": "temperature",
+              "value": 25,
+              "severity": 1
+            },
+            {
+              "dimension": "visibility",
+              "value": 2000,
+              "severity": 1
+            },
+            {
+              "dimension": "storm",
+              "value": null,
+              "severity": 0
+            },
+            {
+              "dimension": "alert",
+              "value": null,
+              "severity": 0
+            }
+          ],
+          "reasons": [
+            "official_alert_source_not_integrated",
+            "storm_classification_unavailable",
+            "observation_precipitation_interval_unspecified",
+            "rain_unavailable",
+            "storm_unavailable",
+            "alert_unavailable",
+            "general_weather_partial_evidence"
+          ]
+        }
+      },
+      {
+        "id": "dien-bien",
+        "name": "Điện Biên",
+        "weather": {
+          "uv_index": 0,
+          "cloud_cover_percent": 100,
+          "precipitation_probability_percent": null,
+          "fetched_at": "2026-09-29T21:05:24.919Z",
+          "humidity_percent": 98,
+          "wind_kmh": 3.6,
+          "feels_like_c": 20.3,
+          "pressure_hpa": 1014,
+          "precipitation_mm": 0,
+          "condition_code": "fog",
+          "rain_mm_per_hour": null,
+          "gust_kmh": 10.8,
+          "temperature_c": 18.2,
+          "visibility_m": 0,
+          "storm": null,
+          "official_alert_level": null,
+          "freshness": "fresh",
+          "coverage": "covered",
+          "source": "6e34f8ae-5d75-4a64-97db-cb8c9e478624",
+          "source_time": "2026-09-29T21:00:00.000Z",
+          "valid_from": "2026-09-29T21:00:00.000Z",
+          "valid_to": null,
+          "reasons": [
+            "official_alert_source_not_integrated",
+            "storm_classification_unavailable",
+            "observation_precipitation_interval_unspecified"
+          ]
+        },
+        "assessment": {
+          "level": "high",
+          "severity": 3,
+          "score": 1,
+          "display_score": 100,
+          "vehicle": null,
+          "rule_set_version": "general-weather-v1",
+          "freshness": "fresh",
+          "coverage": "covered",
+          "source": "6e34f8ae-5d75-4a64-97db-cb8c9e478624",
+          "source_time": "2026-09-29T21:00:00.000Z",
+          "evidence": [
+            {
+              "dimension": "rain",
+              "value": null,
+              "severity": 0
+            },
+            {
+              "dimension": "wind",
+              "value": 10.8,
+              "severity": 1
+            },
+            {
+              "dimension": "temperature",
+              "value": 18.2,
+              "severity": 1
+            },
+            {
+              "dimension": "visibility",
+              "value": 0,
+              "severity": 3
+            },
+            {
+              "dimension": "storm",
+              "value": null,
+              "severity": 0
+            },
+            {
+              "dimension": "alert",
+              "value": null,
+              "severity": 0
+            }
+          ],
+          "reasons": [
+            "official_alert_source_not_integrated",
+            "storm_classification_unavailable",
+            "observation_precipitation_interval_unspecified",
+            "rain_unavailable",
+            "storm_unavailable",
+            "alert_unavailable",
+            "general_weather_partial_evidence"
+          ]
+        }
+      },
+      {
+        "id": "lai-chau",
+        "name": "Lai Châu",
+        "weather": {
+          "uv_index": 0,
+          "cloud_cover_percent": 100,
+          "precipitation_probability_percent": null,
+          "fetched_at": "2026-09-29T21:05:26.301Z",
+          "humidity_percent": 98,
+          "wind_kmh": 3.6,
+          "feels_like_c": 20.3,
+          "pressure_hpa": 1014,
+          "precipitation_mm": 0,
+          "condition_code": "fog",
+          "rain_mm_per_hour": null,
+          "gust_kmh": 10.8,
+          "temperature_c": 18.2,
+          "visibility_m": 0,
+          "storm": null,
+          "official_alert_level": null,
+          "freshness": "fresh",
+          "coverage": "covered",
+          "source": "6e34f8ae-5d75-4a64-97db-cb8c9e478624",
+          "source_time": "2026-09-29T21:00:00.000Z",
+          "valid_from": "2026-09-29T21:00:00.000Z",
+          "valid_to": null,
+          "reasons": [
+            "official_alert_source_not_integrated",
+            "storm_classification_unavailable",
+            "observation_precipitation_interval_unspecified"
+          ]
+        },
+        "assessment": {
+          "level": "high",
+          "severity": 3,
+          "score": 1,
+          "display_score": 100,
+          "vehicle": null,
+          "rule_set_version": "general-weather-v1",
+          "freshness": "fresh",
+          "coverage": "covered",
+          "source": "6e34f8ae-5d75-4a64-97db-cb8c9e478624",
+          "source_time": "2026-09-29T21:00:00.000Z",
+          "evidence": [
+            {
+              "dimension": "rain",
+              "value": null,
+              "severity": 0
+            },
+            {
+              "dimension": "wind",
+              "value": 10.8,
+              "severity": 1
+            },
+            {
+              "dimension": "temperature",
+              "value": 18.2,
+              "severity": 1
+            },
+            {
+              "dimension": "visibility",
+              "value": 0,
+              "severity": 3
+            },
+            {
+              "dimension": "storm",
+              "value": null,
+              "severity": 0
+            },
+            {
+              "dimension": "alert",
+              "value": null,
+              "severity": 0
+            }
+          ],
+          "reasons": [
+            "official_alert_source_not_integrated",
+            "storm_classification_unavailable",
+            "observation_precipitation_interval_unspecified",
+            "rain_unavailable",
+            "storm_unavailable",
+            "alert_unavailable",
+            "general_weather_partial_evidence"
+          ]
+        }
+      },
+      {
+        "id": "son-la",
+        "name": "Sơn La",
+        "weather": {
+          "uv_index": 0,
+          "cloud_cover_percent": 98,
+          "precipitation_probability_percent": null,
+          "fetched_at": "2026-09-29T21:05:26.757Z",
+          "humidity_percent": 87,
+          "wind_kmh": 4.7016,
+          "feels_like_c": 27,
+          "pressure_hpa": 1013,
+          "precipitation_mm": 0,
+          "condition_code": "cloudy",
+          "rain_mm_per_hour": null,
+          "gust_kmh": 4.7988,
+          "temperature_c": 23.5,
+          "visibility_m": 10000,
+          "storm": null,
+          "official_alert_level": null,
+          "freshness": "fresh",
+          "coverage": "covered",
+          "source": "6e34f8ae-5d75-4a64-97db-cb8c9e478624",
+          "source_time": "2026-09-29T21:00:00.000Z",
+          "valid_from": "2026-09-29T21:00:00.000Z",
+          "valid_to": null,
+          "reasons": [
+            "official_alert_source_not_integrated",
+            "storm_classification_unavailable",
+            "observation_precipitation_interval_unspecified"
+          ]
+        },
+        "assessment": {
+          "level": "low",
+          "severity": 1,
+          "score": 0.3333333333333333,
+          "display_score": 33,
+          "vehicle": null,
+          "rule_set_version": "general-weather-v1",
+          "freshness": "fresh",
+          "coverage": "covered",
+          "source": "6e34f8ae-5d75-4a64-97db-cb8c9e478624",
+          "source_time": "2026-09-29T21:00:00.000Z",
+          "evidence": [
+            {
+              "dimension": "rain",
+              "value": null,
+              "severity": 0
+            },
+            {
+              "dimension": "wind",
+              "value": 4.7988,
+              "severity": 1
+            },
+            {
+              "dimension": "temperature",
+              "value": 23.5,
+              "severity": 1
+            },
+            {
+              "dimension": "visibility",
+              "value": 10000,
+              "severity": 1
+            },
+            {
+              "dimension": "storm",
+              "value": null,
+              "severity": 0
+            },
+            {
+              "dimension": "alert",
+              "value": null,
+              "severity": 0
+            }
+          ],
+          "reasons": [
+            "official_alert_source_not_integrated",
+            "storm_classification_unavailable",
+            "observation_precipitation_interval_unspecified",
+            "rain_unavailable",
+            "storm_unavailable",
+            "alert_unavailable",
+            "general_weather_partial_evidence"
+          ]
+        }
+      },
+      {
+        "id": "ha-nam",
+        "name": "Hà Nam",
+        "weather": {
+          "uv_index": 0,
+          "cloud_cover_percent": 14,
+          "precipitation_probability_percent": null,
+          "fetched_at": "2026-09-29T21:05:27.034Z",
+          "humidity_percent": 94,
+          "wind_kmh": 8.3016,
+          "feels_like_c": 32.6,
+          "pressure_hpa": 1009,
+          "precipitation_mm": 0,
+          "condition_code": "clear",
+          "rain_mm_per_hour": null,
+          "gust_kmh": 16.9992,
+          "temperature_c": 27.3,
+          "visibility_m": 10000,
+          "storm": null,
+          "official_alert_level": null,
+          "freshness": "fresh",
+          "coverage": "covered",
+          "source": "6e34f8ae-5d75-4a64-97db-cb8c9e478624",
+          "source_time": "2026-09-29T21:00:00.000Z",
+          "valid_from": "2026-09-29T21:00:00.000Z",
+          "valid_to": null,
+          "reasons": [
+            "official_alert_source_not_integrated",
+            "storm_classification_unavailable",
+            "observation_precipitation_interval_unspecified"
+          ]
+        },
+        "assessment": {
+          "level": "low",
+          "severity": 1,
+          "score": 0.3333333333333333,
+          "display_score": 33,
+          "vehicle": null,
+          "rule_set_version": "general-weather-v1",
+          "freshness": "fresh",
+          "coverage": "covered",
+          "source": "6e34f8ae-5d75-4a64-97db-cb8c9e478624",
+          "source_time": "2026-09-29T21:00:00.000Z",
+          "evidence": [
+            {
+              "dimension": "rain",
+              "value": null,
+              "severity": 0
+            },
+            {
+              "dimension": "wind",
+              "value": 16.9992,
+              "severity": 1
+            },
+            {
+              "dimension": "temperature",
+              "value": 27.3,
+              "severity": 1
+            },
+            {
+              "dimension": "visibility",
+              "value": 10000,
+              "severity": 1
+            },
+            {
+              "dimension": "storm",
+              "value": null,
+              "severity": 0
+            },
+            {
+              "dimension": "alert",
+              "value": null,
+              "severity": 0
+            }
+          ],
+          "reasons": [
+            "official_alert_source_not_integrated",
+            "storm_classification_unavailable",
+            "observation_precipitation_interval_unspecified",
+            "rain_unavailable",
+            "storm_unavailable",
+            "alert_unavailable",
+            "general_weather_partial_evidence"
+          ]
+        }
+      }
+    ]
+  }
+}

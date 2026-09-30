@@ -1,0 +1,30 @@
+{
+  "checked_at": "2026-09-30T02:26:53.077Z",
+  "surface": "Live public API + actual VietnamMap SSR/DOM; browser pixels not verified",
+  "province_count": 63,
+  "finite_temperatures": 63,
+  "mismatches": [],
+  "samples": [
+    {
+      "id": "vn-hg",
+      "name": "Hà Giang",
+      "temperature": 25.7,
+      "source_time": "2026-09-30T02:15:00.000Z",
+      "freshness": "fresh"
+    },
+    {
+      "id": "vn-318",
+      "name": "Hà Nội",
+      "temperature": 29.7,
+      "source_time": "2026-09-30T02:15:00.000Z",
+      "freshness": "fresh"
+    },
+    {
+      "id": "vn-337",
+      "name": "Hậu Giang",
+      "temperature": 29.4,
+      "source_time": "2026-09-30T02:15:00.000Z",
+      "freshness": "fresh"
+    }
+  ]
+}

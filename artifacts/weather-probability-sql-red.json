@@ -1,0 +1,46 @@
+[
+  {
+    "name": "nearest eligible sample wins over newer nearby sample",
+    "passed": true
+  },
+  {
+    "name": "gust just below caution threshold stays low",
+    "passed": true
+  },
+  {
+    "name": "gust just below high threshold stays caution",
+    "passed": true
+  },
+  {
+    "name": "fresh nearby forecast wins over old issuance at nearest sample",
+    "passed": true
+  },
+  {
+    "name": "current amount and hourly forecast are kept distinct",
+    "passed": true
+  },
+  {
+    "name": "fresh forecast supplies labeled hourly rain for current time",
+    "passed": true
+  },
+  {
+    "name": "current rain probability uses the matching hourly forecast and preserves observations",
+    "passed": false,
+    "actual": null,
+    "expected": 34
+  },
+  {
+    "name": "zero rain probability survives a missing hourly rainfall amount",
+    "passed": false,
+    "actual": null,
+    "expected": 0
+  },
+  {
+    "name": "missing rain probability remains unknown without erasing current weather",
+    "passed": true
+  },
+  {
+    "name": "eligible nearby observation wins over stale nearest observation for past target",
+    "passed": true
+  }
+]

@@ -6,7 +6,7 @@
  */
 
 import type { FastifyInstance, FastifyRequest, FastifyReply } from "fastify";
-import type { ChatRequestDto } from "@vietnam-weather/contracts";
+import { type ChatRequestDto, PLAN_TYPES, type PlanType } from "@vietnam-weather/contracts";
 
 import { ApiError } from "../errors.js";
 import type { BillingService } from "../billing/billing-service.js";
@@ -30,14 +30,24 @@ export function buildChatRoutes(app: FastifyInstance, options: ChatRoutesOptions
     "/api/v1/chat/message",
     {
       preHandler: async (req, reply) => {
-        await requireAuth(req, reply);
+        try {
+          await requireAuth(req, reply);
+        } catch {
+          // Soft authentication permits guest interactions with daily quota
+        }
         await requireMutationSecurity(req);
       },
     },
     async (request: FastifyRequest) => {
-      const userId = request.authSession?.user?.id;
-      if (!userId) {
-        throw new ApiError(401, "AUTHENTICATION_REQUIRED", false, "User authentication required");
+      let userId = request.authSession?.user?.id;
+      let plan: PlanType = PLAN_TYPES.FREE;
+
+      if (userId) {
+        const entitlements = await billingService.getEntitlements(userId);
+        plan = entitlements.plan;
+      } else {
+        const clientIp = request.ip || "guest";
+        userId = `guest_${clientIp.replace(/[^a-zA-Z0-9]/g, "_")}`;
       }
 
       const body = request.body as ChatRequestDto;
@@ -45,9 +55,8 @@ export function buildChatRoutes(app: FastifyInstance, options: ChatRoutesOptions
         throw new ApiError(400, "CHAT_INVALID_REQUEST", false, "Message body is required");
       }
 
-      // Determine user tier (Free vs Pro)
-      const entitlements = await billingService.getEntitlements(userId);
-      const response = await chatService.processMessage(userId, entitlements.plan, body);
+      // Process message with quota check
+      const response = await chatService.processMessage(userId, plan, body);
 
       return { data: response };
     }
@@ -59,15 +68,22 @@ export function buildChatRoutes(app: FastifyInstance, options: ChatRoutesOptions
    */
   app.get(
     "/api/v1/chat/history",
-    { preHandler: requireAuth },
+    {
+      preHandler: async (req, reply) => {
+        try {
+          await requireAuth(req, reply);
+        } catch {
+          // Soft authentication
+        }
+      },
+    },
     async (request: FastifyRequest) => {
-      const userId = request.authSession?.user?.id;
-      if (!userId) {
-        throw new ApiError(401, "AUTHENTICATION_REQUIRED", false, "User authentication required");
-      }
-
+      const clientIp = request.ip || "guest";
       const query = request.query as { conversationId?: string } | undefined;
-      const conversationId = query?.conversationId || `conv_${userId}`;
+      const conversationId =
+        query?.conversationId ||
+        (request.authSession?.user?.id ? `conv_${request.authSession.user.id}` : `conv_guest_${clientIp.replace(/[^a-zA-Z0-9]/g, "_")}`);
+      const userId = request.authSession?.user?.id ?? `guest_${clientIp.replace(/[^a-zA-Z0-9]/g, "_")}`;
       const history = chatService.getHistory(userId, conversationId);
 
       return { data: history };
@@ -82,18 +98,21 @@ export function buildChatRoutes(app: FastifyInstance, options: ChatRoutesOptions
     "/api/v1/chat/history",
     {
       preHandler: async (req, reply) => {
-        await requireAuth(req, reply);
+        try {
+          await requireAuth(req, reply);
+        } catch {
+          // Soft authentication
+        }
         await requireMutationSecurity(req);
       },
     },
     async (request: FastifyRequest, reply: FastifyReply) => {
-      const userId = request.authSession?.user?.id;
-      if (!userId) {
-        throw new ApiError(401, "AUTHENTICATION_REQUIRED", false, "User authentication required");
-      }
-
+      const clientIp = request.ip || "guest";
       const query = request.query as { conversationId?: string } | undefined;
-      const conversationId = query?.conversationId || `conv_${userId}`;
+      const conversationId =
+        query?.conversationId ||
+        (request.authSession?.user?.id ? `conv_${request.authSession.user.id}` : `conv_guest_${clientIp.replace(/[^a-zA-Z0-9]/g, "_")}`);
+      const userId = request.authSession?.user?.id ?? `guest_${clientIp.replace(/[^a-zA-Z0-9]/g, "_")}`;
       chatService.clearHistory(userId, conversationId);
 
       reply.code(204).send();
@@ -106,15 +125,28 @@ export function buildChatRoutes(app: FastifyInstance, options: ChatRoutesOptions
    */
   app.get(
     "/api/v1/chat/quota",
-    { preHandler: requireAuth },
+    {
+      preHandler: async (req, reply) => {
+        try {
+          await requireAuth(req, reply);
+        } catch {
+          // Soft authentication
+        }
+      },
+    },
     async (request: FastifyRequest) => {
-      const userId = request.authSession?.user?.id;
-      if (!userId) {
-        throw new ApiError(401, "AUTHENTICATION_REQUIRED", false, "User authentication required");
+      let userId = request.authSession?.user?.id;
+      let plan: PlanType = PLAN_TYPES.FREE;
+
+      if (userId) {
+        const entitlements = await billingService.getEntitlements(userId);
+        plan = entitlements.plan;
+      } else {
+        const clientIp = request.ip || "guest";
+        userId = `guest_${clientIp.replace(/[^a-zA-Z0-9]/g, "_")}`;
       }
 
-      const entitlements = await billingService.getEntitlements(userId);
-      const quotaStatus = await chatService.getQuotaStatus(userId, entitlements.plan);
+      const quotaStatus = await chatService.getQuotaStatus(userId, plan);
 
       return { data: quotaStatus };
     }

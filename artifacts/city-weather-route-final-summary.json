@@ -1,0 +1,86 @@
+[
+  {
+    "vehicle": "car",
+    "status": 200,
+    "ms": 6452,
+    "recommended": "weather_safer",
+    "restStops": "unavailable",
+    "alternatives": [
+      {
+        "type": "fastest",
+        "samples": 59,
+        "usable": 59,
+        "coverage": 100,
+        "etaRisk": 33,
+        "routeScore": 64,
+        "etaIntervalMismatches": 0,
+        "unknownConditions": 0,
+        "maxSourceDistance": 13065.72003623
+      },
+      {
+        "type": "shortest",
+        "samples": 57,
+        "usable": 57,
+        "coverage": 100,
+        "etaRisk": 33,
+        "routeScore": 66,
+        "etaIntervalMismatches": 0,
+        "unknownConditions": 0,
+        "maxSourceDistance": 13127.90581905
+      },
+      {
+        "type": "weather_safer",
+        "samples": 59,
+        "usable": 59,
+        "coverage": 100,
+        "etaRisk": 33,
+        "routeScore": 64,
+        "etaIntervalMismatches": 0,
+        "unknownConditions": 0,
+        "maxSourceDistance": 13065.72003623
+      }
+    ]
+  },
+  {
+    "vehicle": "motorcycle",
+    "status": 200,
+    "ms": 5159,
+    "recommended": "weather_safer",
+    "restStops": "unavailable",
+    "alternatives": [
+      {
+        "type": "fastest",
+        "samples": 65,
+        "usable": 65,
+        "coverage": 100,
+        "etaRisk": 33,
+        "routeScore": 66,
+        "etaIntervalMismatches": 0,
+        "unknownConditions": 0,
+        "maxSourceDistance": 14085.94407201
+      },
+      {
+        "type": "shortest",
+        "samples": 60,
+        "usable": 60,
+        "coverage": 100,
+        "etaRisk": 33,
+        "routeScore": 65,
+        "etaIntervalMismatches": 0,
+        "unknownConditions": 0,
+        "maxSourceDistance": 12798.96743043
+      },
+      {
+        "type": "weather_safer",
+        "samples": 60,
+        "usable": 60,
+        "coverage": 100,
+        "etaRisk": 33,
+        "routeScore": 65,
+        "etaIntervalMismatches": 0,
+        "unknownConditions": 0,
+        "maxSourceDistance": 12798.96743043
+      }
+    ]
+  }
+]

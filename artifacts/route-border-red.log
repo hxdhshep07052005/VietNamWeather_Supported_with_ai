@@ -1,0 +1,518 @@
+
+ RUN  v2.1.9 C:/Users/dangh/Downloads/VietNameWeatherWithAi/VietNamWeather_Supported_with_ai/apps/web
+
+ ❯ src/components/map/RouteInteractiveMap.lifecycle.test.tsx (3 tests | 2 failed) 163ms
+   × route map delayed load lifecycle > uses current province risks for both border and fill, refreshing by ID without replacing road geometry 27ms
+     → expected { type: 'FeatureCollection', …(1) } to match object { features: [ { …(1) }, …(62) ] }
+(1954 matching properties omitted from actual)
+   × route map delayed load lifecycle > keeps the latest border toggle and province data when a new basemap finishes loading 72ms
+     → expected [ 'interpolate', [ 'linear' ], …(9) ] to be 0.001 // Object.is equality
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/components/map/RouteInteractiveMap.lifecycle.test.tsx > route map delayed load lifecycle > uses current province risks for both border and fill, refreshing by ID without replacing road geometry
+AssertionError: expected { type: 'FeatureCollection', …(1) } to match object { features: [ { …(1) }, …(62) ] }
+(1954 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  Object {
+    "features": Array [
+      Object {
+        "properties": Object {
+          "id": "vn-db",
+-         "riskColor": "#22C55E",
++         "riskColor": "#64748B",
+        },
+      },
+      Object {
+        "properties": Object {
+          "id": "vn-ho",
+-         "riskColor": "#22C55E",
++         "riskColor": "#64748B",
+        },
+      },
+      Object {
+        "properties": Object {
+          "id": "vn-li",
+-         "riskColor": "#22C55E",
++         "riskColor": "#64748B",
+        },
+      },
+      Object {
+        "properties": Object {
+          "id": "vn-lo",
+-         "riskColor": "#22C55E",
++         "riskColor": "#64748B",
+        },
+      },
+      Object {
+        "properties": Object {
+          "id": "vn-311",
+-         "riskColor": "#22C55E",
++         "riskColor": "#64748B",
+        },
+      },
+      Object {
+        "properties": Object {
+          "id": "vn-yb",
+-         "riskColor": "#22C55E",
++         "riskColor": "#64748B",
+        },
+      },
+      Object {
+        "properties": Object {
+          "id": "vn-bg",
+-         "riskColor": "#22C55E",
++         "riskColor": "#64748B",
+        },
+      },
+      Object {
+        "properties": Object {
+          "id": "vn-307",
+-         "riskColor": "#22C55E",
++         "riskColor": "#64748B",
+        },
+      },
+      Object {
+        "properties": Object {
+          "id": "vn-cb",
+-         "riskColor": "#22C55E",
++         "riskColor": "#64748B",
+        },
+      },
+      Object {
+        "properties": Object {
+          "id": "vn-hg",
+-         "riskColor": "#22C55E",
++         "riskColor": "#64748B",
+        },
+      },
+      Object {
+        "properties": Object {
+          "id": "vn-ls",
+-         "riskColor": "#22C55E",
++         "riskColor": "#64748B",
+        },
+      },
+      Object {
+        "properties": Object {
+          "id": "vn-pt",
+-         "riskColor": "#22C55E",
++         "riskColor": "#64748B",
+        },
+      },
+      Object {
+        "properties": Object {
+          "id": "vn-qn",
+-         "riskColor": "#22C55E",
++         "riskColor": "#64748B",
+        },
+      },
+      Object {
+        "properties": Object {
+          "id": "vn-ty",
+-         "riskColor": "#22C55E",
++         "riskColor": "#64748B",
+        },
+      },
+      Object {
+        "properties": Object {
+          "id": "vn-tq",
+-         "riskColor": "#22C55E",
++         "riskColor": "#64748B",
+        },
+      },
+      Object {
+        "properties": Object {
+          "id": "vn-bn",
+-         "riskColor": "#22C55E",
++         "riskColor": "#64748B",
+        },
+      },
+      Object {
+        "properties": Object {
+          "id": "vn-hm",
+-         "riskColor": "#22C55E",
++         "riskColor": "#64748B",
+        },
+      },
+      Object {
+        "properties": Object {
+          "id": "vn-318",
+-         "riskColor": "#22C55E",
++         "riskColor": "#64748B",
+        },
+      },
+      Object {
+        "properties": Object {
+          "id": "vn-hd",
+-         "riskColor": "#22C55E",
++         "riskColor": "#64748B",
+        },
+      },
+      Object {
+        "properties": Object {
+          "id": "vn-3623",
+-         "riskColor": "#22C55E",
++         "riskColor": "#64748B",
+        },
+      },
+      Object {
+        "properties": Object {
+          "id": "vn-317",
+-         "riskColor": "#22C55E",
++         "riskColor": "#64748B",
+        },
+      },
+      Object {
+        "properties": Object {
+          "id": "vn-nd",
+-         "riskColor": "#22C55E",
++         "riskColor": "#64748B",
+        },
+      },
+      Object {
+        "properties": Object {
+          "id": "vn-nb",
+-         "riskColor": "#22C55E",
++         "riskColor": "#64748B",
+        },
+      },
+      Object {
+        "properties": Object {
+          "id": "vn-tb",
+-         "riskColor": "#22C55E",
++         "riskColor": "#64748B",
+        },
+      },
+      Object {
+        "properties": Object {
+          "id": "vn-vc",
+-         "riskColor": "#22C55E",
++         "riskColor": "#64748B",
+        },
+      },
+      Object {
+        "properties": Object {
+          "id": "vn-328",
+-         "riskColor": "#22C55E",
++         "riskColor": "#64748B",
+        },
+      },
+      Object {
+        "properties": Object {
+          "id": "vn-na",
+-         "riskColor": "#22C55E",
++         "riskColor": "#64748B",
+        },
+      },
+      Object {
+        "properties": Object {
+          "id": "vn-qb",
+-         "riskColor": "#22C55E",
++         "riskColor": "#64748B",
+        },
+      },
+      Object {
+        "properties": Object {
+          "id": "vn-qt",
+-         "riskColor": "#22C55E",
++         "riskColor": "#64748B",
+        },
+      },
+      Object {
+        "properties": Object {
+          "id": "vn-th",
+-         "riskColor": "#22C55E",
++         "riskColor": "#64748B",
+        },
+      },
+      Object {
+        "properties": Object {
+          "id": "vn-tt",
+-         "riskColor": "#22C55E",
++         "riskColor": "#64748B",
+        },
+      },
+      Object {
+        "properties": Object {
+          "id": "vn-bd",
+-         "riskColor": "#22C55E",
++         "riskColor": "#64748B",
+        },
+      },
+      Object {
+        "properties": Object {
+          "id": "vn-bu",
+-         "riskColor": "#22C55E",
++         "riskColor": "#64748B",
+        },
+      },
+      Object {
+        "properties": Object {
+          "id": "vn-da",
+-         "riskColor": "#22C55E",
++         "riskColor": "#64748B",
+        },
+      },
+      Object {
+        "properties": Object {
+          "id": "vn-kh",
+-         "riskColor": "#22C55E",
++         "riskColor": "#64748B",
+        },
+      },
+      Object {
+        "properties": Object {
+          "id": "vn-nt",
+-         "riskColor": "#22C55E",
++         "riskColor": "#64748B",
+        },
+      },
+      Object {
+        "properties": Object {
+          "id": "vn-py",
+-         "riskColor": "#22C55E",
++         "riskColor": "#64748B",
+        },
+      },
+      Object {
+        "properties": Object {
+          "id": "vn-300",
+-         "riskColor": "#22C55E",
++         "riskColor": "#64748B",
+        },
+      },
+      Object {
+        "properties": Object {
+          "id": "vn-qg",
+-         "riskColor": "#22C55E",
++         "riskColor": "#64748B",
+        },
+      },
+      Object {
+        "properties": Object {
+          "id": "vn-723",
+-         "riskColor": "#22C55E",
++         "riskColor": "#64748B",
+        },
+      },
+      Object {
+        "properties": Object {
+          "id": "vn-6365",
+-         "riskColor": "#22C55E",
++         "riskColor": "#64748B",
+        },
+      },
+      Object {
+        "properties": Object {
+          "id": "vn-724",
+-         "riskColor": "#22C55E",
++         "riskColor": "#64748B",
+        },
+      },
+      Object {
+        "properties": Object {
+          "id": "vn-299",
+-         "riskColor": "#22C55E",
++         "riskColor": "#64748B",
+        },
+      },
+      Object {
+        "properties": Object {
+          "id": "vn-ld",
+-         "riskColor": "#22C55E",
++         "riskColor": "#64748B",
+        },
+      },
+      Object {
+        "properties": Object {
+          "id": "vn-bv",
+-         "riskColor": "#22C55E",
++         "riskColor": "#64748B",
+        },
+      },
+      Object {
+        "properties": Object {
+          "id": "vn-bi",
+-         "riskColor": "#22C55E",
++         "riskColor": "#64748B",
+        },
+      },
+      Object {
+        "properties": Object {
+          "id": "vn-bp",
+-         "riskColor": "#22C55E",
++         "riskColor": "#64748B",
+        },
+      },
+      Object {
+        "properties": Object {
+          "id": "vn-331",
+-         "riskColor": "#22C55E",
++         "riskColor": "#64748B",
+        },
+      },
+      Object {
+        "properties": Object {
+          "id": "vn-hc",
+-         "riskColor": "#22C55E",
++         "riskColor": "#64748B",
+        },
+      },
+      Object {
+        "properties": Object {
+          "id": "vn-tn",
+-         "riskColor": "#22C55E",
++         "riskColor": "#64748B",
+        },
+      },
+      Object {
+        "properties": Object {
+          "id": "vn-ag",
+-         "riskColor": "#22C55E",
++         "riskColor": "#64748B",
+        },
+      },
+      Object {
+        "properties": Object {
+          "id": "vn-bl",
+-         "riskColor": "#22C55E",
++         "riskColor": "#64748B",
+        },
+      },
+      Object {
+        "properties": Object {
+          "id": "vn-br",
+-         "riskColor": "#22C55E",
++         "riskColor": "#64748B",
+        },
+      },
+      Object {
+        "properties": Object {
+          "id": "vn-cm",
+-         "riskColor": "#22C55E",
++         "riskColor": "#64748B",
+        },
+      },
+      Object {
+        "properties": Object {
+          "id": "vn-333",
+-         "riskColor": "#22C55E",
++         "riskColor": "#64748B",
+        },
+      },
+      Object {
+        "properties": Object {
+          "id": "vn-dt",
+-         "riskColor": "#22C55E",
++         "riskColor": "#64748B",
+        },
+      },
+      Object {
+        "properties": Object {
+          "id": "vn-337",
+-         "riskColor": "#22C55E",
++         "riskColor": "#64748B",
+        },
+      },
+      Object {
+        "properties": Object {
+          "id": "vn-kg",
+-         "riskColor": "#22C55E",
++         "riskColor": "#64748B",
+        },
+      },
+      Object {
+        "properties": Object {
+          "id": "vn-la",
+-         "riskColor": "#22C55E",
++         "riskColor": "#64748B",
+        },
+      },
+      Object {
+        "properties": Object {
+          "id": "vn-st",
+-         "riskColor": "#22C55E",
++         "riskColor": "#64748B",
+        },
+      },
+      Object {
+        "properties": Object {
+          "id": "vn-tg",
+-         "riskColor": "#22C55E",
++         "riskColor": "#64748B",
+        },
+      },
+      Object {
+        "properties": Object {
+          "id": "vn-tv",
+-         "riskColor": "#22C55E",
++         "riskColor": "#64748B",
+        },
+      },
+      Object {
+        "properties": Object {
+          "id": "vn-vl",
+-         "riskColor": "#22C55E",
++         "riskColor": "#64748B",
+        },
+      },
+    ],
+  }
+
+ ❯ src/components/map/RouteInteractiveMap.lifecycle.test.tsx:42:58
+     40|     const view = render(<RouteInteractiveMap originName="A" destinatio…
+     41|     act(() => { state.handlers.get("load")?.(); });
+     42|     expect(state.sources.get("vietnam-provinces")?.data).toMatchObject…
+       |                                                          ^
+     43|     expect(state.layers.get("provinces-border")?.paint?.["line-color"]…
+     44|     expect(state.layers.get("provinces-fill")?.paint?.["fill-color"]).…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  src/components/map/RouteInteractiveMap.lifecycle.test.tsx > route map delayed load lifecycle > keeps the latest border toggle and province data when a new basemap finishes loading
+AssertionError: expected [ 'interpolate', [ 'linear' ], …(9) ] to be 0.001 // Object.is equality
+
+- Expected: 
+0.001
+
++ Received: 
+Array [
+  "interpolate",
+  Array [
+    "linear",
+  ],
+  Array [
+    "zoom",
+  ],
+  5,
+  0.16,
+  8,
+  0.12,
+  9.2,
+  0.04,
+  10,
+  0,
+]
+
+ ❯ src/components/map/RouteInteractiveMap.lifecycle.test.tsx:62:73
+     60|     act(() => { state.handlers.get("style.load")?.(); });
+     61|     expect(state.layers.get("provinces-border")?.paint?.["line-color"]…
+     62|     expect(state.layers.get("provinces-fill")?.paint?.["fill-opacity"]…
+       |                                                                         ^
+     63|     expect(state.sources.get("vietnam-provinces")?.data).toMatchObject…
+     64|     fireEvent.click(screen.getByRole("button", { name: "Province Borde…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 1 passed (3)
+   Start at  09:15:44
+   Duration  1.93s (transform 481ms, setup 164ms, collect 747ms, tests 163ms, environment 450ms, prepare 124ms)
+
+undefined
+C:\Users\dangh\Downloads\VietNameWeatherWithAi\VietNamWeather_Supported_with_ai\apps\web:
+[ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL] Command failed with exit code 1: vitest run src/components/map/RouteInteractiveMap.lifecycle.test.tsx "--reporter=dot"

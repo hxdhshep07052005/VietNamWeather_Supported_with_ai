@@ -1,0 +1,53 @@
+
+ RUN  v2.1.9 C:/Users/dangh/Downloads/VietNameWeatherWithAi/VietNamWeather_Supported_with_ai/apps/web
+
+ ❯ src/hooks/useReportProvinceWeather.test.tsx (3 tests | 1 failed) 1664ms
+   ✓ bulk province report data > requests the selected offset and clears previous values during timeline debounce 481ms
+   × bulk province report data > clears cached temperature and risk when a background refresh fails 1092ms
+     → expected 'ready' to be 'error' // Object.is equality
+
+Ignored nodes: comments, script, style
+[36m<html>[39m
+  [36m<head />[39m
+  [36m<body>[39m
+    [36m<div />[39m
+  [36m</body>[39m
+[36m</html>[39m
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/hooks/useReportProvinceWeather.test.tsx > bulk province report data > clears cached temperature and risk when a background refresh fails
+AssertionError: expected 'ready' to be 'error' // Object.is equality
+
+Ignored nodes: comments, script, style
+[36m<html>[39m
+  [36m<head />[39m
+  [36m<body>[39m
+    [36m<div />[39m
+  [36m</body>[39m
+[36m</html>[39m
+
+Expected: "error"
+Received: "ready"
+
+ ❯ src/hooks/useReportProvinceWeather.test.tsx:84:62
+     82|     if (!client) throw new Error("Missing query client");
+     83|     await act(async () => { await client.invalidateQueries({ queryKey:…
+     84|     await waitFor(() => expect(result.current[0]?.dataState).toBe("err…
+       |                                                              ^
+     85|     expect(result.current[0]?.temp).toBeNaN();
+     86|     expect(result.current[0]?.riskLevel).toBe("unknown");
+ ❯ runWithExpensiveErrorDiagnosticsDisabled ../../node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/config.js:47:12
+ ❯ checkCallback ../../node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/wait-for.js:124:77
+ ❯ Timeout.checkRealTimersCallback ../../node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/wait-for.js:118:16
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 2 passed (3)
+   Start at  09:03:56
+   Duration  4.09s (transform 346ms, setup 329ms, collect 558ms, tests 1.66s, environment 994ms, prepare 232ms)
+
+undefined
+C:\Users\dangh\Downloads\VietNameWeatherWithAi\VietNamWeather_Supported_with_ai\apps\web:
+[ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL] Command failed with exit code 1: vitest run src/hooks/useReportProvinceWeather.test.tsx "--reporter=dot"

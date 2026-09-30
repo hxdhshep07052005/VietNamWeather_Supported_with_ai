@@ -1,0 +1,38 @@
+[
+  {
+    "name": "nearest eligible sample wins over newer nearby sample",
+    "passed": true
+  },
+  {
+    "name": "gust just below caution threshold stays low",
+    "passed": false,
+    "actual": 2,
+    "expected": 1
+  },
+  {
+    "name": "gust just below high threshold stays caution",
+    "passed": false,
+    "actual": 3,
+    "expected": 2
+  },
+  {
+    "name": "fresh nearby forecast wins over old issuance at nearest sample",
+    "passed": false,
+    "actual": 27,
+    "expected": 28
+  },
+  {
+    "name": "current amount and hourly forecast are kept distinct",
+    "passed": true
+  },
+  {
+    "name": "fresh forecast supplies labeled hourly rain for current time",
+    "passed": true
+  },
+  {
+    "name": "eligible nearby observation wins over stale nearest observation for past target",
+    "passed": false,
+    "actual": 27,
+    "expected": 28
+  }
+]

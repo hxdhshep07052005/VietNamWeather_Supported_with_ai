@@ -1,0 +1,35 @@
+{
+  "method": "Source palette calculation only; rendered browser QA unavailable",
+  "results": [
+    {
+      "level": "low",
+      "theme": "light",
+      "ratio": 4.53
+    },
+    {
+      "level": "low",
+      "theme": "dark",
+      "ratio": 8.45
+    },
+    {
+      "level": "caution",
+      "theme": "light",
+      "ratio": 4.55
+    },
+    {
+      "level": "caution",
+      "theme": "dark",
+      "ratio": 6.96
+    },
+    {
+      "level": "high",
+      "theme": "light",
+      "ratio": 5.53
+    },
+    {
+      "level": "high",
+      "theme": "dark",
+      "ratio": 6.95
+    }
+  ]
+}

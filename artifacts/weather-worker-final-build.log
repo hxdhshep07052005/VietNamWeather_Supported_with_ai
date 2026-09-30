@@ -1,0 +1,107 @@
+ Image vietnam_weather_local-worker Building 
+#1 [internal] load local bake definitions
+#1 reading from stdin 663B done
+#1 DONE 0.0s
+
+#2 [internal] load build definition from Dockerfile
+#2 transferring dockerfile: 1.75kB done
+#2 DONE 0.0s
+
+#3 [internal] load metadata for docker.io/library/node:24.18.0-alpine3.24@sha256:a0b9bf06e4e6193cf7a0f58816cc935ff8c2a908f81e6f1a95432d679c54fbfd
+#3 DONE 1.7s
+
+#4 [internal] load .dockerignore
+#4 transferring context: 157B done
+#4 DONE 0.0s
+
+#5 [internal] load build context
+#5 DONE 0.0s
+
+#6 [build  1/12] FROM docker.io/library/node:24.18.0-alpine3.24@sha256:a0b9bf06e4e6193cf7a0f58816cc935ff8c2a908f81e6f1a95432d679c54fbfd
+#6 resolve docker.io/library/node:24.18.0-alpine3.24@sha256:a0b9bf06e4e6193cf7a0f58816cc935ff8c2a908f81e6f1a95432d679c54fbfd 0.1s done
+#6 DONE 0.1s
+
+#5 [internal] load build context
+#5 transferring context: 26.91kB done
+#5 DONE 0.1s
+
+#7 [build  7/12] COPY packages/contracts/package.json packages/contracts/tsconfig.json ./packages/contracts/
+#7 CACHED
+
+#8 [build  2/12] WORKDIR /workspace
+#8 CACHED
+
+#9 [build  3/12] RUN corepack enable && corepack prepare pnpm@11.9.0 --activate
+#9 CACHED
+
+#10 [build  4/12] COPY package.json pnpm-lock.yaml pnpm-workspace.yaml tsconfig.base.json ./
+#10 CACHED
+
+#11 [build  5/12] COPY apps/worker/package.json apps/worker/tsconfig.json ./apps/worker/
+#11 CACHED
+
+#12 [build  6/12] COPY packages/config/package.json packages/config/tsconfig.json ./packages/config/
+#12 CACHED
+
+#13 [build  8/12] RUN pnpm install --frozen-lockfile
+#13 CACHED
+
+#14 [build  9/12] COPY apps/worker/src ./apps/worker/src
+#14 DONE 0.2s
+
+#15 [build 10/12] COPY packages/config/src ./packages/config/src
+#15 DONE 0.2s
+
+#16 [build 11/12] COPY packages/contracts/src ./packages/contracts/src
+#16 DONE 0.2s
+
+#17 [build 12/12] RUN pnpm --filter @vietnam-weather/worker... build
+#17 1.023 Scope: 3 of 4 workspace projects
+#17 1.031 packages/config build$ tsc -p tsconfig.json
+#17 1.033 packages/contracts build$ tsc -p tsconfig.json
+#17 4.569 packages/config build: Done
+#17 4.904 packages/contracts build: Done
+#17 4.905 apps/worker build$ tsc -p tsconfig.json
+#17 8.554 apps/worker build: Done
+#17 DONE 8.6s
+
+#18 [runtime  4/10] COPY --from=build --chown=node:node /workspace/apps/worker/package.json ./apps/worker/package.json
+#18 CACHED
+
+#19 [runtime  3/10] COPY --from=build --chown=node:node /workspace/node_modules ./node_modules
+#19 CACHED
+
+#20 [runtime  5/10] COPY --from=build --chown=node:node /workspace/apps/worker/node_modules ./apps/worker/node_modules
+#20 CACHED
+
+#21 [runtime  6/10] COPY --from=build --chown=node:node /workspace/apps/worker/dist ./apps/worker/dist
+#21 DONE 0.2s
+
+#22 [runtime  7/10] COPY --from=build --chown=node:node /workspace/packages/config/package.json ./packages/config/package.json
+#22 DONE 0.3s
+
+#23 [runtime  8/10] COPY --from=build --chown=node:node /workspace/packages/config/dist ./packages/config/dist
+#23 DONE 0.3s
+
+#24 [runtime  9/10] COPY --from=build --chown=node:node /workspace/packages/contracts/package.json ./packages/contracts/package.json
+#24 DONE 0.3s
+
+#25 [runtime 10/10] COPY --from=build --chown=node:node /workspace/packages/contracts/dist ./packages/contracts/dist
+#25 DONE 0.3s
+
+#26 exporting to image
+#26 exporting layers
+#26 exporting layers 1.0s done
+#26 exporting manifest sha256:17de3f0005e27c4e51ac60cb8fcb12dd84b80302bcf3bef76203c81a47d264ca 0.1s done
+#26 exporting config sha256:ebb36549496cf8cd804651eb924ac720fe0f9d45efe28ea40f9a0318106f406c 0.1s done
+#26 exporting attestation manifest sha256:c6a240817bc5d21fbc1e48da72ab18d2261d0aa013629c88a6247b39bde08c8a 0.1s done
+#26 exporting manifest list sha256:c56eef7b886cc0c4daa3011845de63fdfc196fca15457cdb5359c6df7c5cb255
+#26 exporting manifest list sha256:c56eef7b886cc0c4daa3011845de63fdfc196fca15457cdb5359c6df7c5cb255 0.1s done
+#26 naming to docker.io/library/vietnam_weather_local-worker:latest 0.0s done
+#26 unpacking to docker.io/library/vietnam_weather_local-worker:latest
+#26 unpacking to docker.io/library/vietnam_weather_local-worker:latest 0.3s done
+#26 DONE 1.8s
+
+#27 resolving provenance for metadata file
+#27 DONE 0.0s
+ Image vietnam_weather_local-worker Built 

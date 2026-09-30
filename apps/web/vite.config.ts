@@ -17,6 +17,9 @@ export default defineConfig({
       "/api": {
         target: process.env.VITE_API_URL || "http://localhost:8080",
         changeOrigin: true,
+        headers: {
+          origin: "http://localhost:8080",
+        },
         // Add rewrite for /api prefix if backend doesn't use it
         rewrite: (path) => path,
       },

@@ -1,0 +1,37 @@
+
+ RUN  v2.1.9 C:/Users/dangh/Downloads/VietNameWeatherWithAi/VietNamWeather_Supported_with_ai/apps/web
+
+ ✓ src/utils/reportRisk.test.ts (6 tests) 7ms
+ ✓ src/api/client.test.ts (4 tests) 18ms
+ ✓ src/components/route/RouteScore.test.tsx (3 tests) 124ms
+ ✓ src/hooks/useProvinceWeather.test.tsx (5 tests) 300ms
+ ✓ src/components/common/RiskEvidenceWarnings.test.tsx (5 tests) 140ms
+ ✓ src/components/map/RouteInteractiveMap.test.ts (2 tests) 21ms
+ ✓ src/utils/routePathGenerator.test.ts (8 tests) 36ms
+ ✓ src/components/map/RouteInteractiveMap.lifecycle.test.tsx (1 test) 193ms
+stderr | src/pages/RoutePlannerPage.test.tsx > route request inputs > retries pending weather without extra quota and stops after inputs change
+⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition.
+⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath.
+
+ ✓ src/components/common/VietnamMap.test.tsx (7 tests) 507ms
+stderr | src/pages/WeatherData.test.tsx > weather display regressions > keeps an open modal on the latest province and displays real hourly data
+⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition.
+⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath.
+
+ ✓ src/hooks/useReportProvinceWeather.test.tsx (2 tests) 592ms
+   ✓ bulk province report data > requests the selected offset and clears previous values during timeline debounce 481ms
+stderr | src/pages/LandingPage.test.tsx > LandingPage Component > renders Hero headline and eyebrow badge
+⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition.
+⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath.
+
+ ✓ src/pages/RoutePlannerPage.test.tsx (16 tests) 1569ms
+ ✓ src/pages/WeatherData.test.tsx (14 tests) 1351ms
+   ✓ weather display regressions > keeps an open modal on the latest province and displays real hourly data 386ms
+ ✓ src/pages/LandingPage.test.tsx (6 tests) 1714ms
+   ✓ LandingPage Component > shows each hovered province's current temperature from one bulk request, regardless of response order 1197ms
+
+ Test Files  13 passed (13)
+      Tests  79 passed (79)
+   Start at  08:48:06
+   Duration  6.65s (transform 5.54s, setup 8.19s, collect 18.20s, tests 6.57s, environment 19.99s, prepare 3.22s)
+

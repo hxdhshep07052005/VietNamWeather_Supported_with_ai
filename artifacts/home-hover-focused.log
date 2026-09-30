@@ -1,0 +1,18 @@
+
+ RUN  v2.1.9 C:/Users/dangh/Downloads/VietNameWeatherWithAi/VietNamWeather_Supported_with_ai/apps/web
+
+ ✓ src/components/common/VietnamMap.test.tsx (7 tests) 206ms
+stderr | src/pages/LandingPage.test.tsx > LandingPage Component > renders Hero headline and eyebrow badge
+⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition.
+⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath.
+
+ ✓ src/hooks/useReportProvinceWeather.test.tsx (3 tests) 716ms
+   ✓ bulk province report data > requests the selected offset and clears previous values during timeline debounce 475ms
+ ✓ src/pages/LandingPage.test.tsx (6 tests) 1261ms
+   ✓ LandingPage Component > shows each hovered province's current temperature from one bulk request, regardless of response order 989ms
+
+ Test Files  3 passed (3)
+      Tests  16 passed (16)
+   Start at  09:07:32
+   Duration  3.09s (transform 591ms, setup 508ms, collect 2.03s, tests 2.18s, environment 1.44s, prepare 507ms)
+

@@ -1,0 +1,14 @@
+✔ current hourly and daily schemas accept distinct airborne obscuration conditions (0.6284ms)
+✔ registry contains exactly 63 unique province IDs, names and sampling keys (1.8818ms)
+✔ original 59 entries retain IDs, names, coordinates and order (0.7761ms)
+✔ the four additions use exact existing GeoJSON property coordinates (0.1858ms)
+✔ every frontend province name resolves to a unique shared weather sampling point (0.36ms)
+✔ name lookup normalizes accents, case, whitespace, punctuation and city prefixes (1.5306ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 6
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 97.9115

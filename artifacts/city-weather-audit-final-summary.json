@@ -1,0 +1,93 @@
+[
+  {
+    "offset": 0,
+    "http": 200,
+    "ms": 663,
+    "count": 63,
+    "missing": {
+      "temperature_c": 0,
+      "gust_kmh": 0,
+      "visibility_m": 0,
+      "precipitation_mm": 0,
+      "rain_mm_per_hour": 0,
+      "humidity_percent": 0,
+      "condition_code": 0
+    },
+    "notFresh": [],
+    "unknownConditions": [],
+    "forecastRain": 63,
+    "levels": {
+      "low": 58,
+      "caution": 1,
+      "high": 4
+    }
+  },
+  {
+    "offset": 1,
+    "http": 200,
+    "ms": 414,
+    "count": 63,
+    "missing": {
+      "temperature_c": 0,
+      "gust_kmh": 0,
+      "visibility_m": 0,
+      "precipitation_mm": 0,
+      "rain_mm_per_hour": 0,
+      "humidity_percent": 0,
+      "condition_code": 0
+    },
+    "notFresh": [],
+    "unknownConditions": [],
+    "forecastRain": 63,
+    "levels": {
+      "low": 58,
+      "high": 4,
+      "caution": 1
+    }
+  },
+  {
+    "offset": 24,
+    "http": 200,
+    "ms": 326,
+    "count": 63,
+    "missing": {
+      "temperature_c": 0,
+      "gust_kmh": 0,
+      "visibility_m": 0,
+      "precipitation_mm": 0,
+      "rain_mm_per_hour": 0,
+      "humidity_percent": 0,
+      "condition_code": 0
+    },
+    "notFresh": [],
+    "unknownConditions": [],
+    "forecastRain": 63,
+    "levels": {
+      "high": 9,
+      "low": 54
+    }
+  },
+  {
+    "offset": 48,
+    "http": 200,
+    "ms": 208,
+    "count": 63,
+    "missing": {
+      "temperature_c": 0,
+      "gust_kmh": 0,
+      "visibility_m": 0,
+      "precipitation_mm": 0,
+      "rain_mm_per_hour": 0,
+      "humidity_percent": 0,
+      "condition_code": 0
+    },
+    "notFresh": [],
+    "unknownConditions": [],
+    "forecastRain": 63,
+    "levels": {
+      "high": 12,
+      "low": 50,
+      "caution": 1
+    }
+  }
+]
