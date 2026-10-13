@@ -1,227 +1,108 @@
-# Intelligent Weather-Aware Travel Assistant for Vietnam
+# Vietnam Weather AI
 
-Web platform hỗ trợ người dùng đưa ra quyết định du lịch tại Việt Nam dựa trên weather data có nguồn, forecast, risk analysis và route evaluation theo ETA.
+Vietnam Weather AI is a weather-aware travel assistant for Vietnam. It combines live weather data, forecasts, risk analysis, and route evaluation to help travelers make better decisions before and during a trip.
 
-## Trạng thái kế hoạch
+## Features
 
-- Phase 0 — Discovery & Product Contract: `VERIFIED`.
-- Phase 1 — Architecture & Non-Functional Requirements: `VERIFIED`.
-- Phase 2 — Directus Foundation & Environments: `VERIFIED` (`PRODUCT-014`).
-- Phase 3 — Identity, JWT, RBAC & Security: `VERIFIED` (`PRODUCT-016`, CI `30852140331`).
-- Phase 4 — Data Model, Governance & Admin Panel: `VERIFIED` (`PRODUCT-016`).
-- Phase 5 — Weather Integration: `VERIFIED` (`ARCH-016`, `DATA-008`).
-- Phase 6 — Config-Driven Weather Risk Engine: `VERIFIED` (`RISK-001..007`, CI `f801c28`).
-- Phase 7 — Forecast & Trends: `VERIFIED` (`FCAST-001..006`, CI `6feeb3c`).
-- Phase 8 — Weather-Aware Route Planner: `VERIFIED` (`ROUTE-001..008`, CI `f102bc2`).
-- Phase 9 — Frontend Web Application: `IN_PROGRESS` (`FRONT-001..008`).
-- Source of truth: [docs/Plan_Phases/index.md](docs/Plan_Phases/index.md).
-- Trạng thái và blockers hiện tại: [docs/Plan_Phases/STATUS.md](docs/Plan_Phases/STATUS.md).
-- Phase 1 evidence gate: [docs/Plan_Phases/PHASE_1_EVIDENCE.md](docs/Plan_Phases/PHASE_1_EVIDENCE.md).
-- Phase 2 evidence gate: [docs/Plan_Phases/PHASE_2_EVIDENCE.md](docs/Plan_Phases/PHASE_2_EVIDENCE.md).
-- Phase 3 evidence gate: [docs/Plan_Phases/PHASE_3_EVIDENCE.md](docs/Plan_Phases/PHASE_3_EVIDENCE.md).
-- Phase 3 authorization validator: `pnpm run validate:stage3`.
-- Phase 4 evidence gate: [docs/Plan_Phases/PHASE_4_EVIDENCE.md](docs/Plan_Phases/PHASE_4_EVIDENCE.md).
-- Phase 4 data-model/admin validator: `pnpm run validate:stage4`.
-- Directus runtime entitlement gate: [docs/Plan_Phases/DIRECTUS_ENTITLEMENT_REPORT.md](docs/Plan_Phases/DIRECTUS_ENTITLEMENT_REPORT.md).
-- License inspection/gate: `pnpm run inspect:directus-license` / `pnpm run validate:directus-license`.
+- Current weather and 72-hour forecasts with provider attribution and freshness states
+- Interactive Vietnam map with province-level weather and risk information
+- Weather-aware route planning for cars and motorcycles
+- Fastest, shortest, and weather-safer route alternatives
+- ETA-based route risk scoring, weather coverage, and route refresh status
+- AI travel assistant grounded in weather, forecast, risk, and route data
+- Vietnamese and English interface
+- User authentication, quotas, saved locations, saved routes, and subscription support
+- Durable weather ingestion with retries, caching, circuit breaking, and background workers
 
-## Kiến trúc đã chốt
+## Architecture
 
-- Directus là primary backend, system of record và Admin Studio.
-- Directus build baseline là `12.1.1`, pin bằng manifest digest; không dùng floating tag `latest` (`ARCH-011`).
-- Map stack là MapLibre + Geoapify Free; browser chỉ tải tile/style, geocoding/routing vẫn qua backend (`ARCH-012`).
-- Frontend Next.js + TypeScript + PWA chỉ gọi versioned `/api/v1`.
-- PostgreSQL + PostGIS lưu durable/geospatial state; Redis dùng cho cache, queue, rate limit và coordination, không giữ business truth duy nhất.
-- Integration worker riêng xử lý weather/routing provider, retry, scheduled jobs và payment reconciliation.
-- Browser chỉ nhận opaque Secure HttpOnly session; không giữ Directus JWT/refresh token.
-- Thin Application API lưu hash session và token Directus đã mã hóa trong PostgreSQL; Redis chỉ giữ rate-limit/coordination state.
-- Production Admin Studio chỉ qua VPN/IP allowlist.
+The project is a pnpm monorepo with separate application and shared packages:
 
-## Product baseline
+```text
+apps/web         React + Vite frontend
+apps/api         Fastify application API
+apps/worker      Weather ingestion and background jobs
+apps/directus    Directus extensions, schema, and seeds
+packages/config  Shared environment configuration
+packages/contracts Shared TypeScript API contracts and OpenAPI definitions
+infra/           Docker Compose, PostgreSQL/PostGIS, Redis, and Nginx setup
+```
 
-- Hai gói `Free` và `Pro`; Free có 10 location searches/ngày.
-- Stripe và VNPay dùng qua backend payment adapters, chỉ enable capability có evidence thật.
-- UI hỗ trợ `vi` và `en`; business/legal/advisory content quản lý qua Directus.
-- Route/risk actionable tối đa 72 giờ trong phạm vi provider coverage; ngày 4–7 chỉ hiển thị outlook khi capability thật tồn tại và không tạo weather-safer recommendation (`DATA-004`, `ARCH-013`).
+The main data flow is:
 
-## Nguyên tắc bắt buộc
+```text
+Weather providers -> Worker -> PostgreSQL/PostGIS -> API -> Web application
+                                               \\-> AI grounding tools
+```
 
-- Không hardcode location, provider, risk threshold, route weight, quota, price, translation, feature flag hoặc secret trong product code.
-- Không dùng fake weather/payment/provider data để chứng minh production readiness.
-- Frontend chỉ nhận request/response DTO; không chứa backend rule, credential hoặc Directus internals.
-- Mọi thay đổi architecture/product gate phải cập nhật Decision ID, phase document, evidence manifest, status và README nếu ảnh hưởng overview.
-- Chỉ chuyển phase sang `VERIFIED` khi có evidence có thể tái hiện.
+## Technology Stack
 
-## Kết quả Phase 1
+- TypeScript, React, Vite, Zustand, React Query
+- Fastify and Node.js
+- PostgreSQL with PostGIS
+- Redis for caching, rate limits, and coordination
+- Directus for administration and content management
+- Docker Compose
+- WeatherAPI, Geoapify, OpenStreetMap/Overpass, and Gemini-compatible AI services
 
-Phase 1 đã được phê duyệt bằng `PRODUCT-012`. WeatherAPI là capability-bounded baseline và hiện chỉ được công bố current + 3-day coverage (`ARCH-013`); MapLibre + Geoapify đã vượt 30-location/30-route fixture và route-objective probe (`ARCH-012`). Stripe/VNPay vẫn feature-disabled cho tới khi có merchant evidence (`ARCH-010`, `OPS-006`). Chi tiết nằm trong [WEATHER_BAKEOFF_REPORT.md](docs/Plan_Phases/WEATHER_BAKEOFF_REPORT.md), [MAP_BAKEOFF_REPORT.md](docs/Plan_Phases/MAP_BAKEOFF_REPORT.md), [VIETNAM_PROVIDER_FIXTURE_REPORT.md](docs/Plan_Phases/VIETNAM_PROVIDER_FIXTURE_REPORT.md) và [PAYMENT_CAPABILITY_REPORT.md](docs/Plan_Phases/PAYMENT_CAPABILITY_REPORT.md). Credential chỉ nằm trong file local khớp `.env.*`, không commit và server credential không đưa vào frontend.
+## Getting Started
 
-## Kết quả Phase 2
+### Requirements
 
-- Monorepo pnpm, worker health endpoint và Docker Compose production-like đã được triển khai.
-- Directus `12.1.1`, PostGIS, Redis, Mailpit và Node image đều pin bằng digest; database/Redis không publish port ra host.
-- Admin bootstrap đã rotate và bị loại khỏi runtime; schema baseline/drift, security foundation và seed audit idempotent đã pass.
-- Gitleaks không phát hiện secret; worker SBOM CycloneDX đã tạo; backup đã restore thành công trong database tạm.
-- Clean rebuild từ volume sạch đã pass.
-- GitHub Actions run `30577216479` pass cả hai job; source SBOM artifact đã upload và worker image immutable theo commit `3ac524579308e1f7365370643ed7257a22570acd` đã publish lên GHCR.
+- Node.js 24.x
+- pnpm 11.x
+- Docker Desktop with Compose
 
-## Tiến độ Phase 3
+### Install dependencies
 
-- Directus least-privilege baseline có 13 role, 13 policy, 13 access link và đúng 7 self-TFA permission cho human staff; chưa role nào có business collection permission. Apply idempotent và negative test đã pass.
-- Application API `/api/v1` đã có login, refresh rotation, logout/revoke, opaque `__Host-` cookie, signed CSRF, exact-origin CORS, secure headers, Redis rate limit và payload limit.
-- Session store dùng DB identity riêng trên schema `app_security`; Directus token được AES-256-GCM encrypt, raw session handle không lưu DB, browser response/log scan không thấy backend token marker.
-- Password, status, role, MFA-secret hoặc user deletion trong Directus tự revoke application session; retention preview/purge bị khóa khỏi API DB role và rollback drill đã pass.
-- Password recovery native Directus đã được bọc bằng Application API bridge: token query chỉ tồn tại ở consume request đã redacted, token được mã hóa server-side, redirect sạch dùng opaque fragment handle, replay bị deny và reset revoke session cũ.
-- Registration/email verification đi qua Application API: response generic không lộ account, Directus tạo user `unverified`, token chỉ lưu encrypted server-side, browser nhận opaque fragment handle và replay bị deny.
-- Application API encryption key có transactional rotation tool; rollback drill và committed local rotation đã giữ nguyên active session sau API restart.
-- Redis được coi là dependency bắt buộc cho rate limit: readiness trả `503/not_ready`, auth route fail với lỗi retryable và không chuyển sang authorization/rate-limit fallback khi Redis mất.
-- Open Innovation Grant đã được Directus xác nhận `active`, bật production/custom permissions và được inject chỉ qua `.env.local` Git-ignore.
-- Admin và managed staff TOTP enrollment, missing-OTP denial, OTP login, admin recovery và session revoke đã pass; direct generic TFA mutation, role mutation và cross-user TFA mutation đều bị chặn.
-- Live tests dùng Directus/PostgreSQL/Redis thật đã pass và xóa/rollback temporary account/session/audit sau test.
-- Phase 3 đã `VERIFIED`: CI run `30852140331` pass trên commit `f91f549`, closure được duyệt tại `PRODUCT-016`. WireGuard và production retention scheduler vẫn thuộc Phase 13 theo local-first contract.
+```bash
+pnpm install
+```
 
-## Tiến độ Phase 4
+### Configure the environment
 
-- PostgreSQL/PostGIS và Directus đã có 40 business collections versioned cho location/admin hierarchy, weather provenance, risk, route, content/config, product/quota, billing và user-owned data.
-- Administrative hierarchy hỗ trợ province/municipality/city và optional district/lower levels theo source version; không hardcode số tỉnh/thành và chưa import địa danh khi chưa có source/license/checksum được duyệt.
-- Governance trigger chặn invalid workflow, risk self-approval, sửa rule sau submit và thay đổi/xóa identity của usage/payment event.
-- Directus có dashboard 4 panel, 7 role presets và 149 business permissions; Stage 3 bootstrap chạy lại không xóa permission Stage 4.
-- Approved config seed chỉ chứa `vi`/`en`, Free/Pro plan, feature, entitlement và usage policy đã có decision; không seed location, weather, payment, provider hay demo user.
-- Positive/cross-user test dùng hai traveler ephemeral thật đã pass cho favorite và saved route; cleanup xác nhận còn 0 fixture.
-- `pnpm run validate:stage4` đã pass local và remote CI đã verified.
+Copy the appropriate example environment file and provide local credentials:
 
-## Tiến độ Phase 5
+```powershell
+Copy-Item .env.example .env.local
+```
 
-- WeatherAPI adapter với SSRF protection, error classification và circuit breaker.
-- Response normalization: 80+ WeatherAPI condition codes mapped to canonical weather conditions.
-- Worker durable runtime: lease-based heartbeat, exponential backoff with jitter, dead-letter handling.
-- Weather service với Redis cache: contract-valid responses, TTL boundary, stale marking.
-- Database schema: 4 tables (provider_runs, weather_observations, weather_hourly_forecasts, weather_daily_forecasts), 10 indexes, 8 constraints.
-- Worker security: least privilege role `app_weather_worker`, SQL-only operations.
-- Retention policy: 60 min (current), 24 hours (forecast), 30 days (metadata).
-- `pnpm run validate:stage5` đã pass với 16 gates verified.
+Do not commit `.env.local` or provider credentials.
 
-## Tiến độ Phase 6
+### Start the local stack
 
-- Decision Gate đã được chốt: `RISK-001..007`.
-- Risk levels: Low (1), Caution (2), High (3), Unknown (4).
-- Risk dimensions: Precipitation, Wind, Temperature, Visibility, Thunderstorm, Official Alert.
-- Aggregation: Priority-based max severity.
-- Risk Engine: 30 unit tests pass, deterministic output verified.
-- CI run `f801c28` đã pass.
+```bash
+docker compose --env-file .env.local up -d --build
+```
 
-## Tiến độ Phase 7
+The web application, API, worker, Directus, PostgreSQL, Redis, and Mailpit services are configured by `compose.yaml`.
 
-- Decision Gate đã được chốt: `FCAST-001..006`.
-- Forecast horizon: Hourly 72h, Daily 3d (per `ARCH-013`).
-- Trend definition: Forecast window change (temperature >2°C threshold).
-- Timezone: Fixed Vietnam (`Asia/Ho_Chi_Minh`).
-- Chart variables: Temperature, Precipitation, Wind (primary).
-- CI run `6feeb3c` đã pass.
+## Development Commands
 
-## Tiến độ Phase 8
+```bash
+pnpm --filter @vietnam-weather/web dev
+pnpm build
+pnpm typecheck
+pnpm lint
+pnpm test
+```
 
-- Decision Gate đã được chốt: `ROUTE-001..008`.
-- Vehicle types: Car và Motorcycle (MVP).
-- Departure time: Optional, default "now" (max 72h).
-- Route alternatives: 3 options (Fastest, Shortest, Weather-safer).
-- Max route length: 50 km (Geoapify Free limit).
-- Auto-reroute: Always ask user confirmation.
-- CI run `f102bc2` đã pass.
-
-## Tiến độ Phase 9
-
-- Decision Gate đã được chốt: `FRONT-001..008`.
-- Framework: React + Vite + TypeScript.
-- Styling: CSS Modules + CSS Variables.
-- State: Zustand (lightweight).
-- Visual: Minimal with Vietnamese accents (Primary #0066CC, Secondary #FFCD00).
-- Checkout: Stripe Hosted (PCI compliant).
-- Analytics: Minimal + Consent (privacy-first).
-- Đang implement: Frontend project setup, design system, landing page.
+The web application runs on port `3000` by default. The API and worker ports are configured through the environment file.
 
 ## Validation
 
-Chạy kiểm tra Stage 1 có thể tái hiện bằng:
+The repository includes unit, integration, contract, security, and frontend tests:
 
-```powershell
-powershell -ExecutionPolicy Bypass -File tools/validation/validate-stage1.ps1
+```bash
+pnpm test
 ```
 
-Validator không in secret; mọi lỗi làm command trả exit code khác 0.
+Phase-specific validators are available under `tools/validation/`, including checks for the API, weather worker, data model, route planner, and frontend.
 
-Chạy toàn bộ validator local Stage 2 bằng:
+## Project Status
 
-```powershell
-powershell -ExecutionPolicy Bypass -File tools/validation/validate-stage2.ps1
-```
+The core weather, risk, forecast, route-planning, monetization, AI, and frontend capabilities are implemented. Production deployment still requires environment-specific provider credentials, infrastructure configuration, and operational verification.
 
-Xác minh evidence GitHub Actions/GHCR của Stage 2 bằng:
+## License
 
-```powershell
-powershell -ExecutionPolicy Bypass -File tools/validation/validate-stage2-remote.ps1
-```
-
-Chạy Phase 3 security/runtime baseline bằng:
-
-```powershell
-pnpm run validate:stage3
-```
-
-Validator này build lại Application API image, chạy Directus role-policy/default-deny tests, unit/security tests, live auth/session/password-recovery/email-verification/identity-revoke, encryption-key rollback, retention và MFA drills; temporary fixtures được cleanup/rollback và secret/token không được in.
-
-Chạy Phase 4 data-model/governance/Admin Studio baseline bằng:
-
-```powershell
-pnpm run validate:stage4
-```
-
-Validator này apply migration/permission/seed idempotently, restart Directus để làm mới schema metadata, kiểm tra schema drift, constraint/index/trigger/dashboard/preset, API DB denial, governance và traveler ownership/cross-user denial. Mọi fixture được rollback/xóa và kiểm tra còn 0 row.
-
-Chạy Phase 5 weather integration baseline bằng:
-
-```powershell
-pnpm run validate:stage5
-```
-
-Validator này verify WeatherAPI adapter, normalization, worker runtime, weather service, cache, database schema, security, contracts, OpenAPI, seed, retention policy, tests passed, no raw payload và no fake weather.
-
-Chạy Phase 6 risk engine baseline bằng:
-
-```powershell
-pnpm run validate:stage6
-```
-
-Validator này verify risk engine, risk service, contracts, database schema, seed data, 30 tests passed và decision gate compliance (RISK-001..007).
-
-Chạy Phase 7 forecast & trends baseline bằng:
-
-```powershell
-pnpm run validate:stage7
-```
-
-Validator này verify forecast contracts, trend service, horizon limits (72h/3d), timezone handling, gap detection và decision gate compliance (FCAST-001..006).
-
-Chạy Phase 8 route planner baseline bằng:
-
-```powershell
-pnpm run validate:stage8
-```
-
-Validator này verify route contracts, geocoding/routing adapters, route sampler, risk integration, route scoring và decision gate compliance (ROUTE-001..008).
-
-Chạy Phase 9 frontend baseline bằng:
-
-```powershell
-pnpm run validate:stage9
-```
-
-Validator này verify frontend project structure, design system, typed API client, landing page components và decision gate compliance (FRONT-001..008).
-
-Clean rebuild local là thao tác xóa volume và chỉ chạy sau khi backup đã verify:
-
-```powershell
-powershell -ExecutionPolicy Bypass -File tools/environment/rebuild-local.ps1 -ConfirmLocalDataReset
-```
-
-Geoapify live probe dùng [`tools/provider-bakeoff/run-geoapify-capability-probe.ps1`](tools/provider-bakeoff/run-geoapify-capability-probe.ps1). Trước khi chạy, tạo hai API key riêng và đặt `GEOAPIFY_TILE_API_KEY`, `GEOAPIFY_SERVER_API_KEY` trong `.env.bakeoff.local`; không gửi key qua chat và không commit file này. Runner yêu cầu search text cùng tọa độ route thật qua tham số, chỉ xuất JSON đã rút gọn và không lưu raw response.
+This project is intended for educational and portfolio use. Review the provider terms and project policies before using it in production.
