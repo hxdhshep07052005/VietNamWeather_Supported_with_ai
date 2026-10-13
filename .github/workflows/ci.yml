@@ -110,14 +110,33 @@ jobs:
           export API_MAX_BODY_BYTES=16384
           export API_RATE_LIMIT_DEFAULT_MAX=120
           export API_RATE_LIMIT_LOGIN_MAX=5
+          export API_RATE_LIMIT_WEATHER_MAX=20
           export API_RATE_LIMIT_WINDOW_MS=60000
           export API_REDIS_TIMEOUT_MS=2000
           export API_ACCESS_REFRESH_SKEW_MS=60000
+          export API_WEATHER_CACHE_TTL_SECONDS=30
+          export API_WEATHER_PENDING_RETRY_SECONDS=2
           export API_TRUST_PROXY=false
           export API_SESSION_ENCRYPTION_KEY="$api_session_encryption_key"
           export API_CSRF_SIGNING_KEY="$api_csrf_signing_key"
           export WORKER_SERVICE_NAME=integration-worker
           export WORKER_PORT=8081
+          export WEATHER_WORKER_DB_USER=vnwa_weather_worker
+          export WEATHER_WORKER_DB_PASSWORD=ci-weather-worker-password
+          export WEATHER_WORKER_ID=weather-worker.ci
+          export WEATHER_WORKER_POLL_INTERVAL_MS=1000
+          export WEATHER_WORKER_LEASE_DURATION_MS=60000
+          export WEATHER_WORKER_HEARTBEAT_INTERVAL_MS=20000
+          export WEATHER_WORKER_RETRY_BASE_DELAY_MS=1000
+          export WEATHER_WORKER_RETRY_MAX_DELAY_MS=300000
+          export WEATHER_WORKER_RETRY_JITTER_RATIO=0.2
+          export WEATHER_PROVIDER_KEY=weatherapi
+          export WEATHERAPI_API_KEY=ci-weatherapi-key
+          export WEATHER_PROVIDER_TIMEOUT_MS=5000
+          export WEATHER_PARSER_VERSION=weatherapi-forecast-v1
+          export WEATHER_PROVIDER_CIRCUIT_FAILURE_THRESHOLD=3
+          export WEATHER_PROVIDER_CIRCUIT_RESET_MS=60000
+          export WEATHERAPI_FORECAST_DAYS=3
           docker compose config --quiet
 
       - name: Scan repository for secrets
