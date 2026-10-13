@@ -9,11 +9,16 @@ paths = [
   '''(^|/)\.env(\..*)?\.local$''',
   '''(^|/)secrets/decrypted/''',
   '''(^|/)node_modules/''',
-  '''(^|/)artifacts/phase2/local/'''
+  '''(^|/)artifacts/phase2/local/''',
+  '''(^|/)artifacts/commit-staged-snapshot/'''
 ]
 
 [[allowlists]]
-description = "Test files with intentional fake secrets for security testing"
+description = "Test files and historical test fixtures with intentional fake secrets"
+commits = [
+  "9a2b33de5777da81cde94e122ae6efb1b9fc8595"
+]
 paths = [
-  '''apps/worker/test/weatherapi-adapter\.test\.mjs'''
+  '''apps/worker/test/weatherapi-adapter\.test\.mjs''',
+  '''apps/api/test/billing-service\.test\.mjs'''
 ]

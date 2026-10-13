@@ -2,7 +2,8 @@
 param(
     [string]$DirectusUrl = "http://127.0.0.1:8055",
     [string]$AdminEmail = "bootstrap@example.com",
-    [string]$AdminPassword = "P85hSc9wup1LtcL9d14BZz5b80sqz8wBCAKbevE5S5E"
+    [Parameter(Mandatory = $true)]
+    [string]$AdminPassword
 )
 
 $ErrorActionPreference = 'Stop'
