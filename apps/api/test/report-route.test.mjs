@@ -85,7 +85,7 @@ test('Weather-Safer follows report balanced score rather than minimum risk alone
 
 test('weather samples use bounded concurrency and retain their original ETA association', async () => {
   let active=0,maxActive=0;
-  const db={query:async(_sql,args)=>{active++;maxActive=Math.max(maxActive,active);await new Promise(r=>setTimeout(r,8));active--;return {rows:[]};}};
+  const db={query:async(_sql,_args)=>{active++;maxActive=Math.max(maxActive,active);await new Promise(r=>setTimeout(r,8));active--;return {rows:[]};}};
   const samples=Array.from({length:12},(_,i)=>({coordinates:{latitude:21,longitude:105+i/100},eta:new Date(Date.now()+i*60000).toISOString(),distance_from_start_meters:i*1000}));
   const points=await new RouteRiskEngine({dbPool:db}).calculatePointRisks(samples,'car');
   assert.ok(maxActive>1,'lookups must not serialize all samples');

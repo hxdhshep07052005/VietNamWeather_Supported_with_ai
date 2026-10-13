@@ -5,7 +5,7 @@
  */
 
 import vietnamWgs84Data from "./vietnam-wgs84-clean.json";
-import { findVietnamProvinceByName, type WeatherConditionCode } from "@vietnam-weather/contracts";
+import { findVietnamProvinceByName, type ReportAssessment, type WeatherConditionCode } from "@vietnam-weather/contracts";
 import { type VietnamRegion, VIETNAM_REGIONS } from "./provinces";
 
 export interface ProvinceGeoFeatureProperties {
@@ -35,7 +35,7 @@ export interface ProvinceGeoFeatureProperties {
   cloudCoverPercent: number;
   riskLevel: "low" | "caution" | "high" | "unknown";
   riskScore: number | null;
-  assessment?: import("@vietnam-weather/contracts").ReportAssessment;
+  assessment?: ReportAssessment;
   weatherTargetTime?: string;
   dataState?: "loading" | "ready" | "error";
   confidencePercent: number;

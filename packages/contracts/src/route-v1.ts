@@ -12,6 +12,8 @@
 // Constants (ROUTE-001, ROUTE-003, ROUTE-005)
 // =============================================================================
 
+import type { ReportAssessment, ReportWeatherEvidence } from "./report-hazard-v1.js";
+
 /**
  * Supported vehicle types
  * Per ROUTE-001: Car and Motorcycle
@@ -183,9 +185,9 @@ export interface RouteGeometry {
 // =============================================================================
 
 export interface SamplePoint {
-  readonly provisional_assessment?: import("./report-hazard-v1.js").ReportAssessment;
-  readonly assessment?: import("./report-hazard-v1.js").ReportAssessment;
-  readonly weather?: import("./report-hazard-v1.js").ReportWeatherEvidence;
+  readonly provisional_assessment?: ReportAssessment;
+  readonly assessment?: ReportAssessment;
+  readonly weather?: ReportWeatherEvidence;
   /** Coordinates */
   readonly coordinates: Coordinates;
   /** Distance from route start in meters */
