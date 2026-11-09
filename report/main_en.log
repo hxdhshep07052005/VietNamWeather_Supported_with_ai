@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.141592653-2.6-0.999997 (MiKTeX 25.12) (preloaded format=xelatex 2026.9.9)  15 SEP 2026 10:17
+This is XeTeX, Version 3.141592653-2.6-0.999997 (MiKTeX 25.12) (preloaded format=xelatex 2026.9.9)  27 OCT 2026 08:44
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1852,60 +1852,38 @@ Loading module `upgrade' ...
 )
 ==> First Aid for acro.sty applied!
 (en/acronyms.tex
-\c@g@acro@acid@int=\count402
-\c@g@acro@adr@int=\count403
-\c@g@acro@ai@int=\count404
-\c@g@acro@api@int=\count405
-\c@g@acro@bbox@int=\count406
-\c@g@acro@bff@int=\count407
-\c@g@acro@cicd@int=\count408
-\c@g@acro@cms@int=\count409
-\c@g@acro@cors@int=\count410
-\c@g@acro@cpu@int=\count411
-\c@g@acro@csrf@int=\count412
-\c@g@acro@dom@int=\count413
-\c@g@acro@dos@int=\count414
-\c@g@acro@epsg@int=\count415
-\c@g@acro@eta@int=\count416
-\c@g@acro@geojson@int=\count417
-\c@g@acro@gis@int=\count418
-\c@g@acro@gist@int=\count419
-\c@g@acro@gps@int=\count420
-\c@g@acro@gpu@int=\count421
-\c@g@acro@http@int=\count422
-\c@g@acro@https@int=\count423
-\c@g@acro@io@int=\count424
-\c@g@acro@iops@int=\count425
-\c@g@acro@json@int=\count426
-\c@g@acro@jwt@int=\count427
-\c@g@acro@llm@int=\count428
-\c@g@acro@mae@int=\count429
-\c@g@acro@ner@int=\count430
-\c@g@acro@nlp@int=\count431
-\c@g@acro@nvme@int=\count432
-\c@g@acro@nwp@int=\count433
-\c@g@acro@ogc@int=\count434
-\c@g@acro@osrm@int=\count435
-\c@g@acro@postgis@int=\count436
-\c@g@acro@rag@int=\count437
-\c@g@acro@ram@int=\count438
-\c@g@acro@rbac@int=\count439
-\c@g@acro@rest@int=\count440
-\c@g@acro@rfc@int=\count441
-\c@g@acro@rmse@int=\count442
-\c@g@acro@sla@int=\count443
-\c@g@acro@sor@int=\count444
-\c@g@acro@spa@int=\count445
-\c@g@acro@sql@int=\count446
-\c@g@acro@sus@int=\count447
-\c@g@acro@ttl@int=\count448
-\c@g@acro@ui@int=\count449
-\c@g@acro@ux@int=\count450
-\c@g@acro@vu@int=\count451
-\c@g@acro@webgl@int=\count452
-\c@g@acro@wgs84@int=\count453
-\c@g@acro@wmo@int=\count454
-\c@g@acro@xss@int=\count455
+\c@g@acro@adr@int=\count402
+\c@g@acro@ai@int=\count403
+\c@g@acro@api@int=\count404
+\c@g@acro@bbox@int=\count405
+\c@g@acro@bff@int=\count406
+\c@g@acro@cicd@int=\count407
+\c@g@acro@cms@int=\count408
+\c@g@acro@csrf@int=\count409
+\c@g@acro@epsg@int=\count410
+\c@g@acro@eta@int=\count411
+\c@g@acro@geojson@int=\count412
+\c@g@acro@gist@int=\count413
+\c@g@acro@gps@int=\count414
+\c@g@acro@gpu@int=\count415
+\c@g@acro@http@int=\count416
+\c@g@acro@https@int=\count417
+\c@g@acro@io@int=\count418
+\c@g@acro@json@int=\count419
+\c@g@acro@llm@int=\count420
+\c@g@acro@osrm@int=\count421
+\c@g@acro@postgis@int=\count422
+\c@g@acro@rbac@int=\count423
+\c@g@acro@rfc@int=\count424
+\c@g@acro@sql@int=\count425
+\c@g@acro@sus@int=\count426
+\c@g@acro@ttl@int=\count427
+\c@g@acro@ui@int=\count428
+\c@g@acro@vu@int=\count429
+\c@g@acro@webgl@int=\count430
+\c@g@acro@wgs84@int=\count431
+\c@g@acro@wmo@int=\count432
+\c@g@acro@xss@int=\count433
 )
 Package translations Info: No language package found. I am going to use `englis
 h' as default language. on input line 112.
@@ -1971,7 +1949,7 @@ LaTeX Font Info:    Overwriting math alphabet `\mathtt' in version `normal'
 (Font)                  OT1/cmtt/m/n --> TU/lmtt/m/n on input line 112.
 LaTeX Font Info:    Overwriting math alphabet `\mathtt' in version `bold'
 (Font)                  OT1/cmtt/m/n --> TU/lmtt/b/n on input line 112.
-\c@lstlisting=\count456
+\c@lstlisting=\count434
 Package caption Info: Begin \AtBeginDocument code.
 Package caption Info: float package is loaded.
 Package caption Info: hyperref package is loaded.
@@ -2027,17 +2005,14 @@ LaTeX Font Info:    Font shape `TU/TimesNewRoman(0)/m/it' will be
  [1
 
 ])
-(en/frontmatter/supervisor.tex
-LaTeX Font Info:    Font shape `TU/TimesNewRoman(0)/b/n' will be
-(Font)              scaled to size 11.32855pt on input line 7.
- [2
-
-])
 LaTeX Font Info:    Font shape `TU/TimesNewRoman(0)/m/n' will be
-(Font)              scaled to size 23.97495pt on input line 125.
+(Font)              scaled to size 23.97495pt on input line 124.
 LaTeX Font Info:    Font shape `TU/TimesNewRoman(0)/b/n' will be
-(Font)              scaled to size 23.48787pt on input line 125.
- (main_en.toc
+(Font)              scaled to size 23.48787pt on input line 124.
+
+(main_en.toc
+LaTeX Font Info:    Font shape `TU/TimesNewRoman(0)/b/n' will be
+(Font)              scaled to size 11.32855pt on input line 2.
 LaTeX Font Info:    Font shape `TU/LatinModernMath(1)/m/n' will be
 (Font)              scaled to size 8.39986pt on input line 2.
 LaTeX Font Info:    Font shape `TU/LatinModernMath(1)/m/n' will be
@@ -2058,113 +2033,73 @@ LaTeX Font Info:    Font shape `TU/LatinModernMath(3)/m/n' will be
 
 ]
 LaTeX Font Info:    Font shape `TU/TimesNewRoman(0)/m/it' will be
-(Font)              scaled to size 12.02289pt on input line 93.
- [2] [3])
+(Font)              scaled to size 12.02289pt on input line 82.
+ [2])
 \tf@toc=\write5
 \openout5 = `main_en.toc'.
 
- [4] (main_en.lot)
+ [3] (main_en.lot)
 \tf@lot=\write6
 \openout6 = `main_en.lot'.
 
-[5
+ [4
 
 ] (main_en.lof)
 \tf@lof=\write7
 \openout7 = `main_en.lof'.
 
- [6
+ [5
 
-] (en/frontmatter/acknowledgments.tex) [7
+]
+(en/frontmatter/acknowledgments.tex) [6
 
-] [8
+] [7
 
 
-] [9]
-(en/frontmatter/abstract.tex) [10
+] [8] (en/frontmatter/abstract.tex)
+[9
 
 ] (en/chapters/chapter1_intro.tex
 Chapter 1.
-[11
+[10
 
-]
-LaTeX Font Info:    Font shape `TU/TimesNewRoman(0)/m/n' will be
-(Font)              scaled to size 9.63623pt on input line 30.
-LaTeX Font Info:    Font shape `TU/TimesNewRoman(0)/m/n' will be
-(Font)              scaled to size 8.09442pt on input line 50.
-LaTeX Font Info:    Font shape `TU/TimesNewRoman(0)/m/n' will be
-(Font)              scaled to size 5.78174pt on input line 50.
- [12]
-Underfull \hbox (badness 1072) in paragraph at lines 55--56
-\TU/TimesNewRoman(0)/m/n/12 streams across all 63 provinces in Vietnam be conti
-nuously ingested, validated, and
- []
+] [11] [12]) (en/chapters/chapter2_theory.tex [13]
+Chapter 2.
+[14
 
-[13] [14]
-Underfull \hbox (badness 1584) in paragraph at lines 103--104
-\TU/TimesNewRoman(0)/m/n/12 80 external condition codes into canonical classes,
- and indexes spatial records into
- []
-
-[15]
+] [15]
 File: figures/usecase.png Graphic file (type bmp)
 <figures/usecase.png>
-
-Underfull \hbox (badness 4805) in paragraph at lines 164--164
-[]|\TU/TimesNewRoman(0)/m/n/10.95 Renders real-time geospatial weather overlays
-
+ [16]
+Underfull \hbox (badness 10000) in paragraph at lines 80--80
+[]|\TU/TimesNewRoman(0)/m/n/10.95 Calculate weather-
  []
 
 
-Underfull \hbox (badness 2564) in paragraph at lines 164--164
-[]|\TU/TimesNewRoman(0)/m/n/10.95 Manages account lifecycles, configures RBAC
+Underfull \hbox (badness 10000) in paragraph at lines 80--80
+[]|\TU/TimesNewRoman(0)/m/n/10.95 Manage users and
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 164--164
-[]|\TU/TimesNewRoman(0)/m/n/10.95 Monitor Pipeline
+Underfull \hbox (badness 10000) in paragraph at lines 80--80
+[]|\TU/TimesNewRoman(0)/m/n/10.95 Publish weather
  []
 
-[16] [17]
-Underfull \hbox (badness 1005) in paragraph at lines 179--180
-[]\TU/TimesNewRoman(0)/m/n/12 The system checks cache freshness in Redis; if va
-lid, cached GeoJSON is re-
- []
-
-
-Underfull \hbox (badness 1609) in paragraph at lines 179--180
-\TU/TimesNewRoman(0)/m/n/12 turned immediately; otherwise, the nearest observat
-ion station is queried from
- []
-
-
-Underfull \hbox (badness 3291) in paragraph at lines 196--197
-\TU/TimesNewRoman(0)/m/n/12 point arrival times (ETA), correlates spatial forec
-ast points, and computes a
- []
-
-[18] [19] [20] [21]
+[17] [18]
 File: figures/c4_context.png Graphic file (type bmp)
 <figures/c4_context.png>
-) (en/chapters/chapter2_theory.tex [22]
-Chapter 2.
-[23
-
-]
-LaTeX Font Info:    Font shape `TU/TimesNewRoman(1)/m/n' will be
-(Font)              scaled to size 11.56348pt on input line 40.
-LaTeX Font Info:    Font shape `TU/TimesNewRoman(1)/m/n' will be
-(Font)              scaled to size 8.09442pt on input line 40.
-LaTeX Font Info:    Font shape `TU/TimesNewRoman(1)/m/n' will be
-(Font)              scaled to size 5.78174pt on input line 40.
- [24] [25] [26] [27] [28] [29] [30]) (en/chapters/chapter3_architecture.tex [31
-] [32]
+ [19]) (en/chapters/chapter3_architecture.tex [20]
 Chapter 3.
 File: figures/c4_container.png Graphic file (type bmp)
 <figures/c4_container.png>
-[33
+[21
 
-] [34] [35]
+] [22]
+LaTeX Font Info:    Font shape `TU/TimesNewRoman(0)/m/n' will be
+(Font)              scaled to size 8.09442pt on input line 54.
+LaTeX Font Info:    Font shape `TU/TimesNewRoman(0)/m/n' will be
+(Font)              scaled to size 5.78174pt on input line 54.
+
 Underfull \hbox (badness 1931) in paragraph at lines 54--55
 \TU/lmtt/m/n/12 __Host-vnwa_session\TU/TimesNewRoman(0)/m/n/12 , enforcing four
  foundational security directives: \TU/lmtt/m/n/12 HttpOnly
@@ -2177,85 +2112,59 @@ cument.cookie\TU/TimesNewRoman(0)/m/n/12 ), \TU/lmtt/m/n/12 Secure \TU/TimesNew
 Roman(0)/m/n/12 (restricts transmission
  []
 
-[36]
+[23] [24]
 File: figures/seq_auth_login.png Graphic file (type bmp)
 <figures/seq_auth_login.png>
- [37] [38]
+ [25
+
+] [26]
 File: figures/seq_sliding_rotation.png Graphic file (type bmp)
 <figures/seq_sliding_rotation.png>
- [39] [40]
+ [27
+
+] [28]
 File: figures/seq_session_revocation.png Graphic file (type bmp)
 <figures/seq_session_revocation.png>
- [41]
-Underfull \hbox (badness 10000) in paragraph at lines 162--164
-\TU/TimesNewRoman(0)/m/n/12 (\TU/lmtt/m/n/12 identity_password_changed\TU/Times
-NewRoman(0)/m/n/12 , \TU/lmtt/m/n/12 identity_status_changed\TU/TimesNewRoman(0
-)/m/n/12 , \TU/lmtt/m/n/12 identity_role_
- []
+ [29
 
-[42]
-Underfull \hbox (badness 7344) in paragraph at lines 193--194
+]
+Underfull \hbox (badness 7344) in paragraph at lines 192--193
 []\TU/TimesNewRoman(0)/m/n/12 Lease tenure is configured by parameter \TU/lmtt/
 m/n/12 WEATHER_WORKER_LEASE_DURATION_MS
  []
 
-[43] [44]
+[30]
+LaTeX Font Info:    Font shape `TU/TimesNewRoman(1)/m/n' will be
+(Font)              scaled to size 11.56348pt on input line 208.
+LaTeX Font Info:    Font shape `TU/TimesNewRoman(1)/m/n' will be
+(Font)              scaled to size 8.09442pt on input line 208.
+LaTeX Font Info:    Font shape `TU/TimesNewRoman(1)/m/n' will be
+(Font)              scaled to size 5.78174pt on input line 208.
 File: figures/seq_ingestion.png Graphic file (type bmp)
 <figures/seq_ingestion.png>
-
-Underfull \hbox (badness 1635) in paragraph at lines 234--236
-\TU/TimesNewRoman(0)/m/n/12 table \TU/lmtt/m/n/12 weather_worker_leases \TU/Tim
-esNewRoman(0)/m/n/12 via \TU/lmtt/m/n/12 INSERT ... ON CONFLICT DO UPDATE WHERE
-
- []
-
-[45]
-Underfull \hbox (badness 1521) in paragraph at lines 236--238
-\TU/TimesNewRoman(0)/m/n/12 to dispatching external network requests across Vie
-tnam’s 63 provinces, the worker
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 236--238
-\TU/lmtt/m/n/12 GET /v1/forecast.json?q={province_coords}&days=3 \TU/TimesNewRo
-man(0)/m/n/12 to WeatherAPI. Upon
- []
-
-[46]
-Underfull \hbox (badness 4913) in paragraph at lines 273--273
+ [31] [32] [33]
+Underfull \hbox (badness 4913) in paragraph at lines 269--269
 |[]\TU/TimesNewRoman(0)/b/n/14.4 Standardized Entity-Relationship Diagram and G
 overnance Con-
  []
 
 File: figures/erd_database.png Graphic file (type bmp)
 <figures/erd_database.png>
-[47]
-Underfull \hbox (badness 2119) in paragraph at lines 285--286
+
+Underfull \hbox (badness 2119) in paragraph at lines 281--282
 \TU/TimesNewRoman(0)/m/n/12 Database trigger \TU/lmtt/m/n/12 app_governance.gua
 rd_risk_rule_mutation() \TU/TimesNewRoman(0)/m/n/12 prohibits modi-
  []
 
-[48]
-Underfull \hbox (badness 7326) in paragraph at lines 342--342
+[34]
+Underfull \hbox (badness 7326) in paragraph at lines 338--338
 []|\TU/TimesNewRoman(0)/m/n/10.95 Distant storm or cumu-
  []
 
-[49]
+[35]
 File: figures/seq_route_risk.png Graphic file (type bmp)
 <figures/seq_route_risk.png>
- [50]
-Underfull \hbox (badness 5274) in paragraph at lines 370--373
-[]\TU/TimesNewRoman(0)/m/it/12 Phase 3: Vehicle-differentiated hazard evaluatio
-n and multi-objective scoring\TU/TimesNewRoman(0)/m/n/12 :
- []
-
-
-Underfull \hbox (badness 1436) in paragraph at lines 370--373
-\TU/TimesNewRoman(0)/m/n/12 ($[][]$), Visibility ($[][]$), Convective storms ($
-[][]$), and Disaster alert tier ($[][]$).
- []
-
-[51]) (en/chapters/chapter4_implementation.tex [52]
+ [36] [37]) (en/chapters/chapter4_implementation.tex [38]
 Chapter 4.
 
 Underfull \hbox (badness 2626) in paragraph at lines 15--16
@@ -2264,7 +2173,7 @@ ges/\TU/TimesNewRoman(0)/m/it/12 )\TU/TimesNewRoman(0)/m/n/12 : Houses reusable
  infrastructural modules,
  []
 
-[53
+[39
 
 ]
 Underfull \hbox (badness 1264) in paragraph at lines 25--26
@@ -2273,7 +2182,14 @@ ata_net\TU/TimesNewRoman(0)/m/it/12 )\TU/TimesNewRoman(0)/m/n/12 : Houses Postg
 reSQL 16 (equipped with
  []
 
-[54]
+
+Overfull \hbox (0.78764pt too wide) in paragraph at lines 43--45
+\TU/TimesNewRoman(0)/m/n/12 Cryptographic routines are centralized in \TU/lmtt/
+m/n/12 apps/api/src/crypto.ts \TU/TimesNewRoman(0)/m/n/12 using native \TU/lmtt
+/m/n/12 node:crypto\TU/TimesNewRoman(0)/m/n/12 : 
+ []
+
+[40]
 Underfull \hbox (badness 2735) in paragraph at lines 52--53
 []\TU/TimesNewRoman(0)/m/it/12 Timing-safe CSRF validation\TU/TimesNewRoman(0)/
 m/n/12 : CSRF prevention relies on HMAC-SHA256 signa-
@@ -2286,7 +2202,7 @@ an(0)/m/n/12 ). Signature verification in \TU/lmtt/m/n/12 verifyCsrfSignature \
 TU/TimesNewRoman(0)/m/n/12 utilizes
  []
 
-[55]
+
 Underfull \hbox (badness 1902) in paragraph at lines 62--64
 \TU/TimesNewRoman(0)/m/n/12 form tenants. Active sessions (\TU/lmtt/m/n/12 revo
 ked_at IS NULL \TU/TimesNewRoman(0)/m/n/12 and \TU/lmtt/m/n/12 expires_at > now
@@ -2311,7 +2227,7 @@ LaTeX Font Info:    Font shape `TU/TimesNewRoman(0)/m/it' will be
 (Font)              scaled to size 8.416pt on input line 65.
 LaTeX Font Info:    Font shape `TU/TimesNewRoman(0)/m/it' will be
 (Font)              scaled to size 6.01144pt on input line 65.
-
+[41]
 Underfull \hbox (badness 1226) in paragraph at lines 83--84
 []\TU/TimesNewRoman(0)/m/it/12 Administrative catalog and stations (\TU/lmtt/m/
 it/12 locations\TU/TimesNewRoman(0)/m/it/12 )\TU/TimesNewRoman(0)/m/n/12 : Enca
@@ -2331,14 +2247,7 @@ Underfull \hbox (badness 3568) in paragraph at lines 83--84
 undaries \TU/lmtt/m/n/12 boundary \TU/TimesNewRoman(0)/m/n/12 typed as
  []
 
-[56] [57]
-Underfull \hbox (badness 3769) in paragraph at lines 143--145
-\TU/TimesNewRoman(0)/m/n/12 The durable runtime engine \TU/lmtt/m/n/12 WeatherD
-urableRuntime \TU/TimesNewRoman(0)/m/n/12 in \TU/lmtt/m/n/12 apps/worker/src/ru
-ntime/
- []
-
-
+[42] [43]
 Underfull \hbox (badness 6428) in paragraph at lines 147--148
 []\TU/TimesNewRoman(0)/m/it/12 Closed\TU/TimesNewRoman(0)/m/n/12 : Normal opera
 tion. Ingestion requests are dispatched directly to
@@ -2350,13 +2259,7 @@ Underfull \hbox (badness 1024) in paragraph at lines 147--148
 es or quota depletion errors
  []
 
-[58]
-Underfull \hbox (badness 1708) in paragraph at lines 184--185
-\TU/TimesNewRoman(0)/m/n/12 Route calculation is implemented within \TU/lmtt/m/
-n/12 apps/api/src/route/route-risk-engine.ts\TU/TimesNewRoman(0)/m/n/12 .
- []
-
-[59]
+[44]
 Underfull \hbox (badness 1769) in paragraph at lines 200--200
 |[]\TU/TimesNewRoman(0)/b/n/14.4 Vehicle-Differentiated Risk Matrix Evaluation 
 and Multi-Objective
@@ -2405,211 +2308,156 @@ Underfull \hbox (badness 10000) in paragraph at lines 238--238
 sNewRoman(0)/m/n/10.95 or
  []
 
-[60] [61]
+[45] [46]
 Underfull \hbox (badness 3838) in paragraph at lines 257--258
 []\TU/TimesNewRoman(0)/m/it/12 Direct tool execution\TU/TimesNewRoman(0)/m/n/12
  : Dispatches extracted parameters directly to \TU/lmtt/m/n/12 toolEngine.
  []
 
-
-Underfull \hbox (badness 4647) in paragraph at lines 275--277
-\TU/TimesNewRoman(0)/m/n/12 Geospatial visualization centers on \TU/lmtt/m/n/12
- RealInteractiveMap.tsx \TU/TimesNewRoman(0)/m/n/12 and \TU/lmtt/m/n/12 RouteIn
-teractive
- []
-
-[62]
+[47]
 Underfull \hbox (badness 1596) in paragraph at lines 288--289
 \TU/lmtt/m/n/12 test.ts\TU/TimesNewRoman(0)/m/n/12 ), worker retry backoff math
  (\TU/lmtt/m/n/12 runtime.test.ts\TU/TimesNewRoman(0)/m/n/12 ), WMO unit conver
 sions
  []
 
-[63]) (en/chapters/chapter5_evaluation.tex [64]
+) (en/chapters/chapter5_evaluation.tex [48]
 Chapter 5.
-[65
+[49
 
-] [66] [67]
+]
 File: figures/ui_route_safer.png Graphic file (type bmp)
 <figures/ui_route_safer.png>
- [68]
-File: figures/ui_route_fastest.png Graphic file (type bmp)
-<figures/ui_route_fastest.png>
-File: figures/ui_route_shortest.png Graphic file (type bmp)
-<figures/ui_route_shortest.png>
-File: figures/ui_route_comparison.png Graphic file (type bmp)
-<figures/ui_route_comparison.png>
- [69] [70] [71]
-Underfull \hbox (badness 2119) in paragraph at lines 203--204
-[]\TU/TimesNewRoman(0)/m/it/12 Circuit breaker tripping during external outage\
-TU/TimesNewRoman(0)/m/n/12 : Injecting HTTP 500 errors and
- []
-
-[72]
-Underfull \hbox (badness 1661) in paragraph at lines 231--231
+ [50]
+Underfull \hbox (badness 1661) in paragraph at lines 106--106
 []|\TU/TimesNewRoman(0)/m/n/12 Tier 1: Multi-point microcli-
  []
 
 
-Underfull \hbox (badness 1158) in paragraph at lines 233--233
+Underfull \hbox (badness 1158) in paragraph at lines 108--108
 []|\TU/TimesNewRoman(0)/m/n/12 Tier 3: Multi-stop routing &
  []
 
 
-Underfull \hbox (badness 1152) in paragraph at lines 235--235
+Underfull \hbox (badness 1152) in paragraph at lines 110--110
 []|\TU/TimesNewRoman(0)/m/n/12 Tier 5: Mid-route emergency
  []
 
-[73] [74]
+[51]
 File: figures/ui_ai_chat.png Graphic file (type bmp)
 <figures/ui_ai_chat.png>
- [75] [76] [77]
-File: figures/ui_landing.png Graphic file (type bmp)
-<figures/ui_landing.png>
-File: figures/ui_login.png Graphic file (type bmp)
-<figures/ui_login.png>
-File: figures/ui_register.png Graphic file (type bmp)
-<figures/ui_register.png>
 File: figures/ui_map.png Graphic file (type bmp)
 <figures/ui_map.png>
-File: figures/ui_map_timeline_slider.png Graphic file (type bmp)
-<figures/ui_map_timeline_slider.png>
-File: figures/ui_map_detail.png Graphic file (type bmp)
-<figures/ui_map_detail.png>
+ [52]
 File: figures/ui_weather_overview.png Graphic file (type bmp)
 <figures/ui_weather_overview.png>
-File: figures/ui_weather_timeline_24h.png Graphic file (type bmp)
-<figures/ui_weather_timeline_24h.png>
-File: figures/ui_weather_modal.png Graphic file (type bmp)
-<figures/ui_weather_modal.png>
-File: figures/ui_pricing.png Graphic file (type bmp)
-<figures/ui_pricing.png>
-File: figures/ui_checkout.png Graphic file (type bmp)
-<figures/ui_checkout.png>
-
-Underfull \hbox (badness 1616) in paragraph at lines 443--443
-[]\TU/TimesNewRoman(0)/m/n/10.95 (b) |Multi-Gateway Checkout Modal (VNPay &
- []
-
-[78] [79] [80] [81]) (en/chapters/chapter6_conclusion.tex [82]
+ [53]) (en/chapters/chapter6_conclusion.tex [54]
 Chapter 6.
-[83
 
-]
-Underfull \hbox (badness 1888) in paragraph at lines 20--21
-[]\TU/TimesNewRoman(0)/m/it/12 Modular Monorepo Microservices Architecture\TU/T
-imesNewRoman(0)/m/n/12 : Engineered a resilient, distributed
- []
-
-
-Underfull \hbox (badness 1024) in paragraph at lines 20--21
-\TU/TimesNewRoman(0)/m/n/12 background ingestion workers, and React/Vite (Front
-end). Fully containerized using
- []
-
-[84]
-Underfull \hbox (badness 1394) in paragraph at lines 50--50
+Underfull \hbox (badness 1394) in paragraph at lines 34--34
 []|\TU/TimesNewRoman(0)/m/n/12 FR1: Data Inges-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 50--50
+Underfull \hbox (badness 10000) in paragraph at lines 34--34
 []|\TU/TimesNewRoman(0)/m/n/12 Automated ingestion and
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 50--50
+Underfull \hbox (badness 10000) in paragraph at lines 34--34
 \TU/TimesNewRoman(0)/m/n/12 normalization across 63
  []
 
 
-Underfull \hbox (badness 1546) in paragraph at lines 50--50
+Underfull \hbox (badness 1546) in paragraph at lines 34--34
 []|\TU/TimesNewRoman(0)/m/n/12 Autonomous worker on 5-min cycle,
  []
 
 
-Underfull \hbox (badness 5274) in paragraph at lines 50--50
+Underfull \hbox (badness 5274) in paragraph at lines 34--34
 \TU/TimesNewRoman(0)/m/n/12 normalizes 80+ codes into PostGIS
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 52--52
+Underfull \hbox (badness 10000) in paragraph at lines 36--36
 []|\TU/TimesNewRoman(0)/m/n/12 6-dimensional risk scoring
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 52--52
+Underfull \hbox (badness 10000) in paragraph at lines 36--36
 \TU/TimesNewRoman(0)/m/n/12 with vehicular sensitivity
  []
 
 
-Underfull \hbox (badness 3068) in paragraph at lines 54--54
+Underfull \hbox (badness 3068) in paragraph at lines 38--38
 []|\TU/TimesNewRoman(0)/m/n/12 Parallel 3-tier routing with
  []
 
 
-Underfull \hbox (badness 6493) in paragraph at lines 54--54
+Underfull \hbox (badness 6493) in paragraph at lines 38--38
 \TU/TimesNewRoman(0)/m/n/12 ETA-projected risk mitiga-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 56--56
+Underfull \hbox (badness 10000) in paragraph at lines 40--40
 []|\TU/TimesNewRoman(0)/m/n/12 Grounded Vietnamese
  []
 
 
-Underfull \hbox (badness 4569) in paragraph at lines 56--56
+Underfull \hbox (badness 4569) in paragraph at lines 40--40
 \TU/TimesNewRoman(0)/m/n/12 weather QA with minimal
  []
 
 
-Underfull \hbox (badness 5817) in paragraph at lines 58--58
+Underfull \hbox (badness 5817) in paragraph at lines 42--42
 []|\TU/TimesNewRoman(0)/m/n/12 User management, RBAC,
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 58--58
+Underfull \hbox (badness 10000) in paragraph at lines 42--42
 []|\TU/TimesNewRoman(0)/m/n/12 Pricing dashboard (/pricing), multi-
  []
 
 
-Underfull \hbox (badness 3503) in paragraph at lines 58--58
+Underfull \hbox (badness 3503) in paragraph at lines 42--42
 \TU/TimesNewRoman(0)/m/n/12 gateway VNPay/Stripe, saved routes
  []
 
 
-Underfull \hbox (badness 6094) in paragraph at lines 60--60
+Underfull \hbox (badness 6094) in paragraph at lines 44--44
 []|\TU/TimesNewRoman(0)/m/n/12 NFR1: Response
  []
 
 
-Underfull \hbox (badness 2229) in paragraph at lines 62--62
+Underfull \hbox (badness 2229) in paragraph at lines 46--46
 \TU/TimesNewRoman(0)/m/n/12 numerical models refreshed
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 64--64
+Underfull \hbox (badness 10000) in paragraph at lines 48--48
 []|\TU/TimesNewRoman(0)/m/n/12 SameSite=Lax HttpOnly boundaries,
  []
 
-[85] [86] [87]) [88] (main_en.bbl [89
+[55
+
+] [56]) [57] (main_en.bbl [58
 
 
-]) [90] (main_en.aux)
+]) [59] (main_en.aux)
  ***********
 LaTeX2e <2025-11-01>
 L3 programming layer <2025-12-24>
  ***********
 Package rerunfilecheck Info: File `main_en.out' has not changed.
-(rerunfilecheck)             Checksum: 8DEFBF7F85F36C3CBE4B9AB24E247492;42985.
+(rerunfilecheck)             Checksum: DD22200B0123BC489ED7456C0AC73800;28216.
  ) 
 Here is how much of TeX's memory you used:
- 42858 strings out of 402987
- 965842 string characters out of 5448525
- 1545904 words of memory out of 5000000
- 70959 multiletter control sequences out of 15000+600000
- 649327 words of font info for 189 fonts, out of 8000000 for 9000
+ 40705 strings out of 402987
+ 881083 string characters out of 5448525
+ 1484511 words of memory out of 5000000
+ 68830 multiletter control sequences out of 15000+600000
+ 642430 words of font info for 158 fonts, out of 8000000 for 9000
  1348 hyphenation exceptions out of 8191
- 102i,18n,117p,1209b,623s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 102i,17n,117p,830b,603s stack positions out of 10000i,1000n,20000p,200000b,200000s
 
-Output written on main_en.pdf (92 pages).
+Output written on main_en.pdf (60 pages).
